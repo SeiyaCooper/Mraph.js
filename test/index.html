@@ -3,13 +3,14 @@
     <script src="mraph.js" charset="utf-8"></script>
 </head>
 <body>
-    <canvas id="main" style="width: 100%;"></canvas>
+    <div id="main"></div>
     <script type="text/javascript" charset="utf-8">
         const main = document.querySelector("#main");
-        main.width = 3 * window.innerWidth;
-        main.height = 3 * window.innerHeight;
+        mraph.setup(main, {
+            width: window.innerWidth,
+            height: window.innerHeight
+        });
 
-        mraph.canvas = main;
         //创建一些点 圆 线段 直线
         const p1 = new mraph.Point(0, 0);
         const p2 = new mraph.Point(400, 0);
