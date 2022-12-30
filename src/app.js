@@ -1,10 +1,4 @@
-import Point from "./objects/point.js";
-import Segment from "./objects/segment.js";
-import Line from "./objects/line.js"
-import Circle from "./objects/circle.js"
-import animation from "./animation/animation.js"
-
-const mraph = {
+window.Mraph = {
     elements: [],
 
     //初始化
@@ -40,23 +34,6 @@ const mraph = {
         const h = this.canvas.height;
         this.ctx2d.fillRect(-w/2, -h/2, w, h);
     },
-    // 从数组获取点
-    getPoint(array) {
-        if (array instanceof Point) {
-            return array;
-        } else {
-            return new Point(...array, false);
-        }
-    },
-    //从点获取数组
-    getPos(point) {
-        if (point instanceof Point) {
-            return [point.x,
-                point.y];
-        } else {
-            return point;
-        }
-    },
 
     set canvas(canvas) {
         this._canvas = canvas;
@@ -70,10 +47,5 @@ const mraph = {
         return this._canvas;
     },
 };
-mraph.Point = Point;
-mraph.Segment = Segment;
-mraph.Line = Line;
-mraph.Circle = Circle;
-mraph.animation = animation;
 
-window.mraph = mraph;
+export default Mraph;

@@ -1,4 +1,6 @@
+import Mraph from "../app.js";
 import Graph from "./graph.js";
+import tool from "../tool/tool.js";
 
 /**
  * 点
@@ -13,7 +15,7 @@ class Point extends Graph {
     }
     draw() {
         if(!this.visible) return;
-        const ctx = mraph.ctx2d;
+        const ctx = Mraph.ctx2d;
         
         ctx.beginPath();
         ctx.lineWidth = 2 * this.size;
@@ -28,9 +30,9 @@ class Point extends Graph {
         let xDis, yDis; // 距离
         const self = this;
         
-        mraph.animation.add(start, end, {
+        Mraph.animation.add(start, end, {
             start: () => {
-                pos = mraph.getPos(pos); // 目标位置
+                pos = tool.getPos(pos); // 目标位置
                 startX = self.x;
                 startY = self.y;
                 xDis = pos[0] - startX;
@@ -44,4 +46,5 @@ class Point extends Graph {
     }
 }
 
+Mraph.Point = Point;
 export default Point;

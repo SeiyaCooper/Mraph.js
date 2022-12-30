@@ -6,24 +6,22 @@
     <div id="main"></div>
     <script type="text/javascript" charset="utf-8">
         const main = document.querySelector("#main");
-        mraph.setup(main, {
+        Mraph.setup(main, {
             width: window.innerWidth,
             height: window.innerHeight
         });
 
         //创建一些点 圆 线段 直线
-        const p1 = new mraph.Point(0, 0);
-        const p2 = new mraph.Point(400, 0);
-        const c0 = new mraph.Circle(p1, p2);
-        const s0 = new mraph.Segment(p1, [0,0]);
-        const s1 = new mraph.Segment([0, 0], p2);
-        const l0 = new mraph.Line(p1,p2);
+        const p1 = new Mraph.Point(0, 0);
+        const p2 = new Mraph.Point(400, 0);
+        const c0 = new Mraph.Circle(p1, p2);
+        const l0 = new Mraph.Segment(p1, p2);
         
         c0.fillColor = "rgba(0,0,0,0)";
         
         // 添加动画
         // 从0秒到5秒
-        mraph.draw();
+        Mraph.draw();
         p1.moveTo([0, 100], 0, 5); // 点1从(0, 0)到(0, 100)
         p2.moveTo([100, 700], 3, 5); // 点2从(400, 0)到(100, 700)
         c0.resizeTo(0.5, 5, 6);
@@ -31,7 +29,7 @@
         p1.moveTo([-400, 100], 5, 6);
         p2.moveTo(p1, 5.5, 6); // 点2从(0, 0)到5.5秒时的点1
         // 播放动画
-        mraph.animation.start();
+        Mraph.animation.start();
     </script>
 </body>
 </html>

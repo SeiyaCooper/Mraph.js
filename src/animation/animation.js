@@ -1,3 +1,5 @@
+import Mraph from "../app.js";
+
 class Action {
     constructor(events) {
         const self = this;
@@ -40,8 +42,7 @@ class Action {
     }
 }
 
-
-const animation = {
+Mraph.animation = {
     frameList: new Map(),
 
     start() {
@@ -53,8 +54,8 @@ const animation = {
         //添加重新绘制事件
         this.add(st / 1000, et / 1000, {
             update: () => {
-                mraph.background();
-                mraph.draw();
+                Mraph.background();
+                Mraph.draw();
             }
         });
         
@@ -109,5 +110,3 @@ const animation = {
         }
     }
 };
-
-export default animation;
