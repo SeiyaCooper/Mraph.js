@@ -70,6 +70,16 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
 
 /***/ }),
 
+/***/ "./src/objects/polygon.js":
+/*!********************************!*\
+  !*** ./src/objects/polygon.js ***!
+  \********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _app_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../app.js */ \"./src/app.js\");\n/* harmony import */ var _graph_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./graph.js */ \"./src/objects/graph.js\");\n/* harmony import */ var _tool_tool_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../tool/tool.js */ \"./src/tool/tool.js\");\n\n\n\n\n/**\n * 多边形\n * @class\n */\n\nclass Polygon extends _graph_js__WEBPACK_IMPORTED_MODULE_1__[\"default\"] {\n    constructor(...args) {\n        super(...args);\n        this.points = args[0].map(el => {return _tool_tool_js__WEBPACK_IMPORTED_MODULE_2__[\"default\"].getPoint(el);});\n    }\n    draw() {\n        if (!this.visible) return;\n        \n        const ctx = _app_js__WEBPACK_IMPORTED_MODULE_0__[\"default\"].ctx2d;\n        const points = this.points;\n        \n        // 设置样式\n        ctx.beginPath();\n        ctx.lineWidth = this.size;\n        ctx.strokeStyle = this.color;\n        ctx.fillStyle = this.fillColor;\n        \n        // 绘制\n        ctx.moveTo(points[0].x, points[0].y);\n        for (const point of points) {\n            ctx.lineTo(point.x, point.y);\n        }\n        \n        ctx.closePath();\n        ctx.stroke();\n        \n        return this;\n    }\n}\n\n_app_js__WEBPACK_IMPORTED_MODULE_0__[\"default\"].Polygon = Polygon;\n\n//# sourceURL=webpack:///./src/objects/polygon.js?");
+
+/***/ }),
+
 /***/ "./src/objects/segment.js":
 /*!********************************!*\
   !*** ./src/objects/segment.js ***!
@@ -156,6 +166,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
 /******/ 	__webpack_require__("./src/objects/graph.js");
 /******/ 	__webpack_require__("./src/objects/line.js");
 /******/ 	__webpack_require__("./src/objects/point.js");
+/******/ 	__webpack_require__("./src/objects/polygon.js");
 /******/ 	__webpack_require__("./src/objects/segment.js");
 /******/ 	var __webpack_exports__ = __webpack_require__("./src/tool/tool.js");
 /******/ 	

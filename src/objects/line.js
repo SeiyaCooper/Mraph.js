@@ -1,6 +1,11 @@
 import Mraph from "../app.js";
 import Segment from "./segment.js";
 
+/**
+ * 直线
+ * @class
+ */
+
 class Line extends Segment {
     constructor(...args) {
         super(...args);
