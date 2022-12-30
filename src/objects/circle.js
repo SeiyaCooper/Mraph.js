@@ -2,6 +2,11 @@ import Mraph from "../app.js";
 import Graph from "./graph.js";
 import tool from "../tool/tool.js";
 
+/**
+ * 圆
+ * @class
+ */
+
 class Circle extends Graph {
     constructor(p1, p2, draw) {
         super(draw);
@@ -22,13 +27,17 @@ class Circle extends Graph {
     draw() {
         if (!this.visible) return;
         const ctx = Mraph.ctx2d;
+        
         ctx.beginPath();
         ctx.strokeStyle = this.color;
         ctx.fillStyle = this.fillColor;
         ctx.lineWidth = this.size;
+        
         ctx.arc(this.point1.x, this.point1.y, this.radius, 0, 2 * Math.PI);
+        
         ctx.stroke();
         ctx.fill();
+        
         return this;
     }
     get radius() {

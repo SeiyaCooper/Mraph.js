@@ -11,11 +11,11 @@
             height: window.innerHeight
         });
 
-        //创建一些点 圆 线段 直线
+        // 创建一些点 圆 线段 直线
         const p1 = new Mraph.Point(0, 0);
         const p2 = new Mraph.Point(400, 0);
         const c0 = new Mraph.Circle(p1, p2);
-        const l0 = new Mraph.Segment(p1, p2);
+        const l0 = new Mraph.Polygon([p1, p2, [0, 0]], false);
         
         c0.fillColor = "rgba(0,0,0,0)";
         

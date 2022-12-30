@@ -1,6 +1,11 @@
 import Mraph from "../app.js";
 import Segment from "./segment.js";
 
+/**
+ * 直线
+ * @class
+ */
+
 class Line extends Segment {
     constructor(...args) {
         super(...args);
@@ -9,6 +14,7 @@ class Line extends Segment {
     draw() {
         if (!this.visible) return;
         const ctx = Mraph.ctx2d;
+        
         ctx.beginPath();
         ctx.lineWidth = this.size;
         ctx.strokeStyle = this.color;
@@ -28,6 +34,7 @@ class Line extends Segment {
             ctx.moveTo(p1.x, -h/2);
             ctx.lineTo(p1.x, h/2);
         }
+        
         ctx.stroke();
         return this;
     }
