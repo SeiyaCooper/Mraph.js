@@ -32,6 +32,7 @@ class Polygon extends Graph {
         
         ctx.closePath();
         ctx.stroke();
+        ctx.fill();
         
         return this;
     }
