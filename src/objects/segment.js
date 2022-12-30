@@ -1,4 +1,6 @@
+import Mraph from "../app.js";
 import Graph from "./graph.js";
+import tool from "../tool/tool.js";
 
 /**
  * 线段
@@ -15,15 +17,15 @@ class Segment extends Graph {
     constructor(p1, p2, draw) {
         super(draw);
         this.size = 5;
-        this.point1 = mraph.getPoint(p1);
-        this.point2 = mraph.getPoint(p2);
+        this.point1 = tool.getPoint(p1);
+        this.point2 = tool.getPoint(p2);
     }
     /**
      * 绘制线端
      */
     draw() {
         if (!this.visible) return;
-        const ctx = mraph.ctx2d;
+        const ctx = Mraph.ctx2d;
 
         ctx.beginPath();
         ctx.lineWidth = this.size;
@@ -48,4 +50,5 @@ class Segment extends Graph {
     }
 }
 
+Mraph.Segment = Segment;
 export default Segment;

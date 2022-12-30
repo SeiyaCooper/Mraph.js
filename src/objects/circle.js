@@ -1,4 +1,6 @@
+import Mraph from "../app.js";
 import Graph from "./graph.js";
+import tool from "../tool/tool.js";
 
 class Circle extends Graph {
     constructor(p1, p2, draw) {
@@ -6,20 +8,20 @@ class Circle extends Graph {
         this.size = 5;
         this.color = "#F05D11FF";
         this.fillColor = "#F05D1199";
-        this.point1 = mraph.getPoint(p1);
+        this.point1 = tool.getPoint(p1);
         //判断是否使用固定半径初始化
         if (Object.prototype.toString.call(p2) == "[object Number]") {
             //使用数字
-            const point = new mraph.Point(this.point1.x + p2, this.point1.y);
+            const point = new Mraph.Point(this.point1.x + p2, this.point1.y);
             point.visible = false;
             this.point2 = point;
         } else {
-            this.point2 = mraph.getPoint(p2);
+            this.point2 = tool.getPoint(p2);
         }
     }
     draw() {
         if (!this.visible) return;
-        const ctx = mraph.ctx2d;
+        const ctx = Mraph.ctx2d;
         ctx.beginPath();
         ctx.strokeStyle = this.color;
         ctx.fillStyle = this.fillColor;
@@ -34,4 +36,5 @@ class Circle extends Graph {
     }
 }
 
+Mraph.Circle = Circle;
 export default Circle;

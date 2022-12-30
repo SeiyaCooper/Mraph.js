@@ -1,3 +1,4 @@
+import Mraph from "../app.js";
 import Segment from "./segment.js";
 
 class Line extends Segment {
@@ -7,13 +8,13 @@ class Line extends Segment {
     }
     draw() {
         if (!this.visible) return;
-        const ctx = mraph.ctx2d;
+        const ctx = Mraph.ctx2d;
         ctx.beginPath();
         ctx.lineWidth = this.size;
         ctx.strokeStyle = this.color;
         
-        const w = mraph.canvas.width; // Canvas 宽
-        const h = mraph.canvas.height; // Canvas 高
+        const w = Mraph.canvas.width; // Canvas 宽
+        const h = Mraph.canvas.height; // Canvas 高
         const p1 = this.point1 // 起始点
         const p2 = this.point2 // 结束点
         // 分横坐标是否相等两种情况
@@ -32,4 +33,4 @@ class Line extends Segment {
     }
 }
 
-export default Line;
+Mraph.Line = Line;

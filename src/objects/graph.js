@@ -7,13 +7,13 @@ class Graph {
         
         //是否加入绘制列表
         if (args[args.length - 1] !== false) {
-            mraph.elements.push(this);
+            Mraph.elements.push(this);
         }
     }
     resizeTo(scale, start, end) {
         let initialSize, total; // 初始大小, 变化总量
         
-        mraph.animation.add(start, end, {
+        Mraph.animation.add(start, end, {
             start: () => {
                 initialSize = this.size;
                 total = initialSize * scale - initialSize;
