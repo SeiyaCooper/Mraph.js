@@ -15,15 +15,16 @@
         const p1 = new Mraph.Point(0, 0);
         const p2 = new Mraph.Point(400, 0);
         const c0 = new Mraph.Circle(p1, p2);
-        const l0 = new Mraph.Polygon([p1, p2, [0, 0]]);
+        const l0 = new Mraph.Polygon([p1, p2, [0, 0], new Mraph.Point(-700, -100)]);
         
         c0.fillColor = "rgba(0,0,0,0)";
-        l0.fillColor = "#F05D1199";
+        l0.fillColor = "rgba(100, 25, 255, 0.5)";
+        //l0.size = 1;
         
         // 添加动画
         // 从0秒到5秒
         Mraph.draw();
-        p1.moveTo([0, 100], 0, 5); // 点1从(0, 0)到(0, 100)
+        p1.moveTo([0, 900], 0, 5); // 点1从(0, 0)到(0, 100)
         p2.moveTo([100, 700], 3, 5); // 点2从(400, 0)到(100, 700)
         c0.resizeTo(0.5, 5, 6);
         p1.resizeTo(0.1, 6, 6.3);

@@ -1,6 +1,5 @@
 import Mraph from "../app.js";
 import Graph from "./graph.js";
-import tool from "../tool/tool.js";
 
 /**
  * 点
@@ -32,7 +31,7 @@ class Point extends Graph {
         
         Mraph.animation.add(start, end, {
             start: () => {
-                pos = tool.getPos(pos); // 目标位置
+                pos = Point.getPos(pos); // 目标位置
                 startX = self.x;
                 startY = self.y;
                 xDis = pos[0] - startX;
@@ -43,6 +42,22 @@ class Point extends Graph {
                 self.y = startY + yDis * p;
             }
         });
+    }
+    // 从数组获取点
+    static getPoint(array) {
+        if (array instanceof Point) {
+            return array;
+        } else {
+            return new Point(...array, false);
+        }
+    }
+    // 从点获取数组
+    static getPos(point) {
+        if (point instanceof Point) {
+            return [point.x, point.y];
+        } else {
+            return point;
+        }
     }
 }
 
