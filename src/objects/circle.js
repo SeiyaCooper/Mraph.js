@@ -1,6 +1,6 @@
 import Mraph from "../app.js";
 import Graph from "./graph.js";
-import tool from "../tool/tool.js";
+import Point from "./point.js";
 
 /**
  * 圆
@@ -13,7 +13,7 @@ class Circle extends Graph {
         this.size = 5;
         this.color = "#F05D11FF";
         this.fillColor = "#F05D1199";
-        this.point1 = tool.getPoint(p1);
+        this.point1 = Point.getPoint(p1);
         //判断是否使用固定半径初始化
         if (Object.prototype.toString.call(p2) == "[object Number]") {
             //使用数字
@@ -21,7 +21,7 @@ class Circle extends Graph {
             point.visible = false;
             this.point2 = point;
         } else {
-            this.point2 = tool.getPoint(p2);
+            this.point2 = Point.getPoint(p2);
         }
     }
     draw() {

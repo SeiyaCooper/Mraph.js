@@ -1,6 +1,6 @@
 import Mraph from "../app.js";
 import Graph from "./graph.js";
-import tool from "../tool/tool.js";
+import Point from "./point.js";
 
 /**
  * 线段
@@ -17,8 +17,8 @@ class Segment extends Graph {
     constructor(p1, p2, draw) {
         super(draw);
         this.size = 5;
-        this.point1 = tool.getPoint(p1);
-        this.point2 = tool.getPoint(p2);
+        this.point1 = Point.getPoint(p1);
+        this.point2 = Point.getPoint(p2);
     }
     /**
      * 绘制线端

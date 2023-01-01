@@ -1,6 +1,6 @@
 import Mraph from "../app.js";
 import Graph from "./graph.js";
-import tool from "../tool/tool.js";
+import Point from "./point.js";
 
 /**
  * 多边形
@@ -10,7 +10,8 @@ import tool from "../tool/tool.js";
 class Polygon extends Graph {
     constructor(...args) {
         super(...args);
-        this.points = args[0].map(el => {return tool.getPoint(el);});
+        this.size = 5;
+        this.points = args[0].map(el => {return Point.getPoint(el);});
     }
     draw() {
         if (!this.visible) return;
@@ -32,6 +33,7 @@ class Polygon extends Graph {
         
         ctx.closePath();
         ctx.stroke();
+        ctx.fill();
         
         return this;
     }
