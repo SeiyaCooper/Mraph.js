@@ -42,7 +42,7 @@ class Action {
     }
 }
 
-Mraph.animation = {
+const animation = {
     frameList: new Map(),
 
     start() {
@@ -108,5 +108,23 @@ Mraph.animation = {
         } else {
             this.endTime = end;
         }
+    },
+    
+    // 淡入动画曲线
+    /**
+     * @param {Number} now 当前时间点
+     * @param {Number} start 开始的时间点
+     * @param {Number} end 结束的时间点
+     * @return {Number} 经过换算的时间点
+     */
+    easeIn(n, s, e) {
+        return ((n - s) ** 2) / (e - s) + s;
+    },
+    // 淡出动画曲线
+    easeOut(n, s, e) {
+        return ((e - n) ** 2) / (s - e) + e;
     }
 };
+
+Mraph.animation = animation;
+export default Mraph.animation;

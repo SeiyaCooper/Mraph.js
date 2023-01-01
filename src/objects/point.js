@@ -1,5 +1,6 @@
 import Mraph from "../app.js";
 import Graph from "./graph.js";
+import animation from "../animation/animation.js";
 
 /**
  * 点
@@ -27,9 +28,10 @@ class Point extends Graph {
     moveTo(pos, start, end) {
         let startX, startY; // 初始坐标
         let xDis, yDis; // 距离
+        let cp; // 经过计算的进度
         const self = this;
         
-        Mraph.animation.add(start, end, {
+        animation.add(start, end, {
             start: () => {
                 pos = Point.getPos(pos); // 目标位置
                 startX = self.x;
@@ -38,6 +40,12 @@ class Point extends Graph {
                 yDis = pos[1] - startY;
             },
             update: p => {
+                if (p >= 0.5) {
+                    p = animation.easeOut(p, 0.5, 1);
+                } else {
+                    p = animation.easeIn(p, 0, 0.5);
+                }
+                
                 self.x = startX + xDis * p;
                 self.y = startY + yDis * p;
             }
