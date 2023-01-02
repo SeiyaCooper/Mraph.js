@@ -7,10 +7,11 @@ import Point from "./point.js";
  * @class
  */
 
-class Polygon extends Graph {
+class Path extends Graph {
     constructor(...args) {
         super(...args);
         this.size = 5;
+        this.closed = true;
         this.points = args[0].map(el => {return Point.getPoint(el);});
     }
     draw() {
@@ -31,12 +32,14 @@ class Polygon extends Graph {
             ctx.lineTo(point.x, point.y);
         }
         
-        ctx.closePath();
+        if(this.closed) {
+            ctx.closePath();
+            ctx.fill();
+        }
         ctx.stroke();
-        ctx.fill();
         
         return this;
     }
 }
 
-Mraph.Polygon = Polygon;
+Mraph.Path = Path;

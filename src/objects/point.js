@@ -40,14 +40,29 @@ class Point extends Graph {
                 yDis = pos[1] - startY;
             },
             update: p => {
-                if (p >= 0.5) {
-                    p = animation.easeOut(p, 0.5, 1);
-                } else {
-                    p = animation.easeIn(p, 0, 0.5);
-                }
+                p = animation.easeInOut(p, 0, 1);
                 
                 self.x = startX + xDis * p;
                 self.y = startY + yDis * p;
+            }
+        });
+    }
+    rotateAround(point, angle, start, end) {
+        let radius, radiusLen, startAngle; // 旋转半径 起始角
+        const self = this;
+        
+        animation.add(start, end, {
+            start: () => {
+                point = Point.getPoint(point);
+                radius = new Mraph.Segment(point, self, false);
+                radiusLen = radius.length;
+                startAngle = radius.angle;
+            },
+            update: p => {
+                p = animation.easeInOut(p, 0, 1);
+                
+                self.x = Math.cos(angle * p + startAngle) * radiusLen + point.x;
+                self.y = Math.sin(angle * p + startAngle) * radiusLen + point.y;
             }
         });
     }

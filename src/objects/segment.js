@@ -48,6 +48,12 @@ class Segment extends Graph {
     get slope() {
         return (this.point2.y - this.point1.y) / (this.point2.x - this.point1.x);
     }
+    /**
+     * 线段与水平线的夹角 (弧度制)
+     */
+    get angle() {
+        return Math.atan2(this.point2.y - this.point1.y, this.point2.x - this.point1.x);
+    }
 }
 
 Mraph.Segment = Segment;

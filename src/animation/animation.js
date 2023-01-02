@@ -69,8 +69,12 @@ const animation = {
                 for (let [t, action] of fl) {
                     if (now > t[0] && t[1] > now) {
                         // 如果没有执行开始事件就执行
-                        if (!action.isStarted) action.events.get("start")();
-                        action.events.get("update")((now - t[0]) / (t[1] - t[0]));
+                        if (!action.isStarted) {
+                            action.events.get("start")();
+                            action.events.get("update")(0);
+                        } else {
+                            action.events.get("update")((now - t[0]) / (t[1] - t[0]));
+                        }
                     } else if (now > t[1]) {
                         action.events.get("update")(1);
                         action.events.get("end")();
@@ -123,7 +127,16 @@ const animation = {
     // 淡出动画曲线
     easeOut(n, s, e) {
         return ((e - n) ** 2) / (s - e) + e;
-    }
+    },
+    // 淡入淡出动画曲线
+    easeInOut(n, s, e) {
+        const half = (e + s) / 2; // 时间段中点
+        if (n >= half) {
+            return this.easeOut(n, half, e);
+        } else {
+            return this.easeIn(n, s, half);
+        }
+    },
 };
 
 Mraph.animation = animation;
