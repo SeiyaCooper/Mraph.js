@@ -43,55 +43,85 @@ class Action {
 }
 
 const animation = {
-    frameList: new Map(),
+    keyFrameList: new Map(),
+    isFrameRateLocked: false,
+    elapsedFrames: 0, // 已经经过的帧数
+    onStart: () => {}, // 开始事件
+    onEnd: () => {}, // 结束事件
+    onUpdate: () => {}, // 更新事件
+    
 
     start() {
-        const start = +new Date();
-        const st = this.startTime; // 开始时间
-        const et = this.endTime; // 结束时间
-        const fl = this.frameList; // 关键帧表
+        const st = this.startTime; // 开始运行动画的时刻
+        const et = this.endTime; // 结束的时刻
+        const fl = this.keyFrameList; // 关键帧表
+        const self = this;
+        let start; // 开始的时刻
         
-        //添加重新绘制事件
+        if (this.isFrameRateLocked) {
+            start = 0;
+        } else {
+            start = +new Date();
+        }
+        
+        // 添加重新绘制事件与开始结束事件
         this.add(st / 1000, et / 1000, {
+            start: () => {
+                this.onStart();
+            },
             update: () => {
                 Mraph.background();
                 Mraph.draw();
+                this.onUpdate();
+            },
+            end: () => {
+                this.onEnd();
             }
         });
         
         (function step() {
-            const now = +new Date() - start;
-            let next;
+            let nextStep, now; // 下一关键帧 当前时间
+            
+            if (self.isFrameRateLocked) {
+                now = self.elapsedFrames * 1000 / self.frameRate;
+                self.elapsedFrames++;
+            } else {
+                now = +new Date() - start;
+            }
+            
+            // 动画部分
             if (now > et && fl.size === 0) {
-                cancelAnimationFrame(next);
+                cancelAnimationFrame(nextStep);
             } else if (now > st) {
                 // 遍历执行动画
-                for (let [t, action] of fl) {
-                    if (now > t[0] && t[1] > now) {
-                        // 如果没有执行开始事件就执行
-                        if (!action.isStarted) {
-                            action.events.get("start")();
-                            action.events.get("update")(0);
-                        } else {
-                            action.events.get("update")((now - t[0]) / (t[1] - t[0]));
-                        }
-                    } else if (now > t[1]) {
-                        action.events.get("update")(1);
-                        action.events.get("end")();
-                        fl.delete(t);
-                    }
-                }
-                next = requestAnimationFrame(step);
+                for (let [t, action] of fl) runAnimate(t, action, now);
+                nextStep = requestAnimationFrame(step);
             } else {
-                next = requestAnimationFrame(step);
+                nextStep = requestAnimationFrame(step);
             }
         })();
+        
+        function runAnimate(t, action, now) {
+            if (now > t[0] && t[1] > now) {
+                // 如果没有执行开始事件就执行
+                if (!action.isStarted) {
+                    action.events.get("start")();
+                    action.events.get("update")(0);
+                } else {
+                    action.events.get("update")((now - t[0]) / (t[1] - t[0]));
+                }
+            } else if (now > t[1]) {
+                action.events.get("update")(1);
+                action.events.get("end")();
+                fl.delete(t);
+            }
+        }
     },
     add(start, end, events) {
         start *= 1000;
         end *= 1000;
         const time = [start, end];
-        const fl = this.frameList; // 关键帧列表
+        const fl = this.keyFrameList; // 关键帧列表
         const action = new Action(events); // 动作
 
         // 动态添加
@@ -137,6 +167,15 @@ const animation = {
             return this.easeIn(n, s, half);
         }
     },
+    
+    //设置帧率
+    set frameRate(value) {
+        this._frameRate = value;
+        this.isFrameRateLocked = true;
+    },
+    get frameRate() {
+        return +this._frameRate;
+    }
 };
 
 Mraph.animation = animation;
