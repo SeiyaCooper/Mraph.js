@@ -31,7 +31,7 @@ module.exports = [
         mode: 'development',
         output: {
             filename: 'mraph.js',
-            path: path.resolve(__dirname, 'test'),
+            path: path.resolve(__dirname, 'localTest'),
         },
     }
 ];
