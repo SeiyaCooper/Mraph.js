@@ -3,7 +3,7 @@ import Graph from "./graph.js";
 import Point from "./point.js";
 
 /**
- * 多边形
+ * 路径
  * @class
  */
 
@@ -12,7 +12,10 @@ class Path extends Graph {
         super(...args);
         this.size = 5;
         this.closed = true;
-        this.points = args[0].map(el => {return Point.getPoint(el);});
+        
+        this.points = (args[0].map(el => {
+            return Point.getPoint(el);
+        })) ?? [];
     }
     draw() {
         if (!this.visible) return;
@@ -32,10 +35,10 @@ class Path extends Graph {
             ctx.lineTo(point.x, point.y);
         }
         
-        if(this.closed) {
+        if (this.closed) {
             ctx.closePath();
-            ctx.fill();
         }
+        ctx.fill();
         ctx.stroke();
         
         return this;
