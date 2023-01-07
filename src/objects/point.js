@@ -7,12 +7,22 @@ import animation from "../animation/animation.js";
  * @class
  */
 class Point extends Graph {
+    /**
+     * 构造一个新点
+     * @constructor
+     * @param {Number} x 点的横坐标
+     * @param {Point} y 点的纵坐标
+     * @return {Point}
+     */
     constructor(x, y, draw) {
         super(draw);
         this.size = 10;
         this.x = x;
         this.y = y;
     }
+    /**
+     * 绘制点
+     */
     draw() {
         if(!this.visible) return;
         const ctx = Mraph.ctx2d;
@@ -25,6 +35,13 @@ class Point extends Graph {
         
         return this;
     }
+    
+    /**
+     * 移动点到指定位置
+     * @param {(Point | Array<Number>)} pos 指定移动目标位置
+     * @param {Number} start 开始的时间 (秒)
+     * @param {Number} end 结束的时间 (秒)
+     */
     moveTo(pos, start, end) {
         let startX, startY; // 初始坐标
         let xDis, yDis; // 距离
@@ -47,6 +64,13 @@ class Point extends Graph {
             }
         });
     }
+    /**
+     * 指定绕点旋转
+     * @param {(Point | Array<Number>)} pos 指定旋转中心
+     * @param {Number} angle 旋转角度 (弧度制)
+     * @param {Number} start 开始的时间 (秒)
+     * @param {Number} end 结束的时间 (秒)
+     */
     rotateAround(point, angle, start, end) {
         let radius, radiusLen, startAngle; // 旋转半径 起始角
         const self = this;
@@ -66,7 +90,9 @@ class Point extends Graph {
             }
         });
     }
-    // 从数组获取点
+    /**
+     * 从数组获取点
+     */
     static getPoint(array) {
         if (array instanceof Point) {
             return array;
@@ -74,7 +100,9 @@ class Point extends Graph {
             return new Point(...array, false);
         }
     }
-    // 从点获取数组
+    /**
+     * 从点获取数组
+     */
     static getPos(point) {
         if (point instanceof Point) {
             return [point.x, point.y];
