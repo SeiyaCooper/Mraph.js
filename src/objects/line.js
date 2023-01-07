@@ -7,10 +7,20 @@ import Segment from "./segment.js";
  */
 
 class Line extends Segment {
+    /**
+     * 构造一条新直线
+     * @constructor
+     * @param {(Point | Array<Number>)} p1 直线的起始点
+     * @param {(Point | Array<Number>)} p2 直线的结束点
+     * @return {Segment}
+     */
     constructor(...args) {
         super(...args);
         this.color = "#C61C1CFF";
     }
+    /**
+     * 绘制直线
+     */
     draw() {
         if (!this.visible) return;
         const ctx = Mraph.ctx2d;
