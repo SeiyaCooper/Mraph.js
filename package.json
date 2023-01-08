@@ -18,5 +18,10 @@
   "bugs": {
     "url": "https://github.com/CoopusDev/Mraph.js/issues"
   },
-  "homepage": "https://github.com/CoopusDev/Mraph.js#readme"
+  "homepage": "https://github.com/CoopusDev/Mraph.js#readme",
+  "devDependencies": {
+    "jsdoc": "^4.0.0",
+    "webpack": "^5.75.0",
+    "webpack-cli": "^5.0.1"
+  }
 }
