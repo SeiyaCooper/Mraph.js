@@ -14,22 +14,22 @@ class Point extends Graph {
      * @param {Point} y 点的纵坐标
      * @return {Point}
      */
-    constructor(x, y, draw) {
-        super(draw);
-        this.size = 10;
-        this.x = x;
-        this.y = y;
+    constructor(x, y, config) {
+        super(Object.assign({
+            size: 10,
+        }, config));
     }
     /**
      * 绘制点
      */
     draw() {
         if(!this.visible) return;
-        const ctx = Mraph.ctx2d;
+        const ctx = this.layer.ctx;
         
         ctx.beginPath();
         ctx.lineWidth = 2 * this.size;
-        ctx.fillStyle = this.color;
+        ctx.fillStyle = this.fill.color;
+        ctx.strokeStyle = this.stroke.color;
         ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
         ctx.fill();
         

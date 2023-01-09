@@ -1,15 +1,26 @@
 //所有可绘制类的基类 负责初始化工作
 class Graph {
     constructor(...args) {
-        this.color = "black";
         this.visible = true;
-        this.fillColor = "rgba(0,0,0,0)";
+        this.stroke = {
+            color: "black";
+        };
+        this.fill = {
+            color: "rgba(0,0,0,0)";
+        };
         
-        //是否加入绘制列表
-        if (args[args.length - 1] !== false) {
-            Mraph.elements.push(this);
-        }
+        Object.assign(this, args[args.length - 1]);
     }
+    
+    set layer(layer) {
+        this._layer = layer;
+        layer.add(this);
+    }
+    get layer() {
+        return this._layer;
+    }
+    
+    // 更改大小动画
     resizeTo(scale, start, end) {
         let initialSize, total; // 初始大小, 变化总量
         
