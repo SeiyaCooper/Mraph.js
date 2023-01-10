@@ -3,10 +3,10 @@ class Graph {
     constructor(...args) {
         this.visible = true;
         this.stroke = {
-            color: "black";
+            color: "black"
         };
         this.fill = {
-            color: "rgba(0,0,0,0)";
+            color: "rgba(0,0,0,0)"
         };
         
         Object.assign(this, args[args.length - 1]);
@@ -14,7 +14,7 @@ class Graph {
     
     set layer(layer) {
         this._layer = layer;
-        layer.add(this);
+        layer.elements.push(this);
     }
     get layer() {
         return this._layer;

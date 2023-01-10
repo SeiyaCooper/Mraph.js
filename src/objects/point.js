@@ -16,20 +16,21 @@ class Point extends Graph {
      */
     constructor(x, y, config) {
         super(Object.assign({
-            size: 10,
+            x: x,
+            y: y,
+            size: 10
         }, config));
     }
     /**
      * 绘制点
      */
     draw() {
-        if(!this.visible) return;
+        if(!this.visible) return this;
         const ctx = this.layer.ctx;
         
         ctx.beginPath();
         ctx.lineWidth = 2 * this.size;
-        ctx.fillStyle = this.fill.color;
-        ctx.strokeStyle = this.stroke.color;
+        ctx.fillStyle = this.stroke.color;
         ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
         ctx.fill();
         
