@@ -18,7 +18,6 @@ class Layer {
         canvas.width = 3 * this.width;
         canvas.height = 3 * this.height
         canvas.style.background = "rgba(0, 0, 0, 0)";
-        canvas.style.border = "1px solid black";
         canvas.style.position = "absolute";
         canvas.style.top = canvas.style.left = "0px";
         canvas.style.width = this.width;
