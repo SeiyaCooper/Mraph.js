@@ -26,12 +26,5 @@ module.exports = [
             filename: 'mraph.js',
             path: path.resolve(__dirname, 'dist'),
         },
-    }, {
-        entry: getFiles('./src'),
-        mode: 'development',
-        output: {
-            filename: 'mraph.js',
-            path: path.resolve(__dirname, 'localTest'),
-        },
     }
 ];

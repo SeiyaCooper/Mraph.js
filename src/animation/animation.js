@@ -51,7 +51,7 @@ const animation = {
     onUpdate: () => {}, // 更新事件
     
 
-    start() {
+    start(layer) {
         const st = this.startTime; // 开始运行动画的时刻
         const et = this.endTime; // 结束的时刻
         const fl = this.keyFrameList; // 关键帧表
@@ -70,8 +70,8 @@ const animation = {
                 this.onStart();
             },
             update: () => {
-                Mraph.background();
-                Mraph.draw();
+                layer.background();
+                layer.draw();
                 this.onUpdate();
             },
             end: () => {
@@ -179,4 +179,4 @@ const animation = {
 };
 
 Mraph.animation = animation;
-export default Mraph.animation;
+export default animation;
