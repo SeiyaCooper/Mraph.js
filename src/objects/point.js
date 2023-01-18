@@ -19,7 +19,7 @@ class Point extends Graph {
             x: x,
             y: y,
             size: 10,
-            fill: {color: "black"}
+            fillColor: "black"
         }, config));
     }
     /**
@@ -31,7 +31,7 @@ class Point extends Graph {
         
         ctx.beginPath();
         ctx.lineWidth = 2 * this.size;
-        ctx.fillStyle = this.fill.color;
+        ctx.fillStyle = this.fillColor;
         ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
         ctx.fill();
         

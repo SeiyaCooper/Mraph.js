@@ -13,8 +13,7 @@ class Circle extends Graph {
             point1: Point.getPoint(p1),
             point2: getPoint2(),
             size: 5,
-            stroke: {color: "#F05D11FF"},
-            fill: {color: "#F05D1199"}
+            strokeColor: "#F05D11FF"
         }, config));
         
         function getPoint2 () {
@@ -32,9 +31,10 @@ class Circle extends Graph {
         const ctx = this.layer.ctx;
         
         ctx.beginPath();
-        ctx.strokeStyle = this.stroke.color;
-        ctx.fillStyle = this.fill.color;
+        ctx.strokeStyle = this.strokeColor;
+        ctx.fillStyle = this.fillColor;
         ctx.lineWidth = this.size;
+        ctx.setLineDash(this.strokeDash);
         
         ctx.arc(this.point1.x, this.point1.y, this.radius, 0, 2 * Math.PI);
         

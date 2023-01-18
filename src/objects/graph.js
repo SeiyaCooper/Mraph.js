@@ -2,12 +2,9 @@
 class Graph {
     constructor(...args) {
         this.visible = true;
-        this.stroke = {
-            color: "black"
-        };
-        this.fill = {
-            color: "rgba(0,0,0,0)"
-        };
+        this.strokeColor = "black";
+        this.strokeDash = [];
+        this.fillColor = "rgba(0, 0, 0, 0)";
         
         Object.assign(this, args[args.length - 1]);
     }

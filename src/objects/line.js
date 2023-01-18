@@ -16,7 +16,7 @@ class Line extends Segment {
      */
     constructor(p1, p2, config) {
         super(p1, p2, Object.assign({
-            stroke: {color: "#C61C1CFF"}
+            strokeColor: "#C61C1CFF"
         }, config));
     }
     /**
@@ -28,7 +28,8 @@ class Line extends Segment {
         
         ctx.beginPath();
         ctx.lineWidth = this.size;
-        ctx.strokeStyle = this.stroke.color;
+        ctx.strokeStyle = this.strokeColor;
+        ctx.setLineDash(this.strokeDash);
         
         const w = this.layer.canvas.width; // Canvas 宽
         const h = this.layer.canvas.height; // Canvas 高

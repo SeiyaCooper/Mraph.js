@@ -26,8 +26,9 @@ class Path extends Graph {
         // 设置样式
         ctx.beginPath();
         ctx.lineWidth = this.size;
-        ctx.strokeStyle = this.stroke.color;
-        ctx.fillStyle = this.fill.color;
+        ctx.strokeStyle = this.strokeColor;
+        ctx.fillStyle = this.fillColor;
+        ctx.setLineDash(this.strokeDash);
         
         // 绘制
         ctx.moveTo(points[0].x, points[0].y);

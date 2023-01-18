@@ -30,7 +30,8 @@ class Segment extends Graph {
 
         ctx.beginPath();
         ctx.lineWidth = this.size;
-        ctx.strokeStyle = this.stroke.color;
+        ctx.strokeStyle = this.strokeColor;
+        ctx.setLineDash(this.strokeDash);
         ctx.moveTo(this.point1.x, this.point1.y);
         ctx.lineTo(this.point2.x, this.point2.y);
         ctx.stroke();
