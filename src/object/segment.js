@@ -1,8 +1,8 @@
-import copy from "../utils/utils.js";
+import { copy } from "../utils/utils.js";
 import Graph from "../core/graph.js";
 import Point from "./point.js";
 
-export class Segment extends Graph {
+export default class Segment extends Graph {
     constructor(p1, p2, config) {
         super();
         this.point1 = Point.getPoint(p1);

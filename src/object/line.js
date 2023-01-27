@@ -1,7 +1,7 @@
-import copy from "../utils/utils.js";
+import { copy } from "../utils/utils.js";
 import Segment from "./segment.js";
 
-export class Line extends Segment {
+export default class Line extends Segment {
     constructor(start, end, config) {
         super(start, end);
         copy(this, config);

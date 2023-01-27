@@ -1,4 +1,4 @@
-export class Graph {
+export default class Graph {
     strokeColor = "black";
     strokeWidth = 5;
     strokeDash = [];

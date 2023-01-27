@@ -1,30 +1,34 @@
-export class Layer {
+export default class Layer {
     elements = [];
 
     constructor(canvas, config) {
         this.canvas = canvas;
         this.context = canvas.getContext("2d");
 
-        if (config.width) this.canvas.width = config.width;
-        if (config.height) this.canvas.height = config.height;
+        if (config) {
+            if (config.width) this.canvas.width = config.width;
+            if (config.height) this.canvas.height = config.height;
+        }
 
         const ctx = this.context;
         ctx.translate(0.5 * canvas.width, 0.5 * canvas.height);
         ctx.scale(1, -1);
     }
-    create(type, ...attrs) {
+    create(type, attrs) {
+        const self = this;
+
         if (attrs.length === 1) {
-            createSingle(type, attrs);
+            return createSingle(type, ...attrs);
         } else {
             return attrs.map((attr) => {
-                createSingle(type, attr);
+                return createSingle(type, attr);
             });
         }
 
         function createSingle(type, attr) {
             const output = new type(...attr);
-            output.layer = this;
-            this.elements.push(output);
+            output.layer = self;
+            self.elements.push(output);
             return output;
         }
     }

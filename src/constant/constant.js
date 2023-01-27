@@ -1,2 +1,2 @@
 // unit of length
-export const UNIT_LEN = window.innerWidth / 8;
+export const UNIT_LEN = window.innerWidth / 4;
