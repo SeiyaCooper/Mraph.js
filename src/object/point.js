@@ -7,20 +7,34 @@ export default class Point extends Graph {
         super();
         this.x = x;
         this.y = y;
+        this.radius = 10;
+        this.fillColor = "black";
         copy(this, config);
+    }
+    
+    draw() {
+        if (!this.layer) return;
+        super.setContextAttr();
+        
+        const ctx = this.layer.context;
+        
+        ctx.beginPath();
+        ctx.arc(this._x, this._y, this.radius, 0, 2 * Math.PI);
+        
+        ctx.fill();
     }
 
     set x(value) {
         this._x = value * UNIT_LEN;
     }
     get x() {
-        return this._x;
+        return this._x / UNIT_LEN;
     }
     set y(value) {
         this._y = value * UNIT_LEN;
     }
     get y() {
-        return this._y;
+        return this._y / UNIT_LEN;
     }
 
     /**

@@ -1,20 +1,18 @@
+import { copy } from "../utils/utils.js";
+
 export default class Layer {
     elements = [];
 
     constructor(canvas, config) {
         this.canvas = canvas;
-        this.context = canvas.getContext("2d");
-
-        if (config) {
-            if (config.width) this.canvas.width = config.width;
-            if (config.height) this.canvas.height = config.height;
+        
+        copy(this, config);
+        if (this.fullScreen) {
+            this.width = window.innerWidth;
+            this.height = window.innerHeight;
         }
-
-        const ctx = this.context;
-        ctx.translate(0.5 * canvas.width, 0.5 * canvas.height);
-        ctx.scale(1, -1);
     }
-    create(type, attrs) {
+    create(type, ...attrs) {
         const self = this;
 
         if (attrs.length === 1) {
@@ -45,5 +43,31 @@ export default class Layer {
 
         ctx.fillStyle = color;
         ctx.fillRect(-0.5 * w, -0.5 * h, w, h);
+    }
+    
+    set canvas(canvas) {
+        this._canvas = canvas;
+        
+        const ctx = canvas.getContext("2d");
+        this.context = ctx;
+        ctx.translate(0.5 * canvas.width, 0.5 * canvas.height);
+        ctx.scale(1, -1);
+    }
+    get canvas() {
+        return this._canvas;
+    }
+    set width(value) {
+        this.canvas.width = value * 3;
+        this.canvas = this.canvas;
+    }
+    get width() {
+        return this.canvas.width;
+    }
+    set height(value) {
+        this.canvas.height = value * 3;
+        this.canvas = this.canvas;
+    }
+    get width() {
+        return this.canvas.height;
     }
 }

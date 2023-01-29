@@ -17,8 +17,8 @@ export default class Segment extends Graph {
         const ctx = this.layer.context;
 
         ctx.beginPath();
-        ctx.moveTo(this.point1.x, this.point1.y);
-        ctx.lineTo(this.point2.x, this.point2.y);
+        ctx.moveTo(this.point1._x, this.point1._y);
+        ctx.lineTo(this.point2._x, this.point2._y);
 
         ctx.stroke();
     }
