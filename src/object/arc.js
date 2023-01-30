@@ -14,22 +14,13 @@ export default class Arc extends Graph {
         this.side2 = new Segment(this.point1, this.point3);
         copy(this, config);
     }
-    
-    draw() {
-        if (!this.layer) return;
-        super.setContextAttr();
 
-        const ctx = this.layer.context;
-        
-        ctx.beginPath();
-        ctx.arc(this.point1._x, this.point1._y,
-            this._radius, this.side1.angle, this.side2.angle);
-        ctx.moveTo(this.point1._x, this.point1._x);
-        
-        ctx.stroke();
-        ctx.fill();
+    draw() {
+        super.draw((ctx) => {
+            ctx.arc(this.point1._x, this.point1._y, this._radius, this.side1.angle, this.side2.angle);
+        });
     }
-    
+
     set radius(value) {
         this._radius = value * UNIT_LEN;
     }

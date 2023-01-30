@@ -11,42 +11,28 @@ export default class Segment extends Graph {
     }
 
     draw() {
-        if (!this.layer) return;
-        super.setContextAttr();
-
-        const ctx = this.layer.context;
-
-        ctx.beginPath();
-        ctx.moveTo(this.point1._x, this.point1._y);
-        ctx.lineTo(this.point2._x, this.point2._y);
-
-        ctx.stroke();
+        super.draw((ctx) => {
+            ctx.moveTo(this.point1._x, this.point1._y);
+            ctx.lineTo(this.point2._x, this.point2._y);
+        });
     }
 
     /**
      * get length
      */
     get length() {
-        return Math.hypot(
-            this.point2.x - this.point1.x,
-            this.point2.y - this.point1.y
-        );
+        return Math.hypot(this.point2.x - this.point1.x, this.point2.y - this.point1.y);
     }
     /**
      * get slope
      */
     get slope() {
-        return (
-            (this.point2.y - this.point1.y) / (this.point2.x - this.point1.x)
-        );
+        return (this.point2.y - this.point1.y) / (this.point2.x - this.point1.x);
     }
     /**
      * get the angle with horizontal line
      */
     get angle() {
-        return Math.atan2(
-            this.point2.y - this.point1.y,
-            this.point2.x - this.point1.x
-        );
+        return Math.atan2(this.point2.y - this.point1.y, this.point2.x - this.point1.x);
     }
 }
