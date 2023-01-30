@@ -14,3 +14,9 @@ import * as utils from "./utils/utils.js";
 import * as Constant from "./constant/constant.js";
 
 export { Layer, Point, Segment, Line, Arc, utils, Constant };
+
+if (typeof window === "object" && typeof document === "object") {
+    window.Mraph = {};
+    utils.copy(window.Mraph,
+        { Layer, Point, Segment, Line, Arc, utils, Constant });
+}
