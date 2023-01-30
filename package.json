@@ -1,0 +1,19 @@
+{
+  "name": "mraph",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./src/app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CoopusDev/Mraph.js.git"
+  },
+  "author": "CoopusDev",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/CoopusDev/Mraph.js/issues"
+  },
+  "homepage": "https://github.com/CoopusDev/Mraph.js#readme"
+}
