@@ -1,5 +1,4 @@
 import { copy } from "../utils/utils.js";
-import { UNIT_LEN } from "../constant/constant.js";
 import Graph from "../core/graph.js";
 import Point from "./point.js";
 import Segment from "./segment.js";
@@ -16,17 +15,18 @@ export default class Arc extends Graph {
     }
 
     draw() {
-        super.draw((ctx) => {
-            ctx.arc(this.point1._x, this.point1._y, this._radius, this.side1.angle, this.side2.angle);
+        Graph.draw(this, (ctx) => {
+            ctx.moveTo(this.point1.x, this.point1.y);
+            ctx.arc(this.point1.x, this.point1.y, this.radius, this.side1.angle, this.side2.angle);
         });
     }
 
     set radius(value) {
-        this._radius = value * UNIT_LEN;
+        this._radius = value;
     }
     get radius() {
         if (typeof this._radius === "number") {
-            return this._radius / UNIT_LEN;
+            return this._radius;
         } else {
             return this.side1.length;
         }

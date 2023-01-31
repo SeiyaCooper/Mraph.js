@@ -1,5 +1,4 @@
 import { copy } from "../utils/utils.js";
-import { UNIT_LEN } from "../constant/constant.js";
 import Graph from "../core/graph.js";
 
 export default class Point extends Graph {
@@ -14,22 +13,9 @@ export default class Point extends Graph {
     }
 
     draw() {
-        super.draw((ctx) => {
-            ctx.arc(this._x, this._y, this.size, 0, 2 * Math.PI);
+        Graph.draw(this, (ctx) => {
+            ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
         });
-    }
-
-    set x(value) {
-        this._x = value * UNIT_LEN;
-    }
-    get x() {
-        return this._x / UNIT_LEN;
-    }
-    set y(value) {
-        this._y = value * UNIT_LEN;
-    }
-    get y() {
-        return this._y / UNIT_LEN;
     }
 
     /**

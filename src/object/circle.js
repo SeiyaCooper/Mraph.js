@@ -1,5 +1,4 @@
 import { copy } from "../utils/utils.js";
-import { UNIT_LEN } from "../constant/constant.js";
 import Graph from "../core/graph.js";
 import Point from "./point.js";
 import Segment from "./segment.js";
@@ -21,8 +20,8 @@ export default class Circle extends Graph {
     }
 
     draw() {
-        super.draw((ctx) => {
-            ctx.arc(this.point1._x, this.point1._y, this.radius * UNIT_LEN, 0, 2 * Math.PI);
+        Graph.draw(this, (ctx) => {
+            ctx.arc(this.point1.x, this.point1.y, this.radius, 0, 2 * Math.PI);
         });
     }
 

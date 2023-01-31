@@ -11,9 +11,9 @@ export default class Segment extends Graph {
     }
 
     draw() {
-        super.draw((ctx) => {
-            ctx.moveTo(this.point1._x, this.point1._y);
-            ctx.lineTo(this.point2._x, this.point2._y);
+        Graph.draw(this, (ctx) => {
+            ctx.moveTo(this.point1.x, this.point1.y);
+            ctx.lineTo(this.point2.x, this.point2.y);
         });
     }
 

@@ -1,4 +1,5 @@
 import { copy } from "../utils/utils.js";
+import Graph from "../core/graph.js";
 import Segment from "./segment.js";
 
 export default class Line extends Segment {
@@ -8,25 +9,20 @@ export default class Line extends Segment {
     }
 
     draw() {
-        if (!this.layer) return;
-        super.setContextAttr();
+        Graph.draw(this, (ctx) => {
+            const w = this.layer.width;
+            const h = this.layer.height;
+            const p1 = this.point1;
+            const p2 = this.point2;
 
-        const w = this.layer.canvas.width;
-        const h = this.layer.canvas.height;
-        const p1 = this.point1;
-        const p2 = this.point2;
-        const ctx = this.layer.context;
-
-        if (p2.x - p1.x !== 0) {
-            const s = this.slope;
-
-            ctx.moveTo(-w / 2, p1.y + (-w / 2 - p1.x) * s);
-            ctx.lineTo(w / 2, p2.y + (w / 2 - p2.x) * s);
-        } else {
-            ctx.moveTo(p1.x, -h / 2);
-            ctx.lineTo(p1.x, h / 2);
-        }
-
-        ctx.stroke();
+            if (p2.x - p1.x !== 0) {
+                const s = this.slope;
+                ctx.moveTo(-w / 2, p1.y + (-w / 2 - p1.x) * s);
+                ctx.lineTo(w / 2, p2.y + (w / 2 - p2.x) * s);
+            } else {
+                ctx.moveTo(p1.x, -h / 2);
+                ctx.lineTo(p1.x, h / 2);
+            }
+        });
     }
 }
