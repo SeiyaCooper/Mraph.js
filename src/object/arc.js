@@ -16,7 +16,6 @@ export default class Arc extends Graph {
 
     draw() {
         Graph.draw(this, (ctx) => {
-            ctx.moveTo(this.point1.x, this.point1.y);
             ctx.arc(this.point1.x, this.point1.y, this.radius, this.side1.angle, this.side2.angle);
         });
     }

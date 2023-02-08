@@ -7,6 +7,7 @@ import Segment from "./object/segment.js";
 import Line from "./object/line.js";
 import Arc from "./object/arc.js";
 import Circle from "./object/circle.js";
+import NumberLine from "./object/number_line.js";
 
 // utils
 import * as utils from "./utils/utils.js";
@@ -14,7 +15,7 @@ import * as utils from "./utils/utils.js";
 // constant
 import * as Constant from "./constant/constant.js";
 
-export { Layer, Point, Segment, Line, Arc, Circle, utils, Constant };
+export { Layer, Point, Segment, Line, Arc, Circle, utils, Constant, NumberLine };
 
 if (typeof window === "object" && typeof document === "object") {
     window.Mraph = {};
@@ -27,5 +28,6 @@ if (typeof window === "object" && typeof document === "object") {
         Circle,
         utils,
         Constant,
+        NumberLine
     });
 }
