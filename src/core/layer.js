@@ -5,7 +5,7 @@ export default class Layer {
 
     constructor(canvas, config) {
         this.canvas = canvas;
-        
+
         copy(this, config);
         if (this.fullScreen) {
             this.width = window.innerWidth;
@@ -44,10 +44,10 @@ export default class Layer {
         ctx.fillStyle = color;
         ctx.fillRect(-0.5 * w, -0.5 * h, w, h);
     }
-    
+
     set canvas(canvas) {
         this._canvas = canvas;
-        
+
         const ctx = canvas.getContext("2d");
         this.context = ctx;
         ctx.translate(0.5 * canvas.width, 0.5 * canvas.height);
@@ -58,16 +58,14 @@ export default class Layer {
     }
     set width(value) {
         this.canvas.width = value * 3;
-        this.canvas = this.canvas;
     }
     get width() {
         return this.canvas.width;
     }
     set height(value) {
         this.canvas.height = value * 3;
-        this.canvas = this.canvas;
     }
-    get width() {
+    get height() {
         return this.canvas.height;
     }
 }
