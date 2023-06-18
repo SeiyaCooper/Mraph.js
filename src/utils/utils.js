@@ -1,3 +1,3 @@
-export function copy(target, ...source) {
+export function mergeObject(target, ...source) {
     Object.assign(target, ...source);
 }

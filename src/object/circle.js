@@ -1,4 +1,4 @@
-import { copy } from "../utils/utils.js";
+import { mergeObject } from "../utils/utils.js";
 import Graph from "../core/graph.js";
 import Point from "./point.js";
 import Segment from "./segment.js";
@@ -16,7 +16,7 @@ export default class Circle extends Graph {
             this.radius = new Segment(p1, p2);
         }
 
-        copy(this, config);
+        mergeObject(this, config);
     }
 
     draw() {

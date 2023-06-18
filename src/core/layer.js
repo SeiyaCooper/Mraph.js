@@ -1,4 +1,4 @@
-import { copy } from "../utils/utils.js";
+import { mergeObject } from "../utils/utils.js";
 
 export default class Layer {
     elements = [];
@@ -6,7 +6,7 @@ export default class Layer {
     constructor(canvas, config) {
         this.canvas = canvas;
 
-        copy(this, config);
+        mergeObject(this, config);
         if (this.fullScreen) {
             this.width = window.innerWidth;
             this.height = window.innerHeight;
@@ -57,13 +57,13 @@ export default class Layer {
         return this._canvas;
     }
     set width(value) {
-        this.canvas.width = value * 3;
+        this.canvas.width = value * window.devicePixelRatio;
     }
     get width() {
         return this.canvas.width;
     }
     set height(value) {
-        this.canvas.height = value * 3;
+        this.canvas.height = value * window.devicePixelRatio;
     }
     get height() {
         return this.canvas.height;

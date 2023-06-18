@@ -1,11 +1,11 @@
-import { copy } from "../utils/utils.js";
+import { mergeObject } from "../utils/utils.js";
 import Graph from "../core/graph.js";
 import Segment from "./segment.js";
 
 export default class Line extends Segment {
     constructor(start, end, config) {
         super(start, end);
-        copy(this, config);
+        mergeObject(this, config);
     }
 
     draw() {

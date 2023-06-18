@@ -1,4 +1,4 @@
-import { copy } from "../utils/utils.js";
+import { mergeObject } from "../utils/utils.js";
 import Graph from "../core/graph.js";
 import Point from "./point.js";
 import Segment from "./segment.js";
@@ -11,7 +11,7 @@ export default class Arc extends Graph {
         this.point3 = Point.getPoint(p3);
         this.side1 = new Segment(this.point1, this.point2);
         this.side2 = new Segment(this.point1, this.point3);
-        copy(this, config);
+        mergeObject(this, config);
     }
 
     draw() {

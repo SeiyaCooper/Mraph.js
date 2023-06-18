@@ -1,4 +1,4 @@
-import { copy } from "../utils/utils.js";
+import { mergeObject } from "../utils/utils.js";
 import Graph from "../core/graph.js";
 import Point from "./point.js";
 
@@ -7,7 +7,7 @@ export default class Segment extends Graph {
         super();
         this.point1 = Point.getPoint(p1);
         this.point2 = Point.getPoint(p2);
-        copy(this, config);
+        mergeObject(this, config);
     }
 
     draw() {

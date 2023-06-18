@@ -1,4 +1,4 @@
-import { copy } from "../utils/utils.js";
+import { mergeObject } from "../utils/utils.js";
 import Graph from "../core/graph.js";
 
 export default class Point extends Graph {
@@ -9,7 +9,7 @@ export default class Point extends Graph {
         this.size = 10;
         this.fillColor = "black";
         this.strokeColor = "rgba(0, 0, 0, 0)";
-        copy(this, config);
+        mergeObject(this, config);
     }
 
     draw() {

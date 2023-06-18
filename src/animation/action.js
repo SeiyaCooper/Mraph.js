@@ -1,48 +1,84 @@
+import * as utils from "../utils/utils.js";
+
 export default class Action {
-    onStart = () => {};
-    onUpdate = () => {};
-    onStop = () => {};
-    isStarted = false;
-    isStopped = false;
-    from = 0;
-    to = 1;
+    /**
+     * @type {Function}
+     */
+    start = () => {};
 
     /**
-     * merge an action with another
-     * these two actions should have the same start time and stop time
+     * @type {Function}
      */
-    merge(action) {
-        const out = new Action();
+    update = () => {};
 
-        out.onStart = () => {
-            this.onStart();
-            action.onStart();
-        };
-        out.onUpdate = (p) => {
-            this.onUpdate(p);
-            action.onUpdate(p);
-        };
-        out.onStop = () => {
-            this.onStop();
-            action.onStop();
-        };
+    /**
+     * @type {Function}
+     */
+    stop = () => {};
 
-        return out;
+    /**
+     * @type {Boolean}
+     */
+    isStarted = false;
+
+    /**
+     * @type {Boolean}
+     */
+    isStopped = false;
+
+    /**
+     * @constructor
+     * @param {Object} handle - the object to construct by
+     *                          which may include function start(), update(), stop()
+     * @return {Action}
+     */
+    constructor(handle) {
+        utils.mergeObject(this, handle);
     }
 
-    run(start, stop, now) {
+    /**
+     * excute this action by current time
+     * @param {Number} start - the start time
+     * @param {Number} stop - the stop time
+     * @param {Number} now - the current time
+     * @return {null}
+     */
+    excute(start, stop, now) {
         if (this.isStarted && !this.isStopped) {
             if (now > stop) {
-                this.onUpdate(this.to);
-                this.onStop();
+                this.update(1);
+                this.stop();
                 this.isStopped = true;
             } else {
-                this.onUpdate(((now - start) / (stop - start)) * (this.to - this.from));
+                this.update((now - start) / (stop - start));
             }
         } else if (now > start) {
-            this.onStart();
-            this.onUpdate(this.from);
+            this.start();
+            this.update(0);
             this.isStarted = true;
         }
+    }
+
+    /**
+     * merge this action with another
+     * they should have same start time and stop time
+     * @param {Action} - another action
+     * @return {Action}
+     */
+    merge(action) {
+        this.start = () => {
+            this.start();
+            action.start();
+        };
+        this.update = (p) => {
+            this.update(p);
+            action.update(p);
+        };
+        this.stop = () => {
+            this.stop();
+            action.stop();
+        };
+
+        return this;
     }
 }
