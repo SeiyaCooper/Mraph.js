@@ -1,0 +1,10 @@
+{
+    "include": ["src/mraph.js"],
+    "compilerOptions": {
+        "allowJs": true,
+        "declaration": true,
+        "emitDeclarationOnly": true,
+        "outFile": "types.d.ts",
+        "baseUrl": "./src/"
+    }
+}
