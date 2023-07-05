@@ -1,6 +1,6 @@
 {
     "name": "mraph",
-    "version": "1.0.001",
+    "version": "1.0.0",
     "description": "",
     "type": "module",
     "types": "types.d.ts",
@@ -8,7 +8,6 @@
     "scripts": {
         "prepare": "husky install",
         "precommit": "npm run lint && npm run types",
-        "publish": "git pull origin && npm publish",
         "test": "echo \"Error: no test specified\" && exit 1",
         "lint": "eslint src --fix",
         "types": "tsc"

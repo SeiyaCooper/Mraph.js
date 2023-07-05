@@ -1,71 +1,30 @@
-import { mergeObject } from "../utils/utils.js";
+import * as utils from "../utils/utils.js";
+import Renderer from "../renderer/Renderer.js";
+import Matrix from "../math/Matrix.js";
 
 export default class Layer {
     elements = [];
+    matrix = Matrix.identity(4);
 
-    constructor(canvas, config) {
+    constructor(canvas) {
         this.canvas = canvas;
-
-        mergeObject(this, config);
-        if (this.fullScreen) {
-            this.width = window.innerWidth;
-            this.height = window.innerHeight;
-        }
-    }
-    create(type, ...attrs) {
-        const self = this;
-
-        if (attrs.length === 1) {
-            return createSingle(type, ...attrs);
-        } else {
-            return attrs.map((attr) => {
-                return createSingle(type, attr);
-            });
-        }
-
-        function createSingle(type, attr) {
-            const output = new type(...attr);
-            output.layer = self;
-            self.elements.push(output);
-            return output;
-        }
     }
 
     draw() {
-        for (const el of this.elements) {
-            el.draw();
+        for (let e of this.elements) {
+            this.renderer.render(e, this.matrix);
         }
     }
-    background(color = "white") {
-        const ctx = this.context;
-        const w = this.canvas.width;
-        const h = this.canvas.height;
 
-        ctx.fillStyle = color;
-        ctx.fillRect(-0.5 * w, -0.5 * h, w, h);
+    clear() {
+        this.renderer.clear();
     }
 
-    set canvas(canvas) {
-        this._canvas = canvas;
-
-        const ctx = canvas.getContext("2d");
-        this.context = ctx;
-        ctx.translate(0.5 * canvas.width, 0.5 * canvas.height);
-        ctx.scale(1, -1);
+    set canvas(val) {
+        this._canvas = val;
+        this.renderer = new Renderer(val);
     }
     get canvas() {
         return this._canvas;
-    }
-    set width(value) {
-        this.canvas.width = value * window.devicePixelRatio;
-    }
-    get width() {
-        return this.canvas.width;
-    }
-    set height(value) {
-        this.canvas.height = value * window.devicePixelRatio;
-    }
-    get height() {
-        return this.canvas.height;
     }
 }

@@ -1,8 +1,20 @@
-import Action from "./action.js";
+import Action from "./Action.js";
 
 export default class ActionList {
+    /**
+     * list for actions to be called
+     * @type {Map}
+     */
     list = new Map();
+
+    /**
+     * @type {number}
+     */
     maxTime = 0;
+
+    /**
+     * @type {number}
+     */
     minTime = Infinity;
 
     /**
@@ -29,6 +41,9 @@ export default class ActionList {
         return this;
     }
 
+    /**
+     * play this action list
+     */
     play() {
         const list = this.list;
         const startTime = +new Date();

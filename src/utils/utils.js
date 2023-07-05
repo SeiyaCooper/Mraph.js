@@ -1,3 +1,8 @@
-export function mergeObject(target, ...source) {
-    Object.assign(target, ...source);
+/**
+ * @param {Object} obj
+ * @param {...Object} source
+ * @returns {Object}
+ */
+export function mergeObject(obj, ...source) {
+    Object.assign(obj, ...source);
 }
