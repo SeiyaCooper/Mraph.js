@@ -1,6 +1,6 @@
 # Mraph.js
 
-Mraph.js is a library for drawing geometric shapes in browser
+Mraph.js is a library for drawing geometric shapes in browser   
 ⚠⚠⚠**This lib is still WIP**⚠⚠⚠
 
 # Usage
