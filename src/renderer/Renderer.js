@@ -8,47 +8,7 @@ export default class Renderer {
     render(el, mat) {
         const ctx = this.context;
         for (let p of el.path) {
-            this[p[0]](p[1]);
-        }
-    }
-
-    renderPath(path, mat) {
-        const ctx = this.context;
-
-        switch (path[0]) {
-            case "begin":
-                ctx.beginPath();
-                break;
-            case "close":
-                ctx.closePath();
-                break;
-            case "fill":
-                ctx.fill();
-                break;
-            case "stroke":
-                ctx.stroke();
-                break;
-            case "clear":
-                this.clear();
-                break;
-            case "lineTo": {
-                const pos = path[1].resize(4, 1).trans(mat).columns;
-                const x = pos[0];
-                const y = pos[1];
-                const w = pos[3];
-                ctx.lineTo(x / w, y / w);
-                break;
-            }
-            case "moveTo": {
-                const pos = path[1].resize(4, 1).trans(mat).columns;
-                const x = pos[0];
-                const y = pos[1];
-                const w = pos[3];
-                ctx.moveTo(x / w, y / w);
-                break;
-            }
-            default:
-                break;
+            this[p[0]](p[1], mat);
         }
     }
 
@@ -78,20 +38,21 @@ export default class Renderer {
         return this;
     }
     
-    moveTo(pos) {
-        pos = pos.resize(4, 1).trans(mat).columns;
-        const x = pos[0];
-        const y = pos[1];
-        const w = pos[3];
-        ctx.lineTo(x / w, y / w);
+    move(pos, mat) {
+        pos = pos.resize(4, 1).trans(mat);
+        pos = pos.mult(1/pos.columns[3]).columns;
+        this.context.moveTo(...pos);
+        return this;
     }
     
-    lineTo(pos) {
-        pos = pos.resize(4, 1).trans(mat).columns;
-        const x = pos[0];
-        const y = pos[1];
-        const w = pos[3];
-        ctx.moveTo(x / w, y / w);
+    line(pos, mat) {
+        pos = pos.resize(4, 1).trans(mat);
+        pos = pos.mult(1/pos.columns[3]).columns;
+        this.context.lineTo(...pos);
+        return this;
+    }
+    
+    arc(param, mat) {
     }
 
     set canvas(val) {

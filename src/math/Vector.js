@@ -33,6 +33,14 @@ export default class Vector {
     reduce(vec) {
         return this.toMatrix().reduce(vec.toMatrix()).toVector();
     }
+    
+    /**
+     * @param {number} num
+     * @returns {Vector}
+     */
+    mult(num) {
+        return this.toMatrix().mult(num).toVector();
+    }
 
     /**
      * @param {number} row

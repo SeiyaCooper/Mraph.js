@@ -41,11 +41,11 @@ export default class Matrix {
     multNum(num) {
         if (typeof num != "number") return this;
 
-        const ans = Matrix.zeros(this.column, this.row);
+        const ans = Matrix.identity(this.column, this.row);
 
         for (let i = 0; i < this.column; i++) {
             for (let j = 0; j < this.row; j++) {
-                ans.columns[i][j] *= num;
+                ans.columns[i][j] = this.columns[i][j] * num;
             }
         }
 
