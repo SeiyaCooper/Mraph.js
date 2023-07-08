@@ -7,9 +7,8 @@ export default class Renderer {
 
     render(el, mat) {
         const ctx = this.context;
-        // 在这里设置属性
         for (let p of el.path) {
-            this.renderPath(p, mat);
+            this[p[0]](p[1]);
         }
     }
 
@@ -53,9 +52,46 @@ export default class Renderer {
         }
     }
 
+    begin() {
+        this.context.beginPath();
+        return this;
+    }
+    
+    close() {
+        this.context.closePath();
+        return this;
+    }
+    
+    fill() {
+        this.context.fill();
+        return this;
+    }
+    
+    stroke() {
+        this.context.stroke();
+        return this;
+    }
+    
     clear() {
         this.canvas.width = this.canvas.width;
         this.canvas = this._canvas;
+        return this;
+    }
+    
+    moveTo(pos) {
+        pos = pos.resize(4, 1).trans(mat).columns;
+        const x = pos[0];
+        const y = pos[1];
+        const w = pos[3];
+        ctx.lineTo(x / w, y / w);
+    }
+    
+    lineTo(pos) {
+        pos = pos.resize(4, 1).trans(mat).columns;
+        const x = pos[0];
+        const y = pos[1];
+        const w = pos[3];
+        ctx.moveTo(x / w, y / w);
     }
 
     set canvas(val) {
