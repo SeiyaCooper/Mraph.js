@@ -128,7 +128,7 @@ export default class Matrix {
         return new Matrix(
             Array(column)
                 .fill(0)
-                .map((i) => Array(row).fill(0))
+                .map(() => Array(row).fill(0))
         );
     }
 

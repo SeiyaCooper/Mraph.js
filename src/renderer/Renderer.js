@@ -1,13 +1,9 @@
-import Vector from "../math/Vector.js";
-import { deepCopy } from "../utils/utils.js";
-
 export default class Renderer {
     constructor(canvas) {
         this.canvas = canvas;
     }
 
     render(el, mat) {
-        const ctx = this.context;
         for (let p of el.path) {
             this[p[0]](p[1], mat);
         }
@@ -34,7 +30,8 @@ export default class Renderer {
     }
 
     clear() {
-        this.canvas.width = this.canvas.width;
+        const width = this.canvas.width;
+        this.canvas.width = width;
         this.canvas = this._canvas;
         return this;
     }

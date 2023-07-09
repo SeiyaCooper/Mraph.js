@@ -1,4 +1,3 @@
-import * as utils from "../utils/utils.js";
 import Renderer from "../renderer/Renderer.js";
 import Matrix from "../math/Matrix.js";
 
