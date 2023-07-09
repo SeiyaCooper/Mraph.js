@@ -1,4 +1,5 @@
 import Vector from "../math/Vector.js";
+import { deepCopy } from "../utils/utils.js";
 
 export default class Renderer {
     constructor(canvas) {
@@ -16,43 +17,46 @@ export default class Renderer {
         this.context.beginPath();
         return this;
     }
-    
+
     close() {
         this.context.closePath();
         return this;
     }
-    
+
     fill() {
         this.context.fill();
         return this;
     }
-    
+
     stroke() {
         this.context.stroke();
         return this;
     }
-    
+
     clear() {
         this.canvas.width = this.canvas.width;
         this.canvas = this._canvas;
         return this;
     }
-    
+
     move(pos, mat) {
         pos = pos.resize(4, 1).trans(mat);
-        pos = pos.mult(1/pos.columns[3]).columns;
+        pos = pos.mult(1 / pos.columns[3]).columns;
         this.context.moveTo(...pos);
         return this;
     }
-    
+
     line(pos, mat) {
         pos = pos.resize(4, 1).trans(mat);
-        pos = pos.mult(1/pos.columns[3]).columns;
+        pos = pos.mult(1 / pos.columns[3]).columns;
         this.context.lineTo(...pos);
         return this;
     }
-    
-    arc(param, mat) {
+
+    arc(param) {
+        const center = param[0].columns;
+        this.context.arc(center[0], center[1], param[1], param[2], param[3], param[4]);
+        return this;
     }
 
     set canvas(val) {

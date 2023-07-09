@@ -1,4 +1,5 @@
 import Matrix from "./Matrix.js";
+import { deepCopy } from "../utils/utils.js";
 
 export default class Vector {
     /**
@@ -33,13 +34,17 @@ export default class Vector {
     reduce(vec) {
         return this.toMatrix().reduce(vec.toMatrix()).toVector();
     }
-    
+
     /**
      * @param {number} num
      * @returns {Vector}
      */
     mult(num) {
-        return this.toMatrix().mult(num).toVector();
+        const ans = Vector.identity(this.row);
+        for (let i = 0; i <= this.row; i++) {
+            ans.columns[i] = num * this.columns[i];
+        }
+        return ans;
     }
 
     /**
@@ -57,6 +62,14 @@ export default class Vector {
     }
 
     /**
+     * return a deep copy clone of this vector
+     * @returns {Vector}
+     */
+    clone() {
+        return deepCopy(this);
+    }
+
+    /**
      * @returns {Matrix}
      */
     toMatrix() {
@@ -69,5 +82,20 @@ export default class Vector {
      */
     static isVector(obj) {
         return Array.isArray(obj.columns) && !!obj.toMatrix;
+    }
+
+    /**
+     * @param {number} row
+     * @returns {Vector}
+     */
+    static identity(row) {
+        return Matrix.identity(row, 1).toVector();
+    }
+
+    /**
+     * @type {number}
+     */
+    get row() {
+        return this.columns.length;
     }
 }

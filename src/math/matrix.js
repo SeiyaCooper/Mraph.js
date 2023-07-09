@@ -1,4 +1,5 @@
 import Vector from "./Vector.js";
+import { deepCopy } from "../utils/utils.js";
 
 export default class Matrix {
     /**
@@ -92,6 +93,14 @@ export default class Matrix {
         }
 
         return ans;
+    }
+
+    /**
+     * return a deep copy clone of this matrix
+     * @returns {Matrix}
+     */
+    clone() {
+        return deepCopy(this);
     }
 
     /**
