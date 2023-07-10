@@ -1,10 +1,19 @@
 import Vector from "../math/Vector.js";
 
 export default class Point {
+    /**
+     * @type {number}
+     */
+    radius = 5;
+
+    /**
+     * @param {Vector|number[]|...number} pos
+     */
     constructor(...args) {
         if (Vector.isVector(args[0])) {
-            const pos = args[0];
-            this.pos = pos;
+            this.pos = args[0];
+        } else if (Array.isArray(args[0])) {
+            this.pos = new Vector(args[0]);
         } else {
             this.pos = new Vector(args);
         }
@@ -28,5 +37,8 @@ export default class Point {
     }
     get z() {
         return this.pos.columns[2];
+    }
+    get path() {
+        return [["begin"], ["arc", [this.pos, this.radius, 0, Math.PI * 2]], ["close"], ["fill"]];
     }
 }
