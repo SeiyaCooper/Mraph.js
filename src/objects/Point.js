@@ -39,6 +39,11 @@ export default class Point {
         return this.pos.columns[2];
     }
     get path() {
-        return [["begin"], ["arc", [this.pos, this.radius, 0, Math.PI * 2]], ["close"], ["fill"]];
+        return [
+            ["begin"],
+            ["arc", [this.pos, this.radius, 0, Math.PI * 2]],
+            ["close"],
+            ["fill"],
+        ];
     }
 }

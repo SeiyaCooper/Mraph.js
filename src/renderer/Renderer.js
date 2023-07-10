@@ -52,7 +52,14 @@ export default class Renderer {
 
     arc(param) {
         const center = param[0].columns;
-        this.context.arc(center[0], center[1], param[1], param[2], param[3], param[4]);
+        this.context.arc(
+            center[0],
+            center[1],
+            param[1],
+            param[2],
+            param[3],
+            param[4]
+        );
         return this;
     }
 
