@@ -1,15 +1,13 @@
+import Graph from "./Graph.js";
 import Vector from "../math/Vector.js";
 
-export default class Point {
-    /**
-     * @type {number}
-     */
-    radius = 5;
-
+export default class Point extends Graph {
+    fillColor = "black";
     /**
      * @param {Vector|number[]|...number} pos
      */
     constructor(...args) {
+        super();
         if (Vector.isVector(args[0])) {
             this.pos = args[0];
         } else if (Array.isArray(args[0])) {
@@ -41,7 +39,7 @@ export default class Point {
     get path() {
         return [
             ["begin"],
-            ["arc", [this.pos, this.radius, 0, Math.PI * 2]],
+            ["arc", [this.pos, this.size, 0, Math.PI * 2]],
             ["close"],
             ["fill"],
         ];

@@ -4,6 +4,7 @@ export default class Renderer {
     }
 
     render(el, mat) {
+        this.style(el);
         for (let p of el.path) {
             this[p[0]](p[1], mat);
         }
@@ -34,6 +35,15 @@ export default class Renderer {
         this.canvas.width = width;
         this.canvas = this._canvas;
         return this;
+    }
+
+    style(el) {
+        const ctx = this.context;
+        ctx.fillStyle = el.fillColor;
+        ctx.strokeStyle = el.strokeColor;
+        ctx.lineWidth = el.strokeWidth;
+        ctx.globalAlpha = el.alpha;
+        ctx.setLineDash(el.dash);
     }
 
     move(pos, mat) {
