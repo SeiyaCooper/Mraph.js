@@ -9,6 +9,7 @@ export default class Segment extends Graph {
 
     get path() {
         return [
+            ["style", this],
             ["begin"],
             ["move", this.start.pos],
             ["line", this.end.pos],

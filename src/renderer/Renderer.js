@@ -4,7 +4,6 @@ export default class Renderer {
     }
 
     render(el, mat) {
-        this.style(el);
         for (let p of el.path) {
             this[p[0]](p[1], mat);
         }

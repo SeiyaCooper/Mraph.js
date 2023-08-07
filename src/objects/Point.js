@@ -38,6 +38,7 @@ export default class Point extends Graph {
     }
     get path() {
         return [
+            ["style", this],
             ["begin"],
             ["arc", [this.pos, this.size, 0, Math.PI * 2]],
             ["close"],
