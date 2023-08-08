@@ -5,5 +5,6 @@ import ActionList from "./animation/ActionList.js";
 
 import Point from "./objects/Point.js";
 import Segment from "./objects/Segment.js";
+import Box from "./objects/Box.js";
 
-export { Matrix, Vector, Layer, ActionList, Point, Segment };
+export { Matrix, Vector, Layer, ActionList, Point, Segment, Box };

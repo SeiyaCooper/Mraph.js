@@ -1,3 +1,5 @@
+import Matrix from "../math/Matrix.js";
+
 export default class Graph {
     size = 7;
     dash = [];
@@ -5,4 +7,6 @@ export default class Graph {
     fillColor = "white";
     strokeColor = "black";
     strokeWidth = 5;
+
+    matrix = Matrix.identity(3);
 }

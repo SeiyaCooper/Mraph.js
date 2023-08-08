@@ -104,6 +104,26 @@ export default class Matrix {
     }
 
     /**
+     * copy value from another matrix
+     * @param {Matrix} matrix
+     * @returns {Matrix}
+     */
+    copy(matrix) {
+        matrix = matrix.columns;
+        if (!Array.isArray(matrix[0])) return this;
+
+        const out = this.clone();
+
+        matrix.forEach((arr, i) => {
+            arr.forEach((num, j) => {
+                out.columns[i][j] = num;
+            });
+        });
+
+        return out;
+    }
+
+    /**
      * @returns {Vector}
      */
     toVector() {
@@ -125,11 +145,7 @@ export default class Matrix {
      * @returns {Matrix}
      */
     static zeros(column, row) {
-        return new Matrix(
-            Array(column)
-                .fill(0)
-                .map(() => Array(row).fill(0))
-        );
+        return Matrix.from(row, column, 0);
     }
 
     /**
@@ -143,6 +159,53 @@ export default class Matrix {
             out.columns[i][i] = 1;
         }
         return out;
+    }
+
+    /**
+     * @param  {...any} args
+     * @returns
+     *
+     * @example
+     * Matrix.from(columns);
+     * // returns new Matrix(columns)
+     *
+     * @example
+     * Matrix.from(2,1,3);
+     * // returns new Matrix([
+     *     [3],
+     *     [3]
+     * ])
+     */
+    static from(...args) {
+        if (Array.isArray(args[0]) && Array.isArray(args[0][0])) {
+            return new Matrix(args[0]);
+        }
+        if (
+            typeof args[0] === "number" &&
+            typeof args[1] === "number" &&
+            typeof args[2] === "number"
+        ) {
+            return new Matrix(
+                Array(args[1])
+                    .fill(args[2])
+                    .map(() => Array(args[0]).fill(args[2]))
+            );
+        }
+
+        return args;
+    }
+
+    /**
+     * @param {number} ang
+     * the rotate angle
+     * @returns {Matrix}
+     */
+    static rotateX(ang) {
+        return new Matrix([
+            [1, 0, 0],
+            [0, Math.cos(ang), -Math.sin(ang)],
+            [0, Math.sin(ang), Math.cos(ang)],
+        ]);
     }
 
     /**

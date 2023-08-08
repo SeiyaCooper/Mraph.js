@@ -1,3 +1,16 @@
+declare module "utils/utils" {
+    /**
+     * @param {Object} obj
+     * @param {...Object} source
+     * @returns {Object}
+     */
+    export function mergeObject(obj: any, ...source: any[]): any;
+    /**
+     * @param {Object} obj
+     * @returns {Object}
+     */
+    export function deepCopy(obj: any): any;
+}
 declare module "math/Vector" {
     export default class Vector {
         /**
@@ -5,6 +18,11 @@ declare module "math/Vector" {
          * @returns {boolean}
          */
         static isVector(obj: any): boolean;
+        /**
+         * @param {number} row
+         * @returns {Vector}
+         */
+        static identity(row: number): Vector;
         /**
          * @param {number[]} [source = [1]]
          * @returns {Vector}
@@ -27,6 +45,11 @@ declare module "math/Vector" {
          */
         reduce(vec: Vector): Vector;
         /**
+         * @param {number} num
+         * @returns {Vector}
+         */
+        mult(num: number): Vector;
+        /**
          * @param {number} row
          * @param {number} [n = 0]
          * the number to be filled with
@@ -34,9 +57,18 @@ declare module "math/Vector" {
          */
         resize(row: number, n?: number): Vector;
         /**
+         * return a deep copy clone of this vector
+         * @returns {Vector}
+         */
+        clone(): Vector;
+        /**
          * @returns {Matrix}
          */
         toMatrix(): Matrix;
+        /**
+         * @type {number}
+         */
+        get row(): number;
     }
     import Matrix from "math/Matrix";
 }
@@ -60,6 +92,13 @@ declare module "math/Matrix" {
          * @returns {Matrix}
          */
         static identity(n: number): Matrix;
+        static from(...args: any[]): any[] | Matrix;
+        /**
+         * @param {number} ang
+         * the rotate angle
+         * @returns {Matrix}
+         */
+        static rotateX(ang: number): Matrix;
         /**
          * @param {number[][]} [source = [[1]]]
          * @return {Matrix}
@@ -91,6 +130,12 @@ declare module "math/Matrix" {
          */
         reduce(mat: Matrix): Matrix;
         /**
+         * return a deep copy clone of this matrix
+         * @returns {Matrix}
+         */
+        clone(): Matrix;
+        copy(matrix: any): Matrix;
+        /**
          * @returns {Vector}
          */
         toVector(): Vector;
@@ -105,40 +150,24 @@ declare module "math/Matrix" {
     }
     import Vector from "math/Vector";
 }
-declare module "utils/utils" {
-    /**
-     * @param {Object} obj
-     * @param {...Object} source
-     * @returns {Object}
-     */
-    export function mergeObject(obj: any, ...source: any[]): any;
-}
 declare module "renderer/Renderer" {
     export default class Renderer {
         constructor(canvas: any);
         set canvas(arg: any);
         get canvas(): any;
         render(el: any, mat: any): void;
-        renderPath(path: any, mat: any): void;
-        clear(): void;
+        begin(): Renderer;
+        close(): Renderer;
+        fill(): Renderer;
+        stroke(): Renderer;
+        clear(): Renderer;
+        style(el: any): void;
+        move(pos: any, mat: any): Renderer;
+        line(pos: any, mat: any): Renderer;
+        arc(param: any): Renderer;
         _canvas: any;
         context: any;
     }
-}
-declare module "core/Layer" {
-    export default class Layer {
-        constructor(canvas: any);
-        elements: any[];
-        matrix: Matrix;
-        set canvas(arg: any);
-        get canvas(): any;
-        draw(): void;
-        clear(): void;
-        _canvas: any;
-        renderer: Renderer;
-    }
-    import Matrix from "math/Matrix";
-    import Renderer from "renderer/Renderer";
 }
 declare module "animation/Action" {
     export default class Action {
@@ -192,7 +221,7 @@ declare module "animation/ActionList" {
          * list for actions to be called
          * @type {Map}
          */
-        list: Map;
+        list: Map<any, any>;
         /**
          * @type {number}
          */
@@ -215,10 +244,74 @@ declare module "animation/ActionList" {
         play(): void;
     }
 }
+declare module "core/Layer" {
+    export default class Layer {
+        constructor(canvas: any);
+        elements: any[];
+        matrix: Matrix;
+        actionList: ActionList;
+        set canvas(arg: any);
+        get canvas(): any;
+        add(...drawable: any[]): void;
+        draw(): void;
+        clear(): void;
+        _canvas: any;
+        renderer: Renderer;
+    }
+    import Matrix from "math/Matrix";
+    import ActionList from "animation/ActionList";
+    import Renderer from "renderer/Renderer";
+}
+declare module "objects/Graph" {
+    export default class Graph {
+        size: number;
+        dash: any[];
+        alpha: number;
+        fillColor: string;
+        strokeColor: string;
+        strokeWidth: number;
+        matrix: Matrix;
+    }
+    import Matrix from "math/Matrix";
+}
+declare module "objects/Point" {
+    export default class Point extends Graph {
+        /**
+         * @param {Vector|number[]|...number} pos
+         */
+        constructor(...args: any[]);
+        pos: any;
+        get path(): any;
+    }
+    import Graph from "objects/Graph";
+}
+declare module "objects/Segment" {
+    export default class Segment extends Graph {
+        constructor(start: any, end: any);
+        start: any;
+        end: any;
+        get path(): any;
+    }
+    import Graph from "objects/Graph";
+}
+declare module "objects/Box" {
+    export default class Box extends Graph {
+        constructor(base: any, width: any, height: any, depth: any);
+        base: any;
+        height: any;
+        width: any;
+        depth: any;
+        get path(): any[][];
+    }
+    import Graph from "objects/Graph";
+}
 declare module "mraph" {
     import Matrix from "math/Matrix";
     import Vector from "math/Vector";
     import Layer from "core/Layer";
     import ActionList from "animation/ActionList";
-    export { Matrix, Vector, Layer, ActionList };
+    import Point from "objects/Point";
+    import Segment from "objects/Segment";
+    import Box from "objects/Box";
+    export { Matrix, Vector, Layer, ActionList, Point, Segment, Box };
 }

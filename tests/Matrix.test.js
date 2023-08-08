@@ -27,4 +27,13 @@ test("Matrix", () => {
         [3, 4, 5],
         [57, 237, 346],
     ]);
+
+    expect(Matrix.from(m1.columns)).toEqual(m1);
+    expect(Matrix.from(3, 3, 1)).toEqual(
+        new Matrix([
+            [1, 1, 1],
+            [1, 1, 1],
+            [1, 1, 1],
+        ])
+    );
 });

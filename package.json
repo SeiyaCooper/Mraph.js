@@ -7,7 +7,7 @@
     "main": "src/mraph.js",
     "scripts": {
         "prepare": "husky install",
-        "precommit": "npm run lint && npm run types",
+        "precommit": "npm run lint && npm run types && npm run test",
         "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
         "lint": "eslint src --fix",
         "types": "tsc"
