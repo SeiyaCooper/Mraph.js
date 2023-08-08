@@ -92,6 +92,21 @@ declare module "math/Matrix" {
          * @returns {Matrix}
          */
         static identity(n: number): Matrix;
+        /**
+         * @param  {...any} args
+         * @returns
+         *
+         * @example
+         * Matrix.from(columns);
+         * // returns new Matrix(columns)
+         *
+         * @example
+         * Matrix.from(2,1,3);
+         * // returns new Matrix([
+         *     [3],
+         *     [3]
+         * ])
+         */
         static from(...args: any[]): any[] | Matrix;
         /**
          * @param {number} ang
@@ -134,7 +149,12 @@ declare module "math/Matrix" {
          * @returns {Matrix}
          */
         clone(): Matrix;
-        copy(matrix: any): Matrix;
+        /**
+         * copy value from another matrix
+         * @param {Matrix} matrix
+         * @returns {Matrix}
+         */
+        copy(matrix: Matrix): Matrix;
         /**
          * @returns {Vector}
          */
