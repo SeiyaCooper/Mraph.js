@@ -109,11 +109,33 @@ declare module "math/Matrix" {
          */
         static from(...args: any[]): any[] | Matrix;
         /**
+         * return a 4*4 rotation matrix
          * @param {number} ang
          * the rotate angle
          * @returns {Matrix}
          */
         static rotateX(ang: number): Matrix;
+        /**
+         * return a 4*4 rotation matrix
+         * @param {number} ang
+         * the rotate angle
+         * @returns {Matrix}
+         */
+        static rotateY(ang: number): Matrix;
+        /**
+         * return a 4*4 rotation matrix
+         * @param {number} ang the rotate angle
+         * @returns {Matrix}
+         */
+        static rotateZ(ang: number): Matrix;
+        /**
+         * return a 4*4 translation Matrix
+         * @param {number} x
+         * @param {number} y
+         * @param {number} z
+         * @returns {Matrix}
+         */
+        static translate(x: number, y: number, z: number): Matrix;
         /**
          * @param {number[][]} [source = [[1]]]
          * @return {Matrix}
@@ -126,6 +148,11 @@ declare module "math/Matrix" {
          * @returns {Matrix}
          */
         mult(mat: Matrix): Matrix;
+        /**
+         * @param {Matrix} mat
+         * @returns {Matrix}
+         */
+        trans(mat: Matrix): Matrix;
         /**
          *
          * @param {number} num
@@ -241,7 +268,7 @@ declare module "animation/ActionList" {
          * list for actions to be called
          * @type {Map}
          */
-        list: Map<any, any>;
+        list: Map;
         /**
          * @type {number}
          */
@@ -302,6 +329,14 @@ declare module "objects/Point" {
         constructor(...args: any[]);
         pos: any;
         get path(): any;
+        set x(arg: any);
+        get x(): any;
+        set y(arg: any);
+        get y(): any;
+        set z(arg: any);
+        get z(): any;
+        set w(arg: any);
+        get w(): any;
     }
     import Graph from "objects/Graph";
 }
@@ -321,7 +356,8 @@ declare module "objects/Box" {
         height: any;
         width: any;
         depth: any;
-        get path(): any[][];
+        get path(): any;
+        get center(): any;
     }
     import Graph from "objects/Graph";
 }

@@ -41,7 +41,7 @@ export default class Vector {
      */
     mult(num) {
         const ans = Vector.identity(this.row);
-        for (let i = 0; i <= this.row; i++) {
+        for (let i = 0; i < this.row; i++) {
             ans.columns[i] = num * this.columns[i];
         }
         return ans;

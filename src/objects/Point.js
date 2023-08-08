@@ -16,6 +16,7 @@ export default class Point extends Graph {
             this.pos = new Vector(args);
         }
         this.pos.columns[2] = this.pos.columns[2] ?? 0;
+        this.pos.columns[3] = this.pos.columns[3] ?? 1;
     }
 
     get path() {
@@ -26,5 +27,37 @@ export default class Point extends Graph {
             ["close"],
             ["fill"],
         ];
+    }
+
+    set x(val) {
+        this.pos.columns[0] = val;
+    }
+
+    get x() {
+        return this.pos.columns[0];
+    }
+
+    set y(val) {
+        this.pos.columns[1] = val;
+    }
+
+    get y() {
+        return this.pos.columns[1];
+    }
+
+    set z(val) {
+        this.pos.columns[2] = val;
+    }
+
+    get z() {
+        return this.pos.columns[2];
+    }
+
+    set w(val) {
+        this.pos.columns[3] = val;
+    }
+
+    get w() {
+        return this.pos.columns[3];
     }
 }

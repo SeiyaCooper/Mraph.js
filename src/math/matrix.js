@@ -35,6 +35,14 @@ export default class Matrix {
     }
 
     /**
+     * @param {Matrix} mat
+     * @returns {Matrix}
+     */
+    trans(mat) {
+        return mat.mult(this);
+    }
+
+    /**
      *
      * @param {number} num
      * @returns {Matrix}
@@ -196,15 +204,62 @@ export default class Matrix {
     }
 
     /**
+     * return a 4*4 rotation matrix
      * @param {number} ang
      * the rotate angle
      * @returns {Matrix}
      */
     static rotateX(ang) {
         return new Matrix([
-            [1, 0, 0],
-            [0, Math.cos(ang), -Math.sin(ang)],
-            [0, Math.sin(ang), Math.cos(ang)],
+            [1, 0, 0, 0],
+            [0, Math.cos(ang), -Math.sin(ang), 0],
+            [0, Math.sin(ang), Math.cos(ang), 0],
+            [0, 0, 0, 1],
+        ]);
+    }
+
+    /**
+     * return a 4*4 rotation matrix
+     * @param {number} ang
+     * the rotate angle
+     * @returns {Matrix}
+     */
+    static rotateY(ang) {
+        return new Matrix([
+            [Math.cos(ang), 0, -Math.sin(ang), 0],
+            [0, 1, 0, 0],
+            [Math.sin(ang), 0, Math.cos(ang), 0],
+            [0, 0, 0, 1],
+        ]);
+    }
+
+    /**
+     * return a 4*4 rotation matrix
+     * @param {number} ang the rotate angle
+     * @returns {Matrix}
+     */
+    static rotateZ(ang) {
+        return new Matrix([
+            [Math.cos(ang), -Math.sin(ang), 0, 0],
+            [Math.sin(ang), Math.cos(ang), 0, 0],
+            [0, 0, 1, 0],
+            [0, 0, 0, 1],
+        ]);
+    }
+
+    /**
+     * return a 4*4 translation Matrix
+     * @param {number} x
+     * @param {number} y
+     * @param {number} z
+     * @returns {Matrix}
+     */
+    static translate(x, y, z) {
+        return new Matrix([
+            [1, 0, 0, 0],
+            [0, 1, 0, 0],
+            [0, 0, 1, 0],
+            [x, y, z, 1],
         ]);
     }
 

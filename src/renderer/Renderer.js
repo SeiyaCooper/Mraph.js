@@ -46,14 +46,14 @@ export default class Renderer {
     }
 
     move(pos, mat) {
-        pos = pos.resize(4, 1).trans(mat);
+        pos = pos.trans(mat);
         pos = pos.mult(1 / pos.columns[3]).columns;
         this.context.moveTo(...pos);
         return this;
     }
 
     line(pos, mat) {
-        pos = pos.resize(4, 1).trans(mat);
+        pos = pos.trans(mat);
         pos = pos.mult(1 / pos.columns[3]).columns;
         this.context.lineTo(...pos);
         return this;

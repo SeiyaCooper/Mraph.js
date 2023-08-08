@@ -1,5 +1,6 @@
 import Graph from "./Graph.js";
 import Vector from "../math/Vector.js";
+import Matrix from "../math/Matrix.js";
 
 export default class Box extends Graph {
     constructor(base, width, height, depth) {
@@ -11,12 +12,17 @@ export default class Box extends Graph {
     }
 
     get path() {
-        const BASE = this.base.pos.trans(this.matrix);
-        const UP = new Vector([0, this.height, 0]).trans(this.matrix);
-        const RIGHT = new Vector([this.width, 0, 0]).trans(this.matrix);
-        const IN = new Vector([0, 0, this.depth]).trans(this.matrix);
+        const c = this.center.columns;
+        const mat = Matrix.translate(...c).mult(
+            this.matrix.mult(Matrix.translate(-c[0], -c[1], -c[2]))
+        );
+        const BASE = this.base.pos.trans(mat);
+        const UP = new Vector([0, this.height, 0, 0]).trans(mat);
+        const RIGHT = new Vector([this.width, 0, 0, 0]).trans(mat);
+        const IN = new Vector([0, 0, this.depth, 0]).trans(mat);
 
         return [
+            ["style", this],
             ["begin"],
             ["move", BASE],
             ["line", BASE.add(UP)],
@@ -53,5 +59,12 @@ export default class Box extends Graph {
             ["line", BASE.add(IN).add(UP).add(RIGHT).reduce(UP)],
             ["stroke"],
         ];
+    }
+
+    get center() {
+        const base = this.base.pos;
+        return base.add(
+            new Vector([this.width / 2, this.height / 2, this.depth / 2, 0])
+        );
     }
 }

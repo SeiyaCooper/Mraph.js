@@ -8,5 +8,5 @@ export default class Graph {
     strokeColor = "black";
     strokeWidth = 5;
 
-    matrix = Matrix.identity(3);
+    matrix = Matrix.identity(4);
 }
