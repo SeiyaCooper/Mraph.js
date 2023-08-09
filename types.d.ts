@@ -268,7 +268,7 @@ declare module "animation/ActionList" {
          * list for actions to be called
          * @type {Map}
          */
-        list: Map;
+        list: Map<any, any>;
         /**
          * @type {number}
          */

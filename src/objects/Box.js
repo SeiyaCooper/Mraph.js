@@ -1,6 +1,5 @@
 import Graph from "./Graph.js";
 import Vector from "../math/Vector.js";
-import Matrix from "../math/Matrix.js";
 
 export default class Box extends Graph {
     constructor(base, width, height, depth) {
@@ -12,10 +11,7 @@ export default class Box extends Graph {
     }
 
     get path() {
-        const c = this.center.columns;
-        const mat = Matrix.translate(...c).mult(
-            this.matrix.mult(Matrix.translate(-c[0], -c[1], -c[2]))
-        );
+        const mat = this.matrix;
         const BASE = this.base.pos.trans(mat);
         const UP = new Vector([0, this.height, 0, 0]).trans(mat);
         const RIGHT = new Vector([this.width, 0, 0, 0]).trans(mat);
@@ -30,6 +26,7 @@ export default class Box extends Graph {
             ["line", BASE.add(UP).add(RIGHT).reduce(UP)],
             ["close"],
             ["stroke"],
+            ["fill"],
 
             ["begin"],
             ["move", BASE.add(IN)],
@@ -38,26 +35,43 @@ export default class Box extends Graph {
             ["line", BASE.add(IN).add(UP).add(RIGHT).reduce(UP)],
             ["close"],
             ["stroke"],
+            ["fill"],
 
             ["begin"],
-            ["move", BASE],
-            ["line", BASE.add(IN)],
-            ["stroke"],
-
-            ["begin"],
-            ["move", BASE.add(UP)],
+            ["move", BASE.add(IN)],
             ["line", BASE.add(IN).add(UP)],
+            ["line", BASE.add(IN).add(UP).reduce(IN)],
+            ["line", BASE.add(IN).add(UP).reduce(IN).reduce(UP)],
+            ["close"],
             ["stroke"],
+            ["fill"],
 
             ["begin"],
-            ["move", BASE.add(UP).add(RIGHT)],
-            ["line", BASE.add(IN).add(UP).add(RIGHT)],
+            ["move", BASE.add(RIGHT).add(IN)],
+            ["line", BASE.add(RIGHT).add(IN).add(UP)],
+            ["line", BASE.add(RIGHT).add(IN).add(UP).reduce(IN)],
+            ["line", BASE.add(RIGHT).add(IN).add(UP).reduce(IN).reduce(UP)],
+            ["close"],
             ["stroke"],
+            ["fill"],
 
             ["begin"],
-            ["move", BASE.add(UP).add(RIGHT).reduce(UP)],
-            ["line", BASE.add(IN).add(UP).add(RIGHT).reduce(UP)],
+            ["move", BASE.add(IN)],
+            ["line", BASE.add(IN).add(RIGHT)],
+            ["line", BASE.add(IN).add(RIGHT).reduce(IN)],
+            ["line", BASE.add(IN).add(RIGHT).reduce(IN).reduce(RIGHT)],
+            ["close"],
             ["stroke"],
+            ["fill"],
+
+            ["begin"],
+            ["move", BASE.add(UP).add(IN)],
+            ["line", BASE.add(UP).add(IN).add(RIGHT)],
+            ["line", BASE.add(UP).add(IN).add(RIGHT).reduce(IN)],
+            ["line", BASE.add(UP).add(IN).add(RIGHT).reduce(IN).reduce(RIGHT)],
+            ["close"],
+            ["stroke"],
+            ["fill"],
         ];
     }
 

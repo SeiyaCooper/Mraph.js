@@ -4,7 +4,7 @@ export default class Graph {
     size = 7;
     dash = [];
     alpha = 1;
-    fillColor = "white";
+    fillColor = "rgba(0, 0, 0, 0)";
     strokeColor = "black";
     strokeWidth = 5;
 
