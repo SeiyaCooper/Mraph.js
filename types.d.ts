@@ -200,21 +200,22 @@ declare module "math/Matrix" {
 declare module "renderer/Renderer" {
     export default class Renderer {
         constructor(canvas: any);
+        matrix: Matrix;
         set canvas(arg: any);
         get canvas(): any;
-        render(el: any, mat: any): void;
         begin(): Renderer;
         close(): Renderer;
         fill(): Renderer;
         stroke(): Renderer;
         clear(): Renderer;
         style(el: any): void;
-        move(pos: any, mat: any): Renderer;
-        line(pos: any, mat: any): Renderer;
-        arc(param: any): Renderer;
+        move(pos: any): Renderer;
+        line3D(pos: any): Renderer;
+        arc2D(centerPos: any, radius: any, stAng: any, edAng: any, anticlockwise?: boolean): Renderer;
         _canvas: any;
         context: any;
     }
+    import Matrix from "math/Matrix";
 }
 declare module "animation/Action" {
     export default class Action {
@@ -295,17 +296,22 @@ declare module "core/Layer" {
     export default class Layer {
         constructor(canvas: any);
         elements: any[];
-        matrix: Matrix;
         actionList: ActionList;
         set canvas(arg: any);
         get canvas(): any;
-        add(...drawable: any[]): void;
-        draw(): void;
+        /**
+         * @param  {...{render: Function}} drawable
+         */
+        add(...drawable: {
+            render: Function;
+        }[]): void;
+        render(): void;
         clear(): void;
         _canvas: any;
         renderer: Renderer;
+        set matrix(arg: import("mraph").Matrix);
+        get matrix(): import("mraph").Matrix;
     }
-    import Matrix from "math/Matrix";
     import ActionList from "animation/ActionList";
     import Renderer from "renderer/Renderer";
 }
@@ -314,6 +320,7 @@ declare module "objects/Graph" {
         size: number;
         dash: any[];
         alpha: number;
+        visible: boolean;
         fillColor: string;
         strokeColor: string;
         strokeWidth: number;
@@ -328,7 +335,7 @@ declare module "objects/Point" {
          */
         constructor(...args: any[]);
         pos: any;
-        get path(): any;
+        render(): Point;
         set x(arg: any);
         get x(): any;
         set y(arg: any);
@@ -345,7 +352,7 @@ declare module "objects/Segment" {
         constructor(start: any, end: any);
         start: any;
         end: any;
-        get path(): any;
+        render(): Segment;
     }
     import Graph from "objects/Graph";
 }
@@ -356,10 +363,14 @@ declare module "objects/Box" {
         height: any;
         width: any;
         depth: any;
-        get path(): any;
-        get center(): any;
     }
     import Graph from "objects/Graph";
+}
+declare module "objects/Arrow" {
+    export default class _default extends Segment {
+        render(): void;
+    }
+    import Segment from "objects/Segment";
 }
 declare module "mraph" {
     import Matrix from "math/Matrix";
@@ -369,5 +380,6 @@ declare module "mraph" {
     import Point from "objects/Point";
     import Segment from "objects/Segment";
     import Box from "objects/Box";
-    export { Matrix, Vector, Layer, ActionList, Point, Segment, Box };
+    import Arrow from "objects/Arrow";
+    export { Matrix, Vector, Layer, ActionList, Point, Segment, Box, Arrow };
 }

@@ -9,6 +9,9 @@ export default class Layer {
         this.canvas = canvas;
     }
 
+    /**
+     * @param  {...{render: Function}} drawable
+     */
     add(...drawable) {
         for (let obj of drawable) {
             this.elements.push(obj);

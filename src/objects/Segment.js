@@ -13,8 +13,8 @@ export default class Segment extends Graph {
         const renderer = this.renderer;
         renderer.style(this);
         renderer.begin();
-        renderer.move(this.start.pos);
-        renderer.line3D(this.end.pos);
+        renderer.move(this.start.transPos);
+        renderer.line3D(this.end.transPos);
         renderer.stroke();
 
         return this;

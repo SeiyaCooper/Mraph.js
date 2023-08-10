@@ -25,11 +25,19 @@ export default class Point extends Graph {
         const renderer = this.renderer;
         renderer.style(this);
         renderer.begin();
-        renderer.arc2D(this.pos, this.size, 0, Math.PI * 2);
+        renderer.arc2D(this.transPos, this.size, 0, Math.PI * 2);
         renderer.stroke();
         renderer.fill();
 
         return this;
+    }
+
+    /**
+     * this.matrix transformed pos
+     * @type {Vector}
+     */
+    get transPos() {
+        return this.pos.trans(this.matrix);
     }
 
     set x(val) {
