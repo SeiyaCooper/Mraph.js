@@ -1,10 +1,8 @@
 import Renderer from "../renderer/Renderer.js";
-import Matrix from "../math/Matrix.js";
 import ActionList from "../animation/ActionList.js";
 
 export default class Layer {
     elements = [];
-    matrix = Matrix.identity(4);
     actionList = new ActionList();
 
     constructor(canvas) {
@@ -14,12 +12,13 @@ export default class Layer {
     add(...drawable) {
         for (let obj of drawable) {
             this.elements.push(obj);
+            obj.renderer = this.renderer;
         }
     }
 
-    draw() {
+    render() {
         for (let e of this.elements) {
-            this.renderer.render(e, this.matrix);
+            e.render();
         }
     }
 
@@ -30,8 +29,19 @@ export default class Layer {
     set canvas(val) {
         this._canvas = val;
         this.renderer = new Renderer(val);
+
+        for (let obj of this.elements) {
+            obj.renderer = this.renderer;
+        }
     }
     get canvas() {
         return this._canvas;
+    }
+
+    set matrix(mat) {
+        this.renderer.matrix = mat;
+    }
+    get matrix() {
+        return this.renderer.matrix;
     }
 }

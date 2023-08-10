@@ -7,14 +7,16 @@ export default class Segment extends Graph {
         this.end = end;
     }
 
-    get path() {
-        return [
-            ["style", this],
-            ["begin"],
-            ["move", this.start.pos],
-            ["line", this.end.pos],
-            ["close"],
-            ["stroke"],
-        ];
+    render() {
+        if (!this.renderer || !this.visible) return this;
+
+        const renderer = this.renderer;
+        renderer.style(this);
+        renderer.begin();
+        renderer.move(this.start.pos);
+        renderer.line3D(this.end.pos);
+        renderer.stroke();
+
+        return this;
     }
 }

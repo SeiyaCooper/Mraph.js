@@ -19,14 +19,17 @@ export default class Point extends Graph {
         this.pos.columns[3] = this.pos.columns[3] ?? 1;
     }
 
-    get path() {
-        return [
-            ["style", this],
-            ["begin"],
-            ["arc", [this.pos, this.size, 0, Math.PI * 2]],
-            ["close"],
-            ["fill"],
-        ];
+    render() {
+        if (!this.renderer || !this.visible) return this;
+
+        const renderer = this.renderer;
+        renderer.style(this);
+        renderer.begin();
+        renderer.arc2D(this.pos, this.size, 0, Math.PI * 2);
+        renderer.stroke();
+        renderer.fill();
+
+        return this;
     }
 
     set x(val) {
