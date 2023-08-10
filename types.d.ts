@@ -336,6 +336,11 @@ declare module "objects/Point" {
         constructor(...args: any[]);
         pos: any;
         render(): Point;
+        /**
+         * this.matrix transformed pos
+         * @type {Vector}
+         */
+        get transPos(): Vector;
         set x(arg: any);
         get x(): any;
         set y(arg: any);
@@ -346,6 +351,7 @@ declare module "objects/Point" {
         get w(): any;
     }
     import Graph from "objects/Graph";
+    import Vector from "math/Vector";
 }
 declare module "objects/Segment" {
     export default class Segment extends Graph {
@@ -366,6 +372,29 @@ declare module "objects/Box" {
     }
     import Graph from "objects/Graph";
 }
+declare module "objects/Group" {
+    export default class Group extends Graph {
+        constructor(...objs: any[]);
+        set objs(arg: any);
+        get objs(): any;
+        render(): Group;
+        set(attrName: any, val: any): Group;
+        _objs: any;
+        set renderer(arg: any);
+        get renderer(): any;
+        _renderer: any;
+    }
+    import Graph from "objects/Graph";
+}
+declare module "objects/Polygon" {
+    export default class Polygon extends Group {
+        set points(arg: any);
+        get points(): any;
+        render(): Polygon;
+        _points: any;
+    }
+    import Group from "objects/Group";
+}
 declare module "objects/Arrow" {
     export default class _default extends Segment {
         render(): void;
@@ -380,6 +409,7 @@ declare module "mraph" {
     import Point from "objects/Point";
     import Segment from "objects/Segment";
     import Box from "objects/Box";
+    import Polygon from "objects/Polygon";
     import Arrow from "objects/Arrow";
-    export { Matrix, Vector, Layer, ActionList, Point, Segment, Box, Arrow };
+    export { Matrix, Vector, Layer, ActionList, Point, Segment, Box, Polygon, Arrow };
 }
