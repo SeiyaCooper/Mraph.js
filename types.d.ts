@@ -423,8 +423,8 @@ declare module "mraph" {
     import Vector from "math/Vector";
     import Layer from "core/Layer";
     import ActionList from "animation/ActionList";
-    import WebglRenderer from "renderer/WebglRenderer.js";
-    import CanvasRenderer from "renderer/CanvasRenderer.js";
+    import WebglRenderer from "renderer/WebglRenderer";
+    import CanvasRenderer from "renderer/CanvasRenderer";
     import Point from "objects/Point";
     import Segment from "objects/Segment";
     import Box from "objects/Box";
