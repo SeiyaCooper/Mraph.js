@@ -40,9 +40,19 @@ export default class Vector {
      * @returns {Vector}
      */
     mult(num) {
-        const ans = Vector.identity(this.row);
+        const ans = Matrix.from(1, this.row, 1).toVector();
         for (let i = 0; i < this.row; i++) {
             ans.columns[i] = num * this.columns[i];
+        }
+        return ans;
+    }
+
+    dot(vec) {
+        if (!Vector.isVector(vec)) return this;
+
+        let ans = 0;
+        for (const num of this.columns) {
+            ans += num ** 2;
         }
         return ans;
     }
@@ -84,12 +94,8 @@ export default class Vector {
         return Array.isArray(obj.columns) && !!obj.toMatrix;
     }
 
-    /**
-     * @param {number} row
-     * @returns {Vector}
-     */
-    static identity(row) {
-        return Matrix.identity(row, 1).toVector();
+    get length() {
+        return Math.sqrt(this.dot(this));
     }
 
     /**

@@ -19,11 +19,6 @@ declare module "math/Vector" {
          */
         static isVector(obj: any): boolean;
         /**
-         * @param {number} row
-         * @returns {Vector}
-         */
-        static identity(row: number): Vector;
-        /**
          * @param {number[]} [source = [1]]
          * @returns {Vector}
          */
@@ -49,6 +44,7 @@ declare module "math/Vector" {
          * @returns {Vector}
          */
         mult(num: number): Vector;
+        dot(vec: any): any;
         /**
          * @param {number} row
          * @param {number} [n = 0]
@@ -65,6 +61,7 @@ declare module "math/Vector" {
          * @returns {Matrix}
          */
         toMatrix(): Matrix;
+        get length(): any;
         /**
          * @type {number}
          */
@@ -197,25 +194,24 @@ declare module "math/Matrix" {
     }
     import Vector from "math/Vector";
 }
-declare module "renderer/Renderer" {
-    export default class Renderer {
+declare module "renderer/WebglRenderer" {
+    export default class WebglRenderer {
         constructor(canvas: any);
-        matrix: Matrix;
+        vertexNum: number;
+        mode: any;
         set canvas(arg: any);
         get canvas(): any;
-        begin(): Renderer;
-        close(): Renderer;
-        fill(): Renderer;
-        stroke(): Renderer;
-        clear(): Renderer;
+        set matrix(arg: any);
+        get matrix(): any;
+        clear(): void;
         style(el: any): void;
-        move(pos: any): Renderer;
-        line3D(pos: any): Renderer;
-        arc2D(centerPos: any, radius: any, stAng: any, edAng: any, anticlockwise?: boolean): Renderer;
+        styleSet: any;
+        render(): void;
+        line(start: any, end: any): void;
         _canvas: any;
-        context: any;
+        gl: any;
+        _matrix: any;
     }
-    import Matrix from "math/Matrix";
 }
 declare module "animation/Action" {
     export default class Action {
@@ -297,6 +293,7 @@ declare module "core/Layer" {
         constructor(canvas: any);
         elements: any[];
         actionList: ActionList;
+        rendererClass: typeof WebglRenderer;
         set canvas(arg: any);
         get canvas(): any;
         /**
@@ -308,12 +305,32 @@ declare module "core/Layer" {
         render(): void;
         clear(): void;
         _canvas: any;
-        renderer: Renderer;
-        set matrix(arg: import("mraph").Matrix);
-        get matrix(): import("mraph").Matrix;
+        renderer: WebglRenderer;
+        set matrix(arg: any);
+        get matrix(): any;
     }
     import ActionList from "animation/ActionList";
-    import Renderer from "renderer/Renderer";
+    import WebglRenderer from "renderer/WebglRenderer";
+}
+declare module "renderer/CanvasRenderer" {
+    export default class CanvasRenderer {
+        constructor(canvas: any);
+        matrix: Matrix;
+        set canvas(arg: any);
+        get canvas(): any;
+        begin(): CanvasRenderer;
+        close(): CanvasRenderer;
+        fill(): CanvasRenderer;
+        stroke(): CanvasRenderer;
+        clear(): CanvasRenderer;
+        style(el: any): void;
+        move(pos: any): CanvasRenderer;
+        line3D(pos: any): CanvasRenderer;
+        arc2D(centerPos: any, radius: any, stAng: any, edAng: any, anticlockwise?: boolean): CanvasRenderer;
+        _canvas: any;
+        context: any;
+    }
+    import Matrix from "math/Matrix";
 }
 declare module "objects/Graph" {
     export default class Graph {
@@ -406,10 +423,12 @@ declare module "mraph" {
     import Vector from "math/Vector";
     import Layer from "core/Layer";
     import ActionList from "animation/ActionList";
+    import WebglRenderer from "renderer/WebglRenderer.js";
+    import CanvasRenderer from "renderer/CanvasRenderer.js";
     import Point from "objects/Point";
     import Segment from "objects/Segment";
     import Box from "objects/Box";
     import Polygon from "objects/Polygon";
     import Arrow from "objects/Arrow";
-    export { Matrix, Vector, Layer, ActionList, Point, Segment, Box, Polygon, Arrow };
+    export { Matrix, Vector, Layer, ActionList, WebglRenderer, CanvasRenderer, Point, Segment, Box, Polygon, Arrow };
 }

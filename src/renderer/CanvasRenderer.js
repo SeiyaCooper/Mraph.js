@@ -1,6 +1,6 @@
 import Matrix from "../math/Matrix.js";
 
-export default class Renderer {
+export default class CanvasRenderer {
     matrix = Matrix.identity(4);
 
     constructor(canvas) {

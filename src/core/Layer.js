@@ -1,9 +1,10 @@
-import Renderer from "../renderer/Renderer.js";
+import WebglRenderer from "../renderer/WebglRenderer.js";
 import ActionList from "../animation/ActionList.js";
 
 export default class Layer {
     elements = [];
     actionList = new ActionList();
+    rendererClass = WebglRenderer;
 
     constructor(canvas) {
         this.canvas = canvas;
@@ -26,12 +27,12 @@ export default class Layer {
     }
 
     clear() {
-        this.renderer.clear();
+        this.renderer.clear(0, 0);
     }
 
     set canvas(val) {
         this._canvas = val;
-        this.renderer = new Renderer(val);
+        this.renderer = new this.rendererClass(val);
 
         for (let obj of this.elements) {
             obj.renderer = this.renderer;
