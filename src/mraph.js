@@ -2,8 +2,8 @@ import Matrix from "./math/Matrix.js";
 import Vector from "./math/Vector.js";
 import Layer from "./core/Layer.js";
 import ActionList from "./animation/ActionList.js";
-import WebglRenderer from "renderer/WebglRenderer.js";
-import CanvasRenderer from "renderer/CanvasRenderer.js";
+import WebglRenderer from "./renderer/WebglRenderer.js";
+import CanvasRenderer from "./renderer/CanvasRenderer.js";
 
 import Point from "./objects/Point.js";
 import Segment from "./objects/Segment.js";
