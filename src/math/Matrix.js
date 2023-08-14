@@ -112,26 +112,6 @@ export default class Matrix {
     }
 
     /**
-     * copy value from another matrix
-     * @param {Matrix} matrix
-     * @returns {Matrix}
-     */
-    copy(matrix) {
-        matrix = matrix.columns;
-        if (!Array.isArray(matrix[0])) return this;
-
-        const out = this.clone();
-
-        matrix.forEach((arr, i) => {
-            arr.forEach((num, j) => {
-                out.columns[i][j] = num;
-            });
-        });
-
-        return out;
-    }
-
-    /**
      * @returns {Vector}
      */
     toVector() {

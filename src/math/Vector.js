@@ -47,6 +47,11 @@ export default class Vector {
         return ans;
     }
 
+    /**
+     * return the dot product
+     * @param {Vector} vec
+     * @returns
+     */
     dot(vec) {
         if (!Vector.isVector(vec)) return this;
 
@@ -54,6 +59,16 @@ export default class Vector {
         for (const num of this.columns) {
             ans += num ** 2;
         }
+        return ans;
+    }
+
+    /**
+     * normalize this vector
+     * @returns {Vector}
+     */
+    normal() {
+        const ans = this.clone();
+        ans.length = 1;
         return ans;
     }
 
@@ -94,6 +109,13 @@ export default class Vector {
         return Array.isArray(obj.columns) && !!obj.toMatrix;
     }
 
+    set length(num) {
+        this.columns = this.mult(num / this.length).columns;
+    }
+
+    /**
+     * @type {number}
+     */
     get length() {
         return Math.sqrt(this.dot(this));
     }

@@ -36,11 +36,11 @@ export default class CanvasRenderer {
 
     style(el) {
         const ctx = this.context;
-        ctx.fillStyle = el.fillColor;
-        ctx.strokeStyle = el.strokeColor;
-        ctx.lineWidth = el.strokeWidth;
-        ctx.globalAlpha = el.alpha;
-        ctx.setLineDash(el.dash);
+        ctx.fillStyle = el.fillColor ?? "rgba(0,0,0,0)";
+        ctx.strokeStyle = el.strokeColor ?? "black";
+        ctx.lineWidth = el.strokeWidth ?? 5;
+        ctx.globalAlpha = el.alpha ?? 1;
+        ctx.setLineDash(el.dash ?? []);
     }
 
     move(pos) {

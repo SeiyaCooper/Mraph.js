@@ -44,7 +44,17 @@ declare module "math/Vector" {
          * @returns {Vector}
          */
         mult(num: number): Vector;
-        dot(vec: any): any;
+        /**
+         * return the dot product
+         * @param {Vector} vec
+         * @returns
+         */
+        dot(vec: Vector): number | Vector;
+        /**
+         * normalize this vector
+         * @returns {Vector}
+         */
+        normal(): Vector;
         /**
          * @param {number} row
          * @param {number} [n = 0]
@@ -61,7 +71,11 @@ declare module "math/Vector" {
          * @returns {Matrix}
          */
         toMatrix(): Matrix;
-        get length(): any;
+        set length(arg: number);
+        /**
+         * @type {number}
+         */
+        get length(): number;
         /**
          * @type {number}
          */
@@ -174,12 +188,6 @@ declare module "math/Matrix" {
          */
         clone(): Matrix;
         /**
-         * copy value from another matrix
-         * @param {Matrix} matrix
-         * @returns {Matrix}
-         */
-        copy(matrix: Matrix): Matrix;
-        /**
          * @returns {Vector}
          */
         toVector(): Vector;
@@ -193,25 +201,6 @@ declare module "math/Matrix" {
         get row(): number;
     }
     import Vector from "math/Vector";
-}
-declare module "renderer/WebglRenderer" {
-    export default class WebglRenderer {
-        constructor(canvas: any);
-        vertexNum: number;
-        mode: any;
-        set canvas(arg: any);
-        get canvas(): any;
-        set matrix(arg: any);
-        get matrix(): any;
-        clear(): void;
-        style(el: any): void;
-        styleSet: any;
-        render(): void;
-        line(start: any, end: any): void;
-        _canvas: any;
-        gl: any;
-        _matrix: any;
-    }
 }
 declare module "animation/Action" {
     export default class Action {
@@ -288,30 +277,6 @@ declare module "animation/ActionList" {
         play(): void;
     }
 }
-declare module "core/Layer" {
-    export default class Layer {
-        constructor(canvas: any);
-        elements: any[];
-        actionList: ActionList;
-        rendererClass: typeof WebglRenderer;
-        set canvas(arg: any);
-        get canvas(): any;
-        /**
-         * @param  {...{render: Function}} drawable
-         */
-        add(...drawable: {
-            render: Function;
-        }[]): void;
-        render(): void;
-        clear(): void;
-        _canvas: any;
-        renderer: WebglRenderer;
-        set matrix(arg: any);
-        get matrix(): any;
-    }
-    import ActionList from "animation/ActionList";
-    import WebglRenderer from "renderer/WebglRenderer";
-}
 declare module "renderer/CanvasRenderer" {
     export default class CanvasRenderer {
         constructor(canvas: any);
@@ -331,6 +296,64 @@ declare module "renderer/CanvasRenderer" {
         context: any;
     }
     import Matrix from "math/Matrix";
+}
+declare module "core/Layer" {
+    export default class Layer {
+        /**
+         * @param {HTMLCanvasElement} canvas
+         * @param {Object} [config={}] Optional Configurations
+         */
+        constructor(canvas: HTMLCanvasElement, config?: any);
+        elements: any[];
+        actionList: ActionList;
+        rendererClass: typeof CanvasRenderer;
+        set canvas(arg: any);
+        get canvas(): any;
+        /**
+         * @param  {...{render: Function}} drawable
+         */
+        add(...drawable: {
+            render: Function;
+        }[]): void;
+        render(): void;
+        clear(): void;
+        _canvas: any;
+        renderer: CanvasRenderer;
+        set matrix(arg: import("mraph").Matrix);
+        get matrix(): import("mraph").Matrix;
+    }
+    import ActionList from "animation/ActionList";
+    import CanvasRenderer from "renderer/CanvasRenderer";
+}
+declare module "renderer/WebglRenderer" {
+    export default class WebglRenderer {
+        constructor(canvas: any);
+        _vertexes: any[];
+        path: any[];
+        mode: any;
+        set canvas(arg: any);
+        get canvas(): any;
+        set matrix(arg: any);
+        get matrix(): any;
+        begin(): void;
+        close(): void;
+        fill(): void;
+        stroke(): void;
+        set vertexes(arg: any[]);
+        get vertexes(): any[];
+        clear(): void;
+        style(el: any): void;
+        styleSet: any;
+        move(pos: any): void;
+        line3D(pos: any): void;
+        arc2D(): void;
+        _canvas: any;
+        gl: any;
+        vertexShader: any;
+        fragmentShader: any;
+        program: any;
+        _matrix: any;
+    }
 }
 declare module "objects/Graph" {
     export default class Graph {

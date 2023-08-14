@@ -1,72 +1,116 @@
+import { mergeObject } from "../utils/utils.js";
 import Matrix from "../math/Matrix.js";
-import Vector from "../math/Vector.js";
 
 export default class WebglRenderer {
-    vertexNum = 0;
+    _vertexes = [];
+    path = [];
     mode = undefined;
+    styleSet = { strokeWidth: 5 };
 
     constructor(canvas) {
         this.canvas = canvas;
         this.matrix = Matrix.identity(4);
     }
 
+    begin() {
+        this.path = [];
+    }
+
+    close() {}
+
+    fill() {}
+
+    stroke() {
+        this.gl.drawArrays(this.gl.TRIANGLES, 0, this.vertexes.length);
+        this.vertexes = [];
+    }
+
     clear() {
         const gl = this.gl;
-        gl.clearColor(0, 0, 0, 1);
+        gl.clearColor(0, 0, 0, 0);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     }
 
     style(el) {
-        this.styleSet = el;
+        mergeObject(this.styleSet, el);
     }
 
-    render() {
-        this.gl.drawArrays(this.mode, 0, this.vertexNum);
+    move(pos) {
+        this.path.push(pos);
     }
 
-    line(start, end) {
-        this.vertexNum = 4;
+    line3D(pos) {
+        if (!this.path.length) this.move(pos);
 
-        start = new Vector(start);
-        end = new Vector(end);
-        const direcVec = end.reduce(start);
-        const vec = direcVec.mult(
-            this.styleSet.strokeWidth / 2 / direcVec.length
-        );
+        const path = this.path;
+        const start = path[path.length - 1];
+        const end = pos;
+        const vec = end.reduce(start);
+        path.push(pos);
+        vec.length = this.styleSet.strokeWidth / 2;
 
         const rotate90 = Matrix.rotateZ(Math.PI / 2);
         const rotateNeg90 = Matrix.rotateZ(-Math.PI / 2);
-        const position = [
+        const positon = [
             start.add(vec.trans(rotate90)).columns,
             start.add(vec.trans(rotateNeg90)).columns,
             end.add(vec.trans(rotateNeg90)).columns,
+            end.add(vec.trans(rotateNeg90)).columns,
             end.add(vec.trans(rotate90)).columns,
+            start.add(vec.trans(rotate90)).columns,
         ];
 
-        passAttrBufferData(
-            this.gl,
-            this.program,
-            "a_position",
-            position.flat(),
-            4
-        );
-        this.mode = this.gl.TRIANGLE_FAN;
+        if (this._vertexes.length) {
+            this.vertexes = this._vertexes.concat(positon);
+        } else {
+            this.vertexes = positon;
+        }
     }
+
+    arc2D() {}
 
     set canvas(canvas) {
         this._canvas = canvas;
 
         const gl = canvas.getContext("webgl");
         this.gl = gl;
-        [this.vertexShader, this.fragmentShader, this.program] = initProgram(
+        this.vertexShader = createShader(gl, gl.VERTEX_SHADER, VERTEX_CODE);
+        this.fragmentShader = createShader(
             gl,
-            VERTEX_CODE,
+            gl.FRAGMENT_SHADER,
             FRAGMENT_CODE
         );
+        this.program = createProgram(
+            gl,
+            this.vertexShader,
+            this.fragmentShader
+        );
+        gl.useProgram(this.program);
+
+        const res_location = gl.getUniformLocation(
+            this.program,
+            "u_resolution"
+        );
+        gl.uniform3f(
+            res_location,
+            gl.canvas.width / 2,
+            gl.canvas.height / 2,
+            500
+        );
+        gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
     }
 
     get canvas() {
         return this._canvas;
+    }
+
+    set vertexes(arr) {
+        this._vertexes = arr;
+        passAttrBufferData(this.gl, this.program, "a_position", arr.flat(), 4);
+    }
+
+    get vertexes() {
+        return this._vertexes;
     }
 
     set matrix(mat) {
@@ -92,7 +136,7 @@ const VERTEX_CODE = `
     uniform vec3 u_resolution;
 
     void main() {
-        gl_Position = (a_position / vec4(u_resolution, 1.0)) * u_matrix;
+        gl_Position = (a_position  * u_matrix) / vec4(u_resolution, 1.0);
     }
 `;
 
@@ -100,7 +144,7 @@ const FRAGMENT_CODE = `
     precision mediump float;
 
     void main() {
-        gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+        gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
     }
 `;
 
@@ -117,18 +161,6 @@ function createProgram(gl, vertexShader, fragmentShader) {
     gl.attachShader(program, fragmentShader);
     gl.linkProgram(program);
     return program;
-}
-
-function initProgram(gl, vertexSource, fragmentSource) {
-    const vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexSource);
-    const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentSource);
-    const program = createProgram(gl, vertexShader, fragmentShader);
-    console.log(gl.getShaderInfoLog(fragmentShader));
-    console.log(gl.getShaderInfoLog(vertexShader));
-    console.log(gl.getProgramInfoLog(program));
-    gl.useProgram(program);
-
-    return [vertexShader, fragmentShader, program];
 }
 
 function passAttrBufferData(gl, program, name, data, num) {

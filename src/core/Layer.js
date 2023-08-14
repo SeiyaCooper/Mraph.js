@@ -1,12 +1,18 @@
-import WebglRenderer from "../renderer/WebglRenderer.js";
 import ActionList from "../animation/ActionList.js";
+import { mergeObject } from "../utils/utils.js";
+import CanvasRenderer from "../renderer/CanvasRenderer.js";
 
 export default class Layer {
     elements = [];
     actionList = new ActionList();
-    rendererClass = WebglRenderer;
+    rendererClass = CanvasRenderer;
 
-    constructor(canvas) {
+    /**
+     * @param {HTMLCanvasElement} canvas
+     * @param {Object} [config={}] Optional Configurations
+     */
+    constructor(canvas, config = {}) {
+        mergeObject(this, config);
         this.canvas = canvas;
     }
 
