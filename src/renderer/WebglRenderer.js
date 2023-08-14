@@ -2,7 +2,7 @@ import { mergeObject } from "../utils/utils.js";
 import Matrix from "../math/Matrix.js";
 
 export default class WebglRenderer {
-    _vertexes = [];
+    vertexes = [];
     path = [];
     mode = undefined;
     styleSet = { strokeWidth: 5 };
@@ -21,8 +21,15 @@ export default class WebglRenderer {
     fill() {}
 
     stroke() {
+        passAttrBufferData(
+            this.gl,
+            this.program,
+            "a_position",
+            this.vertexes,
+            4
+        );
         this.gl.drawArrays(this.gl.TRIANGLES, 0, this.vertexes.length);
-        this.vertexes = [];
+        // this.vertexes = [];
     }
 
     clear() {
@@ -52,16 +59,16 @@ export default class WebglRenderer {
         const rotate90 = Matrix.rotateZ(Math.PI / 2);
         const rotateNeg90 = Matrix.rotateZ(-Math.PI / 2);
         const positon = [
-            start.add(vec.trans(rotate90)).columns,
-            start.add(vec.trans(rotateNeg90)).columns,
-            end.add(vec.trans(rotateNeg90)).columns,
-            end.add(vec.trans(rotateNeg90)).columns,
-            end.add(vec.trans(rotate90)).columns,
-            start.add(vec.trans(rotate90)).columns,
+            ...start.add(vec.trans(rotate90)).columns,
+            ...start.add(vec.trans(rotateNeg90)).columns,
+            ...end.add(vec.trans(rotateNeg90)).columns,
+            ...end.add(vec.trans(rotateNeg90)).columns,
+            ...end.add(vec.trans(rotate90)).columns,
+            ...start.add(vec.trans(rotate90)).columns,
         ];
 
-        if (this._vertexes.length) {
-            this.vertexes = this._vertexes.concat(positon);
+        if (this.vertexes.length) {
+            this.vertexes = this.vertexes.concat(positon);
         } else {
             this.vertexes = positon;
         }
@@ -104,15 +111,6 @@ export default class WebglRenderer {
         return this._canvas;
     }
 
-    set vertexes(arr) {
-        this._vertexes = arr;
-        passAttrBufferData(this.gl, this.program, "a_position", arr.flat(), 4);
-    }
-
-    get vertexes() {
-        return this._vertexes;
-    }
-
     set matrix(mat) {
         this._matrix = mat;
 
@@ -136,7 +134,7 @@ const VERTEX_CODE = `
     uniform vec3 u_resolution;
 
     void main() {
-        gl_Position = (a_position  * u_matrix) / vec4(u_resolution, 1.0);
+        gl_Position = (u_matrix * a_position) / vec4(u_resolution, 1.0);
     }
 `;
 
