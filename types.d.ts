@@ -331,6 +331,9 @@ declare module "renderer/WebglRenderer" {
         _vertexes: any[];
         path: any[];
         mode: any;
+        styleSet: {
+            strokeWidth: number;
+        };
         set canvas(arg: any);
         get canvas(): any;
         set matrix(arg: any);
@@ -343,7 +346,6 @@ declare module "renderer/WebglRenderer" {
         get vertexes(): any[];
         clear(): void;
         style(el: any): void;
-        styleSet: any;
         move(pos: any): void;
         line3D(pos: any): void;
         arc2D(): void;
@@ -402,16 +404,6 @@ declare module "objects/Segment" {
     }
     import Graph from "objects/Graph";
 }
-declare module "objects/Box" {
-    export default class Box extends Graph {
-        constructor(base: any, width: any, height: any, depth: any);
-        base: any;
-        height: any;
-        width: any;
-        depth: any;
-    }
-    import Graph from "objects/Graph";
-}
 declare module "objects/Group" {
     export default class Group extends Graph {
         constructor(...objs: any[]);
@@ -435,12 +427,6 @@ declare module "objects/Polygon" {
     }
     import Group from "objects/Group";
 }
-declare module "objects/Arrow" {
-    export default class _default extends Segment {
-        render(): void;
-    }
-    import Segment from "objects/Segment";
-}
 declare module "mraph" {
     import Matrix from "math/Matrix";
     import Vector from "math/Vector";
@@ -450,8 +436,6 @@ declare module "mraph" {
     import CanvasRenderer from "renderer/CanvasRenderer";
     import Point from "objects/Point";
     import Segment from "objects/Segment";
-    import Box from "objects/Box";
     import Polygon from "objects/Polygon";
-    import Arrow from "objects/Arrow";
-    export { Matrix, Vector, Layer, ActionList, WebglRenderer, CanvasRenderer, Point, Segment, Box, Polygon, Arrow };
+    export { Matrix, Vector, Layer, ActionList, WebglRenderer, CanvasRenderer, Point, Segment, Polygon };
 }
