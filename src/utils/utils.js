@@ -12,7 +12,9 @@ export function mergeObject(obj, ...source) {
  * @returns {Object}
  */
 export function deepCopy(obj) {
-    const out = Array.isArray(obj) ? [] : {};
+    const out = Array.isArray(obj)
+        ? []
+        : Object.create(Object.getPrototypeOf(obj));
     for (let attr in obj) {
         out[attr] =
             typeof obj[attr] === "object" ? deepCopy(obj[attr]) : obj[attr];

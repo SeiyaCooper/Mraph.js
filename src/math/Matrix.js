@@ -35,6 +35,14 @@ export default class Matrix {
     }
 
     /**
+     * @param {Matrix} mat
+     * @returns {Matrix}
+     */
+    trans(mat) {
+        return mat.mult(this);
+    }
+
+    /**
      *
      * @param {number} num
      * @returns {Matrix}
@@ -125,11 +133,7 @@ export default class Matrix {
      * @returns {Matrix}
      */
     static zeros(column, row) {
-        return new Matrix(
-            Array(column)
-                .fill(0)
-                .map(() => Array(row).fill(0))
-        );
+        return Matrix.from(row, column, 0);
     }
 
     /**
@@ -143,6 +147,114 @@ export default class Matrix {
             out.columns[i][i] = 1;
         }
         return out;
+    }
+
+    /**
+     * @param  {...any} args
+     * @returns
+     *
+     * @example
+     * Matrix.from(columns);
+     * // returns new Matrix(columns)
+     *
+     * @example
+     * Matrix.from(2,1,3);
+     * // returns new Matrix([
+     *     [3],
+     *     [3]
+     * ])
+     */
+    static from(...args) {
+        if (Array.isArray(args[0]) && Array.isArray(args[0][0])) {
+            return new Matrix(args[0]);
+        }
+        if (
+            typeof args[0] === "number" &&
+            typeof args[1] === "number" &&
+            typeof args[2] === "number"
+        ) {
+            return new Matrix(
+                Array(args[1])
+                    .fill(args[2])
+                    .map(() => Array(args[0]).fill(args[2]))
+            );
+        }
+
+        return args;
+    }
+
+    /**
+     * return a 4*4 rotation matrix
+     * @param {number} ang
+     * the rotate angle
+     * @returns {Matrix}
+     */
+    static rotateX(ang) {
+        return new Matrix([
+            [1, 0, 0, 0],
+            [0, Math.cos(ang), -Math.sin(ang), 0],
+            [0, Math.sin(ang), Math.cos(ang), 0],
+            [0, 0, 0, 1],
+        ]);
+    }
+
+    /**
+     * return a 4*4 rotation matrix
+     * @param {number} ang
+     * the rotate angle
+     * @returns {Matrix}
+     */
+    static rotateY(ang) {
+        return new Matrix([
+            [Math.cos(ang), 0, -Math.sin(ang), 0],
+            [0, 1, 0, 0],
+            [Math.sin(ang), 0, Math.cos(ang), 0],
+            [0, 0, 0, 1],
+        ]);
+    }
+
+    /**
+     * return a 4*4 rotation matrix
+     * @param {number} ang the rotate angle
+     * @returns {Matrix}
+     */
+    static rotateZ(ang) {
+        return new Matrix([
+            [Math.cos(ang), -Math.sin(ang), 0, 0],
+            [Math.sin(ang), Math.cos(ang), 0, 0],
+            [0, 0, 1, 0],
+            [0, 0, 0, 1],
+        ]);
+    }
+
+    /**
+     * return a 4*4 translation Matrix
+     * @param {number} x
+     * @param {number} y
+     * @param {number} z
+     * @returns {Matrix}
+     */
+    static translate(x, y, z) {
+        return new Matrix([
+            [1, 0, 0, 0],
+            [0, 1, 0, 0],
+            [0, 0, 1, 0],
+            [x, y, z, 1],
+        ]);
+    }
+
+    /**
+     * return a 4*4 perspective matrix
+     * @param {number} fudgeFactor
+     * @returns
+     */
+    static perspective(fudgeFactor) {
+        return new Matrix([
+            [1, 0, 0, 0],
+            [0, 1, 0, 0],
+            [0, 0, 1, 0],
+            [0, 0, fudgeFactor, 1],
+        ]);
     }
 
     /**
