@@ -263,7 +263,7 @@ declare module "animation/ActionList" {
          * list for actions to be called
          * @type {Map}
          */
-        list: Map<any, any>;
+        list: Map;
         /**
          * @type {number}
          */
@@ -381,9 +381,9 @@ declare module "objects/Point" {
          * @param {Vector|number[]|...number} pos
          */
         constructor(...args: any[]);
-        _matrix: Matrix;
-        translate: Matrix;
-        rotate: Matrix;
+        matrix: Matrix;
+        _V: Vector;
+        _A: Vector;
         pos: any;
         render(): Point;
         /**
@@ -391,11 +391,10 @@ declare module "objects/Point" {
          * @type {Vector}
          */
         get transPos(): Vector;
-        set velocity(arg: any);
-        get velocity(): any;
-        _velocity: any;
-        set matrix(arg: Matrix);
-        get matrix(): Matrix;
+        set V(arg: Vector);
+        get V(): Vector;
+        set A(arg: Vector);
+        get A(): Vector;
         set x(arg: any);
         get x(): any;
         set y(arg: any);

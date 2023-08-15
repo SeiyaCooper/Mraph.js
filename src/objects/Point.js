@@ -4,9 +4,9 @@ import Matrix from "../math/Matrix.js";
 
 export default class Point extends Graph {
     fillColor = "black";
-    _matrix = Matrix.identity(4);
-    translate = Matrix.identity(4);
-    rotate = Matrix.identity(4);
+    matrix = Matrix.identity(4);
+    _V = new Vector([0, 0, 0, 0]);
+    _A = new Vector([0, 0, 0, 0]);
 
     /**
      * @param {Vector|number[]|...number} pos
@@ -45,27 +45,44 @@ export default class Point extends Graph {
         return this.pos.trans(this.matrix);
     }
 
-    set velocity(val) {
-        this._velocity = val;
+    set V(val) {
+        const velo = this._V;
+        this._V = val;
+        if (velo.length !== 0) return;
+
+        let lastTime = 0;
         this.layer.actionList.add(0, Infinity, {
             update: (_, elapsedTime) => {
-                this.translate = Matrix.translate(
-                    ...val.mult(elapsedTime / 1000).columns
+                this.pos = this.pos.add(
+                    this._V.mult((elapsedTime - lastTime) / 1000)
                 );
+                lastTime = elapsedTime;
             },
         });
     }
 
-    get velocity() {
-        return this._velocity;
+    get V() {
+        return this._V;
     }
 
-    set matrix(mat) {
-        this._matrix = mat;
+    set A(val) {
+        const acce = this._A;
+        this._A = val;
+        if (acce.length !== 0) return;
+
+        let lastTime = 0;
+        this.layer.actionList.add(0, Infinity, {
+            update: (_, elapsedTime) => {
+                this.V = this._V.add(
+                    this._A.mult((elapsedTime - lastTime) / 1000)
+                );
+                lastTime = elapsedTime;
+            },
+        });
     }
 
-    get matrix() {
-        return this._matrix.trans(this.rotate).trans(this.translate);
+    get A() {
+        return this._A;
     }
 
     set x(val) {

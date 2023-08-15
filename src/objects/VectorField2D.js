@@ -9,7 +9,7 @@ export default class VectorField2D extends Group {
         return 50 * math.sigmoid(length / 50);
     };
 
-    constructor(func, xRange = [-400, 400, 50], yRange = [-400, 400, 50]) {
+    constructor(func, xRange = [-400, 400, 100], yRange = [-400, 400, 100]) {
         super();
         this.xRange = xRange;
         this.yRange = yRange;
