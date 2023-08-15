@@ -29,7 +29,7 @@ export default class WebglRenderer {
             4
         );
         this.gl.drawArrays(this.gl.TRIANGLES, 0, this.vertexes.length);
-        // this.vertexes = [];
+        this.vertexes = [];
     }
 
     clear() {

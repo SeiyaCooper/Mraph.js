@@ -244,6 +244,20 @@ export default class Matrix {
     }
 
     /**
+     * return a 4*4 perspective matrix
+     * @param {number} fudgeFactor
+     * @returns
+     */
+    static perspective(fudgeFactor) {
+        return new Matrix([
+            [1, 0, 0, 0],
+            [0, 1, 0, 0],
+            [0, 0, 1, 0],
+            [0, 0, fudgeFactor, 1],
+        ]);
+    }
+
+    /**
      * @returns {number} the number of columns
      */
     get column() {

@@ -109,6 +109,9 @@ export default class Vector {
         return Array.isArray(obj.columns) && !!obj.toMatrix;
     }
 
+    /**
+     * @param {number} num
+     */
     set length(num) {
         this.columns = this.mult(num / this.length).columns;
     }

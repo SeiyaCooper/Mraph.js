@@ -71,6 +71,9 @@ declare module "math/Vector" {
          * @returns {Matrix}
          */
         toMatrix(): Matrix;
+        /**
+         * @param {number} num
+         */
         set length(arg: number);
         /**
          * @type {number}
@@ -147,6 +150,12 @@ declare module "math/Matrix" {
          * @returns {Matrix}
          */
         static translate(x: number, y: number, z: number): Matrix;
+        /**
+         * return a 4*4 perspective matrix
+         * @param {number} fudgeFactor
+         * @returns
+         */
+        static perspective(fudgeFactor: number): Matrix;
         /**
          * @param {number[][]} [source = [[1]]]
          * @return {Matrix}
@@ -328,7 +337,7 @@ declare module "core/Layer" {
 declare module "renderer/WebglRenderer" {
     export default class WebglRenderer {
         constructor(canvas: any);
-        _vertexes: any[];
+        vertexes: any[];
         path: any[];
         mode: any;
         styleSet: {
@@ -342,8 +351,6 @@ declare module "renderer/WebglRenderer" {
         close(): void;
         fill(): void;
         stroke(): void;
-        set vertexes(arg: any[]);
-        get vertexes(): any[];
         clear(): void;
         style(el: any): void;
         move(pos: any): void;
@@ -359,7 +366,6 @@ declare module "renderer/WebglRenderer" {
 }
 declare module "objects/Graph" {
     export default class Graph {
-        size: number;
         dash: any[];
         alpha: number;
         visible: boolean;
@@ -401,6 +407,11 @@ declare module "objects/Segment" {
         start: any;
         end: any;
         render(): Segment;
+        set vector(arg: any);
+        get vector(): any;
+        _vector: any;
+        set length(arg: any);
+        get length(): any;
     }
     import Graph from "objects/Graph";
 }
@@ -410,6 +421,7 @@ declare module "objects/Group" {
         set objs(arg: any);
         get objs(): any;
         render(): Group;
+        add(...objs: any[]): void;
         set(attrName: any, val: any): Group;
         _objs: any;
         set renderer(arg: any);
@@ -427,6 +439,24 @@ declare module "objects/Polygon" {
     }
     import Group from "objects/Group";
 }
+declare module "objects/Arrow" {
+    export default class Arrow extends Segment {
+        constructor(...param: any[]);
+    }
+    import Segment from "objects/Segment";
+}
+declare module "objects/VectorField2D" {
+    export default class VectorField2D extends Group {
+        constructor(func: any, xRange?: number[], yRange?: number[]);
+        lengthFunc: (length: any) => number;
+        xRange: number[];
+        yRange: number[];
+        set func(arg: any);
+        get func(): any;
+        _func: any;
+    }
+    import Group from "objects/Group";
+}
 declare module "mraph" {
     import Matrix from "math/Matrix";
     import Vector from "math/Vector";
@@ -437,5 +467,7 @@ declare module "mraph" {
     import Point from "objects/Point";
     import Segment from "objects/Segment";
     import Polygon from "objects/Polygon";
-    export { Matrix, Vector, Layer, ActionList, WebglRenderer, CanvasRenderer, Point, Segment, Polygon };
+    import Arrow from "objects/Arrow";
+    import VectorField2D from "objects/VectorField2D";
+    export { Matrix, Vector, Layer, ActionList, WebglRenderer, CanvasRenderer, Point, Segment, Polygon, Arrow, VectorField2D };
 }

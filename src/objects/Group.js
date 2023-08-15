@@ -16,6 +16,10 @@ export default class Group extends Graph {
         return this;
     }
 
+    add(...objs) {
+        this.objs.push(...objs);
+    }
+
     set(attrName, val) {
         for (let obj of this.objs) {
             obj[attrName] = val;
