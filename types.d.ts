@@ -366,15 +366,14 @@ declare module "renderer/WebglRenderer" {
 }
 declare module "objects/Graph" {
     export default class Graph {
+        size: number;
         dash: any[];
         alpha: number;
         visible: boolean;
         fillColor: string;
         strokeColor: string;
         strokeWidth: number;
-        matrix: Matrix;
     }
-    import Matrix from "math/Matrix";
 }
 declare module "objects/Point" {
     export default class Point extends Graph {
@@ -382,6 +381,9 @@ declare module "objects/Point" {
          * @param {Vector|number[]|...number} pos
          */
         constructor(...args: any[]);
+        _matrix: Matrix;
+        translate: Matrix;
+        rotate: Matrix;
         pos: any;
         render(): Point;
         /**
@@ -389,6 +391,11 @@ declare module "objects/Point" {
          * @type {Vector}
          */
         get transPos(): Vector;
+        set velocity(arg: any);
+        get velocity(): any;
+        _velocity: any;
+        set matrix(arg: Matrix);
+        get matrix(): Matrix;
         set x(arg: any);
         get x(): any;
         set y(arg: any);
@@ -399,6 +406,7 @@ declare module "objects/Point" {
         get w(): any;
     }
     import Graph from "objects/Graph";
+    import Matrix from "math/Matrix";
     import Vector from "math/Vector";
 }
 declare module "objects/Segment" {
@@ -444,6 +452,9 @@ declare module "objects/Arrow" {
         constructor(...param: any[]);
     }
     import Segment from "objects/Segment";
+}
+declare module "utils/math" {
+    export function sigmoid(x: any): number;
 }
 declare module "objects/VectorField2D" {
     export default class VectorField2D extends Group {

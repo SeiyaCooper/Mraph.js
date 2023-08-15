@@ -22,6 +22,7 @@ export default class Layer {
     add(...drawable) {
         for (let obj of drawable) {
             this.elements.push(obj);
+            obj.layer = this;
             obj.renderer = this.renderer;
         }
     }

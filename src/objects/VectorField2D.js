@@ -2,10 +2,11 @@ import Group from "./Group.js";
 import Arrow from "./Arrow.js";
 import Point from "./Point.js";
 import Vector from "../math/Vector.js";
+import * as math from "../utils/math.js";
 
 export default class VectorField2D extends Group {
     lengthFunc = (length) => {
-        return length / 5;
+        return 50 * math.sigmoid(length / 50);
     };
 
     constructor(func, xRange = [-400, 400, 50], yRange = [-400, 400, 50]) {

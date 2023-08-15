@@ -1,8 +1,13 @@
 import Graph from "./Graph.js";
 import Vector from "../math/Vector.js";
+import Matrix from "../math/Matrix.js";
 
 export default class Point extends Graph {
     fillColor = "black";
+    _matrix = Matrix.identity(4);
+    translate = Matrix.identity(4);
+    rotate = Matrix.identity(4);
+
     /**
      * @param {Vector|number[]|...number} pos
      */
@@ -38,6 +43,29 @@ export default class Point extends Graph {
      */
     get transPos() {
         return this.pos.trans(this.matrix);
+    }
+
+    set velocity(val) {
+        this._velocity = val;
+        this.layer.actionList.add(0, Infinity, {
+            update: (_, elapsedTime) => {
+                this.translate = Matrix.translate(
+                    ...val.mult(elapsedTime / 1000).columns
+                );
+            },
+        });
+    }
+
+    get velocity() {
+        return this._velocity;
+    }
+
+    set matrix(mat) {
+        this._matrix = mat;
+    }
+
+    get matrix() {
+        return this._matrix.trans(this.rotate).trans(this.translate);
     }
 
     set x(val) {
