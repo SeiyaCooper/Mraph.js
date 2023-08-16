@@ -1,86 +1,40 @@
-import { mergeObject } from "../utils/utils.js";
 import Matrix from "../math/Matrix.js";
 
 export default class WebglRenderer {
-    vertexes = [];
-    path = [];
-    mode = undefined;
-    styleSet = { strokeWidth: 5 };
-
     constructor(canvas) {
         this.canvas = canvas;
         this.matrix = Matrix.identity(4);
     }
 
-    begin() {
-        this.path = [];
-    }
-
-    close() {}
-
-    fill() {}
-
-    stroke() {
-        passAttrBufferData(
-            this.gl,
-            this.program,
-            "a_position",
-            this.vertexes,
-            4
-        );
-        this.gl.drawArrays(this.gl.TRIANGLES, 0, this.vertexes.length);
-        this.vertexes = [];
-    }
-
-    clear() {
+    render(mesh) {
         const gl = this.gl;
-        gl.clearColor(0, 0, 0, 0);
-        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+        const program = this.program;
+
+        passAttrBufferData(gl, program, "position", mesh.vertexes, 4);
+        passAttrBufferData(gl, program, "color", mesh.colors, 4);
+        passUnifMat4(gl, program, "matrix", mesh.matrix.columns);
+
+        const buffer = gl.createBuffer();
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffer);
+        gl.bufferData(
+            gl.ELEMENT_ARRAY_BUFFER,
+            new Uint16Array(mesh.indices.flat()),
+            gl.STATIC_DRAW
+        );
+
+        gl.drawElements(
+            gl.TRIANGLES,
+            mesh.indices.flat().length,
+            gl.UNSIGNED_SHORT,
+            0
+        );
     }
-
-    style(el) {
-        mergeObject(this.styleSet, el);
-    }
-
-    move(pos) {
-        this.path.push(pos);
-    }
-
-    line3D(pos) {
-        if (!this.path.length) this.move(pos);
-
-        const path = this.path;
-        const start = path[path.length - 1];
-        const end = pos;
-        const vec = end.reduce(start);
-        path.push(pos);
-        vec.length = this.styleSet.strokeWidth / 2;
-
-        const rotate90 = Matrix.rotateZ(Math.PI / 2);
-        const rotateNeg90 = Matrix.rotateZ(-Math.PI / 2);
-        const positon = [
-            ...start.add(vec.trans(rotate90)).columns,
-            ...start.add(vec.trans(rotateNeg90)).columns,
-            ...end.add(vec.trans(rotateNeg90)).columns,
-            ...end.add(vec.trans(rotateNeg90)).columns,
-            ...end.add(vec.trans(rotate90)).columns,
-            ...start.add(vec.trans(rotate90)).columns,
-        ];
-
-        if (this.vertexes.length) {
-            this.vertexes = this.vertexes.concat(positon);
-        } else {
-            this.vertexes = positon;
-        }
-    }
-
-    arc2D() {}
 
     set canvas(canvas) {
         this._canvas = canvas;
+        this.gl = canvas.getContext("webgl");
 
-        const gl = canvas.getContext("webgl");
-        this.gl = gl;
+        const gl = this.gl;
         this.vertexShader = createShader(gl, gl.VERTEX_SHADER, VERTEX_CODE);
         this.fragmentShader = createShader(
             gl,
@@ -92,57 +46,49 @@ export default class WebglRenderer {
             this.vertexShader,
             this.fragmentShader
         );
+        const location = gl.getUniformLocation(this.program, "resolution");
         gl.useProgram(this.program);
-
-        const res_location = gl.getUniformLocation(
-            this.program,
-            "u_resolution"
-        );
-        gl.uniform3f(
-            res_location,
-            gl.canvas.width / 2,
-            gl.canvas.height / 2,
-            500
-        );
-        gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
+        gl.uniform2f(location, canvas.width, canvas.height);
+        gl.viewport(0, 0, canvas.width, canvas.height);
+        gl.clearColor(0, 0, 0, 1);
+        gl.clear(gl.COLOR_BUFFER_BIT);
     }
-
     get canvas() {
         return this._canvas;
     }
 
     set matrix(mat) {
         this._matrix = mat;
-
-        const gl = this.gl;
-        const location = gl.getUniformLocation(this.program, "u_matrix");
-        gl.uniformMatrix4fv(
-            location,
-            false,
-            new Float32Array(mat.columns.flat())
-        );
+        passUnifMat4(this.gl, this.program, "projectionMatrix", mat.columns);
     }
-
     get matrix() {
         return this._matrix;
     }
 }
 
 const VERTEX_CODE = `
-    attribute vec4 a_position;
-    uniform mat4 u_matrix;
-    uniform vec3 u_resolution;
+    attribute vec4 position;
+    attribute vec4 color;
+
+    uniform mat4 matrix;
+    uniform mat4 projectionMatrix;
+    uniform vec2 resolution;
+
+    varying vec4 vColor;
 
     void main() {
-        gl_Position = (u_matrix * a_position) / vec4(u_resolution, 1.0);
+        gl_Position = projectionMatrix * matrix * (position / vec4(resolution, 1.0, 1.0));
+        vColor = color;
     }
 `;
 
 const FRAGMENT_CODE = `
     precision mediump float;
 
+    varying vec4 vColor;
+
     void main() {
-        gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+        gl_FragColor = vColor;
     }
 `;
 
@@ -165,7 +111,16 @@ function passAttrBufferData(gl, program, name, data, num) {
     const location = gl.getAttribLocation(program, name);
     const buffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(data), gl.STATIC_DRAW);
+    gl.bufferData(
+        gl.ARRAY_BUFFER,
+        new Float32Array(data.flat()),
+        gl.STATIC_DRAW
+    );
     gl.enableVertexAttribArray(location);
     gl.vertexAttribPointer(location, num, gl.FLOAT, false, 0, 0);
+}
+
+function passUnifMat4(gl, program, name, data) {
+    const location = gl.getUniformLocation(program, name);
+    gl.uniformMatrix4fv(location, false, new Float32Array(data.flat()));
 }

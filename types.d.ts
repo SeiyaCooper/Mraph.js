@@ -263,7 +263,7 @@ declare module "animation/ActionList" {
          * list for actions to be called
          * @type {Map}
          */
-        list: Map;
+        list: Map<any, any>;
         /**
          * @type {number}
          */
@@ -337,25 +337,11 @@ declare module "core/Layer" {
 declare module "renderer/WebglRenderer" {
     export default class WebglRenderer {
         constructor(canvas: any);
-        vertexes: any[];
-        path: any[];
-        mode: any;
-        styleSet: {
-            strokeWidth: number;
-        };
         set canvas(arg: any);
         get canvas(): any;
         set matrix(arg: any);
         get matrix(): any;
-        begin(): void;
-        close(): void;
-        fill(): void;
-        stroke(): void;
-        clear(): void;
-        style(el: any): void;
-        move(pos: any): void;
-        line3D(pos: any): void;
-        arc2D(): void;
+        render(mesh: any): void;
         _canvas: any;
         gl: any;
         vertexShader: any;
@@ -367,13 +353,26 @@ declare module "renderer/WebglRenderer" {
 declare module "objects/Graph" {
     export default class Graph {
         size: number;
-        dash: any[];
-        alpha: number;
         visible: boolean;
-        fillColor: string;
-        strokeColor: string;
-        strokeWidth: number;
+        _color: number[];
+        vertexes: any[];
+        indices: any[];
+        colors: any[];
+        rotation: {
+            x: number;
+            y: number;
+            z: number;
+        };
+        position: {
+            x: number;
+            y: number;
+            z: number;
+        };
+        set color(arg: number[]);
+        get color(): number[];
+        get matrix(): Matrix;
     }
+    import Matrix from "math/Matrix";
 }
 declare module "objects/Point" {
     export default class Point extends Graph {
@@ -381,6 +380,7 @@ declare module "objects/Point" {
          * @param {Vector|number[]|...number} pos
          */
         constructor(...args: any[]);
+        fillColor: string;
         matrix: Matrix;
         _V: Vector;
         _A: Vector;
@@ -414,6 +414,7 @@ declare module "objects/Segment" {
         start: any;
         end: any;
         render(): Segment;
+        get position(): any[];
         set vector(arg: any);
         get vector(): any;
         _vector: any;
@@ -449,6 +450,8 @@ declare module "objects/Polygon" {
 declare module "objects/Arrow" {
     export default class Arrow extends Segment {
         constructor(...param: any[]);
+        fillColor: string;
+        render(): Arrow;
     }
     import Segment from "objects/Segment";
 }

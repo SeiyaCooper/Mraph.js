@@ -21,6 +21,10 @@ export default class Segment extends Graph {
         return this;
     }
 
+    get position() {
+        return [];
+    }
+
     set vector(vec) {
         this._vector = vec;
         this.end = new Point(this.start.pos.add(vec));
