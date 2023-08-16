@@ -21,8 +21,8 @@ export default class Arrow extends Segment {
 
         super.render();
         const renderer = this.renderer;
-        const start = this.start.transPos;
-        const end = this.end.transPos;
+        const start = this.start.pos;
+        const end = this.end.pos;
         const vec = start.reduce(end);
         vec.length = this.strokeWidth * 3;
 

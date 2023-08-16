@@ -8,6 +8,7 @@ export default class VectorField2D extends Group {
     lengthFunc = (length) => {
         return 50 * math.sigmoid(length / 50);
     };
+    _center = new Vector([0, 0, 0]);
 
     constructor(func, xRange = [-400, 400, 100], yRange = [-400, 400, 100]) {
         super();
@@ -16,16 +17,15 @@ export default class VectorField2D extends Group {
         this.func = func;
     }
 
-    set func(func) {
-        this._func = func;
-
+    update() {
+        const func = this._func;
         const xRange = this.xRange;
         const yRange = this.yRange;
         let objs = [];
         for (let x = xRange[0]; x <= xRange[1]; x += xRange[2]) {
             for (let y = yRange[0]; y <= yRange[1]; y += yRange[2]) {
                 const arrow = new Arrow(
-                    new Point(x, y),
+                    new Point(new Vector([x, y, 0]).add(this.center)),
                     new Vector(func(x, y))
                 );
                 arrow.length = this.lengthFunc(arrow.length);
@@ -36,7 +36,21 @@ export default class VectorField2D extends Group {
         this.objs = objs;
     }
 
+    set func(func) {
+        this._func = func;
+        this.update();
+    }
+
     get func() {
         return this._func;
+    }
+
+    set center(center) {
+        this._center = center;
+        this.update();
+    }
+
+    get center() {
+        return this._center;
     }
 }

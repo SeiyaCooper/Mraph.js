@@ -1,12 +1,10 @@
 import Graph from "./Graph.js";
 import Vector from "../math/Vector.js";
-import Matrix from "../math/Matrix.js";
 
 export default class Point extends Graph {
     fillColor = "black";
-    matrix = Matrix.identity(4);
-    _V = new Vector([0, 0, 0, 0]);
-    _A = new Vector([0, 0, 0, 0]);
+    _v = new Vector([0, 0, 0, 0]);
+    _a = new Vector([0, 0, 0, 0]);
 
     /**
      * @param {Vector|number[]|...number} pos
@@ -30,59 +28,51 @@ export default class Point extends Graph {
         const renderer = this.renderer;
         renderer.style(this);
         renderer.begin();
-        renderer.arc2D(this.transPos, this.size, 0, Math.PI * 2);
+        renderer.arc2D(this.pos, this.size, 0, Math.PI * 2);
         renderer.stroke();
         renderer.fill();
 
         return this;
     }
 
-    /**
-     * this.matrix transformed pos
-     * @type {Vector}
-     */
-    get transPos() {
-        return this.pos.trans(this.matrix);
-    }
-
-    set V(val) {
-        const velo = this._V;
-        this._V = val;
+    set v(val) {
+        const velo = this._v;
+        this._v = val;
         if (velo.length !== 0) return;
 
         let lastTime = 0;
         this.layer.actionList.add(0, Infinity, {
             update: (_, elapsedTime) => {
                 this.pos = this.pos.add(
-                    this._V.mult((elapsedTime - lastTime) / 1000)
+                    this._v.mult((elapsedTime - lastTime) / 1000)
                 );
                 lastTime = elapsedTime;
             },
         });
     }
 
-    get V() {
-        return this._V;
+    get v() {
+        return this._v;
     }
 
-    set A(val) {
-        const acce = this._A;
-        this._A = val;
+    set a(val) {
+        const acce = this._a;
+        this._a = val;
         if (acce.length !== 0) return;
 
         let lastTime = 0;
         this.layer.actionList.add(0, Infinity, {
             update: (_, elapsedTime) => {
-                this.V = this._V.add(
-                    this._A.mult((elapsedTime - lastTime) / 1000)
+                this.v = this._v.add(
+                    this._a.mult((elapsedTime - lastTime) / 1000)
                 );
                 lastTime = elapsedTime;
             },
         });
     }
 
-    get A() {
-        return this._A;
+    get a() {
+        return this._a;
     }
 
     set x(val) {

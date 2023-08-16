@@ -263,7 +263,7 @@ declare module "animation/ActionList" {
          * list for actions to be called
          * @type {Map}
          */
-        list: Map;
+        list: Map<any, any>;
         /**
          * @type {number}
          */
@@ -326,6 +326,7 @@ declare module "core/Layer" {
         }[]): void;
         render(): void;
         clear(): void;
+        play(): void;
         _canvas: any;
         renderer: CanvasRenderer;
         set matrix(arg: import("mraph").Matrix);
@@ -381,20 +382,14 @@ declare module "objects/Point" {
          * @param {Vector|number[]|...number} pos
          */
         constructor(...args: any[]);
-        matrix: Matrix;
-        _V: Vector;
-        _A: Vector;
+        _v: Vector;
+        _a: Vector;
         pos: any;
         render(): Point;
-        /**
-         * this.matrix transformed pos
-         * @type {Vector}
-         */
-        get transPos(): Vector;
-        set V(arg: Vector);
-        get V(): Vector;
-        set A(arg: Vector);
-        get A(): Vector;
+        set v(arg: Vector);
+        get v(): Vector;
+        set a(arg: Vector);
+        get a(): Vector;
         set x(arg: any);
         get x(): any;
         set y(arg: any);
@@ -405,7 +400,6 @@ declare module "objects/Point" {
         get w(): any;
     }
     import Graph from "objects/Graph";
-    import Matrix from "math/Matrix";
     import Vector from "math/Vector";
 }
 declare module "objects/Segment" {
@@ -459,13 +453,18 @@ declare module "objects/VectorField2D" {
     export default class VectorField2D extends Group {
         constructor(func: any, xRange?: number[], yRange?: number[]);
         lengthFunc: (length: any) => number;
+        _center: Vector;
         xRange: number[];
         yRange: number[];
         set func(arg: any);
         get func(): any;
+        update(): void;
         _func: any;
+        set center(arg: Vector);
+        get center(): Vector;
     }
     import Group from "objects/Group";
+    import Vector from "math/Vector";
 }
 declare module "mraph" {
     import Matrix from "math/Matrix";

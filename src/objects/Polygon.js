@@ -16,9 +16,9 @@ export default class Polygon extends Group {
 
         const renderer = this.renderer;
         renderer.style(this);
-        renderer.move(this.points[0].transPos);
+        renderer.move(this.points[0].pos);
         for (let point of this.points) {
-            renderer.line3D(point.transPos);
+            renderer.line3D(point.pos);
         }
         renderer.close();
         renderer.fill();

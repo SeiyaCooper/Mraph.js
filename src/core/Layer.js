@@ -37,6 +37,16 @@ export default class Layer {
         this.renderer.clear(0, 0);
     }
 
+    play() {
+        this.actionList.add(0, Infinity, {
+            update: () => {
+                this.clear();
+                this.render();
+            },
+        });
+        this.actionList.play();
+    }
+
     set canvas(val) {
         this._canvas = val;
         this.renderer = new this.rendererClass(val);
