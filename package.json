@@ -1,6 +1,6 @@
 {
     "name": "mraph",
-    "version": "1.0.0",
+    "version": "1.0.2-alpha.1",
     "description": "",
     "type": "module",
     "types": "types.d.ts",
@@ -14,14 +14,14 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/CoopusDev/Mraph-js.git"
+        "url": "git+https://github.com/SeiyaCooper/Mraph.js.git"
     },
     "author": "CoppusDev",
     "license": "MIT",
     "bugs": {
-        "url": "https://github.com/CoopusDev/Mraph-js/issues"
+        "url": "https://github.com/SeiyaCooper/Mraph.js/issues"
     },
-    "homepage": "https://github.com/CoopusDev/Mraph-js#readme",
+    "homepage": "https://github.com/SeiyaCooper/Mraph.js#readme",
     "devDependencies": {
         "eslint": "^8.39.0",
         "eslint-plugin-prettier": "^4.2.1",
