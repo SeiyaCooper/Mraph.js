@@ -3,6 +3,9 @@ import Vector from "../math/Vector.js";
 
 export default class Point extends Graph {
     fillColor = "black";
+    _v = new Vector([0, 0, 0, 0]);
+    _a = new Vector([0, 0, 0, 0]);
+
     /**
      * @param {Vector|number[]|...number} pos
      */
@@ -25,19 +28,51 @@ export default class Point extends Graph {
         const renderer = this.renderer;
         renderer.style(this);
         renderer.begin();
-        renderer.arc2D(this.transPos, this.size, 0, Math.PI * 2);
+        renderer.arc2D(this.pos, this.size, 0, Math.PI * 2);
         renderer.stroke();
         renderer.fill();
 
         return this;
     }
 
-    /**
-     * this.matrix transformed pos
-     * @type {Vector}
-     */
-    get transPos() {
-        return this.pos.trans(this.matrix);
+    set v(val) {
+        const velo = this._v;
+        this._v = val;
+        if (velo.length !== 0) return;
+
+        let lastTime = 0;
+        this.layer.actionList.add(0, Infinity, {
+            update: (_, elapsedTime) => {
+                this.pos = this.pos.add(
+                    this._v.mult((elapsedTime - lastTime) / 1000)
+                );
+                lastTime = elapsedTime;
+            },
+        });
+    }
+
+    get v() {
+        return this._v;
+    }
+
+    set a(val) {
+        const acce = this._a;
+        this._a = val;
+        if (acce.length !== 0) return;
+
+        let lastTime = 0;
+        this.layer.actionList.add(0, Infinity, {
+            update: (_, elapsedTime) => {
+                this.v = this._v.add(
+                    this._a.mult((elapsedTime - lastTime) / 1000)
+                );
+                lastTime = elapsedTime;
+            },
+        });
+    }
+
+    get a() {
+        return this._a;
     }
 
     set x(val) {

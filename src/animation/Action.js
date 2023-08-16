@@ -46,15 +46,15 @@ export default class Action {
     excute(start, stop, now) {
         if (this.isStarted && !this.isStopped) {
             if (now > stop) {
-                this.update(1);
+                this.update(1, stop - start);
                 this.stop();
                 this.isStopped = true;
             } else {
-                this.update((now - start) / (stop - start));
+                this.update((now - start) / (stop - start), now - start);
             }
         } else if (now > start) {
             this.start();
-            this.update(0);
+            this.update(0, 0);
             this.isStarted = true;
         }
     }
@@ -67,16 +67,16 @@ export default class Action {
      */
     merge(action) {
         this.start = () => {
-            this.start();
             action.start();
+            this.start();
         };
-        this.update = (p) => {
-            this.update(p);
-            action.update(p);
+        this.update = (p, e) => {
+            action.update(p, e);
+            this.update(p, e);
         };
         this.stop = () => {
-            this.stop();
             action.stop();
+            this.stop();
         };
 
         return this;

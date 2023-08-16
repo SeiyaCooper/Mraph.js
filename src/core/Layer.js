@@ -22,6 +22,7 @@ export default class Layer {
     add(...drawable) {
         for (let obj of drawable) {
             this.elements.push(obj);
+            obj.layer = this;
             obj.renderer = this.renderer;
         }
     }
@@ -34,6 +35,16 @@ export default class Layer {
 
     clear() {
         this.renderer.clear(0, 0);
+    }
+
+    play() {
+        this.actionList.add(0, Infinity, {
+            update: () => {
+                this.clear();
+                this.render();
+            },
+        });
+        this.actionList.play();
     }
 
     set canvas(val) {

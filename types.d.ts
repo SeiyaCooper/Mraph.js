@@ -326,6 +326,7 @@ declare module "core/Layer" {
         }[]): void;
         render(): void;
         clear(): void;
+        play(): void;
         _canvas: any;
         renderer: CanvasRenderer;
         set matrix(arg: import("mraph").Matrix);
@@ -366,15 +367,14 @@ declare module "renderer/WebglRenderer" {
 }
 declare module "objects/Graph" {
     export default class Graph {
+        size: number;
         dash: any[];
         alpha: number;
         visible: boolean;
         fillColor: string;
         strokeColor: string;
         strokeWidth: number;
-        matrix: Matrix;
     }
-    import Matrix from "math/Matrix";
 }
 declare module "objects/Point" {
     export default class Point extends Graph {
@@ -382,13 +382,14 @@ declare module "objects/Point" {
          * @param {Vector|number[]|...number} pos
          */
         constructor(...args: any[]);
+        _v: Vector;
+        _a: Vector;
         pos: any;
         render(): Point;
-        /**
-         * this.matrix transformed pos
-         * @type {Vector}
-         */
-        get transPos(): Vector;
+        set v(arg: Vector);
+        get v(): Vector;
+        set a(arg: Vector);
+        get a(): Vector;
         set x(arg: any);
         get x(): any;
         set y(arg: any);
@@ -445,17 +446,25 @@ declare module "objects/Arrow" {
     }
     import Segment from "objects/Segment";
 }
+declare module "utils/math" {
+    export function sigmoid(x: any): number;
+}
 declare module "objects/VectorField2D" {
     export default class VectorField2D extends Group {
         constructor(func: any, xRange?: number[], yRange?: number[]);
         lengthFunc: (length: any) => number;
+        _center: Vector;
         xRange: number[];
         yRange: number[];
         set func(arg: any);
         get func(): any;
+        update(): void;
         _func: any;
+        set center(arg: Vector);
+        get center(): Vector;
     }
     import Group from "objects/Group";
+    import Vector from "math/Vector";
 }
 declare module "mraph" {
     import Matrix from "math/Matrix";

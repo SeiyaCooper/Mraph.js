@@ -58,7 +58,8 @@ export default class CanvasRenderer {
     }
 
     arc2D(centerPos, radius, stAng, edAng, anticlockwise = true) {
-        const center = centerPos.columns;
+        let center = centerPos.trans(this.matrix);
+        center = center.mult(1 / center.columns[3]).columns;
         this.context.arc(
             center[0],
             center[1],
