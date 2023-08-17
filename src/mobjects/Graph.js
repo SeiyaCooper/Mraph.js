@@ -1,5 +1,12 @@
+import Matrix from "../math/Matrix.js";
+
 export default class Graph {
-    vertexes = [];
     indices = [];
     colors = [];
+    mode = "TRIANGLES";
+
+    // TODO
+    get matrix() {
+        return Matrix.identity(4);
+    }
 }

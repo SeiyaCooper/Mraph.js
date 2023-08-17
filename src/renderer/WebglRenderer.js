@@ -16,10 +16,7 @@ export default class WebglRenderer {
             this.fragmentShader
         );
 
-        const location = gl.getUniformLocation(this.program, "resolution");
         gl.useProgram(this.program);
-        gl.uniform2f(location, canvas.width, canvas.height);
-
         gl.enable(gl.DEPTH_TEST);
         gl.viewport(0, 0, canvas.width, canvas.height);
         gl.clearColor(0, 0, 0, 1);
@@ -29,9 +26,6 @@ export default class WebglRenderer {
     render(mesh, camera) {
         const gl = this.gl;
         const program = this.program;
-
-        gl.clearColor(0, 0, 0, 1);
-        gl.clear(gl.COLOR_BUFFER_BIT);
 
         passAttrBufferData(gl, program, "position", mesh.vertexes, 4);
         passAttrBufferData(gl, program, "color", mesh.colors, 4);
@@ -49,11 +43,17 @@ export default class WebglRenderer {
         );
 
         gl.drawElements(
-            gl.TRIANGLES,
+            gl[mesh.mode],
             mesh.indices.length,
             gl.UNSIGNED_SHORT,
             0
         );
+    }
+
+    clear() {
+        const gl = this.gl;
+        gl.clearColor(0, 0, 0, 1);
+        gl.clear(gl.COLOR_BUFFER_BIT);
     }
 }
 
@@ -63,12 +63,11 @@ const VERTEX_CODE = `
 
     uniform mat4 modelMat;
     uniform mat4 projectionMat;
-    uniform vec2 resolution;
 
     varying vec4 vColor;
 
     void main() {
-        gl_Position = projectionMat * modelMat * (position / vec4(resolution, 1.0, 1.0));
+        gl_Position = projectionMat * modelMat * position;
         vColor = color;
     }
 `;

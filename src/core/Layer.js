@@ -11,9 +11,8 @@ export default class Layer {
         fillScreen = true,
         appendTo = undefined,
         rendererClass = WebglRenderer,
-    }) {
+    } = {}) {
         this.canvas = document.createElement("canvas");
-        this.renderer = rendererClass(this.canvas);
 
         if (fillScreen) {
             this.canvas.width = window.innerWidth;
@@ -23,19 +22,29 @@ export default class Layer {
         if (appendTo) {
             this.appendTo(appendTo);
         }
+
+        this.camera.aspect = this.canvas.width / this.canvas.height;
+        this.renderer = new rendererClass(this.canvas);
     }
 
     appendTo(el) {
         el.appendChild(this.canvas);
+        return this;
     }
 
     add(...els) {
         this.elements.push(...els);
+        return this;
     }
 
     render() {
         for (let el of this.elements) {
             this.renderer.render(el, this.camera);
         }
+        return this;
+    }
+
+    clear() {
+        this.renderer.clear();
     }
 }
