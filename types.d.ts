@@ -257,7 +257,7 @@ declare module "core/Layer" {
         appendTo(el: any): Layer;
         add(...els: any[]): Layer;
         render(): Layer;
-        clear(): void;
+        clear(): Layer;
     }
     import Camera from "core/Camera";
     import ActionList from "animation/ActionList";
