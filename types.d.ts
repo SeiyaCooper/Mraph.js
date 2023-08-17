@@ -11,83 +11,8 @@ declare module "utils/utils" {
      */
     export function deepCopy(obj: any): any;
 }
-declare module "math/Vector" {
-    export default class Vector {
-        /**
-         * @param {*} obj
-         * @returns {boolean}
-         */
-        static isVector(obj: any): boolean;
-        /**
-         * @param {number[]} [source = [1]]
-         * @returns {Vector}
-         */
-        constructor(source?: number[]);
-        columns: number[];
-        /**
-         * @param {Matrix} mat
-         * @returns {Vector}
-         */
-        trans(mat: Matrix): Vector;
-        /**
-         * @param {Vector} vec
-         * @returns {Vector}
-         */
-        add(vec: Vector): Vector;
-        /**
-         * @param {Vector} vec
-         * @returns {Vector}
-         */
-        reduce(vec: Vector): Vector;
-        /**
-         * @param {number} num
-         * @returns {Vector}
-         */
-        mult(num: number): Vector;
-        /**
-         * return the dot product
-         * @param {Vector} vec
-         * @returns
-         */
-        dot(vec: Vector): number | Vector;
-        /**
-         * normalize this vector
-         * @returns {Vector}
-         */
-        normal(): Vector;
-        /**
-         * @param {number} row
-         * @param {number} [n = 0]
-         * the number to be filled with
-         * @returns {Vector}
-         */
-        resize(row: number, n?: number): Vector;
-        /**
-         * return a deep copy clone of this vector
-         * @returns {Vector}
-         */
-        clone(): Vector;
-        /**
-         * @returns {Matrix}
-         */
-        toMatrix(): Matrix;
-        /**
-         * @param {number} num
-         */
-        set length(arg: number);
-        /**
-         * @type {number}
-         */
-        get length(): number;
-        /**
-         * @type {number}
-         */
-        get row(): number;
-    }
-    import Matrix from "math/Matrix";
-}
 declare module "math/Matrix" {
-    export default class Matrix {
+    export default class Matrix extends Array<any> {
         /**
          * @param {*} obj
          * @returns {boolean}
@@ -161,7 +86,6 @@ declare module "math/Matrix" {
          * @return {Matrix}
          */
         constructor(source?: number[][]);
-        columns: number[][];
         /**
          *
          * @param {Matrix} mat
@@ -197,10 +121,6 @@ declare module "math/Matrix" {
          */
         clone(): Matrix;
         /**
-         * @returns {Vector}
-         */
-        toVector(): Vector;
-        /**
          * @returns {number} the number of columns
          */
         get column(): number;
@@ -209,278 +129,37 @@ declare module "math/Matrix" {
          */
         get row(): number;
     }
-    import Vector from "math/Vector";
 }
-declare module "animation/Action" {
-    export default class Action {
-        /**
-         * @constructor
-         * @param {Object} handle - the object to construct by
-         *                          which may include function start(), update(), stop()
-         * @return {Action}
-         */
-        constructor(handle: any);
-        /**
-         * @type {Function}
-         */
-        start: Function;
-        /**
-         * @type {Function}
-         */
-        update: Function;
-        /**
-         * @type {Function}
-         */
-        stop: Function;
-        /**
-         * @type {Boolean}
-         */
-        isStarted: boolean;
-        /**
-         * @type {Boolean}
-         */
-        isStopped: boolean;
-        /**
-         * excute this action by current time
-         * @param {Number} start - the start time
-         * @param {Number} stop - the stop time
-         * @param {Number} now - the current time
-         * @return {null}
-         */
-        excute(start: number, stop: number, now: number): null;
-        /**
-         * merge this action with another
-         * they should have same start time and stop time
-         * @param {Action} - another action
-         * @return {Action}
-         */
-        merge(action: any): Action;
-    }
-}
-declare module "animation/ActionList" {
-    export default class ActionList {
-        /**
-         * list for actions to be called
-         * @type {Map}
-         */
-        list: Map<any, any>;
-        /**
-         * @type {number}
-         */
-        maxTime: number;
-        /**
-         * @type {number}
-         */
-        minTime: number;
-        /**
-         * add an action to action list
-         * @param {Number} start
-         * @param {Number} stop
-         * @param {Object} handle
-         * @return {ActionList}
-         */
-        add(start: number, stop: number, handle: any): ActionList;
-        /**
-         * play this action list
-         */
-        play(): void;
-    }
-}
-declare module "renderer/CanvasRenderer" {
-    export default class CanvasRenderer {
-        constructor(canvas: any);
-        matrix: Matrix;
-        set canvas(arg: any);
-        get canvas(): any;
-        begin(): CanvasRenderer;
-        close(): CanvasRenderer;
-        fill(): CanvasRenderer;
-        stroke(): CanvasRenderer;
-        clear(): CanvasRenderer;
-        style(el: any): void;
-        move(pos: any): CanvasRenderer;
-        line3D(pos: any): CanvasRenderer;
-        arc2D(centerPos: any, radius: any, stAng: any, edAng: any, anticlockwise?: boolean): CanvasRenderer;
-        _canvas: any;
-        context: any;
-    }
-    import Matrix from "math/Matrix";
-}
-declare module "core/Layer" {
-    export default class Layer {
-        /**
-         * @param {HTMLCanvasElement} canvas
-         * @param {Object} [config={}] Optional Configurations
-         */
-        constructor(canvas: HTMLCanvasElement, config?: any);
-        elements: any[];
-        actionList: ActionList;
-        rendererClass: typeof CanvasRenderer;
-        set canvas(arg: any);
-        get canvas(): any;
-        /**
-         * @param  {...{render: Function}} drawable
-         */
-        add(...drawable: {
-            render: Function;
-        }[]): void;
-        render(): void;
-        clear(): void;
-        _canvas: any;
-        renderer: CanvasRenderer;
-        set matrix(arg: import("mraph").Matrix);
-        get matrix(): import("mraph").Matrix;
-    }
-    import ActionList from "animation/ActionList";
-    import CanvasRenderer from "renderer/CanvasRenderer";
-}
-declare module "renderer/WebglRenderer" {
-    export default class WebglRenderer {
-        constructor(canvas: any);
-        set canvas(arg: any);
-        get canvas(): any;
-        set matrix(arg: any);
-        get matrix(): any;
-        render(mesh: any): void;
-        _canvas: any;
-        gl: any;
-        vertexShader: any;
-        fragmentShader: any;
-        program: any;
-        _matrix: any;
-    }
-}
-declare module "objects/Graph" {
-    export default class Graph {
-        size: number;
-        visible: boolean;
-        _color: number[];
-        vertexes: any[];
-        indices: any[];
-        colors: any[];
-        rotation: {
-            x: number;
-            y: number;
-            z: number;
-        };
+declare module "core/Camera" {
+    export default class Camera {
         position: {
             x: number;
             y: number;
             z: number;
         };
-        set color(arg: number[]);
-        get color(): number[];
+        rotation: {
+            x: number;
+            y: number;
+            z: number;
+        };
         get matrix(): Matrix;
     }
     import Matrix from "math/Matrix";
 }
-declare module "objects/Point" {
-    export default class Point extends Graph {
-        /**
-         * @param {Vector|number[]|...number} pos
-         */
-        constructor(...args: any[]);
-        fillColor: string;
-        matrix: Matrix;
-        _V: Vector;
-        _A: Vector;
-        pos: any;
-        render(): Point;
-        /**
-         * this.matrix transformed pos
-         * @type {Vector}
-         */
-        get transPos(): Vector;
-        set V(arg: Vector);
-        get V(): Vector;
-        set A(arg: Vector);
-        get A(): Vector;
-        set x(arg: any);
-        get x(): any;
-        set y(arg: any);
-        get y(): any;
-        set z(arg: any);
-        get z(): any;
-        set w(arg: any);
-        get w(): any;
+declare module "renderer/WebglRenderer" {
+    export default class WebglRenderer {
+        constructor(canvas: any);
+        canvas: any;
+        gl: any;
+        vertexShader: any;
+        fragmentShader: any;
+        program: any;
+        render(mesh: any, camera: any): void;
     }
-    import Graph from "objects/Graph";
-    import Matrix from "math/Matrix";
-    import Vector from "math/Vector";
-}
-declare module "objects/Segment" {
-    export default class Segment extends Graph {
-        constructor(start: any, end: any);
-        start: any;
-        end: any;
-        render(): Segment;
-        get position(): any[];
-        set vector(arg: any);
-        get vector(): any;
-        _vector: any;
-        set length(arg: any);
-        get length(): any;
-    }
-    import Graph from "objects/Graph";
-}
-declare module "objects/Group" {
-    export default class Group extends Graph {
-        constructor(...objs: any[]);
-        set objs(arg: any);
-        get objs(): any;
-        render(): Group;
-        add(...objs: any[]): void;
-        set(attrName: any, val: any): Group;
-        _objs: any;
-        set renderer(arg: any);
-        get renderer(): any;
-        _renderer: any;
-    }
-    import Graph from "objects/Graph";
-}
-declare module "objects/Polygon" {
-    export default class Polygon extends Group {
-        set points(arg: any);
-        get points(): any;
-        render(): Polygon;
-        _points: any;
-    }
-    import Group from "objects/Group";
-}
-declare module "objects/Arrow" {
-    export default class Arrow extends Segment {
-        constructor(...param: any[]);
-        fillColor: string;
-        render(): Arrow;
-    }
-    import Segment from "objects/Segment";
-}
-declare module "utils/math" {
-    export function sigmoid(x: any): number;
-}
-declare module "objects/VectorField2D" {
-    export default class VectorField2D extends Group {
-        constructor(func: any, xRange?: number[], yRange?: number[]);
-        lengthFunc: (length: any) => number;
-        xRange: number[];
-        yRange: number[];
-        set func(arg: any);
-        get func(): any;
-        _func: any;
-    }
-    import Group from "objects/Group";
 }
 declare module "mraph" {
-    import Matrix from "math/Matrix";
-    import Vector from "math/Vector";
-    import Layer from "core/Layer";
-    import ActionList from "animation/ActionList";
     import WebglRenderer from "renderer/WebglRenderer";
-    import CanvasRenderer from "renderer/CanvasRenderer";
-    import Point from "objects/Point";
-    import Segment from "objects/Segment";
-    import Polygon from "objects/Polygon";
-    import Arrow from "objects/Arrow";
-    import VectorField2D from "objects/VectorField2D";
-    export { Matrix, Vector, Layer, ActionList, WebglRenderer, CanvasRenderer, Point, Segment, Polygon, Arrow, VectorField2D };
+    import Matrix from "math/Matrix";
+    import Camera from "core/Camera";
+    export { WebglRenderer, Matrix, Camera };
 }
