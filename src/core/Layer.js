@@ -44,8 +44,8 @@ export default class Layer {
         return this;
     }
 
-    clear() {
-        this.renderer.clear();
+    clear(color) {
+        this.renderer.clear(color);
         return this;
     }
 }

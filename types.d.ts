@@ -239,7 +239,7 @@ declare module "renderer/WebglRenderer" {
         fragmentShader: any;
         program: any;
         render(mesh: any, camera: any): void;
-        clear(): void;
+        clear(color?: number[]): void;
     }
 }
 declare module "core/Layer" {
@@ -257,7 +257,7 @@ declare module "core/Layer" {
         appendTo(el: any): Layer;
         add(...els: any[]): Layer;
         render(): Layer;
-        clear(): Layer;
+        clear(color: any): Layer;
     }
     import Camera from "core/Camera";
     import ActionList from "animation/ActionList";
@@ -268,6 +268,11 @@ declare module "mobjects/Graph" {
         indices: any[];
         colors: any[];
         mode: string;
+        rotation: {
+            x: number;
+            y: number;
+            z: number;
+        };
         get matrix(): Matrix;
     }
     import Matrix from "math/Matrix";

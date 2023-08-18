@@ -31,7 +31,7 @@ export default class WebglRenderer {
         passAttrBufferData(gl, program, "color", mesh.colors, 4);
         passUnifMat4(gl, program, "modelMat", mesh.matrix.flat());
 
-        const location = gl.getUniformLocation(program, "projectionMat");
+        const location = gl.getUniformLocation(program, "cameraMat");
         gl.uniformMatrix4fv(location, false, camera.matrix.flat());
 
         const buffer = gl.createBuffer();
@@ -50,10 +50,10 @@ export default class WebglRenderer {
         );
     }
 
-    clear() {
+    clear(color = [0, 0, 0, 1]) {
         const gl = this.gl;
-        gl.clearColor(0, 0, 0, 1);
-        gl.clear(gl.COLOR_BUFFER_BIT);
+        gl.clearColor(...color);
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     }
 }
 
@@ -62,12 +62,12 @@ const VERTEX_CODE = `
     attribute vec4 color;
 
     uniform mat4 modelMat;
-    uniform mat4 projectionMat;
+    uniform mat4 cameraMat;
 
     varying vec4 vColor;
 
     void main() {
-        gl_Position = projectionMat * modelMat * position;
+        gl_Position = cameraMat * modelMat * position;
         vColor = color;
     }
 `;
@@ -86,6 +86,12 @@ function createShader(gl, type, source) {
     const shader = gl.createShader(type);
     gl.shaderSource(shader, source);
     gl.compileShader(shader);
+
+    if (gl.getShaderInfoLog(shader) !== "") {
+        console.warn(gl.getShaderInfoLog(shader));
+        gl.deleteShader(shader);
+    }
+
     return shader;
 }
 
