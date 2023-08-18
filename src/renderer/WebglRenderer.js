@@ -1,51 +1,54 @@
+import Matrix from "../math/Matrix.js";
+
 export default class WebglRenderer {
     constructor(canvas) {
         this.canvas = canvas;
         this.gl = canvas.getContext("webgl");
 
         const gl = this.gl;
-        this.vertexShader = createShader(gl, gl.VERTEX_SHADER, VERTEX_CODE);
-        this.fragmentShader = createShader(
-            gl,
-            gl.FRAGMENT_SHADER,
-            FRAGMENT_CODE
-        );
-        this.program = createProgram(
-            gl,
-            this.vertexShader,
-            this.fragmentShader
-        );
-
-        gl.useProgram(this.program);
+        this.usage = gl.STATIC_DRAW;
         gl.enable(gl.DEPTH_TEST);
         gl.viewport(0, 0, canvas.width, canvas.height);
-        gl.clearColor(0, 0, 0, 1);
-        gl.clear(gl.COLOR_BUFFER_BIT);
     }
 
-    render(mesh, camera) {
+    render(mesh, program) {
         const gl = this.gl;
-        const program = this.program;
 
-        passAttrBufferData(gl, program, "position", mesh.vertexes, 4);
-        passAttrBufferData(gl, program, "color", mesh.colors, 4);
-        passUnifMat4(gl, program, "modelMat", mesh.matrix.flat());
+        for (let [name, data] of Object.entries(mesh.attributes)) {
+            const buffer = program.buffers.get(name);
+            const location = program.locations.get(name);
+            const n = program.attributes[name];
 
-        const location = gl.getUniformLocation(program, "cameraMat");
-        gl.uniformMatrix4fv(location, false, camera.matrix.flat());
+            gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(data), this.usage);
+            gl.enableVertexAttribArray(location);
+            gl.vertexAttribPointer(location, n, gl.FLOAT, false, 0, 0);
+        }
 
+        for (let [name, data] of Object.entries(mesh.uniforms)) {
+            const location = program.locations.get(name);
+            const n = program.uniforms[name];
+            const arr = new Float32Array(data.flat());
+
+            if (Matrix.isMatrix(data)) {
+                gl["uniformMatrix" + n + "fv"](location, false, arr);
+            } else {
+                gl["uniform" + n + "fv"](location, arr);
+            }
+        }
+
+        const indices = mesh.indices;
         const buffer = gl.createBuffer();
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffer);
         gl.bufferData(
             gl.ELEMENT_ARRAY_BUFFER,
-            new Uint16Array(mesh.indices),
-            gl.STATIC_DRAW
+            new Uint16Array(indices.data),
+            this.usage
         );
-
         gl.drawElements(
             gl[mesh.mode],
-            mesh.indices.length,
-            gl.UNSIGNED_SHORT,
+            indices.data.length,
+            gl[indices.type],
             0
         );
     }
@@ -55,64 +58,4 @@ export default class WebglRenderer {
         gl.clearColor(...color);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     }
-}
-
-const VERTEX_CODE = `
-    attribute vec4 position;
-    attribute vec4 color;
-
-    uniform mat4 modelMat;
-    uniform mat4 cameraMat;
-
-    varying vec4 vColor;
-
-    void main() {
-        gl_Position = cameraMat * modelMat * position;
-        vColor = color;
-    }
-`;
-
-const FRAGMENT_CODE = `
-    precision mediump float;
-
-    varying vec4 vColor;
-
-    void main() {
-        gl_FragColor = vColor;
-    }
-`;
-
-function createShader(gl, type, source) {
-    const shader = gl.createShader(type);
-    gl.shaderSource(shader, source);
-    gl.compileShader(shader);
-
-    if (gl.getShaderInfoLog(shader) !== "") {
-        console.warn(gl.getShaderInfoLog(shader));
-        gl.deleteShader(shader);
-    }
-
-    return shader;
-}
-
-function createProgram(gl, vertexShader, fragmentShader) {
-    const program = gl.createProgram();
-    gl.attachShader(program, vertexShader);
-    gl.attachShader(program, fragmentShader);
-    gl.linkProgram(program);
-    return program;
-}
-
-function passAttrBufferData(gl, program, name, data, num) {
-    const location = gl.getAttribLocation(program, name);
-    const buffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(data), gl.STATIC_DRAW);
-    gl.enableVertexAttribArray(location);
-    gl.vertexAttribPointer(location, num, gl.FLOAT, false, 0, 0);
-}
-
-function passUnifMat4(gl, program, name, data) {
-    const location = gl.getUniformLocation(program, name);
-    gl.uniformMatrix4fv(location, false, new Float32Array(data));
 }

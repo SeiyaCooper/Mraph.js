@@ -235,10 +235,8 @@ declare module "renderer/WebglRenderer" {
         constructor(canvas: any);
         canvas: any;
         gl: any;
-        vertexShader: any;
-        fragmentShader: any;
-        program: any;
-        render(mesh: any, camera: any): void;
+        usage: any;
+        render(mesh: any, program: any): void;
         clear(color?: number[]): void;
     }
 }
@@ -262,6 +260,29 @@ declare module "core/Layer" {
     import Camera from "core/Camera";
     import ActionList from "animation/ActionList";
     import WebglRenderer from "renderer/WebglRenderer";
+}
+declare module "core/Program" {
+    export default class Program {
+        constructor({ gl, vs, fs, attributes, uniforms }?: {
+            gl: any;
+            vs?: string;
+            fs?: string;
+            attributes?: {};
+            uniforms?: {};
+        });
+        locations: Map<any, any>;
+        buffers: Map<any, any>;
+        gl: any;
+        vs: any;
+        fs: any;
+        program: any;
+        set attributes(arg: any);
+        get attributes(): any;
+        set uniforms(arg: any);
+        get uniforms(): any;
+        _attributes: any;
+        _uniforms: any;
+    }
 }
 declare module "mobjects/Graph" {
     export default class Graph {
@@ -293,6 +314,7 @@ declare module "mraph" {
     import Matrix from "math/Matrix";
     import Camera from "core/Camera";
     import Layer from "core/Layer";
+    import Program from "core/Program";
     import Segment from "mobjects/Segment";
-    export { WebglRenderer, Matrix, Camera, Layer, Segment };
+    export { WebglRenderer, Matrix, Camera, Layer, Program, Segment };
 }
