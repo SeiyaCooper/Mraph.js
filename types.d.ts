@@ -137,21 +137,30 @@ declare module "math/Matrix" {
 }
 declare module "core/Camera" {
     export default class Camera {
-        position: {
-            x: number;
-            y: number;
-            z: number;
-        };
-        rotation: {
-            x: number;
-            y: number;
-            z: number;
-        };
-        fov: number;
-        near: number;
-        far: number;
-        aspect: number;
-        get matrix(): Matrix;
+        _position: number[];
+        _rotation: number[];
+        projectionMat: Matrix;
+        viewMat: Matrix;
+        set position(arg: number[]);
+        get position(): number[];
+        set rotation(arg: number[]);
+        get rotation(): number[];
+        update(): void;
+        matrix: Matrix;
+        perspective({ fov, near, far, aspect }?: {
+            fov?: number;
+            near?: number;
+            far?: number;
+            aspect?: number;
+        }): Camera;
+        ortho({ left, right, bottom, top, near, far, }?: {
+            left?: number;
+            right?: number;
+            bottom?: number;
+            top?: number;
+            near?: number;
+            far?: number;
+        }): Camera;
     }
     import Matrix from "math/Matrix";
 }
@@ -237,7 +246,33 @@ declare module "renderer/WebglRenderer" {
         gl: any;
         usage: any;
         render(mesh: any, program: any): void;
-        clear(color?: number[]): void;
+        clear(r: any, g: any, b: any, a: any): void;
+    }
+}
+declare module "core/Program" {
+    export default class Program {
+        constructor(gl: any, { vs, fs, attributes, uniforms, textures }?: {
+            vs?: string;
+            fs?: string;
+            attributes?: {};
+            uniforms?: {};
+            textures?: any[];
+        });
+        locations: Map<any, any>;
+        buffers: Map<any, any>;
+        gl: any;
+        vs: any;
+        fs: any;
+        program: any;
+        set attributes(arg: any);
+        get attributes(): any;
+        set uniforms(arg: any);
+        get uniforms(): any;
+        set textures(arg: any);
+        get textures(): any;
+        _attributes: any;
+        _uniforms: any;
+        _textures: any;
     }
 }
 declare module "core/Layer" {
@@ -252,60 +287,59 @@ declare module "core/Layer" {
         actionList: ActionList;
         canvas: HTMLCanvasElement;
         renderer: WebglRenderer;
+        program: Program;
         appendTo(el: any): Layer;
         add(...els: any[]): Layer;
         render(): Layer;
-        clear(color: any): Layer;
+        clear(r?: number, g?: number, b?: number, a?: number): Layer;
     }
     import Camera from "core/Camera";
     import ActionList from "animation/ActionList";
     import WebglRenderer from "renderer/WebglRenderer";
+    import Program from "core/Program";
 }
-declare module "core/Program" {
-    export default class Program {
-        constructor({ gl, vs, fs, attributes, uniforms }?: {
-            gl: any;
-            vs?: string;
-            fs?: string;
-            attributes?: {};
-            uniforms?: {};
+declare module "core/Texture" {
+    export default class Texture {
+        constructor(gl: any, { image, target, flipY }?: {
+            image: any;
+            target?: any;
+            flipY?: boolean;
         });
-        locations: Map<any, any>;
-        buffers: Map<any, any>;
         gl: any;
-        vs: any;
-        fs: any;
-        program: any;
-        set attributes(arg: any);
-        get attributes(): any;
-        set uniforms(arg: any);
-        get uniforms(): any;
-        _attributes: any;
-        _uniforms: any;
+        image: any;
+        target: any;
+        flipY: boolean;
+        texture: any;
+        upload(): void;
     }
 }
 declare module "mobjects/Graph" {
     export default class Graph {
-        indices: any[];
-        colors: any[];
-        mode: string;
-        rotation: {
-            x: number;
-            y: number;
-            z: number;
+        attributes: {
+            position: any[];
+            color: any[];
         };
-        get matrix(): Matrix;
+        uniforms: {
+            modelMat: Matrix;
+        };
+        mode: string;
+        indices: {
+            type: string;
+            data: any[];
+        };
     }
     import Matrix from "math/Matrix";
 }
 declare module "mobjects/Segment" {
-    export default class _default extends Graph {
+    export default class Segment extends Graph {
         constructor(start: any, end: any);
         strokeWidth: number;
-        indices: number[];
+        indices: {
+            type: string;
+            data: number[];
+        };
         start: any;
         end: any;
-        get vertexes(): any[];
     }
     import Graph from "mobjects/Graph";
 }
@@ -315,6 +349,7 @@ declare module "mraph" {
     import Camera from "core/Camera";
     import Layer from "core/Layer";
     import Program from "core/Program";
+    import Texture from "core/Texture";
     import Segment from "mobjects/Segment";
-    export { WebglRenderer, Matrix, Camera, Layer, Program, Segment };
+    export { WebglRenderer, Matrix, Camera, Layer, Program, Texture, Segment };
 }
