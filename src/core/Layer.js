@@ -24,9 +24,9 @@ export default class Layer {
             this.appendTo(appendTo);
         }
 
-        /* this.camera.perspective({
+        this.camera.perspective({
             aspect: this.canvas.width / this.canvas.height,
-        }); */
+        });
         this.renderer = new rendererClass(this.canvas);
         this.program = new Program(this.renderer.gl, {
             vs: vertexShader,

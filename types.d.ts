@@ -126,6 +126,11 @@ declare module "math/Matrix" {
          */
         get norm(): number;
         /**
+         * return transpose of this matrix
+         * @returns {Matrix}
+         */
+        get T(): Matrix;
+        /**
          * @returns {number} the number of columns
          */
         get column(): number;

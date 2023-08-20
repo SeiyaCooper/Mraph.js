@@ -7,7 +7,7 @@ export default class Camera {
     viewMat = Matrix.identity(4);
 
     constructor() {
-        this.position = [0, 0, 0];
+        this.position = [0, 0, 5];
         this.rotation = [0, 0, 0];
     }
 
@@ -25,7 +25,7 @@ export default class Camera {
         this.matrix = this.projectionMat.mult(this.viewMat);
     }
 
-    perspective({ fov = 30, near = 1, far = 100, aspect = 1 } = {}) {
+    perspective({ fov = 45, near = 1, far = 100, aspect = 1 } = {}) {
         const f = far;
         const n = near;
         const a = aspect;
@@ -45,7 +45,7 @@ export default class Camera {
         right = 1,
         bottom = -1,
         top = 1,
-        near = -1,
+        near = 0.1,
         far = 1,
     } = {}) {
         const [l, r, b, t, n, f] = [left, right, bottom, top, near, far];
@@ -54,9 +54,10 @@ export default class Camera {
             (t + b) / (b - t),
             (f + n) / (n - f)
         );
-        mat[0][0] = 2 / (l - r);
-        mat[1][1] = 2 / (b - t);
+        mat[0][0] = 2 / (r - l);
+        mat[1][1] = 2 / (t - b);
         mat[2][2] = 2 / (n - f);
+        mat[3][3] = 1;
         this.projectionMat = mat;
         this.update();
         return this;

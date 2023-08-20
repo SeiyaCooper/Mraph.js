@@ -244,6 +244,22 @@ export default class Matrix extends Array {
     }
 
     /**
+     * return transpose of this matrix
+     * @returns {Matrix}
+     */
+    get T() {
+        const ans = Matrix.zeros(this.row, this.column);
+
+        for (let i = 0; i < this[0].length; i++) {
+            for (let j = 0; j < this.length; j++) {
+                ans[j][i] = this[i][j];
+            }
+        }
+
+        return ans;
+    }
+
+    /**
      * @returns {number} the number of columns
      */
     get column() {
