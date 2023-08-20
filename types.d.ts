@@ -264,7 +264,6 @@ declare module "core/Program" {
             textures?: any[];
         });
         locations: Map<any, any>;
-        buffers: Map<any, any>;
         gl: any;
         vs: any;
         fs: any;
@@ -275,6 +274,7 @@ declare module "core/Program" {
         get uniforms(): any;
         set textures(arg: any);
         get textures(): any;
+        setUniform(name: any, data: any): void;
         _attributes: any;
         _uniforms: any;
         _textures: any;
@@ -320,18 +320,29 @@ declare module "core/Texture" {
 }
 declare module "mobjects/Graph" {
     export default class Graph {
+        indices: {
+            data: any[];
+        };
         attributes: {
-            position: any[];
-            color: any[];
+            position: {
+                data: any[];
+            };
+            color: {
+                data: any[];
+            };
         };
         uniforms: {
             modelMat: Matrix;
         };
-        mode: string;
-        indices: {
-            type: string;
-            data: any[];
-        };
+        /**
+         * get ready for rendering
+         * set some properties after get gl context
+         */
+        prepareToRender(): void;
+        mode: any;
+        set gl(arg: any);
+        get gl(): any;
+        _gl: any;
     }
     import Matrix from "math/Matrix";
 }
@@ -340,7 +351,6 @@ declare module "mobjects/Segment" {
         constructor(start: any, end: any);
         strokeWidth: number;
         indices: {
-            type: string;
             data: number[];
         };
         start: any;

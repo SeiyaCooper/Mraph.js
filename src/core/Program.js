@@ -1,6 +1,5 @@
 export default class Program {
     locations = new Map();
-    buffers = new Map();
 
     constructor(
         gl,
@@ -15,14 +14,28 @@ export default class Program {
         this.textures = textures;
     }
 
+    setUniform(name, data) {
+        const gl = this.gl;
+        const program = this.program;
+        const location = gl.getUniformLocation(program, name);
+
+        if (Array.isArray(data[0])) {
+            const n = data[0].length;
+            const arr = new Float32Array(data.flat());
+            gl["uniformMatrix" + n + "fv"](location, false, arr);
+        } else {
+            const arr = new Float32Array(data.data);
+            gl["uniform" + data.n + "fv"](location, arr);
+        }
+    }
+
     set attributes(val) {
         this._attributes = val;
-        for (let [name] of Object.entries(val)) {
+        for (let name of Object.keys(val)) {
             this.locations.set(
                 name,
                 this.gl.getAttribLocation(this.program, name)
             );
-            this.buffers.set(name, this.gl.createBuffer());
         }
     }
 
@@ -33,19 +46,8 @@ export default class Program {
     set uniforms(val) {
         this._uniforms = val;
 
-        const gl = this.gl;
-        const program = this.program;
         for (let [name, data] of Object.entries(val)) {
-            const location = gl.getUniformLocation(program, name);
-
-            if (Array.isArray(data[0])) {
-                const n = data[0].length;
-                const arr = new Float32Array(data.flat());
-                gl["uniformMatrix" + n + "fv"](location, false, arr);
-            } else {
-                const arr = new Float32Array(data.data);
-                gl["uniform" + data.n + "fv"](location, arr);
-            }
+            this.setUniform(name, data);
         }
     }
 

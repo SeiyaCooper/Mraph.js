@@ -3,13 +3,13 @@ import Matrix from "../math/Matrix.js";
 
 export default class Segment extends Graph {
     strokeWidth = 0.05;
-    indices = { type: "UNSIGNED_SHORT", data: [0, 1, 3, 2, 0, 3] };
+    indices = { data: [0, 1, 3, 2, 0, 3] };
 
     constructor(start, end) {
         super();
         this.start = start;
         this.end = end;
-        Object.defineProperty(this.attributes, "position", {
+        Object.defineProperty(this.attributes.position, "data", {
             get: () => {
                 const start = this.start.pos;
                 const end = this.end.pos;

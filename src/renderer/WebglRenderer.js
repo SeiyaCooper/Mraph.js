@@ -12,13 +12,27 @@ export default class WebglRenderer {
     render(mesh, program) {
         const gl = this.gl;
 
-        for (let [name, data] of Object.entries(mesh.attributes ?? {})) {
-            const buffer = program.buffers.get(name);
+        for (let [name, value] of Object.entries(mesh.attributes ?? {})) {
+            if (!value.buffer) {
+                value.buffer = gl.createBuffer();
+                value.needsUpdate = true;
+            }
+
+            const buffer = value.buffer;
             const location = program.locations.get(name);
             const n = program.attributes[name];
 
             gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(data), this.usage);
+
+            if (value.needsUpdate ?? true) {
+                gl.bufferData(
+                    gl.ARRAY_BUFFER,
+                    new Float32Array(value.data),
+                    this.usage
+                );
+                value.needsUpdate = false;
+            }
+
             gl.enableVertexAttribArray(location);
             gl.vertexAttribPointer(location, n, gl.FLOAT, false, 0, 0);
         }
@@ -45,14 +59,9 @@ export default class WebglRenderer {
                 new Uint16Array(indices.data),
                 this.usage
             );
-            gl.drawElements(
-                gl[mesh.mode],
-                indices.data.length,
-                gl[indices.type],
-                0
-            );
+            gl.drawElements(mesh.mode, indices.data.length, indices.type, 0);
         } else {
-            gl.drawArrays(gl[mesh.mode], 0, indices);
+            gl.drawArrays(mesh.mode, 0, indices);
         }
     }
 

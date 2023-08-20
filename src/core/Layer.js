@@ -35,9 +35,6 @@ export default class Layer {
                 position: 4,
                 color: 3,
             },
-            uniforms: {
-                cameraMat: this.camera.matrix,
-            },
         });
     }
 
@@ -48,10 +45,16 @@ export default class Layer {
 
     add(...els) {
         this.elements.push(...els);
+
+        for (let el of els) {
+            el.gl = this.renderer.gl;
+        }
+
         return this;
     }
 
     render() {
+        this.program.setUniform("cameraMat", this.camera.matrix);
         for (let el of this.elements) {
             this.renderer.render(el, this.program);
         }
