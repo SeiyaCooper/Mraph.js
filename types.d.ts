@@ -275,6 +275,7 @@ declare module "core/Program" {
         set textures(arg: any);
         get textures(): any;
         setUniform(name: any, data: any): void;
+        getExtension(name: any): any;
         _attributes: any;
         _uniforms: any;
         _textures: any;

@@ -38,16 +38,7 @@ export default class WebglRenderer {
         }
 
         for (let [name, data] of Object.entries(mesh.uniforms ?? {})) {
-            const location = gl.getUniformLocation(program.program, name);
-
-            if (Array.isArray(data[0])) {
-                const n = data[0].length;
-                const arr = new Float32Array(data.flat());
-                gl["uniformMatrix" + n + "fv"](location, false, arr);
-            } else {
-                const arr = new Float32Array(data.data);
-                gl["uniform" + data.n + "fv"](location, arr);
-            }
+            program.setUniform(name, data);
         }
 
         const indices = mesh.indices;

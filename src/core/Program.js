@@ -1,3 +1,5 @@
+import { mergeObject } from "../utils/utils.js";
+
 export default class Program {
     locations = new Map();
 
@@ -12,21 +14,32 @@ export default class Program {
         this.attributes = attributes;
         this.uniforms = uniforms;
         this.textures = textures;
+
+        // TODO
+        mergeObject(this, this.getExtension("OES_vertex_array_object"));
     }
 
     setUniform(name, data) {
         const gl = this.gl;
-        const program = this.program;
-        const location = gl.getUniformLocation(program, name);
+        const location = this.gl.getUniformLocation(this.program, name);
 
         if (Array.isArray(data[0])) {
             const n = data[0].length;
             const arr = new Float32Array(data.flat());
             gl["uniformMatrix" + n + "fv"](location, false, arr);
+        } else if (Array.isArray(data.data[0])) {
+            const n = data.n ?? data.data[0].length;
+            const arr = new Float32Array(data.data.flat());
+            gl["uniformMatrix" + n + "fv"](location, arr);
         } else {
             const arr = new Float32Array(data.data);
             gl["uniform" + data.n + "fv"](location, arr);
         }
+    }
+
+    getExtension(name) {
+        const ext = this.gl.getExtension(name);
+        return ext;
     }
 
     set attributes(val) {

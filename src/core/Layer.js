@@ -35,6 +35,9 @@ export default class Layer {
                 position: 4,
                 color: 3,
             },
+            uniforms: {
+                cameraMat: this.camera.matrix,
+            },
         });
     }
 
