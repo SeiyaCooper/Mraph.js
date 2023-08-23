@@ -114,7 +114,7 @@ export default class Matrix extends Array {
      * @returns {boolean}
      */
     static isMatrix(obj) {
-        return Array.isArray(obj[0]);
+        return obj instanceof Matrix && Array.isArray(obj[0]);
     }
 
     /**

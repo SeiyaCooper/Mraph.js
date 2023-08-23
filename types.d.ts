@@ -324,6 +324,7 @@ declare module "mobjects/Graph" {
         indices: {
             data: any[];
         };
+        mode: string;
         attributes: {
             position: {
                 data: any[];
@@ -340,7 +341,6 @@ declare module "mobjects/Graph" {
          * set some properties after get gl context
          */
         prepareToRender(): void;
-        mode: any;
         set gl(arg: any);
         get gl(): any;
         _gl: any;
@@ -356,6 +356,22 @@ declare module "mobjects/Segment" {
         };
         start: any;
         end: any;
+        updatePosition(): any[];
+    }
+    import Graph from "mobjects/Graph";
+}
+declare module "mobjects/Arc" {
+    export default class Arc extends Graph {
+        constructor(startAng?: number, endAng?: number, radius?: number, center?: number[]);
+        insertNum: number;
+        strokeWidth: number;
+        strokeColor: number[];
+        fillColor: number[];
+        startAng: number;
+        endAng: number;
+        radius: number;
+        center: number[];
+        updatePosition(): number[];
     }
     import Graph from "mobjects/Graph";
 }
@@ -367,5 +383,6 @@ declare module "mraph" {
     import Program from "core/Program";
     import Texture from "core/Texture";
     import Segment from "mobjects/Segment";
-    export { WebglRenderer, Matrix, Camera, Layer, Program, Texture, Segment };
+    import Arc from "mobjects/Arc";
+    export { WebglRenderer, Matrix, Camera, Layer, Program, Texture, Segment, Arc };
 }

@@ -5,7 +5,7 @@ export default class WebglRenderer {
 
         const gl = this.gl;
         this.usage = gl.STATIC_DRAW;
-        gl.enable(gl.DEPTH_TEST);
+        // gl.enable(gl.DEPTH_TEST);
         gl.viewport(0, 0, canvas.width, canvas.height);
     }
 

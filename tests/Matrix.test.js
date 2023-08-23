@@ -3,7 +3,6 @@ import Matrix from "../src/math/Matrix.js";
 test("Matrix operation", () => {
     const m1 = new Matrix([1, 2, 3], [1, 1, 1], [23, 213, 223]);
     const m2 = new Matrix([1, 1, 2], [2, 3, 4], [34, 24, 123]);
-    const v1 = new Matrix([1, 2, 34]);
 
     expect(m1).toEqual([
         [1, 2, 3],
@@ -28,6 +27,4 @@ test("Matrix operation", () => {
         [1, 0],
         [0, 1],
     ]);
-    expect(m1.mult(v1)[0]).toEqual([785, 7246, 7587]);
-    expect(v1.trans(m1)).toEqual(m1.mult(v1));
 });

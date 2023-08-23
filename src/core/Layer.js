@@ -32,8 +32,8 @@ export default class Layer {
             vs: vertexShader,
             fs: fragmentShader,
             attributes: {
-                position: 4,
-                color: 3,
+                position: 3,
+                color: 4,
             },
             uniforms: {
                 cameraMat: this.camera.matrix,
@@ -71,16 +71,16 @@ export default class Layer {
 }
 
 const vertexShader = `
-    attribute vec4 position;
-    attribute vec3 color;
+    attribute vec3 position;
+    attribute vec4 color;
 
     uniform mat4 cameraMat;
     uniform mat4 modelMat;
 
-    varying vec3 v_color;
+    varying vec4 v_color;
 
     void main() {
-        gl_Position = cameraMat * modelMat * position;
+        gl_Position = cameraMat * modelMat * vec4(position, 1.0);
         v_color = color;
     }
 `;
@@ -88,9 +88,9 @@ const vertexShader = `
 const fragmentShader = `
     precision mediump float;
 
-    varying vec3 v_color;
+    varying vec4 v_color;
 
     void main() {
-        gl_FragColor.rgb = v_color;
+        gl_FragColor = v_color;
     }
 `;

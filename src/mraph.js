@@ -8,5 +8,6 @@ import WebglRenderer from "./renderer/WebglRenderer.js";
 import Matrix from "./math/Matrix.js";
 
 import Segment from "./mobjects/Segment.js";
+import Arc from "./mobjects/Arc.js";
 
-export { WebglRenderer, Matrix, Camera, Layer, Program, Texture, Segment };
+export { WebglRenderer, Matrix, Camera, Layer, Program, Texture, Segment, Arc };
