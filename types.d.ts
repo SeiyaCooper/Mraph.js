@@ -335,6 +335,7 @@ declare module "mobjects/Graph" {
             data: any[];
         };
         children: any[];
+        visible: boolean;
         mode: string;
         attributes: {
             position: {
@@ -369,6 +370,7 @@ declare module "mobjects/Segment" {
         start: any;
         end: any;
         update(): void;
+        renderByCanvas2d(renderer: any): Segment;
     }
     import Graph from "mobjects/Graph";
 }

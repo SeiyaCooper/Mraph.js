@@ -28,6 +28,8 @@ export default class Layer {
             aspect: this.canvas.width / this.canvas.height,
         });
         this.renderer = new rendererClass(this.canvas);
+
+        if (!this.renderer.gl) return this;
         this.program = new Program(this.renderer.gl, {
             vs: vertexShader,
             fs: fragmentShader,
@@ -49,6 +51,8 @@ export default class Layer {
     add(...els) {
         this.elements.push(...els);
 
+        if (!this.renderer.gl) return this;
+
         for (let el of els) {
             el.gl = this.renderer.gl;
         }
@@ -57,7 +61,10 @@ export default class Layer {
     }
 
     render() {
-        this.program.setUniform("cameraMat", this.camera.matrix);
+        if (this.renderer.gl) {
+            this.program.setUniform("cameraMat", this.camera.matrix);
+        }
+
         for (let el of this.elements) {
             this.renderer.render(el, this.program);
         }

@@ -34,4 +34,16 @@ export default class Segment extends Graph {
         }
         this.attributes.color.data = color;
     }
+
+    renderByCanvas2d(renderer) {
+        if (!renderer || !this.visible) return this;
+
+        renderer.style(this);
+        renderer.begin();
+        renderer.move(this.start.center);
+        renderer.line3D(this.end.center);
+        renderer.stroke();
+
+        return this;
+    }
 }

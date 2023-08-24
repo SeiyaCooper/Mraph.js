@@ -3,6 +3,7 @@ import Matrix from "../math/Matrix.js";
 export default class Graph {
     indices = { data: [] };
     children = [];
+    visible = true;
     mode = "TRIANGLES";
     attributes = {
         position: { data: [] },
