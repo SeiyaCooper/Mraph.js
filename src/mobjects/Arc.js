@@ -17,10 +17,10 @@ export default class Arc extends Graph {
         this.endAng = endAng;
         this.radius = radius;
         this.center = center;
-        this.attributes.position.data = this.updatePosition();
+        this.attributes.position.data = this.update();
     }
 
-    updatePosition() {
+    update() {
         this.attributes.position.needsUpdate = true;
 
         const vertices = [...this.center];

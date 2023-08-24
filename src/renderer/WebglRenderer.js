@@ -54,6 +54,10 @@ export default class WebglRenderer {
         } else {
             gl.drawArrays(mesh.mode, 0, indices);
         }
+
+        for (let child of mesh.children ?? []) {
+            this.render(child, program);
+        }
     }
 
     clear(r, g, b, a) {

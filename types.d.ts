@@ -324,6 +324,7 @@ declare module "mobjects/Graph" {
         indices: {
             data: any[];
         };
+        children: any[];
         mode: string;
         attributes: {
             position: {
@@ -356,7 +357,7 @@ declare module "mobjects/Segment" {
         };
         start: any;
         end: any;
-        updatePosition(): any[];
+        update(): void;
     }
     import Graph from "mobjects/Graph";
 }
@@ -371,7 +372,18 @@ declare module "mobjects/Arc" {
         endAng: number;
         radius: number;
         center: number[];
-        updatePosition(): number[];
+        update(): number[];
+    }
+    import Graph from "mobjects/Graph";
+}
+declare module "mobjects/Path" {
+    export default class Path extends Graph {
+        constructor(...points: any[]);
+        _close: boolean;
+        points: any[];
+        update(): void;
+        set close(arg: boolean);
+        get close(): boolean;
     }
     import Graph from "mobjects/Graph";
 }
@@ -384,5 +396,6 @@ declare module "mraph" {
     import Texture from "core/Texture";
     import Segment from "mobjects/Segment";
     import Arc from "mobjects/Arc";
-    export { WebglRenderer, Matrix, Camera, Layer, Program, Texture, Segment, Arc };
+    import Path from "mobjects/Path";
+    export { WebglRenderer, Matrix, Camera, Layer, Program, Texture, Segment, Arc, Path };
 }

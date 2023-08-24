@@ -2,6 +2,7 @@ import Matrix from "../math/Matrix.js";
 
 export default class Graph {
     indices = { data: [] };
+    children = [];
     mode = "TRIANGLES";
     attributes = {
         position: { data: [] },
@@ -28,6 +29,10 @@ export default class Graph {
             const buffer = gl.createBuffer();
             value.buffer = buffer;
             value.needsUpdate = true;
+        }
+
+        for (let child of this.children) {
+            child.gl = this.gl;
         }
     }
 
