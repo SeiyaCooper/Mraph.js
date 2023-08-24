@@ -164,47 +164,81 @@ export default class Matrix extends Array {
     }
 
     /**
-     * return a 4*4 rotation matrix
+     * return a rotation matrix
      * @param {number} ang
      * the rotate angle
+     * @param {number} [n = 4]
+     * Specifies the number of rows and columns of the return matrix.
+     * Available numbers are 3 or 4
      * @returns {Matrix}
      */
-    static rotateX(ang) {
-        return new Matrix(
-            [1, 0, 0, 0],
-            [0, Math.cos(ang), -Math.sin(ang), 0],
-            [0, Math.sin(ang), Math.cos(ang), 0],
-            [0, 0, 0, 1]
-        );
+    static rotateX(ang, n = 4) {
+        if (n === 3) {
+            return new Matrix(
+                [1, 0, 0],
+                [0, Math.cos(ang), -Math.sin(ang)],
+                [0, Math.sin(ang), Math.cos(ang)]
+            );
+        } else {
+            return new Matrix(
+                [1, 0, 0, 0],
+                [0, Math.cos(ang), -Math.sin(ang), 0],
+                [0, Math.sin(ang), Math.cos(ang), 0],
+                [0, 0, 0, 1]
+            );
+        }
     }
 
     /**
-     * return a 4*4 rotation matrix
+     * return a rotation matrix
      * @param {number} ang
      * the rotate angle
+     * @param {number} [n = 4]
+     * Specifies the number of rows and columns of the return matrix.
+     * Available numbers are 3 or 4
      * @returns {Matrix}
      */
-    static rotateY(ang) {
-        return new Matrix(
-            [Math.cos(ang), 0, -Math.sin(ang), 0],
-            [0, 1, 0, 0],
-            [Math.sin(ang), 0, Math.cos(ang), 0],
-            [0, 0, 0, 1]
-        );
+    static rotateY(ang, n = 4) {
+        if (n === 3) {
+            return new Matrix(
+                [Math.cos(ang), 0, -Math.sin(ang)],
+                [0, 1, 0],
+                [Math.sin(ang), 0, Math.cos(ang), 0]
+            );
+        } else {
+            return new Matrix(
+                [Math.cos(ang), 0, -Math.sin(ang), 0],
+                [0, 1, 0, 0],
+                [Math.sin(ang), 0, Math.cos(ang), 0],
+                [0, 0, 0, 1]
+            );
+        }
     }
 
     /**
-     * return a 4*4 rotation matrix
-     * @param {number} ang the rotate angle
+     * return a rotation matrix
+     * @param {number} ang
+     * the rotate angle
+     * @param {number} [n = 4]
+     * Specifies the number of rows and columns of the return matrix.
+     * Available numbers are 3 or 4
      * @returns {Matrix}
      */
-    static rotateZ(ang) {
-        return new Matrix(
-            [Math.cos(ang), -Math.sin(ang), 0, 0],
-            [Math.sin(ang), Math.cos(ang), 0, 0],
-            [0, 0, 1, 0],
-            [0, 0, 0, 1]
-        );
+    static rotateZ(ang, n = 4) {
+        if (n === 3) {
+            return new Matrix(
+                [Math.cos(ang), -Math.sin(ang), 0],
+                [Math.sin(ang), Math.cos(ang), 0],
+                [0, 0, 1]
+            );
+        } else {
+            return new Matrix(
+                [Math.cos(ang), -Math.sin(ang), 0, 0],
+                [Math.sin(ang), Math.cos(ang), 0, 0],
+                [0, 0, 1, 0],
+                [0, 0, 0, 1]
+            );
+        }
     }
 
     /**

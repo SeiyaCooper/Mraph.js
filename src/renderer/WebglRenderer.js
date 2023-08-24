@@ -6,6 +6,8 @@ export default class WebglRenderer {
         const gl = this.gl;
         this.usage = gl.STATIC_DRAW;
         // gl.enable(gl.DEPTH_TEST);
+        gl.enable(gl.BLEND);
+        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
         gl.viewport(0, 0, canvas.width, canvas.height);
     }
 

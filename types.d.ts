@@ -46,25 +46,35 @@ declare module "math/Matrix" {
          */
         static from(row: number, column: number, n: number): Matrix;
         /**
-         * return a 4*4 rotation matrix
+         * return a rotation matrix
          * @param {number} ang
          * the rotate angle
+         * @param {number} [n = 4]
+         * Specifies the number of rows and columns of the return matrix.
+         * Available numbers are 3 or 4
          * @returns {Matrix}
          */
-        static rotateX(ang: number): Matrix;
+        static rotateX(ang: number, n?: number): Matrix;
         /**
-         * return a 4*4 rotation matrix
+         * return a rotation matrix
          * @param {number} ang
          * the rotate angle
+         * @param {number} [n = 4]
+         * Specifies the number of rows and columns of the return matrix.
+         * Available numbers are 3 or 4
          * @returns {Matrix}
          */
-        static rotateY(ang: number): Matrix;
+        static rotateY(ang: number, n?: number): Matrix;
         /**
-         * return a 4*4 rotation matrix
-         * @param {number} ang the rotate angle
+         * return a rotation matrix
+         * @param {number} ang
+         * the rotate angle
+         * @param {number} [n = 4]
+         * Specifies the number of rows and columns of the return matrix.
+         * Available numbers are 3 or 4
          * @returns {Matrix}
          */
-        static rotateZ(ang: number): Matrix;
+        static rotateZ(ang: number, n?: number): Matrix;
         /**
          * return a 4*4 translation Matrix
          * @param {number} x
@@ -352,6 +362,7 @@ declare module "mobjects/Segment" {
     export default class Segment extends Graph {
         constructor(start: any, end: any);
         strokeWidth: number;
+        strokeColor: number[];
         indices: {
             data: number[];
         };
@@ -372,7 +383,7 @@ declare module "mobjects/Arc" {
         endAng: number;
         radius: number;
         center: number[];
-        update(): number[];
+        update(): void;
     }
     import Graph from "mobjects/Graph";
 }
@@ -387,6 +398,13 @@ declare module "mobjects/Path" {
     }
     import Graph from "mobjects/Graph";
 }
+declare module "mobjects/Point" {
+    export default class Point extends Arc {
+        constructor(...args: any[]);
+        center: any;
+    }
+    import Arc from "mobjects/Arc";
+}
 declare module "mraph" {
     import WebglRenderer from "renderer/WebglRenderer";
     import Matrix from "math/Matrix";
@@ -397,5 +415,6 @@ declare module "mraph" {
     import Segment from "mobjects/Segment";
     import Arc from "mobjects/Arc";
     import Path from "mobjects/Path";
-    export { WebglRenderer, Matrix, Camera, Layer, Program, Texture, Segment, Arc, Path };
+    import Point from "mobjects/Point";
+    export { WebglRenderer, Matrix, Camera, Layer, Program, Texture, Segment, Arc, Path, Point };
 }

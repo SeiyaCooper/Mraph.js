@@ -10,6 +10,7 @@ import Matrix from "./math/Matrix.js";
 import Segment from "./mobjects/Segment.js";
 import Arc from "./mobjects/Arc.js";
 import Path from "./mobjects/Path.js";
+import Point from "./mobjects/Point.js";
 
 export {
     WebglRenderer,
@@ -21,4 +22,5 @@ export {
     Segment,
     Arc,
     Path,
+    Point,
 };
