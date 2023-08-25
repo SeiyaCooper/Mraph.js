@@ -1,13 +1,14 @@
 import Graph from "./Graph.js";
 import Segment from "./Segment.js";
 import Matrix from "../math/Matrix.js";
+import Color from "../core/Color.js";
 
 export default class Arc extends Graph {
     mode = "TRIANGLE_FAN";
     insertNum = 25;
     strokeWidth = 0.05;
-    strokeColor = [1, 1, 1, 1];
-    fillColor = [0, 0, 0, 0];
+    strokeColor = new Color(1, 1, 1, 1);
+    fillColor = new Color(0, 0, 0, 0);
 
     constructor(
         startAng = 0,

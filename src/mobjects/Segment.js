@@ -1,9 +1,10 @@
 import Graph from "./Graph.js";
 import Matrix from "../math/Matrix.js";
+import Color from "../core/Color.js";
 
 export default class Segment extends Graph {
     strokeWidth = 0.05;
-    strokeColor = [1, 1, 1, 1];
+    strokeColor = new Color(1, 1, 1, 1);
     indices = { data: [0, 1, 3, 2, 0, 3] };
 
     constructor(start, end) {

@@ -106,6 +106,12 @@ declare module "math/Matrix" {
          */
         multNum(num: number): Matrix;
         /**
+         * returns hadamard product of this matrix and mat
+         * @param {Matrix} mat
+         * @returns {Matrix}
+         */
+        elMult(mat: Matrix): Matrix;
+        /**
          *
          * @param {Matrix} mat
          * @returns {Matrix}
@@ -359,11 +365,23 @@ declare module "mobjects/Graph" {
     }
     import Matrix from "math/Matrix";
 }
+declare module "core/Color" {
+    export default class Color extends Array<any> {
+        constructor(r?: number, g?: number, b?: number, a?: number);
+        r: number;
+        g: number;
+        b: number;
+        a: number;
+        toIntRGBA(): Color;
+        toRGBAStr(): string;
+        toIntRGBAStr(): string;
+    }
+}
 declare module "mobjects/Segment" {
     export default class Segment extends Graph {
         constructor(start: any, end: any);
         strokeWidth: number;
-        strokeColor: number[];
+        strokeColor: Color;
         indices: {
             data: number[];
         };
@@ -373,14 +391,15 @@ declare module "mobjects/Segment" {
         renderByCanvas2d(renderer: any): Segment;
     }
     import Graph from "mobjects/Graph";
+    import Color from "core/Color";
 }
 declare module "mobjects/Arc" {
     export default class Arc extends Graph {
         constructor(startAng?: number, endAng?: number, radius?: number, center?: number[]);
         insertNum: number;
         strokeWidth: number;
-        strokeColor: number[];
-        fillColor: number[];
+        strokeColor: Color;
+        fillColor: Color;
         startAng: number;
         endAng: number;
         radius: number;
@@ -388,6 +407,7 @@ declare module "mobjects/Arc" {
         update(): void;
     }
     import Graph from "mobjects/Graph";
+    import Color from "core/Color";
 }
 declare module "mobjects/Path" {
     export default class Path extends Graph {

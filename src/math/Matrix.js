@@ -56,6 +56,23 @@ export default class Matrix extends Array {
     }
 
     /**
+     * returns hadamard product of this matrix and mat
+     * @param {Matrix} mat
+     * @returns {Matrix}
+     */
+    elMult(mat) {
+        const ans = Matrix.zeros(this.row, this.column);
+
+        for (let i = 0; i < this.column; i++) {
+            for (let j = 0; j < this.row; j++) {
+                ans[i][j] = this[i][j] * mat[i][j];
+            }
+        }
+
+        return ans;
+    }
+
+    /**
      *
      * @param {Matrix} mat
      * @returns {Matrix}
@@ -282,11 +299,11 @@ export default class Matrix extends Array {
      * @returns {Matrix}
      */
     get T() {
-        const ans = Matrix.zeros(this.row, this.column);
+        const ans = Matrix.zeros(this.column, this.row);
 
         for (let i = 0; i < this[0].length; i++) {
             for (let j = 0; j < this.length; j++) {
-                ans[j][i] = this[i][j];
+                ans[i][j] = this[j][i];
             }
         }
 

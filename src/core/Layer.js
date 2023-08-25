@@ -63,6 +63,8 @@ export default class Layer {
     render() {
         if (this.renderer.gl) {
             this.program.setUniform("cameraMat", this.camera.matrix);
+        } else {
+            this.renderer.matrix = this.camera.matrix;
         }
 
         for (let el of this.elements) {
