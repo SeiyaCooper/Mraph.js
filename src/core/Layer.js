@@ -1,68 +1,116 @@
 import ActionList from "../animation/ActionList.js";
-import { mergeObject } from "../utils/utils.js";
 import CanvasRenderer from "../renderer/CanvasRenderer.js";
+import Camera from "./Camera.js";
+import Program from "./Program.js";
 
 export default class Layer {
     elements = [];
+    camera = new Camera();
     actionList = new ActionList();
-    rendererClass = CanvasRenderer;
 
-    /**
-     * @param {HTMLCanvasElement} canvas
-     * @param {Object} [config={}] Optional Configurations
-     */
-    constructor(canvas, config = {}) {
-        mergeObject(this, config);
-        this.canvas = canvas;
+    constructor({
+        fillScreen = true,
+        appendTo = undefined,
+        rendererClass = CanvasRenderer,
+    } = {}) {
+        this.canvas = document.createElement("canvas");
+
+        if (fillScreen) {
+            this.canvas.width = window.innerWidth;
+            this.canvas.height = window.innerHeight;
+        }
+
+        if (appendTo) {
+            this.appendTo(appendTo);
+        }
+
+        this.camera.perspective({
+            aspect: this.canvas.width / this.canvas.height,
+        });
+        this.renderer = new rendererClass(this.canvas);
+
+        if (!this.renderer.gl) return this;
+        this.program = new Program(this.renderer.gl, {
+            vs: vertexShader,
+            fs: fragmentShader,
+            attributes: {
+                position: 3,
+                color: 4,
+            },
+            uniforms: {
+                cameraMat: this.camera.matrix,
+            },
+        });
     }
 
-    /**
-     * @param  {...{render: Function}} drawable
-     */
-    add(...drawable) {
-        for (let obj of drawable) {
-            this.elements.push(obj);
-            obj.layer = this;
-            obj.renderer = this.renderer;
+    appendTo(el) {
+        el.appendChild(this.canvas);
+        return this;
+    }
+
+    add(...els) {
+        this.elements.push(...els);
+
+        for (let el of els) {
+            el.layer = this;
+            if (this.renderer.gl) {
+                el.gl = this.renderer.gl;
+            }
         }
+
+        return this;
     }
 
     render() {
-        for (let e of this.elements) {
-            e.render();
+        if (this.renderer.gl) {
+            this.program.setUniform("cameraMat", this.camera.matrix);
+        } else {
+            this.renderer.matrix = this.camera.matrix;
         }
+
+        for (let el of this.elements) {
+            this.renderer.render(el, this.program);
+        }
+        return this;
     }
 
-    clear() {
-        this.renderer.clear(0, 0);
+    clear(r = 0, g = 0, b = 0, a = 1) {
+        this.renderer.clear(r, g, b, a);
+        return this;
     }
 
-    play() {
+    play(r = 0, g = 0, b = 0, a = 1) {
         this.actionList.add(0, Infinity, {
             update: () => {
-                this.clear();
+                this.clear(r, g, b, a);
                 this.render();
             },
         });
         this.actionList.play();
     }
-
-    set canvas(val) {
-        this._canvas = val;
-        this.renderer = new this.rendererClass(val);
-
-        for (let obj of this.elements) {
-            obj.renderer = this.renderer;
-        }
-    }
-    get canvas() {
-        return this._canvas;
-    }
-
-    set matrix(mat) {
-        this.renderer.matrix = mat;
-    }
-    get matrix() {
-        return this.renderer.matrix;
-    }
 }
+
+const vertexShader = `
+    attribute vec3 position;
+    attribute vec4 color;
+
+    uniform mat4 cameraMat;
+    uniform mat4 modelMat;
+
+    varying vec4 v_color;
+
+    void main() {
+        gl_Position = cameraMat * modelMat * vec4(position, 1.0);
+        v_color = color;
+    }
+`;
+
+const fragmentShader = `
+    precision mediump float;
+
+    varying vec4 v_color;
+
+    void main() {
+        gl_FragColor = v_color;
+    }
+`;

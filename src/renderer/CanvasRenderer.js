@@ -1,10 +1,25 @@
 import Matrix from "../math/Matrix.js";
+import Vector from "../math/Vector.js";
 
 export default class CanvasRenderer {
     matrix = Matrix.identity(4);
 
     constructor(canvas) {
         this.canvas = canvas;
+        this.resolution = new Vector(
+            this.canvas.width / 2,
+            this.canvas.height / 2,
+            1
+        );
+    }
+
+    render(mesh) {
+        for (let child of mesh.children ?? []) {
+            this.render(child);
+        }
+
+        if (!mesh.renderByCanvas2d) return;
+        mesh.renderByCanvas2d(this);
     }
 
     begin() {
@@ -27,48 +42,53 @@ export default class CanvasRenderer {
         return this;
     }
 
-    clear() {
-        const width = this.canvas.width;
-        this.canvas.width = width;
-        this.canvas = this._canvas;
+    clear(r, g, b, a) {
+        this.context.fillStyle = `rgba(${parseInt(r * 255)}, ${parseInt(
+            g * 255
+        )}, ${parseInt(b * 255)}, ${a})`;
+
+        const w = this.canvas.width;
+        const h = this.canvas.height;
+        this.context.fillRect(-w / 2, -h / 2, w, h);
         return this;
     }
 
     style(el) {
         const ctx = this.context;
-        ctx.fillStyle = el.fillColor ?? "rgba(0,0,0,0)";
-        ctx.strokeStyle = el.strokeColor ?? "black";
-        ctx.lineWidth = el.strokeWidth ?? 5;
-        ctx.globalAlpha = el.alpha ?? 1;
+        ctx.fillStyle = el.fillColor?.toIntRGBAStr() ?? "rgba(0,0,0,0)";
+        ctx.strokeStyle = el.strokeColor?.toIntRGBAStr() ?? "black";
+        ctx.lineWidth = el.strokeWidth * this.sceneUnit ?? 5;
         ctx.setLineDash(el.dash ?? []);
     }
 
     move(pos) {
-        pos = pos.trans(this.matrix);
-        pos = pos.mult(1 / pos.columns[3]).columns;
+        pos = this.toScreenPos(pos);
         this.context.moveTo(...pos);
         return this;
     }
 
     line3D(pos) {
-        pos = pos.trans(this.matrix);
-        pos = pos.mult(1 / pos.columns[3]).columns;
+        pos = this.toScreenPos(pos);
         this.context.lineTo(...pos);
         return this;
     }
 
-    arc2D(centerPos, radius, stAng, edAng, anticlockwise = true) {
-        let center = centerPos.trans(this.matrix);
-        center = center.mult(1 / center.columns[3]).columns;
+    arc2D(pos, radius, stAng, edAng, anticlockwise = true) {
+        let center = this.toScreenPos(pos);
         this.context.arc(
             center[0],
             center[1],
-            radius,
+            radius * this.sceneUnit,
             stAng,
             edAng,
             anticlockwise
         );
         return this;
+    }
+
+    toScreenPos(pos) {
+        let screenPos = new Vector(...pos, 1).trans(this.matrix);
+        return screenPos.mult(1 / screenPos[3]).elMult(this.resolution);
     }
 
     set canvas(val) {
@@ -82,5 +102,12 @@ export default class CanvasRenderer {
 
     get canvas() {
         return this._canvas;
+    }
+
+    /**
+     * Returns the number of pixels in scene space per unit length on the screen
+     */
+    get sceneUnit() {
+        return this.toScreenPos(new Vector(1, 0, 0))[0];
     }
 }

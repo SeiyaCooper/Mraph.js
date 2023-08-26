@@ -1,26 +1,34 @@
+import Camera from "./core/Camera.js";
+import Layer from "./core/Layer.js";
+import Program from "./core/Program.js";
+import Texture from "./core/Texture.js";
+import Color from "./core/Color.js";
+
+import WebglRenderer from "./renderer/WebglRenderer.js";
+
 import Matrix from "./math/Matrix.js";
 import Vector from "./math/Vector.js";
-import Layer from "./core/Layer.js";
-import ActionList from "./animation/ActionList.js";
-import WebglRenderer from "./renderer/WebglRenderer.js";
-import CanvasRenderer from "./renderer/CanvasRenderer.js";
 
-import Point from "./objects/Point.js";
-import Segment from "./objects/Segment.js";
-import Polygon from "./objects/Polygon.js";
-import Arrow from "./objects/Arrow.js";
-import VectorField2D from "./objects/VectorField2D.js";
+import Segment from "./mobjects/Segment.js";
+import Arc from "./mobjects/Arc.js";
+import Path from "./mobjects/Path.js";
+import Point from "./mobjects/Point.js";
+import Arrow from "./mobjects/Arrow.js";
+import VectorField2D from "./mobjects/VectorField2D.js";
 
 export {
+    WebglRenderer,
     Matrix,
     Vector,
+    Camera,
     Layer,
-    ActionList,
-    WebglRenderer,
-    CanvasRenderer,
-    Point,
+    Program,
+    Texture,
+    Color,
     Segment,
-    Polygon,
+    Arc,
+    Path,
+    Point,
     Arrow,
     VectorField2D,
 };

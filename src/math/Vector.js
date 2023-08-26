@@ -1,22 +1,61 @@
-import Matrix from "./Matrix.js";
 import { deepCopy } from "../utils/utils.js";
+import Matrix from "./Matrix.js";
 
-export default class Vector {
+export default class Vector extends Array {
     /**
-     * @param {number[]} [source = [1]]
-     * @returns {Vector}
+     * @param  {...number} nums
      */
-    constructor(source = [1]) {
-        this.columns = source;
+    constructor(...nums) {
+        super(...nums);
     }
 
     /**
+     * mult a scalar
+     * @param {number} num
+     * @returns {Vector}
+     */
+    mult(num) {
+        const ans = Matrix.from(this.row, 1, 1).toVector();
+        for (let i = 0; i < this.row; i++) {
+            ans[i] = num * this[i];
+        }
+        return ans;
+    }
+
+    /**
+     * returns mat.mult(this)
      * @param {Matrix} mat
      * @returns {Vector}
      */
     trans(mat) {
-        if (!Matrix.isMatrix) return this;
-        return mat.mult(this.toMatrix()).toVector();
+        return mat.mult(this);
+    }
+
+    /**
+     * @param {Vector} vec
+     * @returns {number}
+     */
+    dot(vec) {
+        let ans = 0;
+        this.forEach((num, i) => {
+            ans += num * vec[i];
+        });
+        return ans;
+    }
+
+    /**
+     * returns hadamard product of this vector and vec
+     * @param {Vector} vec
+     * @returns {Vector}
+     */
+    elMult(vec) {
+        const ans = Matrix.zeros(this.row, 1).toVector();
+
+        for (let j = 0; j < this.row; j++) {
+            ans[j] = this[j] * vec[j];
+        }
+
+        return ans;
     }
 
     /**
@@ -36,54 +75,13 @@ export default class Vector {
     }
 
     /**
-     * @param {number} num
-     * @returns {Vector}
-     */
-    mult(num) {
-        const ans = Matrix.from(1, this.row, 1).toVector();
-        for (let i = 0; i < this.row; i++) {
-            ans.columns[i] = num * this.columns[i];
-        }
-        return ans;
-    }
-
-    /**
-     * return the dot product
-     * @param {Vector} vec
-     * @returns
-     */
-    dot(vec) {
-        if (!Vector.isVector(vec)) return this;
-
-        let ans = 0;
-        for (const num of this.columns) {
-            ans += num ** 2;
-        }
-        return ans;
-    }
-
-    /**
      * normalize this vector
      * @returns {Vector}
      */
     normal() {
         const ans = this.clone();
-        ans.length = 1;
+        ans.norm = 1;
         return ans;
-    }
-
-    /**
-     * @param {number} row
-     * @param {number} [n = 0]
-     * the number to be filled with
-     * @returns {Vector}
-     */
-    resize(row, n = 0) {
-        const out = [...this.columns];
-        const start = out.length;
-        out.length = row;
-        out.fill(n, start, row);
-        return new Vector(out);
     }
 
     /**
@@ -95,10 +93,20 @@ export default class Vector {
     }
 
     /**
+     * copy values from another vector
+     */
+    copy(vec) {
+        vec.forEach((num, i) => {
+            this[i] = num;
+        });
+        return this;
+    }
+
+    /**
      * @returns {Matrix}
      */
     toMatrix() {
-        return new Matrix([this.columns]);
+        return new Matrix(Array.from(this));
     }
 
     /**
@@ -106,20 +114,20 @@ export default class Vector {
      * @returns {boolean}
      */
     static isVector(obj) {
-        return Array.isArray(obj.columns) && !!obj.toMatrix;
+        return obj instanceof Vector;
     }
 
     /**
-     * @param {number} num
+     * @param {number} val
      */
-    set length(num) {
-        this.columns = this.mult(num / this.length).columns;
+    set norm(val) {
+        this.copy(this.mult(val / this.norm));
     }
 
     /**
      * @type {number}
      */
-    get length() {
+    get norm() {
         return Math.sqrt(this.dot(this));
     }
 
@@ -127,6 +135,6 @@ export default class Vector {
      * @type {number}
      */
     get row() {
-        return this.columns.length;
+        return this.length;
     }
 }

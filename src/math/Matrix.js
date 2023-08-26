@@ -1,35 +1,35 @@
-import Vector from "./Vector.js";
 import { deepCopy } from "../utils/utils.js";
+import Vector from "./Vector.js";
 
-export default class Matrix {
+export default class Matrix extends Array {
     /**
-     * @param {number[][]} [source = [[1]]]
+     * @param {...number[]} source
      * @return {Matrix}
      */
-    constructor(source = [[1]]) {
-        this.columns = source;
+    constructor(...source) {
+        super(...source);
     }
 
     /**
-     *
+     * mult a vector, matrix or scalar
      * @param {Matrix} mat
      * @returns {Matrix}
      */
     mult(mat) {
+        if (Vector.isVector(mat)) mat = mat.toMatrix();
         if (!Matrix.isMatrix(mat)) return this.multNum(mat);
-        if (mat.row != this.column) return this;
 
-        const mat1 = this.columns;
-        const mat2 = mat.columns;
-        const ans = Matrix.zeros(mat.column, this.row);
+        let ans = Matrix.zeros(this.row, mat.column);
 
-        for (let i = 0; i < mat1[0].length; i++) {
-            for (let j = 0; j < mat2.length; j++) {
-                for (let k = 0; k < mat1[0].length; k++) {
-                    ans.columns[j][i] += mat1[k][i] * mat2[j][k];
+        for (let i = 0; i < this[0].length; i++) {
+            for (let j = 0; j < mat.length; j++) {
+                for (let k = 0; k < this[0].length; k++) {
+                    ans[j][i] += this[k][i] * mat[j][k];
                 }
             }
         }
+
+        if (ans.column === 1) ans = ans.toVector();
 
         return ans;
     }
@@ -43,18 +43,33 @@ export default class Matrix {
     }
 
     /**
-     *
+     * mult a scalar
      * @param {number} num
      * @returns {Matrix}
      */
     multNum(num) {
-        if (typeof num != "number") return this;
-
-        const ans = Matrix.identity(this.column, this.row);
+        const ans = Matrix.zeros(this.row, this.column);
 
         for (let i = 0; i < this.column; i++) {
             for (let j = 0; j < this.row; j++) {
-                ans.columns[i][j] = this.columns[i][j] * num;
+                ans[i][j] = this[i][j] * num;
+            }
+        }
+
+        return ans;
+    }
+
+    /**
+     * returns hadamard product of this matrix and mat
+     * @param {Matrix} mat
+     * @returns {Matrix}
+     */
+    elMult(mat) {
+        const ans = Matrix.zeros(this.row, this.column);
+
+        for (let i = 0; i < this.column; i++) {
+            for (let j = 0; j < this.row; j++) {
+                ans[i][j] = this[i][j] * mat[i][j];
             }
         }
 
@@ -67,15 +82,11 @@ export default class Matrix {
      * @returns {Matrix}
      */
     add(mat) {
-        if (mat.column < this.column || mat.row < this.row) return this;
+        const ans = Matrix.zeros(this.row, this.column);
 
-        const mat1 = this.columns;
-        const mat2 = mat.columns;
-        const ans = Matrix.zeros(this.column, this.row);
-
-        for (let i = 0; i < mat1[0].length; i++) {
-            for (let j = 0; j < mat1.length; j++) {
-                ans.columns[j][i] = mat1[j][i] + mat2[j][i];
+        for (let i = 0; i < this[0].length; i++) {
+            for (let j = 0; j < this.length; j++) {
+                ans[j][i] = this[j][i] + mat[j][i];
             }
         }
 
@@ -88,15 +99,11 @@ export default class Matrix {
      * @returns {Matrix}
      */
     reduce(mat) {
-        if (mat.column < this.column || mat.row < this.row) return this;
+        const ans = Matrix.zeros(this.row, this.column);
 
-        const mat1 = this.columns;
-        const mat2 = mat.columns;
-        const ans = Matrix.zeros(this.column, this.row);
-
-        for (let i = 0; i < mat1[0].length; i++) {
-            for (let j = 0; j < mat1.length; j++) {
-                ans.columns[j][i] = mat1[j][i] - mat2[j][i];
+        for (let i = 0; i < this[0].length; i++) {
+            for (let j = 0; j < this.length; j++) {
+                ans[j][i] = this[j][i] - mat[j][i];
             }
         }
 
@@ -112,10 +119,24 @@ export default class Matrix {
     }
 
     /**
+     * copy value from another matrix
+     * @param {Matrix} mat
+     */
+    copy(mat) {
+        mat.forEach((vec, i) => {
+            vec.forEach((num, j) => {
+                this[i][j] = num;
+            });
+        });
+        return this;
+    }
+
+    /**
+     * Returns a vector constructed by flattening this matrix
      * @returns {Vector}
      */
     toVector() {
-        return new Vector(this.columns[0]);
+        return new Vector(...this.flat());
     }
 
     /**
@@ -123,7 +144,7 @@ export default class Matrix {
      * @returns {boolean}
      */
     static isMatrix(obj) {
-        return Array.isArray(obj.columns) && Array.isArray(obj.columns[0]);
+        return obj instanceof Matrix && Array.isArray(obj[0]);
     }
 
     /**
@@ -132,7 +153,7 @@ export default class Matrix {
      * @param {number} row
      * @returns {Matrix}
      */
-    static zeros(column, row) {
+    static zeros(row, column) {
         return Matrix.from(row, column, 0);
     }
 
@@ -142,89 +163,112 @@ export default class Matrix {
      * @returns {Matrix}
      */
     static identity(n) {
-        const out = Matrix.zeros(n, n);
+        const ans = Matrix.from(n, n, 0);
+
         for (let i = 0; i < n; i++) {
-            out.columns[i][i] = 1;
+            ans[i][i] = 1;
         }
-        return out;
+
+        return ans;
     }
 
     /**
-     * @param  {...any} args
-     * @returns
-     *
-     * @example
-     * Matrix.from(columns);
-     * // returns new Matrix(columns)
+     * @param {number} row
+     * @param {number} column
+     * @param {number} n
+     * @returns {Matrix}
      *
      * @example
      * Matrix.from(2,1,3);
-     * // returns new Matrix([
-     *     [3],
-     *     [3]
-     * ])
+     * // returns new Matrix(
+     * //     [3],
+     * //     [3]
+     * // )
      */
-    static from(...args) {
-        if (Array.isArray(args[0]) && Array.isArray(args[0][0])) {
-            return new Matrix(args[0]);
-        }
-        if (
-            typeof args[0] === "number" &&
-            typeof args[1] === "number" &&
-            typeof args[2] === "number"
-        ) {
+    static from(row, column, n) {
+        return new Matrix(
+            ...Array(column)
+                .fill(0)
+                .map(() => Array(row).fill(n))
+        );
+    }
+
+    /**
+     * return a rotation matrix
+     * @param {number} ang
+     * the rotate angle
+     * @param {number} [n = 4]
+     * Specifies the number of rows and columns of the return matrix
+     * Available numbers are 3 or 4
+     * @returns {Matrix}
+     */
+    static rotateX(ang, n = 4) {
+        if (n === 3) {
             return new Matrix(
-                Array(args[1])
-                    .fill(args[2])
-                    .map(() => Array(args[0]).fill(args[2]))
+                [1, 0, 0],
+                [0, Math.cos(ang), -Math.sin(ang)],
+                [0, Math.sin(ang), Math.cos(ang)]
+            );
+        } else {
+            return new Matrix(
+                [1, 0, 0, 0],
+                [0, Math.cos(ang), -Math.sin(ang), 0],
+                [0, Math.sin(ang), Math.cos(ang), 0],
+                [0, 0, 0, 1]
             );
         }
-
-        return args;
     }
 
     /**
-     * return a 4*4 rotation matrix
+     * return a rotation matrix
      * @param {number} ang
      * the rotate angle
+     * @param {number} [n = 4]
+     * Specifies the number of rows and columns of the return matrix
+     * Available numbers are 3 or 4
      * @returns {Matrix}
      */
-    static rotateX(ang) {
-        return new Matrix([
-            [1, 0, 0, 0],
-            [0, Math.cos(ang), -Math.sin(ang), 0],
-            [0, Math.sin(ang), Math.cos(ang), 0],
-            [0, 0, 0, 1],
-        ]);
+    static rotateY(ang, n = 4) {
+        if (n === 3) {
+            return new Matrix(
+                [Math.cos(ang), 0, -Math.sin(ang)],
+                [0, 1, 0],
+                [Math.sin(ang), 0, Math.cos(ang), 0]
+            );
+        } else {
+            return new Matrix(
+                [Math.cos(ang), 0, -Math.sin(ang), 0],
+                [0, 1, 0, 0],
+                [Math.sin(ang), 0, Math.cos(ang), 0],
+                [0, 0, 0, 1]
+            );
+        }
     }
 
     /**
-     * return a 4*4 rotation matrix
+     * return a rotation matrix
      * @param {number} ang
      * the rotate angle
+     * @param {number} [n = 4]
+     * Specifies the number of rows and columns of the return matrix
+     * Available numbers are 3 or 4
      * @returns {Matrix}
      */
-    static rotateY(ang) {
-        return new Matrix([
-            [Math.cos(ang), 0, -Math.sin(ang), 0],
-            [0, 1, 0, 0],
-            [Math.sin(ang), 0, Math.cos(ang), 0],
-            [0, 0, 0, 1],
-        ]);
-    }
-
-    /**
-     * return a 4*4 rotation matrix
-     * @param {number} ang the rotate angle
-     * @returns {Matrix}
-     */
-    static rotateZ(ang) {
-        return new Matrix([
-            [Math.cos(ang), -Math.sin(ang), 0, 0],
-            [Math.sin(ang), Math.cos(ang), 0, 0],
-            [0, 0, 1, 0],
-            [0, 0, 0, 1],
-        ]);
+    static rotateZ(ang, n = 4) {
+        if (n === 3) {
+            return new Matrix(
+                [Math.cos(ang), -Math.sin(ang), 0],
+                [Math.sin(ang), Math.cos(ang), 0],
+                [0, 0, 1]
+            );
+        } else {
+            return new Matrix(
+                [Math.cos(ang), -Math.sin(ang), 0, 0],
+                [Math.sin(ang), Math.cos(ang), 0, 0],
+                [0, 0, 1, 0],
+                [0, 0, 0, 1]
+            );
+        }
     }
 
     /**
@@ -235,39 +279,61 @@ export default class Matrix {
      * @returns {Matrix}
      */
     static translate(x, y, z) {
-        return new Matrix([
+        return new Matrix(
             [1, 0, 0, 0],
             [0, 1, 0, 0],
             [0, 0, 1, 0],
-            [x, y, z, 1],
-        ]);
+            [x, y, z, 1]
+        );
     }
 
     /**
-     * return a 4*4 perspective matrix
-     * @param {number} fudgeFactor
-     * @returns
+     * @param {number} val
      */
-    static perspective(fudgeFactor) {
-        return new Matrix([
-            [1, 0, 0, 0],
-            [0, 1, 0, 0],
-            [0, 0, 1, 0],
-            [0, 0, fudgeFactor, 1],
-        ]);
+    set norm(val) {
+        this.copy(this.mult(val / this.norm));
+    }
+
+    /**
+     * @returns {number} F-norm of this matrix
+     */
+    get norm() {
+        let ans = 0;
+        for (let i = 0; i < this.length; i++) {
+            for (let j = 0; j < this[0].length; j++) {
+                ans += this[i][j] ** 2;
+            }
+        }
+        return Math.sqrt(ans);
+    }
+
+    /**
+     * return transpose of this matrix
+     * @returns {Matrix}
+     */
+    get T() {
+        const ans = Matrix.zeros(this.column, this.row);
+
+        for (let i = 0; i < this[0].length; i++) {
+            for (let j = 0; j < this.length; j++) {
+                ans[i][j] = this[j][i];
+            }
+        }
+
+        return ans;
     }
 
     /**
      * @returns {number} the number of columns
      */
     get column() {
-        return this.columns.length;
+        return this.length;
     }
 
     /**
      * @returns {number} the number of rows
      */
     get row() {
-        return this.columns[0].length;
+        return this[0].length;
     }
 }
