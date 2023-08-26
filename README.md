@@ -14,23 +14,19 @@ npm install --save mraph
 A short example:
 
 ```JavaScript
-import { Layer, Point, Vector, VectorField2D } from "mraph";
-
-const main = document.querySelector("#main");
-main.width = 1.5 * window.innerWidth;
-main.height = 1.5 * window.innerHeight;
+import { Layer, Point, Vector } from "mraph";
 
 // Create a new Layer
-const layer = new Layer(main);
+const layer = new Layer().appendTo(document.body);
 
 // Create a new Point
-const point = new Point(10, 2);
+const point = new Point(0, 0);
 
 // Add the point to layer
 layer.add(point);
 
 // Set the acceleration of the point
-point.a = new Vector([50, 40, 0, 0]);
+point.a = new Vector(0.5, 1, 0);
 
 // Start animation
 layer.play();
