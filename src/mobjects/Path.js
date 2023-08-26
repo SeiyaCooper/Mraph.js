@@ -7,7 +7,6 @@ export default class Path extends Graph {
     constructor(...points) {
         super();
         this.points = points;
-        this.update();
     }
 
     update() {

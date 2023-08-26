@@ -1,4 +1,5 @@
 import { deepCopy } from "../utils/utils.js";
+import Vector from "./Vector.js";
 
 export default class Matrix extends Array {
     /**
@@ -10,14 +11,15 @@ export default class Matrix extends Array {
     }
 
     /**
-     *
+     * mult a vector, matrix or scalar
      * @param {Matrix} mat
      * @returns {Matrix}
      */
     mult(mat) {
+        if (Vector.isVector(mat)) mat = mat.toMatrix();
         if (!Matrix.isMatrix(mat)) return this.multNum(mat);
 
-        const ans = Matrix.zeros(this.row, mat.column);
+        let ans = Matrix.zeros(this.row, mat.column);
 
         for (let i = 0; i < this[0].length; i++) {
             for (let j = 0; j < mat.length; j++) {
@@ -26,6 +28,8 @@ export default class Matrix extends Array {
                 }
             }
         }
+
+        if (ans.column === 1) ans = ans.toVector();
 
         return ans;
     }
@@ -39,7 +43,7 @@ export default class Matrix extends Array {
     }
 
     /**
-     *
+     * mult a scalar
      * @param {number} num
      * @returns {Matrix}
      */
@@ -124,6 +128,15 @@ export default class Matrix extends Array {
                 this[i][j] = num;
             });
         });
+        return this;
+    }
+
+    /**
+     * Returns a vector constructed by flattening this matrix
+     * @returns {Vector}
+     */
+    toVector() {
+        return new Vector(...this.flat());
     }
 
     /**
@@ -185,7 +198,7 @@ export default class Matrix extends Array {
      * @param {number} ang
      * the rotate angle
      * @param {number} [n = 4]
-     * Specifies the number of rows and columns of the return matrix.
+     * Specifies the number of rows and columns of the return matrix
      * Available numbers are 3 or 4
      * @returns {Matrix}
      */
@@ -211,7 +224,7 @@ export default class Matrix extends Array {
      * @param {number} ang
      * the rotate angle
      * @param {number} [n = 4]
-     * Specifies the number of rows and columns of the return matrix.
+     * Specifies the number of rows and columns of the return matrix
      * Available numbers are 3 or 4
      * @returns {Matrix}
      */
@@ -237,7 +250,7 @@ export default class Matrix extends Array {
      * @param {number} ang
      * the rotate angle
      * @param {number} [n = 4]
-     * Specifies the number of rows and columns of the return matrix.
+     * Specifies the number of rows and columns of the return matrix
      * Available numbers are 3 or 4
      * @returns {Matrix}
      */

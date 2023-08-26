@@ -1,6 +1,7 @@
 import Graph from "./Graph.js";
 import Matrix from "../math/Matrix.js";
 import Color from "../core/Color.js";
+import Point from "./Point.js";
 
 export default class Segment extends Graph {
     strokeWidth = 0.05;
@@ -11,7 +12,6 @@ export default class Segment extends Graph {
         super();
         this.start = start;
         this.end = end;
-        this.update();
     }
 
     update() {
@@ -46,5 +46,24 @@ export default class Segment extends Graph {
         renderer.stroke();
 
         return this;
+    }
+
+    set vector(vec) {
+        this._vector = vec;
+        this.end = new Point(this.start.center.add(vec));
+    }
+
+    get vector() {
+        return this._vector;
+    }
+
+    set length(val) {
+        const vec = this._vector;
+        vec.norm = val;
+        this.vector = this._vector;
+    }
+
+    get length() {
+        return this._vector.norm;
     }
 }

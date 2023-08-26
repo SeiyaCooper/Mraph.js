@@ -1,16 +1,16 @@
 import Matrix from "../math/Matrix.js";
+import Vector from "../math/Vector.js";
 
 export default class CanvasRenderer {
     matrix = Matrix.identity(4);
 
     constructor(canvas) {
         this.canvas = canvas;
-        this.resolution = new Matrix([
+        this.resolution = new Vector(
             this.canvas.width / 2,
             this.canvas.height / 2,
-            1,
-            1,
-        ]);
+            1
+        );
     }
 
     render(mesh) {
@@ -58,36 +58,37 @@ export default class CanvasRenderer {
         ctx.fillStyle = el.fillColor?.toIntRGBAStr() ?? "rgba(0,0,0,0)";
         ctx.strokeStyle = el.strokeColor?.toIntRGBAStr() ?? "black";
         ctx.lineWidth = el.strokeWidth * this.sceneUnit ?? 5;
-        ctx.globalAlpha = el.alpha ?? 1;
         ctx.setLineDash(el.dash ?? []);
     }
 
     move(pos) {
-        pos = new Matrix([...pos[0], 1]).trans(this.matrix);
-        pos = pos.mult(1 / pos[0][3]).elMult(this.resolution)[0];
+        pos = this.toScreenPos(pos);
         this.context.moveTo(...pos);
         return this;
     }
 
     line3D(pos) {
-        pos = new Matrix([...pos[0], 1]).trans(this.matrix);
-        pos = pos.mult(1 / pos[0][3]).elMult(this.resolution)[0];
+        pos = this.toScreenPos(pos);
         this.context.lineTo(...pos);
         return this;
     }
 
-    arc2D(centerPos, radius, stAng, edAng, anticlockwise = true) {
-        let center = centerPos.trans(this.matrix);
-        center = center.mult(1 / center.columns[3]).columns;
+    arc2D(pos, radius, stAng, edAng, anticlockwise = true) {
+        let center = this.toScreenPos(pos);
         this.context.arc(
             center[0],
             center[1],
-            radius,
+            radius * this.sceneUnit,
             stAng,
             edAng,
             anticlockwise
         );
         return this;
+    }
+
+    toScreenPos(pos) {
+        let screenPos = new Vector(...pos, 1).trans(this.matrix);
+        return screenPos.mult(1 / screenPos[3]).elMult(this.resolution);
     }
 
     set canvas(val) {
@@ -107,8 +108,6 @@ export default class CanvasRenderer {
      * Returns the number of pixels in scene space per unit length on the screen
      */
     get sceneUnit() {
-        let unit = new Matrix([1, 0, 0, 1]).trans(this.matrix);
-        unit = unit.mult(1 / unit[0][3]).elMult(this.resolution)[0][0];
-        return unit;
+        return this.toScreenPos(new Vector(1, 0, 0))[0];
     }
 }

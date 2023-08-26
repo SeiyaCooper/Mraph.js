@@ -7,7 +7,7 @@ export default class Camera {
     viewMat = Matrix.identity(4);
 
     constructor() {
-        this.position = [0, 0, 5];
+        this.position = [0, 0, 10];
         this.rotation = [0, 0, 0];
     }
 

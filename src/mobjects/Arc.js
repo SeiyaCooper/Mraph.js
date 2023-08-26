@@ -1,6 +1,6 @@
 import Graph from "./Graph.js";
 import Segment from "./Segment.js";
-import Matrix from "../math/Matrix.js";
+import Vector from "../math/Vector.js";
 import Color from "../core/Color.js";
 
 export default class Arc extends Graph {
@@ -21,7 +21,6 @@ export default class Arc extends Graph {
         this.endAng = endAng;
         this.radius = radius;
         this.center = center;
-        this.update();
     }
 
     update() {
@@ -29,7 +28,6 @@ export default class Arc extends Graph {
 
         const vertices = [...this.center];
         const color = [...this.fillColor];
-        const points = [];
         const segments = [];
         const sA = this.endAng > this.startAng ? this.startAng : this.endAng;
         const eA = this.endAng > this.startAng ? this.endAng : this.startAng;
@@ -39,17 +37,15 @@ export default class Arc extends Graph {
 
         for (let a = sA; a <= eA; a += step) {
             vertices.push(c[0] + Math.cos(a) * r, c[1] + Math.sin(a) * r, c[2]);
-            points.push([c[0] + Math.cos(a) * r, c[1] + Math.sin(a) * r, c[2]]);
             color.push(...this.fillColor);
         }
         vertices.push(c[0] + Math.cos(eA) * r, c[1] + Math.sin(eA) * r, c[2]);
-        points.push([c[0] + Math.cos(eA) * r, c[1] + Math.sin(eA) * r, c[2]]);
         color.push(...this.fillColor);
 
-        for (let i = 0; i < points.length - 1; i++) {
+        for (let i = 3; i < vertices.length - 2; i += 3) {
             const segment = new Segment(
-                { center: new Matrix(points[i]) },
-                { center: new Matrix(points[i + 1]) }
+                { center: new Vector(...vertices.slice(i, i + 3)) },
+                { center: new Vector(...vertices.slice(i + 3, i + 6)) }
             );
             segment.strokeWidth = this.strokeWidth;
             segment.strokeColor = this.strokeColor;
@@ -61,5 +57,23 @@ export default class Arc extends Graph {
         this.attributes.position.data = vertices;
         this.attributes.color.data = color;
         this.children = segments;
+    }
+
+    renderByCanvas2d(renderer) {
+        if (!renderer || !this.visible) return this;
+
+        renderer.style(this);
+        renderer.begin();
+        renderer.arc2D(
+            this.center,
+            this.radius,
+            this.startAng,
+            this.endAng,
+            this.startAng > this.endAng
+        );
+        renderer.stroke();
+        renderer.fill();
+
+        return this;
     }
 }

@@ -1,5 +1,5 @@
 import ActionList from "../animation/ActionList.js";
-import WebglRenderer from "../renderer/WebglRenderer.js";
+import CanvasRenderer from "../renderer/CanvasRenderer.js";
 import Camera from "./Camera.js";
 import Program from "./Program.js";
 
@@ -11,7 +11,7 @@ export default class Layer {
     constructor({
         fillScreen = true,
         appendTo = undefined,
-        rendererClass = WebglRenderer,
+        rendererClass = CanvasRenderer,
     } = {}) {
         this.canvas = document.createElement("canvas");
 
@@ -51,10 +51,11 @@ export default class Layer {
     add(...els) {
         this.elements.push(...els);
 
-        if (!this.renderer.gl) return this;
-
         for (let el of els) {
-            el.gl = this.renderer.gl;
+            el.layer = this;
+            if (this.renderer.gl) {
+                el.gl = this.renderer.gl;
+            }
         }
 
         return this;
@@ -76,6 +77,16 @@ export default class Layer {
     clear(r = 0, g = 0, b = 0, a = 1) {
         this.renderer.clear(r, g, b, a);
         return this;
+    }
+
+    play(r = 0, g = 0, b = 0, a = 1) {
+        this.actionList.add(0, Infinity, {
+            update: () => {
+                this.clear(r, g, b, a);
+                this.render();
+            },
+        });
+        this.actionList.play();
     }
 }
 
