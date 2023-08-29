@@ -590,7 +590,16 @@ declare module "mobjects/VectorField2D" {
     import Graph from "mobjects/Graph";
     import Vector from "math/Vector";
 }
+declare module "constants/colors" {
+    export const BLUE_A: Color;
+    export const BLUE_B: Color;
+    export const BLUE_C: Color;
+    export const BLUE_D: Color;
+    export const BLUE_E: Color;
+    import Color from "core/Color";
+}
 declare module "mraph" {
+    export * as COLORS from "constants/colors";
     import WebglRenderer from "renderer/WebglRenderer";
     import Matrix from "math/Matrix";
     import Vector from "math/Vector";

@@ -16,6 +16,8 @@ import Point from "./mobjects/Point.js";
 import Arrow from "./mobjects/Arrow.js";
 import VectorField2D from "./mobjects/VectorField2D.js";
 
+export * as COLORS from "./constants/colors.js";
+
 export {
     WebglRenderer,
     Matrix,
