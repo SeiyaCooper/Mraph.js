@@ -10,7 +10,13 @@ export default class VectorField2D extends Graph {
     };
     _center = new Vector(0, 0, 0);
 
-    constructor(func, xRange = [-8, 8, 1], yRange = [-4, 4, 1]) {
+    constructor(
+        func = (x, y) => {
+            return [x, y, 0];
+        },
+        xRange = [-8, 8, 1],
+        yRange = [-4, 4, 1]
+    ) {
         super();
         this.xRange = xRange;
         this.yRange = yRange;

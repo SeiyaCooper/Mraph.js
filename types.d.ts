@@ -535,15 +535,17 @@ declare module "mobjects/Segment" {
         indices: {
             data: number[];
         };
+        tips: any[];
         start: any;
         end: any;
         update(): void;
         renderByCanvas2d(renderer: any): Segment;
+        addTip(at: any, reverse?: boolean): void;
         set vector(arg: any);
         get vector(): any;
-        _vector: any;
         set length(arg: any);
         get length(): any;
+        get slope(): number;
     }
     import Graph from "mobjects/Graph";
     import Color from "core/Color";
@@ -563,7 +565,7 @@ declare module "mobjects/Arrow" {
     export default class Arrow extends Segment {
         constructor(...param: any[]);
         fillColor: Color;
-        renderByCanvas2d(renderer: any): Arrow;
+        _vector: any;
     }
     import Segment from "mobjects/Segment";
     import Color from "core/Color";
@@ -573,7 +575,7 @@ declare module "utils/math" {
 }
 declare module "mobjects/VectorField2D" {
     export default class VectorField2D extends Graph {
-        constructor(func: any, xRange?: number[], yRange?: number[]);
+        constructor(func?: (x: any, y: any) => any[], xRange?: number[], yRange?: number[]);
         lengthFunc: (length: any) => number;
         _center: Vector;
         xRange: number[];

@@ -7,6 +7,7 @@ export default class Segment extends Graph {
     strokeWidth = 0.05;
     strokeColor = new Color(1, 1, 1, 1);
     indices = { data: [0, 1, 3, 2, 0, 3] };
+    tips = [];
 
     constructor(start, end) {
         super();
@@ -45,25 +46,72 @@ export default class Segment extends Graph {
         renderer.line3D(this.end.center);
         renderer.stroke();
 
+        if (!this.tips.length) return this;
+
+        const start = this.start.center;
+
+        for (let [at, reverse] of this.tips) {
+            const vec = start
+                .add(this.vector.mult(at))
+                .add(this.vector.normal().mult(0.05));
+
+            renderer.begin();
+            renderer.move(vec);
+
+            const h = this.vector;
+            h.norm = this.strokeWidth * 3;
+
+            const w = h.mult(1 / 2);
+
+            if (reverse) {
+                renderer.line3D(
+                    vec.add(h).add(w.trans(Matrix.rotateZ(Math.PI / 2, 3)))
+                );
+                renderer.line3D(
+                    vec.add(h).add(w.trans(Matrix.rotateZ(-Math.PI / 2, 3)))
+                );
+            } else {
+                renderer.line3D(
+                    vec.reduce(h).add(w.trans(Matrix.rotateZ(Math.PI / 2, 3)))
+                );
+                renderer.line3D(
+                    vec.reduce(h).add(w.trans(Matrix.rotateZ(-Math.PI / 2, 3)))
+                );
+            }
+
+            renderer.close();
+            renderer.fill();
+        }
+
         return this;
     }
 
+    addTip(at, reverse = false) {
+        this.tips.push([at, reverse]);
+    }
+
     set vector(vec) {
-        this._vector = vec;
         this.end = new Point(this.start.center.add(vec));
     }
 
     get vector() {
-        return this._vector;
+        return this.end.center.reduce(this.start.center);
     }
 
     set length(val) {
-        const vec = this._vector;
+        const vec = this.vector;
         vec.norm = val;
-        this.vector = this._vector;
+        this.vector = vec;
     }
 
     get length() {
-        return this._vector.norm;
+        return this.vector.norm;
+    }
+
+    get slope() {
+        const s = this.start.center;
+        const e = this.end.center;
+
+        return (s[1] - s[0]) / (e[1] - e[0]);
     }
 }
