@@ -6,6 +6,12 @@ declare module "math/Vector" {
          */
         static isVector(obj: any): boolean;
         /**
+         * @param {number} row
+         * @param {number} n
+         * @returns {Vector}
+         */
+        static from(row: number, n: number): Vector;
+        /**
          * @param  {...number} nums
          */
         constructor(...nums: number[]);
@@ -407,11 +413,41 @@ declare module "core/Layer" {
         canvas: HTMLCanvasElement;
         renderer: CanvasRenderer;
         program: Program;
-        appendTo(el: any): Layer;
-        add(...els: any[]): Layer;
-        render(): Layer;
-        clear(r?: number, g?: number, b?: number, a?: number): Layer;
-        play(r?: number, g?: number, b?: number, a?: number): void;
+        /**
+         * append this.canvas to a HTMLElement
+         * @param {HTMLElement} el
+         * @returns {this}
+         */
+        appendTo(el: HTMLElement): this;
+        /**
+         * add mobjects to layer
+         * @param  {...mobject} els
+         * @returns {this}
+         */
+        add(...els: mobject[]): this;
+        /**
+         * render mobjects
+         * @returns {this}
+         */
+        render(): this;
+        /**
+         * clear canvas by a color
+         * @param {number} [r=0]
+         * @param {number} [g=0]
+         * @param {number} [b=0]
+         * @param {number} [a=1]
+         * @returns {this}
+         */
+        clear(r?: number, g?: number, b?: number, a?: number): this;
+        /**
+         * play animation by a refresh color
+         * @param {number} [r=0]
+         * @param {number} [g=0]
+         * @param {number} [b=0]
+         * @param {number} [a=1]
+         * @returns {this}
+         */
+        play(r?: number, g?: number, b?: number, a?: number): this;
     }
     import Camera from "core/Camera";
     import ActionList from "animation/ActionList";

@@ -48,6 +48,7 @@ export default class Segment extends Graph {
 
         if (!this.tips.length) return this;
 
+        // render tips
         const start = this.start.center;
 
         for (let [at, reverse] of this.tips) {

@@ -42,7 +42,6 @@ export default class Point extends Arc {
                 this.center = this.center.add(
                     this._v.mult((elapsedTime - lastTime) / 1000)
                 );
-                this.update();
                 lastTime = elapsedTime;
             },
         });

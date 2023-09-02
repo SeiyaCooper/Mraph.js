@@ -43,11 +43,21 @@ export default class Layer {
         });
     }
 
+    /**
+     * append this.canvas to a HTMLElement
+     * @param {HTMLElement} el
+     * @returns {this}
+     */
     appendTo(el) {
         el.appendChild(this.canvas);
         return this;
     }
 
+    /**
+     * add mobjects to layer
+     * @param  {...mobject} els
+     * @returns {this}
+     */
     add(...els) {
         this.elements.push(...els);
 
@@ -61,6 +71,10 @@ export default class Layer {
         return this;
     }
 
+    /**
+     * render mobjects
+     * @returns {this}
+     */
     render() {
         if (this.renderer.gl) {
             this.program.setUniform("cameraMat", this.camera.matrix);
@@ -74,11 +88,27 @@ export default class Layer {
         return this;
     }
 
+    /**
+     * clear canvas by a color
+     * @param {number} [r=0]
+     * @param {number} [g=0]
+     * @param {number} [b=0]
+     * @param {number} [a=1]
+     * @returns {this}
+     */
     clear(r = 0, g = 0, b = 0, a = 1) {
         this.renderer.clear(r, g, b, a);
         return this;
     }
 
+    /**
+     * play animation by a refresh color
+     * @param {number} [r=0]
+     * @param {number} [g=0]
+     * @param {number} [b=0]
+     * @param {number} [a=1]
+     * @returns {this}
+     */
     play(r = 0, g = 0, b = 0, a = 1) {
         this.actionList.add(0, Infinity, {
             update: () => {
@@ -87,6 +117,7 @@ export default class Layer {
             },
         });
         this.actionList.play();
+        return this;
     }
 }
 

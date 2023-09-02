@@ -63,7 +63,13 @@ export default class Vector extends Array {
      * @returns {Vector}
      */
     add(vec) {
-        return this.toMatrix().add(vec.toMatrix()).toVector();
+        const ans = Vector.from(this.row, 0);
+
+        for (let j = 0; j < this.length; j++) {
+            ans[j] = this[j] + vec[j];
+        }
+
+        return ans;
     }
 
     /**
@@ -71,7 +77,13 @@ export default class Vector extends Array {
      * @returns {Vector}
      */
     reduce(vec) {
-        return this.toMatrix().reduce(vec.toMatrix()).toVector();
+        const ans = Vector.from(this.row, 0);
+
+        for (let j = 0; j < this.length; j++) {
+            ans[j] = this[j] - vec[j];
+        }
+
+        return ans;
     }
 
     /**
@@ -115,6 +127,15 @@ export default class Vector extends Array {
      */
     static isVector(obj) {
         return obj instanceof Vector;
+    }
+
+    /**
+     * @param {number} row
+     * @param {number} n
+     * @returns {Vector}
+     */
+    static from(row, n) {
+        return new Vector(...Array(row).fill(n));
     }
 
     /**
