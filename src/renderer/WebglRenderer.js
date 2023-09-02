@@ -1,11 +1,13 @@
 export default class WebglRenderer {
     constructor(canvas) {
         this.canvas = canvas;
-        this.gl = canvas.getContext("webgl");
+
+        this.gl = canvas.getContext("webgl2");
+        if (!this.gl) this.gl = canvas.getContext("webgl");
 
         const gl = this.gl;
         this.usage = gl.STATIC_DRAW;
-        // gl.enable(gl.DEPTH_TEST);
+        gl.enable(gl.DEPTH_TEST);
         gl.enable(gl.BLEND);
         gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
         gl.viewport(0, 0, canvas.width, canvas.height);

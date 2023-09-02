@@ -241,14 +241,10 @@ declare module "math/Matrix" {
 }
 declare module "core/Camera" {
     export default class Camera {
-        _position: number[];
-        _rotation: number[];
+        position: number[];
+        rotation: number[];
         projectionMat: Matrix;
         viewMat: Matrix;
-        set position(arg: number[]);
-        get position(): number[];
-        set rotation(arg: number[]);
-        get rotation(): number[];
         update(): void;
         matrix: Matrix;
         perspective({ fov, near, far, aspect }?: {

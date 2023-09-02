@@ -1,14 +1,30 @@
 import Matrix from "../math/Matrix.js";
 
 export default class Camera {
-    _position = [0, 0, 0];
-    _rotation = [0, 0, 0];
+    position = [0, 0, 5];
+    rotation = [0, 0, 0];
     projectionMat = Matrix.identity(4);
     viewMat = Matrix.identity(4);
 
     constructor() {
-        this.position = [0, 0, 10];
-        this.rotation = [0, 0, 0];
+        const self = this;
+        const handler = {
+            get(obj, prop) {
+                return obj[prop];
+            },
+            set(obj, prop, value) {
+                obj[prop] = value;
+                if (+prop <= 2) {
+                    self.update();
+                }
+                return true;
+            },
+        };
+
+        const posProxy = new Proxy(this.position, handler);
+        const rotProxy = new Proxy(this.rotation, handler);
+        this.position = posProxy;
+        this.rotation = rotProxy;
     }
 
     update() {
@@ -61,23 +77,5 @@ export default class Camera {
         this.projectionMat = mat;
         this.update();
         return this;
-    }
-
-    set position(arr) {
-        this._position = arr;
-        this.update();
-    }
-
-    get position() {
-        return this._position;
-    }
-
-    set rotation(arr) {
-        this._rotation = arr;
-        this.update();
-    }
-
-    get rotation() {
-        return this._rotation;
     }
 }
