@@ -33,6 +33,12 @@ declare module "math/Vector" {
          */
         dot(vec: Vector): number;
         /**
+         * returns cross product of this vector and vec
+         * @param {Vector} vec
+         * @returns
+         */
+        cross(vec: Vector): number | Vector;
+        /**
          * returns hadamard product of this vector and vec
          * @param {Vector} vec
          * @returns {Vector}

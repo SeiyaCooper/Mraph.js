@@ -44,6 +44,27 @@ export default class Vector extends Array {
     }
 
     /**
+     * returns cross product of this vector and vec
+     * @param {Vector} vec
+     * @returns
+     */
+    cross(vec) {
+        if (vec.row === 2) {
+            return this[0] * vec[1] - this[1] * vec[0];
+        } else {
+            const ans = Vector.from(3);
+            const m = this;
+            const n = vec;
+
+            ans[0] = m[1] * n[2] - m[2] * n[1];
+            ans[1] = m[2] * n[0] - m[0] * n[2];
+            ans[2] = m[0] * n[1] - m[1] * n[0];
+
+            return ans;
+        }
+    }
+
+    /**
      * returns hadamard product of this vector and vec
      * @param {Vector} vec
      * @returns {Vector}
