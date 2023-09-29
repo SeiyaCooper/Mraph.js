@@ -1,5 +1,5 @@
 export default class Color extends Array {
-    constructor(r = 0, g = 0, b = 0, a = 0) {
+    constructor(r = 0, g = 0, b = 0, a = 1) {
         super(r, g, b, a);
         this.r = r;
         this.g = g;

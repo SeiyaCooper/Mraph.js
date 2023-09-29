@@ -16,7 +16,7 @@ export default class Point extends Arc {
         } else {
             this.center = new Vector(...args);
         }
-        this.center[2] = this[2] ?? 0;
+        this.center[2] = this.center[2] ?? 0;
     }
 
     renderByCanvas2d(renderer) {
@@ -42,7 +42,6 @@ export default class Point extends Arc {
                 this.center = this.center.add(
                     this._v.mult((elapsedTime - lastTime) / 1000)
                 );
-                this.update();
                 lastTime = elapsedTime;
             },
         });

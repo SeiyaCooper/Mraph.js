@@ -44,6 +44,27 @@ export default class Vector extends Array {
     }
 
     /**
+     * returns cross product of this vector and vec
+     * @param {Vector} vec
+     * @returns
+     */
+    cross(vec) {
+        if (vec.row === 2) {
+            return this[0] * vec[1] - this[1] * vec[0];
+        } else {
+            const ans = Vector.from(3);
+            const m = this;
+            const n = vec;
+
+            ans[0] = m[1] * n[2] - m[2] * n[1];
+            ans[1] = m[2] * n[0] - m[0] * n[2];
+            ans[2] = m[0] * n[1] - m[1] * n[0];
+
+            return ans;
+        }
+    }
+
+    /**
      * returns hadamard product of this vector and vec
      * @param {Vector} vec
      * @returns {Vector}
@@ -63,7 +84,13 @@ export default class Vector extends Array {
      * @returns {Vector}
      */
     add(vec) {
-        return this.toMatrix().add(vec.toMatrix()).toVector();
+        const ans = Vector.from(this.row, 0);
+
+        for (let j = 0; j < this.length; j++) {
+            ans[j] = this[j] + vec[j];
+        }
+
+        return ans;
     }
 
     /**
@@ -71,7 +98,13 @@ export default class Vector extends Array {
      * @returns {Vector}
      */
     reduce(vec) {
-        return this.toMatrix().reduce(vec.toMatrix()).toVector();
+        const ans = Vector.from(this.row, 0);
+
+        for (let j = 0; j < this.length; j++) {
+            ans[j] = this[j] - vec[j];
+        }
+
+        return ans;
     }
 
     /**
@@ -115,6 +148,15 @@ export default class Vector extends Array {
      */
     static isVector(obj) {
         return obj instanceof Vector;
+    }
+
+    /**
+     * @param {number} row
+     * @param {number} n
+     * @returns {Vector}
+     */
+    static from(row, n) {
+        return new Vector(...Array(row).fill(n));
     }
 
     /**

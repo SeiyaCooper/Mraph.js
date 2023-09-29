@@ -1,5 +1,5 @@
 import Graph from "./Graph.js";
-import Segment from "./Segment.js";
+import Line from "./Line.js";
 
 export default class Path extends Graph {
     _close = false;
@@ -14,10 +14,10 @@ export default class Path extends Graph {
         const points = this.points;
 
         for (let i = 0; i < points.length - 1; i++) {
-            segments.push(new Segment(points[i], points[i + 1]));
+            segments.push(new Line(points[i], points[i + 1]));
         }
         if (this.close) {
-            segments.push(new Segment(points[points.length - 1], points[0]));
+            segments.push(new Line(points[points.length - 1], points[0]));
         }
 
         this.children = segments;

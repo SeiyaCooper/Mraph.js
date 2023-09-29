@@ -26,7 +26,7 @@ export default class Graph {
             this.indices.type = gl.UNSIGNED_SHORT;
         }
 
-        this?.update();
+        this.update?.();
 
         for (let value of Object.values(this.attributes)) {
             const buffer = gl.createBuffer();

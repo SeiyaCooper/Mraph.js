@@ -6,6 +6,12 @@ declare module "math/Vector" {
          */
         static isVector(obj: any): boolean;
         /**
+         * @param {number} row
+         * @param {number} n
+         * @returns {Vector}
+         */
+        static from(row: number, n: number): Vector;
+        /**
          * @param  {...number} nums
          */
         constructor(...nums: number[]);
@@ -26,6 +32,12 @@ declare module "math/Vector" {
          * @returns {number}
          */
         dot(vec: Vector): number;
+        /**
+         * returns cross product of this vector and vec
+         * @param {Vector} vec
+         * @returns
+         */
+        cross(vec: Vector): number | Vector;
         /**
          * returns hadamard product of this vector and vec
          * @param {Vector} vec
@@ -241,14 +253,10 @@ declare module "math/Matrix" {
 }
 declare module "core/Camera" {
     export default class Camera {
-        _position: number[];
-        _rotation: number[];
+        position: Vector;
+        rotation: Vector;
         projectionMat: Matrix;
         viewMat: Matrix;
-        set position(arg: number[]);
-        get position(): number[];
-        set rotation(arg: number[]);
-        get rotation(): number[];
         update(): void;
         matrix: Matrix;
         perspective({ fov, near, far, aspect }?: {
@@ -266,6 +274,7 @@ declare module "core/Camera" {
             far?: number;
         }): Camera;
     }
+    import Vector from "math/Vector";
     import Matrix from "math/Matrix";
 }
 declare module "animation/Action" {
@@ -366,7 +375,7 @@ declare module "renderer/CanvasRenderer" {
         /**
          * Returns the number of pixels in scene space per unit length on the screen
          */
-        get sceneUnit(): any;
+        get sceneUnit(): number;
     }
     import Matrix from "math/Matrix";
     import Vector from "math/Vector";
@@ -411,11 +420,41 @@ declare module "core/Layer" {
         canvas: HTMLCanvasElement;
         renderer: CanvasRenderer;
         program: Program;
-        appendTo(el: any): Layer;
-        add(...els: any[]): Layer;
-        render(): Layer;
-        clear(r?: number, g?: number, b?: number, a?: number): Layer;
-        play(r?: number, g?: number, b?: number, a?: number): void;
+        /**
+         * append this.canvas to a HTMLElement
+         * @param {HTMLElement} el
+         * @returns {this}
+         */
+        appendTo(el: HTMLElement): this;
+        /**
+         * add mobjects to layer
+         * @param  {...mobject} els
+         * @returns {this}
+         */
+        add(...els: mobject[]): this;
+        /**
+         * render mobjects
+         * @returns {this}
+         */
+        render(): this;
+        /**
+         * clear canvas by a color
+         * @param {number} [r=0]
+         * @param {number} [g=0]
+         * @param {number} [b=0]
+         * @param {number} [a=1]
+         * @returns {this}
+         */
+        clear(r?: number, g?: number, b?: number, a?: number): this;
+        /**
+         * play animation by a refresh color
+         * @param {number} [r=0]
+         * @param {number} [g=0]
+         * @param {number} [b=0]
+         * @param {number} [a=1]
+         * @returns {this}
+         */
+        play(r?: number, g?: number, b?: number, a?: number): this;
     }
     import Camera from "core/Camera";
     import ActionList from "animation/ActionList";
@@ -527,26 +566,30 @@ declare module "mobjects/Point" {
     import Arc from "mobjects/Arc";
     import Vector from "math/Vector";
 }
-declare module "mobjects/Segment" {
+declare module "mobjects/Line" {
     export default class Segment extends Graph {
-        constructor(start: any, end: any);
+        constructor(start?: Point, end?: Point);
         strokeWidth: number;
         strokeColor: Color;
         indices: {
             data: number[];
         };
-        start: any;
-        end: any;
+        tips: any[];
+        start: Point;
+        end: Point;
         update(): void;
         renderByCanvas2d(renderer: any): Segment;
+        at(p: any): any;
+        addTip(at: any, reverse?: boolean): void;
         set vector(arg: any);
         get vector(): any;
-        _vector: any;
         set length(arg: any);
         get length(): any;
+        get slope(): number;
     }
     import Graph from "mobjects/Graph";
     import Color from "core/Color";
+    import Point from "mobjects/Point";
 }
 declare module "mobjects/Path" {
     export default class Path extends Graph {
@@ -560,12 +603,11 @@ declare module "mobjects/Path" {
     import Graph from "mobjects/Graph";
 }
 declare module "mobjects/Arrow" {
-    export default class Arrow extends Segment {
+    export default class Arrow extends Line {
         constructor(...param: any[]);
         fillColor: Color;
-        renderByCanvas2d(renderer: any): Arrow;
     }
-    import Segment from "mobjects/Segment";
+    import Line from "mobjects/Line";
     import Color from "core/Color";
 }
 declare module "utils/math" {
@@ -573,7 +615,7 @@ declare module "utils/math" {
 }
 declare module "mobjects/VectorField2D" {
     export default class VectorField2D extends Graph {
-        constructor(func: any, xRange?: number[], yRange?: number[]);
+        constructor(func?: (x: any, y: any) => any[], xRange?: number[], yRange?: number[]);
         lengthFunc: (length: any) => number;
         _center: Vector;
         xRange: number[];
@@ -588,7 +630,47 @@ declare module "mobjects/VectorField2D" {
     import Graph from "mobjects/Graph";
     import Vector from "math/Vector";
 }
+declare module "mobjects/Axis" {
+    export default class Axis extends Line {
+        static fromRange(base: any, dir: any, range: any): Axis;
+        constructor(start: any, end: any, { unit }?: {
+            unit?: number;
+        });
+        unit: number;
+        renderByCanvas2d(renderer: any): Axis;
+    }
+    import Line from "mobjects/Line";
+}
+declare module "mobjects/Axes" {
+    export default class Axes extends Graph {
+        constructor({ xRange, yRange, zRange, center, }?: {
+            xRange?: number[];
+            yRange?: number[];
+            zRange?: number[];
+            center?: Point;
+        });
+        center: Point;
+        xAxis: Axis;
+        yAxis: Axis;
+        zAxis: Axis;
+        set layer(arg: any);
+        get layer(): any;
+        _layer: any;
+    }
+    import Graph from "mobjects/Graph";
+    import Point from "mobjects/Point";
+    import Axis from "mobjects/Axis";
+}
+declare module "constants/colors" {
+    export const BLUE_A: Color;
+    export const BLUE_B: Color;
+    export const BLUE_C: Color;
+    export const BLUE_D: Color;
+    export const BLUE_E: Color;
+    import Color from "core/Color";
+}
 declare module "mraph" {
+    export * as COLORS from "constants/colors";
     import WebglRenderer from "renderer/WebglRenderer";
     import Matrix from "math/Matrix";
     import Vector from "math/Vector";
@@ -597,11 +679,13 @@ declare module "mraph" {
     import Program from "core/Program";
     import Texture from "core/Texture";
     import Color from "core/Color";
-    import Segment from "mobjects/Segment";
+    import Line from "mobjects/Line";
     import Arc from "mobjects/Arc";
     import Path from "mobjects/Path";
     import Point from "mobjects/Point";
     import Arrow from "mobjects/Arrow";
     import VectorField2D from "mobjects/VectorField2D";
-    export { WebglRenderer, Matrix, Vector, Camera, Layer, Program, Texture, Color, Segment, Arc, Path, Point, Arrow, VectorField2D };
+    import Axis from "mobjects/Axis";
+    import Axes from "mobjects/Axes";
+    export { WebglRenderer, Matrix, Vector, Camera, Layer, Program, Texture, Color, Line, Arc, Path, Point, Arrow, VectorField2D, Axis, Axes };
 }
