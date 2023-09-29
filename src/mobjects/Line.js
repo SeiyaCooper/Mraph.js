@@ -9,7 +9,7 @@ export default class Segment extends Graph {
     indices = { data: [0, 1, 3, 2, 0, 3] };
     tips = [];
 
-    constructor(start, end) {
+    constructor(start = new Point(-1, 0), end = new Point(1, 0)) {
         super();
         this.start = start;
         this.end = end;
@@ -85,6 +85,10 @@ export default class Segment extends Graph {
         }
 
         return this;
+    }
+
+    at(p) {
+        return this.start.center.add(this.vector.mult(p));
     }
 
     addTip(at, reverse = false) {

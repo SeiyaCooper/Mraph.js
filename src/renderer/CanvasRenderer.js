@@ -9,6 +9,7 @@ export default class CanvasRenderer {
         this.resolution = new Vector(
             this.canvas.width / 2,
             this.canvas.height / 2,
+            1,
             1
         );
     }
@@ -108,6 +109,9 @@ export default class CanvasRenderer {
      * Returns the number of pixels in scene space per unit length on the screen
      */
     get sceneUnit() {
-        return this.toScreenPos(new Vector(1, 0, 0))[0];
+        /* TODO:
+        return this.toScreenPos(new Vector(1, 0, 0))[0]; 
+        */
+        return 85;
     }
 }

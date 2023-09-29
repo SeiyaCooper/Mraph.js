@@ -9,12 +9,14 @@ import WebglRenderer from "./renderer/WebglRenderer.js";
 import Matrix from "./math/Matrix.js";
 import Vector from "./math/Vector.js";
 
-import Segment from "./mobjects/Segment.js";
+import Line from "./mobjects/Line.js";
 import Arc from "./mobjects/Arc.js";
 import Path from "./mobjects/Path.js";
 import Point from "./mobjects/Point.js";
 import Arrow from "./mobjects/Arrow.js";
 import VectorField2D from "./mobjects/VectorField2D.js";
+import Axis from "./mobjects/Axis.js";
+import Axes from "./mobjects/Axes.js";
 
 export * as COLORS from "./constants/colors.js";
 
@@ -27,10 +29,12 @@ export {
     Program,
     Texture,
     Color,
-    Segment,
+    Line,
     Arc,
     Path,
     Point,
     Arrow,
     VectorField2D,
+    Axis,
+    Axes,
 };

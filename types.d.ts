@@ -253,8 +253,8 @@ declare module "math/Matrix" {
 }
 declare module "core/Camera" {
     export default class Camera {
-        position: number[];
-        rotation: number[];
+        position: Vector;
+        rotation: Vector;
         projectionMat: Matrix;
         viewMat: Matrix;
         update(): void;
@@ -274,6 +274,7 @@ declare module "core/Camera" {
             far?: number;
         }): Camera;
     }
+    import Vector from "math/Vector";
     import Matrix from "math/Matrix";
 }
 declare module "animation/Action" {
@@ -374,7 +375,7 @@ declare module "renderer/CanvasRenderer" {
         /**
          * Returns the number of pixels in scene space per unit length on the screen
          */
-        get sceneUnit(): any;
+        get sceneUnit(): number;
     }
     import Matrix from "math/Matrix";
     import Vector from "math/Vector";
@@ -565,19 +566,20 @@ declare module "mobjects/Point" {
     import Arc from "mobjects/Arc";
     import Vector from "math/Vector";
 }
-declare module "mobjects/Segment" {
+declare module "mobjects/Line" {
     export default class Segment extends Graph {
-        constructor(start: any, end: any);
+        constructor(start?: Point, end?: Point);
         strokeWidth: number;
         strokeColor: Color;
         indices: {
             data: number[];
         };
         tips: any[];
-        start: any;
-        end: any;
+        start: Point;
+        end: Point;
         update(): void;
         renderByCanvas2d(renderer: any): Segment;
+        at(p: any): any;
         addTip(at: any, reverse?: boolean): void;
         set vector(arg: any);
         get vector(): any;
@@ -587,6 +589,7 @@ declare module "mobjects/Segment" {
     }
     import Graph from "mobjects/Graph";
     import Color from "core/Color";
+    import Point from "mobjects/Point";
 }
 declare module "mobjects/Path" {
     export default class Path extends Graph {
@@ -600,12 +603,11 @@ declare module "mobjects/Path" {
     import Graph from "mobjects/Graph";
 }
 declare module "mobjects/Arrow" {
-    export default class Arrow extends Segment {
+    export default class Arrow extends Line {
         constructor(...param: any[]);
         fillColor: Color;
-        _vector: any;
     }
-    import Segment from "mobjects/Segment";
+    import Line from "mobjects/Line";
     import Color from "core/Color";
 }
 declare module "utils/math" {
@@ -628,6 +630,37 @@ declare module "mobjects/VectorField2D" {
     import Graph from "mobjects/Graph";
     import Vector from "math/Vector";
 }
+declare module "mobjects/Axis" {
+    export default class Axis extends Line {
+        static fromRange(base: any, dir: any, range: any): Axis;
+        constructor(start: any, end: any, { unit }?: {
+            unit?: number;
+        });
+        unit: number;
+        renderByCanvas2d(renderer: any): Axis;
+    }
+    import Line from "mobjects/Line";
+}
+declare module "mobjects/Axes" {
+    export default class Axes extends Graph {
+        constructor({ xRange, yRange, zRange, center, }?: {
+            xRange?: number[];
+            yRange?: number[];
+            zRange?: number[];
+            center?: Point;
+        });
+        center: Point;
+        xAxis: Axis;
+        yAxis: Axis;
+        zAxis: Axis;
+        set layer(arg: any);
+        get layer(): any;
+        _layer: any;
+    }
+    import Graph from "mobjects/Graph";
+    import Point from "mobjects/Point";
+    import Axis from "mobjects/Axis";
+}
 declare module "constants/colors" {
     export const BLUE_A: Color;
     export const BLUE_B: Color;
@@ -646,11 +679,13 @@ declare module "mraph" {
     import Program from "core/Program";
     import Texture from "core/Texture";
     import Color from "core/Color";
-    import Segment from "mobjects/Segment";
+    import Line from "mobjects/Line";
     import Arc from "mobjects/Arc";
     import Path from "mobjects/Path";
     import Point from "mobjects/Point";
     import Arrow from "mobjects/Arrow";
     import VectorField2D from "mobjects/VectorField2D";
-    export { WebglRenderer, Matrix, Vector, Camera, Layer, Program, Texture, Color, Segment, Arc, Path, Point, Arrow, VectorField2D };
+    import Axis from "mobjects/Axis";
+    import Axes from "mobjects/Axes";
+    export { WebglRenderer, Matrix, Vector, Camera, Layer, Program, Texture, Color, Line, Arc, Path, Point, Arrow, VectorField2D, Axis, Axes };
 }

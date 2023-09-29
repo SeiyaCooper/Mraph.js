@@ -18,6 +18,8 @@ export default class Layer {
         if (fillScreen) {
             this.canvas.width = window.innerWidth;
             this.canvas.height = window.innerHeight;
+            this.canvas.style.width = "100%";
+            this.canvas.style.height = "100%";
         }
 
         if (appendTo) {

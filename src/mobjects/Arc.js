@@ -1,5 +1,5 @@
 import Graph from "./Graph.js";
-import Segment from "./Segment.js";
+import Line from "./Line.js";
 import Vector from "../math/Vector.js";
 import Color from "../core/Color.js";
 
@@ -43,7 +43,7 @@ export default class Arc extends Graph {
         color.push(...this.fillColor);
 
         for (let i = 3; i < vertices.length - 2; i += 3) {
-            const segment = new Segment(
+            const segment = new Line(
                 { center: new Vector(...vertices.slice(i, i + 3)) },
                 { center: new Vector(...vertices.slice(i + 3, i + 6)) }
             );
