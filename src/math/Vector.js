@@ -80,6 +80,18 @@ export default class Vector extends Array {
     }
 
     /**
+     * divide by a number
+     * @param {number} num
+     */
+    divide(num) {
+        const ans = Matrix.from(this.row, 1, 1).toVector();
+        for (let i = 0; i < this.row; i++) {
+            ans[i] = num / this[i];
+        }
+        return ans;
+    }
+
+    /**
      * @param {Vector} vec
      * @returns {Vector}
      */

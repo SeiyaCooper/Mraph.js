@@ -50,6 +50,11 @@ declare module "math/Vector" {
          */
         elMult(vec: Vector): Vector;
         /**
+         * divide by a number
+         * @param {number} num
+         */
+        divide(num: number): Vector;
+        /**
          * @param {Vector} vec
          * @returns {Vector}
          */
@@ -170,6 +175,15 @@ declare module "math/Matrix" {
          */
         static rotateZ(ang: number, n?: number): Matrix;
         /**
+         * returns a rotation matrix to rotate on given axis
+         * @param {Vector} axis
+         * the axis to rotate on
+         * @param {number} angle
+         * the rotate angle
+         * @param {number} n
+         */
+        static rotateOn(axis: Vector, angle: number, n?: number): Matrix;
+        /**
          * return a 4*4 translation Matrix
          * @param {number} x
          * @param {number} y
@@ -227,6 +241,14 @@ declare module "math/Matrix" {
          * @param {Matrix} mat
          */
         copy(mat: Matrix): Matrix;
+        length: any;
+        /**
+         * resize this matrix with a number to fill
+         * @param {number} row
+         * @param {number} column
+         * @param {number} [n=0]
+         */
+        resize(row: number, column: number, n?: number): Matrix;
         /**
          * Returns a vector constructed by flattening this matrix
          * @returns {Vector}
@@ -278,6 +300,7 @@ declare module "core/Camera" {
             near?: number;
             far?: number;
         }): Camera;
+        lookAt(pos: any): void;
     }
     import Vector from "math/Vector";
     import Matrix from "math/Matrix";

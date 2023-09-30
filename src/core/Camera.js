@@ -79,4 +79,11 @@ export default class Camera {
         this.update();
         return this;
     }
+
+    lookAt(pos) {
+        const self = this.position;
+        this.rotation[0] = -Math.atan2(pos[1] - self[1], self[2] - pos[2]);
+        this.rotation[1] = -Math.atan2(pos[0] - self[0], self[2] - pos[2]);
+        this.rotation[2] = -Math.atan2(pos[0] - self[0], pos[1] - self[1]);
+    }
 }
