@@ -52,7 +52,7 @@ export default class Vector extends Array {
         if (vec.row === 2) {
             return this[0] * vec[1] - this[1] * vec[0];
         } else {
-            const ans = Vector.from(3);
+            const ans = Vector.fromRow(3);
             const m = this;
             const n = vec;
 
@@ -84,7 +84,7 @@ export default class Vector extends Array {
      * @returns {Vector}
      */
     add(vec) {
-        const ans = Vector.from(this.row, 0);
+        const ans = Vector.fromRow(this.row, 0);
 
         for (let j = 0; j < this.length; j++) {
             ans[j] = this[j] + vec[j];
@@ -98,7 +98,7 @@ export default class Vector extends Array {
      * @returns {Vector}
      */
     reduce(vec) {
-        const ans = Vector.from(this.row, 0);
+        const ans = Vector.fromRow(this.row, 0);
 
         for (let j = 0; j < this.length; j++) {
             ans[j] = this[j] - vec[j];
@@ -155,8 +155,20 @@ export default class Vector extends Array {
      * @param {number} n
      * @returns {Vector}
      */
-    static from(row, n) {
+    static fromRow(row, n = 0) {
         return new Vector(...Array(row).fill(n));
+    }
+
+    /**
+     * @param {Array | Vector} arr
+     * @returns {Vector}
+     */
+    static fromArray(arr) {
+        if (Vector.isVector()) {
+            return arr.clone();
+        } else {
+            return new Vector(...arr);
+        }
     }
 
     /**

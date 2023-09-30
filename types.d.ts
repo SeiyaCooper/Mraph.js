@@ -10,7 +10,12 @@ declare module "math/Vector" {
          * @param {number} n
          * @returns {Vector}
          */
-        static from(row: number, n: number): Vector;
+        static fromRow(row: number, n?: number): Vector;
+        /**
+         * @param {Array | Vector} arr
+         * @returns {Vector}
+         */
+        static fromArray(arr: any[] | Vector): Vector;
         /**
          * @param  {...number} nums
          */
@@ -333,11 +338,11 @@ declare module "animation/ActionList" {
         /**
          * @type {number}
          */
-        maxTime: number;
+        _maxTime: number;
         /**
          * @type {number}
          */
-        minTime: number;
+        _minTime: number;
         /**
          * add an action to action list
          * @param {Number} start
@@ -350,6 +355,10 @@ declare module "animation/ActionList" {
          * play this action list
          */
         play(): void;
+        set maxTime(arg: number);
+        get maxTime(): number;
+        set minTime(arg: number);
+        get minTime(): number;
     }
 }
 declare module "renderer/CanvasRenderer" {
@@ -455,6 +464,11 @@ declare module "core/Layer" {
          * @returns {this}
          */
         play(r?: number, g?: number, b?: number, a?: number): this;
+        /**
+         * pause for a while between animations
+         * @param {number} [time=1] in seconds
+         */
+        wait(time?: number): Layer;
     }
     import Camera from "core/Camera";
     import ActionList from "animation/ActionList";
@@ -505,6 +519,7 @@ declare module "mobjects/Graph" {
         };
         children: any[];
         visible: boolean;
+        _color: Color;
         mode: string;
         attributes: {
             position: {
@@ -525,7 +540,12 @@ declare module "mobjects/Graph" {
         set gl(arg: any);
         get gl(): any;
         _gl: any;
+        set color(arg: Color);
+        get color(): Color;
+        strokeColor: Color;
+        fillColor: Color;
     }
+    import Color from "core/Color";
     import Matrix from "math/Matrix";
 }
 declare module "mobjects/Arc" {
@@ -533,8 +553,6 @@ declare module "mobjects/Arc" {
         constructor(startAng?: number, endAng?: number, radius?: number, center?: number[]);
         insertNum: number;
         strokeWidth: number;
-        strokeColor: Color;
-        fillColor: Color;
         startAng: number;
         endAng: number;
         radius: number;
@@ -543,7 +561,6 @@ declare module "mobjects/Arc" {
         renderByCanvas2d(renderer: any): Arc;
     }
     import Graph from "mobjects/Graph";
-    import Color from "core/Color";
 }
 declare module "mobjects/Point" {
     export default class Point extends Arc {
@@ -552,6 +569,9 @@ declare module "mobjects/Point" {
         _a: Vector;
         center: any;
         renderByCanvas2d(renderer: any): Point;
+        moveTo(pos: any, { runTime }?: {
+            runTime?: number;
+        }): void;
         set v(arg: Vector);
         get v(): Vector;
         set a(arg: Vector);
@@ -570,7 +590,6 @@ declare module "mobjects/Line" {
     export default class Segment extends Graph {
         constructor(start?: Point, end?: Point);
         strokeWidth: number;
-        strokeColor: Color;
         indices: {
             data: number[];
         };
@@ -588,7 +607,6 @@ declare module "mobjects/Line" {
         get slope(): number;
     }
     import Graph from "mobjects/Graph";
-    import Color from "core/Color";
     import Point from "mobjects/Point";
 }
 declare module "mobjects/Path" {
@@ -605,10 +623,8 @@ declare module "mobjects/Path" {
 declare module "mobjects/Arrow" {
     export default class Arrow extends Line {
         constructor(...param: any[]);
-        fillColor: Color;
     }
     import Line from "mobjects/Line";
-    import Color from "core/Color";
 }
 declare module "utils/math" {
     export function sigmoid(x: any): number;

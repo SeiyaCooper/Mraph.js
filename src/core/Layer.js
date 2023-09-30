@@ -112,13 +112,23 @@ export default class Layer {
      * @returns {this}
      */
     play(r = 0, g = 0, b = 0, a = 1) {
-        this.actionList.add(0, Infinity, {
+        const list = this.actionList;
+        this.actionList.add(list.minTime, list.maxTime, {
             update: () => {
                 this.clear(r, g, b, a);
                 this.render();
             },
         });
         this.actionList.play();
+        return this;
+    }
+
+    /**
+     * pause for a while between animations
+     * @param {number} [time=1] in seconds
+     */
+    wait(time = 1) {
+        this.actionList.maxTime += time;
         return this;
     }
 }

@@ -8,7 +8,7 @@ export default class Point extends Arc {
     _a = new Vector(0, 0, 0);
 
     constructor(...args) {
-        super(0, 2 * Math.PI, 0.02);
+        super(0, 2 * Math.PI, 0.07);
         if (Vector.isVector(args[0])) {
             this.center = args[0];
         } else if (Array.isArray(args[0])) {
@@ -25,10 +25,24 @@ export default class Point extends Arc {
         renderer.style(this);
         renderer.begin();
         renderer.arc2D(this.center, this.radius, 0, Math.PI * 2);
-        renderer.stroke();
         renderer.fill();
 
         return this;
+    }
+
+    moveTo(pos, { runTime = 1 } = {}) {
+        const list = this.layer.actionList;
+        let start, displace;
+
+        list.add(list.maxTime, list.maxTime + runTime, {
+            start: () => {
+                start = this.center;
+                displace = Vector.from(pos).reduce(start);
+            },
+            update: (p) => {
+                this.center = start.add(displace.mult(p));
+            },
+        });
     }
 
     set v(val) {
