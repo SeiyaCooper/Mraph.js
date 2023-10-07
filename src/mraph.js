@@ -9,14 +9,14 @@ import WebglRenderer from "./renderer/WebglRenderer.js";
 import Matrix from "./math/Matrix.js";
 import Vector from "./math/Vector.js";
 
-import Line from "./mobjects/Line.js";
-import Arc from "./mobjects/Arc.js";
-import Path from "./mobjects/Path.js";
-import Point from "./mobjects/Point.js";
-import Arrow from "./mobjects/Arrow.js";
-import VectorField2D from "./mobjects/VectorField2D.js";
-import Axis from "./mobjects/Axis.js";
-import Axes from "./mobjects/Axes.js";
+import Line from "./mobjects/2d/Line.js";
+import Arc from "./mobjects/2d/Arc.js";
+import Path from "./mobjects/2d/Path.js";
+import Point from "./mobjects/2d/Point.js";
+import Arrow from "./mobjects/2d/Arrow.js";
+import VectorField2D from "./mobjects/2d/VectorField2D.js";
+import Axis from "./mobjects/2d/Axis.js";
+import Axes from "./mobjects/2d/Axes.js";
 
 export * as COLORS from "./constants/colors.js";
 

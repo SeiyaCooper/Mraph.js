@@ -123,12 +123,36 @@ export default class Matrix extends Array {
      * @param {Matrix} mat
      */
     copy(mat) {
+        if (mat.length > this.length) {
+            const len = this.length;
+            this.length = mat.length;
+            this.fill(new Array(), len, this.length);
+        }
         mat.forEach((vec, i) => {
             vec.forEach((num, j) => {
                 this[i][j] = num;
             });
         });
         return this;
+    }
+
+    /**
+     * resize this matrix with a number to fill
+     * @param {number} row
+     * @param {number} column
+     * @param {number} [n=0]
+     */
+    resize(row, column, n = 0) {
+        const out = Matrix.from(row, column, n);
+
+        for (let i = 0; i < out.length; i++) {
+            for (let j = 0; j < out[0].length; j++) {
+                if (!this[i]) continue;
+                out[i][j] = this[i][j] ?? n;
+            }
+        }
+
+        return out;
     }
 
     /**
@@ -268,6 +292,37 @@ export default class Matrix extends Array {
                 [0, 0, 1, 0],
                 [0, 0, 0, 1]
             );
+        }
+    }
+
+    /**
+     * returns a rotation matrix to rotate on given axis
+     * @param {Vector} axis
+     * the axis to rotate on
+     * @param {number} angle
+     * the rotate angle
+     * @param {number} n
+     */
+    static rotateOn(axis, angle, n = 4) {
+        // Rodrigues' rotation formula
+
+        const I = Matrix.identity(3);
+        const K = axis.normal();
+        const C = new Matrix(
+            [0, -K[2], K[1]],
+            [K[2], 0, -K[0]],
+            [-K[1], K[0], 0]
+        );
+        let ans = I.add(C.mult(C).mult(1 - Math.cos(angle))).add(
+            C.mult(Math.sin(angle))
+        );
+
+        if (n === 3) {
+            return ans;
+        } else {
+            ans = ans.resize(4, 4);
+            ans[3][3] = 1;
+            return ans;
         }
     }
 

@@ -10,12 +10,12 @@ export default class ActionList {
     /**
      * @type {number}
      */
-    maxTime = 0;
+    _maxTime = 0;
 
     /**
      * @type {number}
      */
-    minTime = Infinity;
+    _minTime = Infinity;
 
     /**
      * add an action to action list
@@ -35,8 +35,8 @@ export default class ActionList {
             list.set(index, action);
         }
 
-        this.maxTime = Math.max(stop * 1000, this.maxTime);
-        this.minTime = Math.min(start * 1000, this.minTime);
+        this._maxTime = Math.max(stop * 1000, this.maxTime);
+        this._minTime = Math.min(start * 1000, this.minTime);
 
         return this;
     }
@@ -47,8 +47,8 @@ export default class ActionList {
     play() {
         const list = this.list;
         const startTime = +new Date();
-        const minTime = this.minTime;
-        const maxTime = this.maxTime;
+        const minTime = this._minTime;
+        const maxTime = this._maxTime;
         let timer;
 
         (function animate() {
@@ -69,5 +69,21 @@ export default class ActionList {
 
             timer = requestAnimationFrame(animate);
         })();
+    }
+
+    set maxTime(val) {
+        this._maxTime = val * 1000;
+    }
+
+    get maxTime() {
+        return this._maxTime / 1000;
+    }
+
+    set minTime(val) {
+        this._minTime = val * 1000;
+    }
+
+    get minTime() {
+        return this._minTime / 1000;
     }
 }
