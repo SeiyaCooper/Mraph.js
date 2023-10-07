@@ -371,9 +371,16 @@ declare module "animation/ActionList" {
          * @param {Number} start
          * @param {Number} stop
          * @param {Object} handle
-         * @return {ActionList}
+         * @return {this}
          */
-        add(start: number, stop: number, handle: any): ActionList;
+        add(start: number, stop: number, handle: any): this;
+        /**
+         * add an action to action list following last action
+         * @param {Number} hold
+         * @param {Object} handle
+         * @return {this}
+         */
+        addFollow(hold: number, handle: any): this;
         /**
          * play this action list
          */
