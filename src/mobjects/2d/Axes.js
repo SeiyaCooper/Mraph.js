@@ -1,9 +1,9 @@
-import Vector from "../math/Vector.js";
+import Graph2D from "../basic/Graph2D.js";
+import Vector from "../../math/Vector.js";
 import Axis from "./Axis.js";
-import Graph from "./Graph.js";
 import Point from "./Point.js";
 
-export default class Axes extends Graph {
+export default class Axes extends Graph2D {
     constructor({
         xRange = [-8, 8, 1],
         yRange = [-4, 4, 1],
@@ -16,6 +16,7 @@ export default class Axes extends Graph {
         this.xAxis = Axis.fromRange(center, new Vector(1, 0, 0), xRange);
         this.yAxis = Axis.fromRange(center, new Vector(0, 1, 0), yRange);
         this.zAxis = Axis.fromRange(center, new Vector(0, 0, 1), zRange);
+        this.zAxis.normal = new Vector(1, 0, 0);
     }
 
     set layer(val) {

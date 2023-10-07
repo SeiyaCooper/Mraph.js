@@ -1,11 +1,11 @@
-import Color from "../core/Color.js";
-import Matrix from "../math/Matrix.js";
+import Matrix from "../../math/Matrix.js";
 
 export default class Graph {
     indices = { data: [] };
     children = [];
+
     visible = true;
-    _color = new Color(1, 1, 1);
+
     mode = "TRIANGLES";
     attributes = {
         position: { data: [] },
@@ -48,15 +48,5 @@ export default class Graph {
 
     get gl() {
         return this._gl;
-    }
-
-    set color(color) {
-        this._color = color;
-        this.strokeColor = color;
-        this.fillColor = color;
-    }
-
-    get color() {
-        return this._color;
     }
 }

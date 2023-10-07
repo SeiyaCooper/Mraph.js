@@ -1,9 +1,9 @@
-import Graph from "./Graph.js";
+import Graph2D from "../basic/Graph2D.js";
 import Line from "./Line.js";
-import Vector from "../math/Vector.js";
-import Color from "../core/Color.js";
+import Vector from "../../math/Vector.js";
+import Color from "../../core/Color.js";
 
-export default class Arc extends Graph {
+export default class Arc extends Graph2D {
     mode = "TRIANGLE_FAN";
     insertNum = 25;
     strokeWidth = 0.05;

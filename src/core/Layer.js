@@ -16,8 +16,8 @@ export default class Layer {
         this.canvas = document.createElement("canvas");
 
         if (fillScreen) {
-            this.canvas.width = window.innerWidth;
-            this.canvas.height = window.innerHeight;
+            this.canvas.width = 1.5 * window.innerWidth;
+            this.canvas.height = 1.5 * window.innerHeight;
             this.canvas.style.width = "100%";
             this.canvas.style.height = "100%";
         }
@@ -113,13 +113,13 @@ export default class Layer {
      */
     play(r = 0, g = 0, b = 0, a = 1) {
         const list = this.actionList;
-        this.actionList.add(list.minTime, list.maxTime, {
+        list.add(list.minTime, list.maxTime, {
             update: () => {
                 this.clear(r, g, b, a);
                 this.render();
             },
         });
-        this.actionList.play();
+        list.play();
         return this;
     }
 

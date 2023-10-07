@@ -1,7 +1,7 @@
-import Graph from "./Graph.js";
+import Graph2D from "../basic/Graph2D.js";
 import Line from "./Line.js";
 
-export default class Path extends Graph {
+export default class Path extends Graph2D {
     _close = false;
 
     constructor(...points) {

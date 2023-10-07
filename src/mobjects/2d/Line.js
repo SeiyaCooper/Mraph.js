@@ -1,11 +1,7 @@
-import Graph from "./Graph.js";
-import Matrix from "../math/Matrix.js";
-import Color from "../core/Color.js";
 import Point from "./Point.js";
+import Graph2D from "../basic/Graph2D.js";
 
-export default class Segment extends Graph {
-    strokeWidth = 0.05;
-    strokeColor = new Color(1, 1, 1, 1);
+export default class Segment extends Graph2D {
     indices = { data: [0, 1, 3, 2, 0, 3] };
     tips = [];
 
@@ -18,7 +14,7 @@ export default class Segment extends Graph {
     update() {
         const start = this.start.center;
         const end = this.end.center;
-        const vec = end.reduce(start).trans(Matrix.rotateZ(Math.PI / 2, 3));
+        const vec = end.reduce(start).trans(this.rot90OnNorVec);
         vec.norm = this.strokeWidth / 2;
 
         const vertices = [
@@ -60,24 +56,17 @@ export default class Segment extends Graph {
             renderer.move(vec);
 
             const h = this.vector;
-            h.norm = this.strokeWidth * 3;
-
+            h.norm = this.strokeWidth * 4;
             const w = h.mult(1 / 2);
+            const rotMat = this.rot90OnNorVec;
+            const rotMatT = rotMat.T;
 
             if (reverse) {
-                renderer.line3D(
-                    vec.add(h).add(w.trans(Matrix.rotateZ(Math.PI / 2, 3)))
-                );
-                renderer.line3D(
-                    vec.add(h).add(w.trans(Matrix.rotateZ(-Math.PI / 2, 3)))
-                );
+                renderer.line3D(vec.add(h).add(w.trans(rotMat)));
+                renderer.line3D(vec.add(h).add(w.trans(rotMatT)));
             } else {
-                renderer.line3D(
-                    vec.reduce(h).add(w.trans(Matrix.rotateZ(Math.PI / 2, 3)))
-                );
-                renderer.line3D(
-                    vec.reduce(h).add(w.trans(Matrix.rotateZ(-Math.PI / 2, 3)))
-                );
+                renderer.line3D(vec.reduce(h).add(w.trans(rotMat)));
+                renderer.line3D(vec.reduce(h).add(w.trans(rotMatT)));
             }
 
             renderer.close();

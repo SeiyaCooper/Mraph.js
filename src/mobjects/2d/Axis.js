@@ -1,7 +1,6 @@
-import Matrix from "../math/Matrix.js";
 import Line from "./Line.js";
 import Point from "./Point.js";
-import Vector from "../math/Vector.js";
+import Vector from "../../math/Vector.js";
 
 export default class Axis extends Line {
     strokeWidth = 0.02;
@@ -15,10 +14,7 @@ export default class Axis extends Line {
         super.renderByCanvas2d(renderer);
 
         const len = this.length;
-        const tick = this.vector
-            .trans(Matrix.rotateZ(-Math.PI / 2, 3))
-            .normal()
-            .mult(0.05);
+        const tick = this.vector.trans(this.rot90OnNorVec).normal().mult(0.08);
 
         for (let pos = 0; pos <= len; pos += this.unit) {
             const at = this.at(pos / len);

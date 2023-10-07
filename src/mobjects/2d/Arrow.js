@@ -1,7 +1,7 @@
-import Vector from "../math/Vector.js";
+import Vector from "../../math/Vector.js";
 import Point from "./Point.js";
 import Line from "./Line.js";
-import Color from "../core/Color.js";
+import Color from "../../core/Color.js";
 
 export default class Arrow extends Line {
     fillColor = new Color(1, 1, 1, 1);

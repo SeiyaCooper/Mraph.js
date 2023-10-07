@@ -1,4 +1,10 @@
 export default class Color extends Array {
+    /**
+     * @param {number} [r=0]
+     * @param {number} [g=0]
+     * @param {number} [b=0]
+     * @param {number} [a=1]
+     */
     constructor(r = 0, g = 0, b = 0, a = 1) {
         super(r, g, b, a);
         this.r = r;
