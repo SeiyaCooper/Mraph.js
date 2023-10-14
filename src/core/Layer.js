@@ -2,6 +2,7 @@ import ActionList from "../animation/ActionList.js";
 import CanvasRenderer from "../renderer/CanvasRenderer.js";
 import Camera from "./Camera.js";
 import Program from "./Program.js";
+import * as COLORS from "../constants/colors.js";
 
 export default class Layer {
     elements = [];
@@ -30,6 +31,7 @@ export default class Layer {
             aspect: this.canvas.width / this.canvas.height,
         });
         this.renderer = new rendererClass(this.canvas);
+        this.clear(COLORS.GRAY_E);
 
         if (!this.renderer.gl) return this;
         this.program = new Program(this.renderer.gl, {
@@ -98,7 +100,7 @@ export default class Layer {
      * @param {number} [a=1]
      * @returns {this}
      */
-    clear(r = 0, g = 0, b = 0, a = 1) {
+    clear([r = 0, g = 0, b = 0, a = 1]) {
         this.renderer.clear(r, g, b, a);
         return this;
     }

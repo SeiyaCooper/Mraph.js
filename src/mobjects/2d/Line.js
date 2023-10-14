@@ -1,5 +1,5 @@
 import Point from "./Point.js";
-import Graph2D from "../basic/Graph2D.js";
+import Graph2D from "../Graph2D.js";
 
 export default class Segment extends Graph2D {
     indices = { data: [0, 1, 3, 2, 0, 3] };

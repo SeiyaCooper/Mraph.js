@@ -1,4 +1,4 @@
-import Matrix from "../../math/Matrix.js";
+import Matrix from "../math/Matrix.js";
 
 export default class Graph {
     indices = { data: [] };

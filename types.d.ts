@@ -446,6 +446,37 @@ declare module "core/Program" {
         _textures: any;
     }
 }
+declare module "core/Color" {
+    export default class Color extends Array<any> {
+        /**
+         * @param {number} [r=0]
+         * @param {number} [g=0]
+         * @param {number} [b=0]
+         * @param {number} [a=1]
+         */
+        constructor(r?: number, g?: number, b?: number, a?: number);
+        r: number;
+        g: number;
+        b: number;
+        a: number;
+        toIntRGBA(): Color;
+        toRGBAStr(): string;
+        toIntRGBAStr(): string;
+    }
+}
+declare module "constants/colors" {
+    export const BLUE_A: Color;
+    export const BLUE_B: Color;
+    export const BLUE_C: Color;
+    export const BLUE_D: Color;
+    export const BLUE_E: Color;
+    export const GRAY_A: Color;
+    export const GRAY_B: Color;
+    export const GRAY_C: Color;
+    export const GRAY_D: Color;
+    export const GRAY_E: Color;
+    import Color from "core/Color";
+}
 declare module "core/Layer" {
     export default class Layer {
         constructor({ fillScreen, appendTo, rendererClass, }?: {
@@ -484,7 +515,7 @@ declare module "core/Layer" {
          * @param {number} [a=1]
          * @returns {this}
          */
-        clear(r?: number, g?: number, b?: number, a?: number): this;
+        clear([r, g, b, a]?: number): this;
         /**
          * play animation by a refresh color
          * @param {number} [r=0]
@@ -520,24 +551,6 @@ declare module "core/Texture" {
         upload(): void;
     }
 }
-declare module "core/Color" {
-    export default class Color extends Array<any> {
-        /**
-         * @param {number} [r=0]
-         * @param {number} [g=0]
-         * @param {number} [b=0]
-         * @param {number} [a=1]
-         */
-        constructor(r?: number, g?: number, b?: number, a?: number);
-        r: number;
-        g: number;
-        b: number;
-        a: number;
-        toIntRGBA(): Color;
-        toRGBAStr(): string;
-        toIntRGBAStr(): string;
-    }
-}
 declare module "renderer/WebglRenderer" {
     export default class WebglRenderer {
         constructor(canvas: any);
@@ -548,7 +561,7 @@ declare module "renderer/WebglRenderer" {
         clear(r: any, g: any, b: any, a: any): void;
     }
 }
-declare module "mobjects/basic/Graph" {
+declare module "mobjects/Graph" {
     export default class Graph {
         indices: {
             data: any[];
@@ -578,7 +591,7 @@ declare module "mobjects/basic/Graph" {
     }
     import Matrix from "math/Matrix";
 }
-declare module "mobjects/basic/Graph2D" {
+declare module "mobjects/Graph2D" {
     export default class Graph2D extends Graph {
         _normal: Vector;
         /**
@@ -595,7 +608,7 @@ declare module "mobjects/basic/Graph2D" {
         set normal(arg: Vector);
         get normal(): Vector;
     }
-    import Graph from "mobjects/basic/Graph";
+    import Graph from "mobjects/Graph";
     import Vector from "math/Vector";
     import Matrix from "math/Matrix";
     import Color from "core/Color";
@@ -611,7 +624,7 @@ declare module "mobjects/2d/Arc" {
         update(): void;
         renderByCanvas2d(renderer: any): Arc;
     }
-    import Graph2D from "mobjects/basic/Graph2D";
+    import Graph2D from "mobjects/Graph2D";
 }
 declare module "mobjects/2d/Point" {
     export default class Point extends Arc {
@@ -656,7 +669,7 @@ declare module "mobjects/2d/Line" {
         get length(): any;
         get slope(): number;
     }
-    import Graph2D from "mobjects/basic/Graph2D";
+    import Graph2D from "mobjects/Graph2D";
     import Point from "mobjects/2d/Point";
 }
 declare module "mobjects/2d/Path" {
@@ -668,7 +681,7 @@ declare module "mobjects/2d/Path" {
         set close(arg: boolean);
         get close(): boolean;
     }
-    import Graph2D from "mobjects/basic/Graph2D";
+    import Graph2D from "mobjects/Graph2D";
 }
 declare module "mobjects/2d/Arrow" {
     export default class Arrow extends Line {
@@ -694,7 +707,7 @@ declare module "mobjects/2d/VectorField2D" {
         set center(arg: Vector);
         get center(): Vector;
     }
-    import Graph2D from "mobjects/basic/Graph2D";
+    import Graph2D from "mobjects/Graph2D";
     import Color from "core/Color";
     import Vector from "math/Vector";
 }
@@ -709,7 +722,7 @@ declare module "mobjects/2d/Axis" {
     }
     import Line from "mobjects/2d/Line";
 }
-declare module "mobjects/2d/Axes" {
+declare module "mobjects/3d/Axes" {
     export default class Axes extends Graph2D {
         constructor({ xRange, yRange, zRange, center, }?: {
             xRange?: number[];
@@ -725,22 +738,9 @@ declare module "mobjects/2d/Axes" {
         get layer(): any;
         _layer: any;
     }
-    import Graph2D from "mobjects/basic/Graph2D";
+    import Graph2D from "mobjects/Graph2D";
     import Point from "mobjects/2d/Point";
     import Axis from "mobjects/2d/Axis";
-}
-declare module "constants/colors" {
-    export const BLUE_A: Color;
-    export const BLUE_B: Color;
-    export const BLUE_C: Color;
-    export const BLUE_D: Color;
-    export const BLUE_E: Color;
-    export const GRAY_A: Color;
-    export const GRAY_B: Color;
-    export const GRAY_C: Color;
-    export const GRAY_D: Color;
-    export const GRAY_E: Color;
-    import Color from "core/Color";
 }
 declare module "mraph" {
     export * as COLORS from "constants/colors";
@@ -759,6 +759,6 @@ declare module "mraph" {
     import Arrow from "mobjects/2d/Arrow";
     import VectorField2D from "mobjects/2d/VectorField2D";
     import Axis from "mobjects/2d/Axis";
-    import Axes from "mobjects/2d/Axes";
+    import Axes from "mobjects/3d/Axes";
     export { WebglRenderer, Matrix, Vector, Camera, Layer, Program, Texture, Color, Line, Arc, Path, Point, Arrow, VectorField2D, Axis, Axes };
 }

@@ -1,7 +1,7 @@
-import Graph2D from "../basic/Graph2D.js";
+import Graph2D from "../Graph2D.js";
 import Vector from "../../math/Vector.js";
-import Axis from "./Axis.js";
-import Point from "./Point.js";
+import Axis from "../2d/Axis.js";
+import Point from "../2d/Point.js";
 
 export default class Axes extends Graph2D {
     constructor({

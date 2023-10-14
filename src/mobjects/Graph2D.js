@@ -1,7 +1,7 @@
 import Graph from "./Graph.js";
-import Color from "../../core/Color.js";
-import Vector from "../../math/Vector.js";
-import Matrix from "../../math/Matrix.js";
+import Color from "../core/Color.js";
+import Vector from "../math/Vector.js";
+import Matrix from "../math/Matrix.js";
 
 export default class Graph2D extends Graph {
     _normal = new Vector(0, 0, 1);

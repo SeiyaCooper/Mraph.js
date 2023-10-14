@@ -2,7 +2,7 @@ import Arrow from "./Arrow.js";
 import Point from "./Point.js";
 import Vector from "../../math/Vector.js";
 import * as math from "../../utils/math.js";
-import Graph2D from "../basic/Graph2D.js";
+import Graph2D from "../Graph2D.js";
 import Color from "../../core/Color.js";
 
 export default class VectorField2D extends Graph2D {
