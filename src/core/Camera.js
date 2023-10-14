@@ -83,7 +83,7 @@ export default class Camera {
         const p = this.position.mult(-1);
         const k = target.add(p).normal();
         const i = k.cross(this.up).normal();
-        const j = k.cross(i);
+        const j = i.cross(k);
 
         this.viewMat = Matrix.translate(...p).trans(
             new Matrix(
