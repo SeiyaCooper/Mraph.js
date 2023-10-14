@@ -3,6 +3,7 @@ import Vector from "../math/Vector.js";
 
 export default class CanvasRenderer {
     matrix = Matrix.identity(4);
+    modelMat = Matrix.identity(4);
 
     constructor(canvas) {
         this.canvas = canvas;
@@ -60,6 +61,9 @@ export default class CanvasRenderer {
         ctx.strokeStyle = el.strokeColor?.toIntRGBAStr() ?? "black";
         ctx.lineWidth = el.strokeWidth * this.sceneUnit ?? 5;
         ctx.setLineDash(el.dash ?? []);
+        this.modelMat = el.modelMat ?? Matrix.identity(4);
+
+        return this;
     }
 
     move(pos) {
@@ -88,7 +92,9 @@ export default class CanvasRenderer {
     }
 
     toScreenPos(pos) {
-        let screenPos = new Vector(...pos, 1).trans(this.matrix);
+        let screenPos = new Vector(...pos, 1)
+            .trans(this.modelMat)
+            .trans(this.matrix);
         return screenPos.mult(1 / screenPos[3]).elMult(this.resolution);
     }
 

@@ -16,6 +16,7 @@ export default class Axis extends Line {
         const len = this.length;
         const tick = this.vector.trans(this.rot90OnNorVec).normal().mult(0.08);
 
+        renderer.style(this);
         for (let pos = 0; pos <= len; pos += this.unit) {
             const at = this.at(pos / len);
             renderer.move(at.reduce(tick));

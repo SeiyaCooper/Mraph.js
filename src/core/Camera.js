@@ -4,6 +4,7 @@ import Vector from "../math/Vector.js";
 export default class Camera {
     position = new Vector(0, 0, 10);
     rotation = new Vector(0, 0, 0);
+    up = new Vector(0, 1, 0);
     projectionMat = Matrix.identity(4);
     viewMat = Matrix.identity(4);
 
@@ -31,11 +32,7 @@ export default class Camera {
     update() {
         const position = this.position;
         const rotation = this.rotation;
-        this.viewMat = Matrix.translate(
-            -position[0],
-            -position[1],
-            -position[2]
-        )
+        this.viewMat = Matrix.translate(...position)
             .trans(Matrix.rotateX(-rotation[0]))
             .trans(Matrix.rotateY(-rotation[1]))
             .trans(Matrix.rotateZ(-rotation[2]));
@@ -80,10 +77,24 @@ export default class Camera {
         return this;
     }
 
-    lookAt(pos) {
-        const self = this.position;
-        this.rotation[0] = -Math.atan2(pos[1] - self[1], self[2] - pos[2]);
-        this.rotation[1] = -Math.atan2(pos[0] - self[0], self[2] - pos[2]);
-        this.rotation[2] = -Math.atan2(pos[0] - self[0], pos[1] - self[1]);
+    lookAt(target) {
+        target = Vector.fromArray(target);
+
+        const p = this.position.mult(-1);
+        const k = target.add(p).normal();
+        const i = k.cross(this.up).normal();
+        const j = k.cross(i);
+
+        this.viewMat = Matrix.translate(...p).trans(
+            new Matrix(
+                [i[0], j[0], -k[0], 0],
+                [i[1], j[1], -k[1], 0],
+                [i[2], j[2], -k[2], 0],
+                [0, 0, 0, 1]
+            )
+        );
+        this.matrix = this.projectionMat.mult(this.viewMat);
+
+        return this;
     }
 }

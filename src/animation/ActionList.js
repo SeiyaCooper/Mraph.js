@@ -53,6 +53,16 @@ export default class ActionList {
     }
 
     /**
+     * add action globally (from  min time to max time)
+     * @param {Object} handle
+     * @returns
+     */
+    addGlobal(handle) {
+        this.add(this.minTime, this.maxTime, handle);
+        return this;
+    }
+
+    /**
      * play this action list
      */
     play() {

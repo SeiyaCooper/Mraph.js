@@ -115,7 +115,7 @@ export default class Layer {
      */
     play(r = 0, g = 0, b = 0, a = 1) {
         const list = this.actionList;
-        list.add(list.minTime, list.maxTime, {
+        list.addGlobal({
             update: () => {
                 this.clear(r, g, b, a);
                 this.render();

@@ -282,6 +282,7 @@ declare module "core/Camera" {
     export default class Camera {
         position: Vector;
         rotation: Vector;
+        up: Vector;
         projectionMat: Matrix;
         viewMat: Matrix;
         update(): void;
@@ -300,7 +301,7 @@ declare module "core/Camera" {
             near?: number;
             far?: number;
         }): Camera;
-        lookAt(pos: any): void;
+        lookAt(target: any): Camera;
     }
     import Vector from "math/Vector";
     import Matrix from "math/Matrix";
@@ -382,6 +383,12 @@ declare module "animation/ActionList" {
          */
         addFollow(hold: number, handle: any): this;
         /**
+         * add action globally (from  min time to max time)
+         * @param {Object} handle
+         * @returns
+         */
+        addGlobal(handle: any): ActionList;
+        /**
          * play this action list
          */
         play(): void;
@@ -395,6 +402,7 @@ declare module "renderer/CanvasRenderer" {
     export default class CanvasRenderer {
         constructor(canvas: any);
         matrix: Matrix;
+        modelMat: Matrix;
         set canvas(arg: any);
         get canvas(): any;
         resolution: Vector;
@@ -404,7 +412,7 @@ declare module "renderer/CanvasRenderer" {
         fill(): CanvasRenderer;
         stroke(): CanvasRenderer;
         clear(r: any, g: any, b: any, a: any): CanvasRenderer;
-        style(el: any): void;
+        style(el: any): CanvasRenderer;
         move(pos: any): CanvasRenderer;
         line3D(pos: any): CanvasRenderer;
         arc2D(pos: any, radius: any, stAng: any, edAng: any, anticlockwise?: boolean): CanvasRenderer;

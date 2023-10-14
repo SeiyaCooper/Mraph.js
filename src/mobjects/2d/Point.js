@@ -34,7 +34,6 @@ export default class Point extends Arc {
         const list = this.layer.actionList;
         let start, displace;
 
-        console.log(list.list);
         list.addFollow(runTime, {
             start: () => {
                 start = this.center;
