@@ -559,6 +559,22 @@ declare module "core/Texture" {
         upload(): void;
     }
 }
+declare module "extra/Control" {
+    export default class Control {
+        constructor(camera: any, { element }?: {
+            element?: Document;
+        });
+        center: Vector;
+        _element: Document;
+        camera: any;
+        set element(arg: Document);
+        get element(): Document;
+        rotate(xRotationAngle: any, yRotationAngle: any, zRotationAngle: any): void;
+        zoom(scale: any): void;
+        handleTouchStart(): void;
+    }
+    import Vector from "math/Vector";
+}
 declare module "renderer/WebglRenderer" {
     export default class WebglRenderer {
         constructor(canvas: any);
@@ -760,6 +776,7 @@ declare module "mraph" {
     import Program from "core/Program";
     import Texture from "core/Texture";
     import Color from "core/Color";
+    import Control from "extra/Control";
     import Line from "mobjects/2d/Line";
     import Arc from "mobjects/2d/Arc";
     import Path from "mobjects/2d/Path";
@@ -768,5 +785,5 @@ declare module "mraph" {
     import VectorField2D from "mobjects/2d/VectorField2D";
     import Axis from "mobjects/2d/Axis";
     import Axes from "mobjects/3d/Axes";
-    export { WebglRenderer, Matrix, Vector, Camera, Layer, Program, Texture, Color, Line, Arc, Path, Point, Arrow, VectorField2D, Axis, Axes };
+    export { WebglRenderer, Matrix, Vector, Camera, Layer, Program, Texture, Color, Control, Line, Arc, Path, Point, Arrow, VectorField2D, Axis, Axes };
 }

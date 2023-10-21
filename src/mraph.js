@@ -4,6 +4,8 @@ import Program from "./core/Program.js";
 import Texture from "./core/Texture.js";
 import Color from "./core/Color.js";
 
+import Control from "./extra/Control.js";
+
 import WebglRenderer from "./renderer/WebglRenderer.js";
 
 import Matrix from "./math/Matrix.js";
@@ -30,6 +32,7 @@ export {
     Program,
     Texture,
     Color,
+    Control,
     Line,
     Arc,
     Path,
