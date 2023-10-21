@@ -566,12 +566,14 @@ declare module "extra/Control" {
         });
         center: Vector;
         _element: Document;
+        rotateSpeed: number;
         camera: any;
         set element(arg: Document);
         get element(): Document;
         rotate(xRotationAngle: any, yRotationAngle: any, zRotationAngle: any): void;
         zoom(scale: any): void;
-        handleTouchStart(): void;
+        handleTouchStart(e: any): void;
+        handleTouchMove(e: any): void;
     }
     import Vector from "math/Vector";
 }
