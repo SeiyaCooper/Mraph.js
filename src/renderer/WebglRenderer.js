@@ -32,7 +32,7 @@ export default class WebglRenderer {
                 gl.bufferData(
                     gl.ARRAY_BUFFER,
                     new Float32Array(value.data),
-                    this.usage
+                    this.usage,
                 );
                 value.needsUpdate = false;
             }
@@ -52,7 +52,7 @@ export default class WebglRenderer {
             gl.bufferData(
                 gl.ELEMENT_ARRAY_BUFFER,
                 new Uint16Array(indices.data),
-                this.usage
+                this.usage,
             );
             gl.drawElements(mesh.mode, indices.data.length, indices.type, 0);
         } else {

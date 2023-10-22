@@ -14,7 +14,7 @@ export default class Arc extends Graph2D {
         startAng = 0,
         endAng = Math.PI,
         radius = 0.5,
-        center = [0, 0, 0]
+        center = [0, 0, 0],
     ) {
         super();
         this.startAng = startAng;
@@ -45,7 +45,7 @@ export default class Arc extends Graph2D {
         for (let i = 3; i < vertices.length - 2; i += 3) {
             const segment = new Line(
                 { center: new Vector(...vertices.slice(i, i + 3)) },
-                { center: new Vector(...vertices.slice(i + 3, i + 6)) }
+                { center: new Vector(...vertices.slice(i + 3, i + 6)) },
             );
             segment.strokeWidth = this.strokeWidth;
             segment.strokeColor = this.strokeColor;
@@ -69,7 +69,7 @@ export default class Arc extends Graph2D {
             this.radius,
             this.startAng,
             this.endAng,
-            this.startAng > this.endAng
+            this.startAng > this.endAng,
         );
         renderer.stroke();
         renderer.fill();

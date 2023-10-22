@@ -1,6 +1,7 @@
 import ActionList from "../animation/ActionList.js";
 import CanvasRenderer from "../renderer/CanvasRenderer.js";
 import Camera from "./Camera.js";
+import Control from "../extra/Control.js";
 import Program from "./Program.js";
 import * as COLORS from "../constants/colors.js";
 
@@ -94,10 +95,7 @@ export default class Layer {
 
     /**
      * clear canvas by a color
-     * @param {number} [r=0]
-     * @param {number} [g=0]
-     * @param {number} [b=0]
-     * @param {number} [a=1]
+     * @param {number[]} [r=0, g=0, b=0, a=1]
      * @returns {this}
      */
     clear([r = 0, g = 0, b = 0, a = 1]) {
@@ -132,6 +130,13 @@ export default class Layer {
     wait(time = 1) {
         this.actionList.maxTime += time;
         return this;
+    }
+
+    /**
+     * @returns Control
+     */
+    enableOrbitControl() {
+        return new Control(this.camera);
     }
 }
 

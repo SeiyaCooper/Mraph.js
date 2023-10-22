@@ -17,7 +17,7 @@ export default class VectorField2D extends Graph2D {
             return [x, y, 0];
         },
         xRange = [-8, 8, 1],
-        yRange = [-4, 4, 1]
+        yRange = [-4, 4, 1],
     ) {
         super();
         this.xRange = xRange;
@@ -34,7 +34,7 @@ export default class VectorField2D extends Graph2D {
             for (let y = yRange[0]; y <= yRange[1]; y += yRange[2]) {
                 const arrow = new Arrow(
                     new Point(new Vector(x, y, 0).add(this.center)),
-                    new Vector(...func(x, y, this.center[2]))
+                    new Vector(...func(x, y, this.center[2])),
                 );
                 arrow.length = this.lengthFunc(arrow.length);
                 arrow.color = this.colorFunc(x, y);

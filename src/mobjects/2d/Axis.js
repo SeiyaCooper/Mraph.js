@@ -4,6 +4,7 @@ import Vector from "../../math/Vector.js";
 
 export default class Axis extends Line {
     strokeWidth = 0.02;
+    tickLength = 0.08;
 
     constructor(start, end, { unit = 1 } = {}) {
         super(start, end);
@@ -14,7 +15,10 @@ export default class Axis extends Line {
         super.renderByCanvas2d(renderer);
 
         const len = this.length;
-        const tick = this.vector.trans(this.rot90OnNorVec).normal().mult(0.08);
+        const tick = this.vector
+            .trans(this.rot90OnNorVec)
+            .normal()
+            .mult(this.tickLength);
 
         renderer.style(this);
         for (let pos = 0; pos <= len; pos += this.unit) {

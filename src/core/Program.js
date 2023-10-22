@@ -5,7 +5,13 @@ export default class Program {
 
     constructor(
         gl,
-        { vs = "", fs = "", attributes = {}, uniforms = {}, textures = [] } = {}
+        {
+            vs = "",
+            fs = "",
+            attributes = {},
+            uniforms = {},
+            textures = [],
+        } = {},
     ) {
         this.gl = gl;
         this.vs = createShader(gl, gl.VERTEX_SHADER, vs);
@@ -47,7 +53,7 @@ export default class Program {
         for (let name of Object.keys(val)) {
             this.locations.set(
                 name,
-                this.gl.getAttribLocation(this.program, name)
+                this.gl.getAttribLocation(this.program, name),
             );
         }
     }

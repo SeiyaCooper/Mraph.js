@@ -11,7 +11,7 @@ export default class CanvasRenderer {
             this.canvas.width / 2,
             this.canvas.height / 2,
             1,
-            1
+            1,
         );
     }
 
@@ -46,7 +46,7 @@ export default class CanvasRenderer {
 
     clear(r, g, b, a) {
         this.context.fillStyle = `rgba(${parseInt(r * 255)}, ${parseInt(
-            g * 255
+            g * 255,
         )}, ${parseInt(b * 255)}, ${a})`;
 
         const w = this.canvas.width;
@@ -86,7 +86,7 @@ export default class CanvasRenderer {
             radius * this.sceneUnit,
             stAng,
             edAng,
-            anticlockwise
+            anticlockwise,
         );
         return this;
     }

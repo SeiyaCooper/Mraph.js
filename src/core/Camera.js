@@ -48,7 +48,7 @@ export default class Camera {
             [1 / (a * c), 0, 0, 0],
             [0, 1 / c, 0, 0],
             [0, 0, (f + n) / (n - f), -1],
-            [0, 0, (2 * f * n) / (n - f), 0]
+            [0, 0, (2 * f * n) / (n - f), 0],
         );
         this.update();
         return this;
@@ -66,7 +66,7 @@ export default class Camera {
         const mat = Matrix.translate(
             (r + l) / (l - r),
             (t + b) / (b - t),
-            (f + n) / (n - f)
+            (f + n) / (n - f),
         );
         mat[0][0] = 2 / (r - l);
         mat[1][1] = 2 / (t - b);
@@ -90,8 +90,8 @@ export default class Camera {
                 [i[0], j[0], -k[0], 0],
                 [i[1], j[1], -k[1], 0],
                 [i[2], j[2], -k[2], 0],
-                [0, 0, 0, 1]
-            )
+                [0, 0, 0, 1],
+            ),
         );
         this.matrix = this.projectionMat.mult(this.viewMat);
 
