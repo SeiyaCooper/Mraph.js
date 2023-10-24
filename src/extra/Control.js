@@ -14,9 +14,13 @@ export default class Control {
     enableRotate = true;
     theta = 0;
     phi = 0;
-    deltaTheta = 0;
-    deltaPhi = 0;
+    startTheta = 0;
+    startPhi = 0;
+    targetTheta = 0;
+    targetPhi = 0;
+    deltaAngleMax = 0.1;
     rotateSpeed = 0.01;
+    rotateEase = 0.1;
 
     constructor(camera, { element = document } = {}) {
         this.camera = camera;
@@ -25,10 +29,21 @@ export default class Control {
     }
 
     update() {
+        const deltaPhi = Math.min(
+            this.deltaAngleMax,
+            (this.targetPhi - this.phi) * this.rotateEase,
+        );
+        const deltaTheta = Math.min(
+            this.deltaAngleMax,
+            (this.targetTheta - this.theta) * this.rotateEase,
+        );
+        this.phi += deltaPhi;
+        this.theta += deltaTheta;
+
         this.camera.position.copy(
             new Vector(0, 0, this.radius * this.scale)
-                .trans(Matrix.rotateX(this.phi + this.deltaPhi, 3))
-                .trans(Matrix.rotateY(-this.theta - this.deltaTheta, 3)),
+                .trans(Matrix.rotateX(this.phi, 3))
+                .trans(Matrix.rotateY(-this.theta, 3)),
         );
         this.camera.lookAt(this.center);
     }
@@ -40,6 +55,8 @@ export default class Control {
         for (let touch of e.touches) {
             startedTouches.push(copyTouch(touch));
         }
+        this.startPhi = this.phi;
+        this.startTheta = this.theta;
     }
 
     handleTouchMove(e) {
@@ -48,17 +65,19 @@ export default class Control {
             const touch1 = copyTouch(e.touches[1]);
             const touchStart0 = findTouchById(touch0.id, startedTouches);
             const touchStart1 = findTouchById(touch1.id, startedTouches);
+
             this.scale =
                 getLenByTwoTouches(touchStart0, touchStart1) /
                 getLenByTwoTouches(touch0, touch1);
         } else if (this.enableRotate) {
             const touch = copyTouch(e.touches[0]);
             const touchStart = findTouchById(touch.id, startedTouches);
+            const deltaY = touch.y - touchStart.y;
+            const deltaX = touch.x - touchStart.x;
 
-            this.deltaPhi = this.rotateSpeed * (touch.y - touchStart.y);
-            this.deltaTheta = this.rotateSpeed * (touch.x - touchStart.x);
+            this.targetPhi = this.startPhi + this.rotateSpeed * deltaY;
+            this.targetTheta = this.startTheta + this.rotateSpeed * deltaX;
         }
-        this.update();
     }
 
     handleTouchEnd(e) {
@@ -66,10 +85,6 @@ export default class Control {
 
         this.radius *= this.scale;
         this.scale = 1;
-
-        this.theta += this.deltaTheta;
-        this.phi += this.deltaPhi;
-        this.deltaPhi = this.deltaTheta = 0;
     }
 
     set element(el) {
