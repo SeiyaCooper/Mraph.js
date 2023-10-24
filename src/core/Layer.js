@@ -137,7 +137,7 @@ export default class Layer {
      */
     enableOrbitControl() {
         const control = new Control(this.camera);
-        this.actionList.addGlobal({
+        this.actionList.addInfinity({
             update: () => {
                 control.update();
             },

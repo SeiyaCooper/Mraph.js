@@ -55,10 +55,28 @@ export default class ActionList {
     /**
      * add action globally (from  min time to max time)
      * @param {Object} handle
-     * @returns
+     * @returns {this}
      */
     addGlobal(handle) {
-        this.add(this.minTime, this.maxTime, handle);
+        const action = new Action(handle);
+        const list = this.list;
+        const index = [0, Infinity];
+
+        if (list.has(index)) {
+            list.set(index, list.get(index).merge(action));
+        } else {
+            list.set(index, action);
+        }
+        return this;
+    }
+
+    /**
+     * equals to this.add(0, Infinity, handle)
+     * @param {Object} handle
+     * @returns {this}
+     */
+    addInfinity(handle) {
+        this.add(0, Infinity, handle);
         return this;
     }
 
