@@ -213,7 +213,7 @@ export default class Matrix extends Array {
         return new Matrix(
             ...Array(column)
                 .fill(0)
-                .map(() => Array(row).fill(n))
+                .map(() => Array(row).fill(n)),
         );
     }
 
@@ -231,14 +231,14 @@ export default class Matrix extends Array {
             return new Matrix(
                 [1, 0, 0],
                 [0, Math.cos(ang), -Math.sin(ang)],
-                [0, Math.sin(ang), Math.cos(ang)]
+                [0, Math.sin(ang), Math.cos(ang)],
             );
         } else {
             return new Matrix(
                 [1, 0, 0, 0],
                 [0, Math.cos(ang), -Math.sin(ang), 0],
                 [0, Math.sin(ang), Math.cos(ang), 0],
-                [0, 0, 0, 1]
+                [0, 0, 0, 1],
             );
         }
     }
@@ -257,14 +257,14 @@ export default class Matrix extends Array {
             return new Matrix(
                 [Math.cos(ang), 0, -Math.sin(ang)],
                 [0, 1, 0],
-                [Math.sin(ang), 0, Math.cos(ang), 0]
+                [Math.sin(ang), 0, Math.cos(ang), 0],
             );
         } else {
             return new Matrix(
                 [Math.cos(ang), 0, -Math.sin(ang), 0],
                 [0, 1, 0, 0],
                 [Math.sin(ang), 0, Math.cos(ang), 0],
-                [0, 0, 0, 1]
+                [0, 0, 0, 1],
             );
         }
     }
@@ -283,14 +283,14 @@ export default class Matrix extends Array {
             return new Matrix(
                 [Math.cos(ang), -Math.sin(ang), 0],
                 [Math.sin(ang), Math.cos(ang), 0],
-                [0, 0, 1]
+                [0, 0, 1],
             );
         } else {
             return new Matrix(
                 [Math.cos(ang), -Math.sin(ang), 0, 0],
                 [Math.sin(ang), Math.cos(ang), 0, 0],
                 [0, 0, 1, 0],
-                [0, 0, 0, 1]
+                [0, 0, 0, 1],
             );
         }
     }
@@ -311,10 +311,10 @@ export default class Matrix extends Array {
         const C = new Matrix(
             [0, -K[2], K[1]],
             [K[2], 0, -K[0]],
-            [-K[1], K[0], 0]
+            [-K[1], K[0], 0],
         );
         let ans = I.add(C.mult(C).mult(1 - Math.cos(angle))).add(
-            C.mult(Math.sin(angle))
+            C.mult(Math.sin(angle)),
         );
 
         if (n === 3) {
@@ -338,7 +338,7 @@ export default class Matrix extends Array {
             [1, 0, 0, 0],
             [0, 1, 0, 0],
             [0, 0, 1, 0],
-            [x, y, z, 1]
+            [x, y, z, 1],
         );
     }
 

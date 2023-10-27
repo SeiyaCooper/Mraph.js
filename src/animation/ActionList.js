@@ -22,7 +22,7 @@ export default class ActionList {
      * @param {Number} start
      * @param {Number} stop
      * @param {Object} handle
-     * @return {ActionList}
+     * @return {this}
      */
     add(start, stop, handle) {
         const action = new Action(handle);
@@ -38,6 +38,45 @@ export default class ActionList {
         this._maxTime = Math.max(stop * 1000, this.maxTime);
         this._minTime = Math.min(start * 1000, this.minTime);
 
+        return this;
+    }
+
+    /**
+     * add an action to action list following last action
+     * @param {Number} hold
+     * @param {Object} handle
+     * @return {this}
+     */
+    addFollow(hold, handle) {
+        this.add(this.maxTime, this.maxTime + hold, handle);
+        return this;
+    }
+
+    /**
+     * add action globally (from  min time to max time)
+     * @param {Object} handle
+     * @returns {this}
+     */
+    addGlobal(handle) {
+        const action = new Action(handle);
+        const list = this.list;
+        const index = [0, Infinity];
+
+        if (list.has(index)) {
+            list.set(index, list.get(index).merge(action));
+        } else {
+            list.set(index, action);
+        }
+        return this;
+    }
+
+    /**
+     * equals to this.add(0, Infinity, handle)
+     * @param {Object} handle
+     * @returns {this}
+     */
+    addInfinity(handle) {
+        this.add(0, Infinity, handle);
         return this;
     }
 

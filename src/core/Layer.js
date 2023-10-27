@@ -1,7 +1,9 @@
 import ActionList from "../animation/ActionList.js";
 import CanvasRenderer from "../renderer/CanvasRenderer.js";
 import Camera from "./Camera.js";
+import Control from "../extra/Control.js";
 import Program from "./Program.js";
+import * as COLORS from "../constants/colors.js";
 
 export default class Layer {
     elements = [];
@@ -30,6 +32,7 @@ export default class Layer {
             aspect: this.canvas.width / this.canvas.height,
         });
         this.renderer = new rendererClass(this.canvas);
+        this.clear(COLORS.GRAY_E);
 
         if (!this.renderer.gl) return this;
         this.program = new Program(this.renderer.gl, {
@@ -92,13 +95,10 @@ export default class Layer {
 
     /**
      * clear canvas by a color
-     * @param {number} [r=0]
-     * @param {number} [g=0]
-     * @param {number} [b=0]
-     * @param {number} [a=1]
+     * @param {number[]} [r=0, g=0, b=0, a=1]
      * @returns {this}
      */
-    clear(r = 0, g = 0, b = 0, a = 1) {
+    clear([r = 0, g = 0, b = 0, a = 1]) {
         this.renderer.clear(r, g, b, a);
         return this;
     }
@@ -113,7 +113,7 @@ export default class Layer {
      */
     play(r = 0, g = 0, b = 0, a = 1) {
         const list = this.actionList;
-        list.add(list.minTime, list.maxTime, {
+        list.addGlobal({
             update: () => {
                 this.clear(r, g, b, a);
                 this.render();
@@ -130,6 +130,19 @@ export default class Layer {
     wait(time = 1) {
         this.actionList.maxTime += time;
         return this;
+    }
+
+    /**
+     * @returns Control
+     */
+    enableOrbitControl() {
+        const control = new Control(this.camera);
+        this.actionList.addInfinity({
+            update: () => {
+                control.update();
+            },
+        });
+        return control;
     }
 }
 

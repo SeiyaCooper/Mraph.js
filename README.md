@@ -1,4 +1,6 @@
 # Mraph.js
+[![npm](https://img.shields.io/npm/v/mraph)](https://www.npmjs.com/package/mraph)
+[![GitHub](https://img.shields.io/github/license/SeiyaCooper/Mraph.js)](https://github.com/SeiyaCooper/Mraph.js/blob/main/LICENSE)
 
 Mraph.js is a library for drawing geometric shapes in browser  
 ⚠⚠⚠**This lib is still WIP**⚠⚠⚠

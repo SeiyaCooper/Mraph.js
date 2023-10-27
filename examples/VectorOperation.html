@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
     <head>
         <meta charset="UTF-8" />
@@ -28,10 +28,10 @@
 
             pA.moveTo([-1, -3, 0], { runTime: 10 });
 
-            camera.position.copy([3, 7, 5]);
+            camera.position.copy([7, 7, 7]);
             camera.lookAt([0, 0, 0]);
             console.log(camera.rotation);
-            layer.play(...mp.COLORS.GRAY_E);
+            layer.play(mp.COLORS.GRAY_E);
             layer.actionList.add(0, Infinity, {
                 update: () => {
                     cross.vector = a.vector.cross(b.vector);
