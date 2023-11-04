@@ -54,7 +54,7 @@ export default class Point extends Arc {
         this.layer.actionList.add(0, Infinity, {
             update: (_, elapsedTime) => {
                 this.center = this.center.add(
-                    this._v.mult((elapsedTime - lastTime) / 1000),
+                    this._v.mult((elapsedTime - lastTime) / 1000)
                 );
                 lastTime = elapsedTime;
             },
@@ -74,7 +74,7 @@ export default class Point extends Arc {
         this.layer.actionList.add(0, Infinity, {
             update: (_, elapsedTime) => {
                 this.v = this._v.add(
-                    this._a.mult((elapsedTime - lastTime) / 1000),
+                    this._a.mult((elapsedTime - lastTime) / 1000)
                 );
                 lastTime = elapsedTime;
             },

@@ -95,27 +95,24 @@ export default class Layer {
 
     /**
      * clear canvas by a color
-     * @param {number[]} [r=0, g=0, b=0, a=1]
+     * @param {number[] | Color} [color = COLORS.GRAY_E]
      * @returns {this}
      */
-    clear([r = 0, g = 0, b = 0, a = 1]) {
+    clear([r, g, b, a] = COLORS.GRAY_E) {
         this.renderer.clear(r, g, b, a);
         return this;
     }
 
     /**
      * play animation by a refresh color
-     * @param {number} [r=0]
-     * @param {number} [g=0]
-     * @param {number} [b=0]
-     * @param {number} [a=1]
+     * @param {color} [color = COLORS.GRAY_E]
      * @returns {this}
      */
-    play(r = 0, g = 0, b = 0, a = 1) {
+    play(color = COLORS.GRAY_E) {
         const list = this.actionList;
         list.addGlobal({
             update: () => {
-                this.clear(r, g, b, a);
+                this.clear(color);
                 this.render();
             },
         });
@@ -136,7 +133,7 @@ export default class Layer {
      * @returns Control
      */
     enableOrbitControl() {
-        const control = new Control(this.camera);
+        const control = new Control(this.camera, { element: this.canvas });
         this.actionList.addInfinity({
             update: () => {
                 control.update();
