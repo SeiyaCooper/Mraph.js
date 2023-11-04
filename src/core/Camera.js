@@ -39,7 +39,7 @@ export default class Camera {
         this.matrix = this.projectionMat.mult(this.viewMat);
     }
 
-    perspective({ fov = 45, near = 1, far = 100, aspect = 1 } = {}) {
+    perspective({ fov = 45, near = 0.01, far = 100, aspect = 1 } = {}) {
         const f = far;
         const n = near;
         const a = aspect;

@@ -52,6 +52,7 @@ export default class Control {
             new Vector(0, 0, this.radius * this.scale)
                 .trans(Matrix.rotateX(this.phi, 3))
                 .trans(Matrix.rotateY(-this.theta, 3))
+                .add(this.center)
         );
         this.camera.lookAt(this.center);
     }
