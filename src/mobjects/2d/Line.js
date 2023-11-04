@@ -4,6 +4,7 @@ import Graph2D from "../Graph2D.js";
 export default class Segment extends Graph2D {
     indices = { data: [0, 1, 3, 2, 0, 3] };
     tips = [];
+    tipWidth = 0.2;
 
     constructor(start = new Point(-1, 0), end = new Point(1, 0)) {
         super();
@@ -56,7 +57,7 @@ export default class Segment extends Graph2D {
             renderer.move(vec);
 
             const h = this.vector;
-            h.norm = this.strokeWidth * 4;
+            h.norm = this.tipWidth;
             const w = h.mult(1 / 2);
             const rotMat = this.rot90OnNorVec;
             const rotMatT = rotMat.T;

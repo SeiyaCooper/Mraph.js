@@ -19,6 +19,12 @@ export default class Axes extends Graph2D {
         this.zAxis.normal = new Vector(1, 0, 0);
     }
 
+    addArrow() {
+        this.xAxis.addTip(1);
+        this.yAxis.addTip(1);
+        this.zAxis.addTip(1);
+    }
+
     set layer(val) {
         this._layer = val;
         val.add(this.xAxis, this.yAxis, this.zAxis);

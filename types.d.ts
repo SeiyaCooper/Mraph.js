@@ -706,6 +706,7 @@ declare module "mobjects/2d/Line" {
             data: number[];
         };
         tips: any[];
+        tipWidth: number;
         start: Point;
         end: Point;
         update(): void;
@@ -784,6 +785,7 @@ declare module "mobjects/3d/Axes" {
         xAxis: Axis;
         yAxis: Axis;
         zAxis: Axis;
+        addArrow(): void;
         set layer(arg: any);
         get layer(): any;
         _layer: any;
