@@ -21,7 +21,7 @@ export default class Texture {
             gl.RGBA,
             gl.RGBA,
             gl.UNSIGNED_BYTE,
-            this.image,
+            this.image
         );
         gl.generateMipmap(this.target);
     }

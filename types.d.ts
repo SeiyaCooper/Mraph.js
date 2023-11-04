@@ -287,25 +287,13 @@ declare module "core/Camera" {
         viewMat: Matrix;
         update(): void;
         matrix: Matrix;
-        perspective({
-            fov,
-            near,
-            far,
-            aspect,
-        }?: {
+        perspective({ fov, near, far, aspect }?: {
             fov?: number;
             near?: number;
             far?: number;
             aspect?: number;
         }): Camera;
-        ortho({
-            left,
-            right,
-            bottom,
-            top,
-            near,
-            far,
-        }?: {
+        ortho({ left, right, bottom, top, near, far, }?: {
             left?: number;
             right?: number;
             bottom?: number;
@@ -397,9 +385,15 @@ declare module "animation/ActionList" {
         /**
          * add action globally (from  min time to max time)
          * @param {Object} handle
-         * @returns
+         * @returns {this}
          */
-        addGlobal(handle: any): ActionList;
+        addGlobal(handle: any): this;
+        /**
+         * equals to this.add(0, Infinity, handle)
+         * @param {Object} handle
+         * @returns {this}
+         */
+        addInfinity(handle: any): this;
         /**
          * play this action list
          */
@@ -427,13 +421,7 @@ declare module "renderer/CanvasRenderer" {
         style(el: any): CanvasRenderer;
         move(pos: any): CanvasRenderer;
         line3D(pos: any): CanvasRenderer;
-        arc2D(
-            pos: any,
-            radius: any,
-            stAng: any,
-            edAng: any,
-            anticlockwise?: boolean,
-        ): CanvasRenderer;
+        arc2D(pos: any, radius: any, stAng: any, edAng: any, anticlockwise?: boolean): CanvasRenderer;
         toScreenPos(pos: any): Vector;
         _canvas: any;
         context: any;
@@ -445,24 +433,50 @@ declare module "renderer/CanvasRenderer" {
     import Matrix from "math/Matrix";
     import Vector from "math/Vector";
 }
+declare module "extra/Control" {
+    export default class Control {
+        constructor(camera: any, { element }?: {
+            element?: Document;
+        });
+        center: Vector;
+        _element: Document;
+        enableZoom: boolean;
+        radius: number;
+        scale: number;
+        zoomSpeed: number;
+        enableRotate: boolean;
+        theta: number;
+        phi: number;
+        phiMax: number;
+        phiMin: number;
+        deltaAngleMax: number;
+        rotateSpeed: number;
+        rotateEase: number;
+        camera: any;
+        set element(arg: Document);
+        get element(): Document;
+        update(): void;
+        handleRotate(pos: any, startPos: any): void;
+        handleZoom(scale: any): void;
+        handleTouchStart(e: any): void;
+        handleTouchMove(e: any): void;
+        handleTouchEnd(e: any): void;
+        handleMouseDown(e: any): void;
+        handleMouseMove(e: any): void;
+        handleMouseUp(): void;
+        handleWheel(e: any): void;
+    }
+    import Vector from "math/Vector";
+}
 declare module "core/Program" {
     export default class Program {
-        constructor(
-            gl: any,
-            {
-                vs,
-                fs,
-                attributes,
-                uniforms,
-                textures,
-            }?: {
-                vs?: string;
-                fs?: string;
-                attributes?: {};
-                uniforms?: {};
-                textures?: any[];
-            },
-        );
+        constructor(gl: any, { vs, fs, attributes, uniforms, textures }?: {
+            vs?: string;
+            fs?: string;
+            attributes?: {};
+            uniforms?: {};
+            textures?: any[];
+        });
         locations: Map<any, any>;
         gl: any;
         vs: any;
@@ -494,6 +508,7 @@ declare module "core/Color" {
         g: number;
         b: number;
         a: number;
+        toArray(): number[];
         toIntRGBA(): Color;
         toRGBAStr(): string;
         toIntRGBAStr(): string;
@@ -514,11 +529,7 @@ declare module "constants/colors" {
 }
 declare module "core/Layer" {
     export default class Layer {
-        constructor({
-            fillScreen,
-            appendTo,
-            rendererClass,
-        }?: {
+        constructor({ fillScreen, appendTo, rendererClass, }?: {
             fillScreen?: boolean;
             appendTo?: any;
             rendererClass?: typeof CanvasRenderer;
@@ -548,47 +559,39 @@ declare module "core/Layer" {
         render(): this;
         /**
          * clear canvas by a color
-         * @param {number} [r=0]
-         * @param {number} [g=0]
-         * @param {number} [b=0]
-         * @param {number} [a=1]
+         * @param {number[] | Color} [color = COLORS.GRAY_E]
          * @returns {this}
          */
-        clear([r, g, b, a]?: number): this;
+        clear([r, g, b, a]?: number[] | Color): this;
         /**
          * play animation by a refresh color
-         * @param {number} [r=0]
-         * @param {number} [g=0]
-         * @param {number} [b=0]
-         * @param {number} [a=1]
+         * @param {color} [color = COLORS.GRAY_E]
          * @returns {this}
          */
-        play(r?: number, g?: number, b?: number, a?: number): this;
+        play(color?: any): this;
         /**
          * pause for a while between animations
          * @param {number} [time=1] in seconds
          */
         wait(time?: number): Layer;
+        /**
+         * @returns Control
+         */
+        enableOrbitControl(): Control;
     }
     import Camera from "core/Camera";
     import ActionList from "animation/ActionList";
     import CanvasRenderer from "renderer/CanvasRenderer";
     import Program from "core/Program";
+    import Control from "extra/Control";
 }
 declare module "core/Texture" {
     export default class Texture {
-        constructor(
-            gl: any,
-            {
-                image,
-                target,
-                flipY,
-            }?: {
-                image: any;
-                target?: any;
-                flipY?: boolean;
-            },
-        );
+        constructor(gl: any, { image, target, flipY }?: {
+            image: any;
+            target?: any;
+            flipY?: boolean;
+        });
         gl: any;
         image: any;
         target: any;
@@ -596,33 +599,6 @@ declare module "core/Texture" {
         texture: any;
         upload(): void;
     }
-}
-declare module "extra/Control" {
-    export default class Control {
-        constructor(
-            camera: any,
-            {
-                element,
-            }?: {
-                element?: Document;
-            },
-        );
-        center: Vector;
-        _element: Document;
-        rotateSpeed: number;
-        camera: any;
-        set element(arg: Document);
-        get element(): Document;
-        rotate(
-            xRotationAngle: any,
-            yRotationAngle: any,
-            zRotationAngle: any,
-        ): void;
-        zoom(scale: any): void;
-        handleTouchStart(e: any): void;
-        handleTouchMove(e: any): void;
-    }
-    import Vector from "math/Vector";
 }
 declare module "renderer/WebglRenderer" {
     export default class WebglRenderer {
@@ -688,12 +664,7 @@ declare module "mobjects/Graph2D" {
 }
 declare module "mobjects/2d/Arc" {
     export default class Arc extends Graph2D {
-        constructor(
-            startAng?: number,
-            endAng?: number,
-            radius?: number,
-            center?: number[],
-        );
+        constructor(startAng?: number, endAng?: number, radius?: number, center?: number[]);
         insertNum: number;
         startAng: number;
         endAng: number;
@@ -711,14 +682,9 @@ declare module "mobjects/2d/Point" {
         _a: Vector;
         center: any;
         renderByCanvas2d(renderer: any): Point;
-        moveTo(
-            pos: any,
-            {
-                runTime,
-            }?: {
-                runTime?: number;
-            },
-        ): void;
+        moveTo(pos: any, { runTime }?: {
+            runTime?: number;
+        }): void;
         set v(arg: Vector);
         get v(): Vector;
         set a(arg: Vector);
@@ -740,6 +706,7 @@ declare module "mobjects/2d/Line" {
             data: number[];
         };
         tips: any[];
+        tipWidth: number;
         start: Point;
         end: Point;
         update(): void;
@@ -777,11 +744,7 @@ declare module "utils/math" {
 }
 declare module "mobjects/2d/VectorField2D" {
     export default class VectorField2D extends Graph2D {
-        constructor(
-            func?: (x: any, y: any) => any[],
-            xRange?: number[],
-            yRange?: number[],
-        );
+        constructor(func?: (x: any, y: any) => any[], xRange?: number[], yRange?: number[]);
         lengthFunc: (length: any) => number;
         colorFunc: () => Color;
         _center: Vector;
@@ -801,15 +764,10 @@ declare module "mobjects/2d/VectorField2D" {
 declare module "mobjects/2d/Axis" {
     export default class Axis extends Line {
         static fromRange(base: any, dir: any, range: any): Axis;
-        constructor(
-            start: any,
-            end: any,
-            {
-                unit,
-            }?: {
-                unit?: number;
-            },
-        );
+        constructor(start: any, end: any, { unit }?: {
+            unit?: number;
+        });
+        tickLength: number;
         unit: number;
         renderByCanvas2d(renderer: any): Axis;
     }
@@ -817,12 +775,7 @@ declare module "mobjects/2d/Axis" {
 }
 declare module "mobjects/3d/Axes" {
     export default class Axes extends Graph2D {
-        constructor({
-            xRange,
-            yRange,
-            zRange,
-            center,
-        }?: {
+        constructor({ xRange, yRange, zRange, center, }?: {
             xRange?: number[];
             yRange?: number[];
             zRange?: number[];
@@ -832,6 +785,7 @@ declare module "mobjects/3d/Axes" {
         xAxis: Axis;
         yAxis: Axis;
         zAxis: Axis;
+        addArrow(): void;
         set layer(arg: any);
         get layer(): any;
         _layer: any;
@@ -859,23 +813,5 @@ declare module "mraph" {
     import VectorField2D from "mobjects/2d/VectorField2D";
     import Axis from "mobjects/2d/Axis";
     import Axes from "mobjects/3d/Axes";
-    export {
-        WebglRenderer,
-        Matrix,
-        Vector,
-        Camera,
-        Layer,
-        Program,
-        Texture,
-        Color,
-        Control,
-        Line,
-        Arc,
-        Path,
-        Point,
-        Arrow,
-        VectorField2D,
-        Axis,
-        Axes,
-    };
+    export { WebglRenderer, Matrix, Vector, Camera, Layer, Program, Texture, Color, Control, Line, Arc, Path, Point, Arrow, VectorField2D, Axis, Axes };
 }

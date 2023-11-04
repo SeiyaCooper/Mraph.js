@@ -1,7 +1,13 @@
 import Matrix from "../math/Matrix.js";
 import Vector from "../math/Vector.js";
 
-let startedTouches = [];
+let startedPos = [],
+    startTheta = 0,
+    startPhi = 0,
+    targetTheta = 0,
+    targetPhi = 0;
+const STATE = { WAIT: 0, ROTATE: 1, ZOOM: 2 };
+let state = STATE.WAIT;
 
 export default class Control {
     center = new Vector(0, 0, 0);
@@ -10,14 +16,13 @@ export default class Control {
     enableZoom = true;
     radius = 10;
     scale = 1;
+    zoomSpeed = 1.1;
 
     enableRotate = true;
     theta = 0;
     phi = 0;
-    startTheta = 0;
-    startPhi = 0;
-    targetTheta = 0;
-    targetPhi = 0;
+    phiMax = Math.PI / 2;
+    phiMin = -Math.PI / 2;
     deltaAngleMax = 0.1;
     rotateSpeed = 0.01;
     rotateEase = 0.1;
@@ -31,52 +36,66 @@ export default class Control {
     update() {
         const deltaPhi = Math.min(
             this.deltaAngleMax,
-            (this.targetPhi - this.phi) * this.rotateEase,
+            (targetPhi - this.phi) * this.rotateEase
         );
         const deltaTheta = Math.min(
             this.deltaAngleMax,
-            (this.targetTheta - this.theta) * this.rotateEase,
+            (targetTheta - this.theta) * this.rotateEase
         );
-        this.phi += deltaPhi;
+        this.phi = Math.max(
+            Math.min(this.phiMax, this.phi + deltaPhi),
+            this.phiMin
+        );
         this.theta += deltaTheta;
 
         this.camera.position.copy(
             new Vector(0, 0, this.radius * this.scale)
                 .trans(Matrix.rotateX(this.phi, 3))
-                .trans(Matrix.rotateY(-this.theta, 3)),
+                .trans(Matrix.rotateY(-this.theta, 3))
+                .add(this.center)
         );
         this.camera.lookAt(this.center);
+    }
+
+    handleRotate(pos, startPos) {
+        const deltaY = pos.y - startPos.y;
+        const deltaX = pos.x - startPos.x;
+
+        targetPhi = startPhi + this.rotateSpeed * deltaY;
+        targetTheta = startTheta + this.rotateSpeed * deltaX;
+    }
+
+    handleZoom(scale) {
+        this.scale = scale;
     }
 
     handleTouchStart(e) {
         e.preventDefault();
 
-        startedTouches = [];
+        startedPos = [];
         for (let touch of e.touches) {
-            startedTouches.push(copyTouch(touch));
+            startedPos.push(getPos(touch));
         }
-        this.startPhi = this.phi;
-        this.startTheta = this.theta;
+        startPhi = this.phi;
+        startTheta = this.theta;
     }
 
     handleTouchMove(e) {
         if (this.enableZoom && e.touches.length > 1) {
-            const touch0 = copyTouch(e.touches[0]);
-            const touch1 = copyTouch(e.touches[1]);
-            const touchStart0 = findTouchById(touch0.id, startedTouches);
-            const touchStart1 = findTouchById(touch1.id, startedTouches);
+            const touch0 = getPos(e.touches[0]);
+            const touch1 = getPos(e.touches[1]);
+            const touchStart0 = findPosById(touch0.id, startedPos);
+            const touchStart1 = findPosById(touch1.id, startedPos);
 
-            this.scale =
-                getLenByTwoTouches(touchStart0, touchStart1) /
-                getLenByTwoTouches(touch0, touch1);
+            this.handleZoom(
+                getLen(touchStart0, touchStart1) / getLen(touch0, touch1)
+            );
+            state = STATE.ZOOM;
         } else if (this.enableRotate) {
-            const touch = copyTouch(e.touches[0]);
-            const touchStart = findTouchById(touch.id, startedTouches);
-            const deltaY = touch.y - touchStart.y;
-            const deltaX = touch.x - touchStart.x;
+            const touch = getPos(e.touches[0]);
 
-            this.targetPhi = this.startPhi + this.rotateSpeed * deltaY;
-            this.targetTheta = this.startTheta + this.rotateSpeed * deltaX;
+            this.handleRotate(touch, findPosById(touch.id, startedPos));
+            state = STATE.ROTATE;
         }
     }
 
@@ -85,6 +104,38 @@ export default class Control {
 
         this.radius *= this.scale;
         this.scale = 1;
+        state = STATE.WAIT;
+    }
+
+    handleMouseDown(e) {
+        e.preventDefault();
+
+        startedPos = [getPos(e)];
+        startPhi = this.phi;
+        startTheta = this.theta;
+        state = STATE.ROTATE;
+    }
+
+    handleMouseMove(e) {
+        if (!this.enableRotate) return;
+        if (state !== STATE.ROTATE) return;
+
+        this.handleRotate(getPos(e), startedPos[0]);
+    }
+
+    handleMouseUp() {
+        state = STATE.WAIT;
+    }
+
+    handleWheel(e) {
+        if (!this.enableZoom) return;
+
+        if (e.deltaY > 0) {
+            this.handleZoom(this.scale * this.zoomSpeed);
+        } else {
+            this.handleZoom(this.scale / this.zoomSpeed);
+        }
+        state = STATE.ZOOM;
     }
 
     set element(el) {
@@ -98,28 +149,39 @@ export default class Control {
         el.addEventListener("touchend", (e) => {
             this.handleTouchEnd(e);
         });
+        el.addEventListener("wheel", (e) => {
+            this.handleWheel(e);
+        });
+        el.addEventListener("mousedown", (e) => {
+            this.handleMouseDown(e);
+        });
+        el.addEventListener("mousemove", (e) => {
+            this.handleMouseMove(e);
+        });
+        el.addEventListener("mouseup", this.handleMouseUp);
+        el.addEventListener("mouseleave", this.handleMouseUp);
     }
     get element() {
         return this._element;
     }
 }
 
-function copyTouch(touch) {
+function getPos(obj) {
     return {
-        id: touch.identifier,
-        x: touch.pageX,
-        y: touch.pageY,
+        id: obj.identifier ?? 1,
+        x: obj.pageX,
+        y: obj.pageY,
     };
 }
 
-function findTouchById(id, array) {
-    let touch;
-    for (touch of array) {
-        if ((touch.id = id)) break;
+function findPosById(id, array) {
+    let pos;
+    for (pos of array) {
+        if ((pos.id = id)) break;
     }
-    return touch;
+    return pos;
 }
 
-function getLenByTwoTouches(touch0, touch1) {
-    return Math.sqrt((touch0.x - touch1.x) ** 2 + (touch0.y - touch1.y) ** 2);
+function getLen(pos0, pos1) {
+    return Math.sqrt((pos0.x - pos1.x) ** 2 + (pos0.y - pos1.y) ** 2);
 }
