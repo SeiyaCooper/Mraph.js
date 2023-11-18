@@ -58,22 +58,4 @@ export default class Arc extends Graph2D {
         this.attributes.color.data = color;
         this.children = segments;
     }
-
-    renderByCanvas2d(renderer) {
-        if (!renderer || !this.visible) return this;
-
-        renderer.style(this);
-        renderer.begin();
-        renderer.arc2D(
-            this.center,
-            this.radius,
-            this.startAng,
-            this.endAng,
-            this.startAng > this.endAng
-        );
-        renderer.stroke();
-        renderer.fill();
-
-        return this;
-    }
 }

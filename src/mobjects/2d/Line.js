@@ -34,49 +34,6 @@ export default class Segment extends Graph2D {
         this.attributes.color.data = color;
     }
 
-    renderByCanvas2d(renderer) {
-        if (!renderer || !this.visible) return this;
-
-        renderer.style(this);
-        renderer.begin();
-        renderer.move(this.start.center);
-        renderer.line3D(this.end.center);
-        renderer.stroke();
-
-        if (!this.tips.length) return this;
-
-        // render tips
-        const start = this.start.center;
-
-        for (let [at, reverse] of this.tips) {
-            const vec = start
-                .add(this.vector.mult(at))
-                .add(this.vector.normal().mult(0.05));
-
-            renderer.begin();
-            renderer.move(vec);
-
-            const h = this.vector;
-            h.norm = this.tipWidth;
-            const w = h.mult(1 / 2);
-            const rotMat = this.rot90OnNorVec;
-            const rotMatT = rotMat.T;
-
-            if (reverse) {
-                renderer.line3D(vec.add(h).add(w.trans(rotMat)));
-                renderer.line3D(vec.add(h).add(w.trans(rotMatT)));
-            } else {
-                renderer.line3D(vec.reduce(h).add(w.trans(rotMat)));
-                renderer.line3D(vec.reduce(h).add(w.trans(rotMatT)));
-            }
-
-            renderer.close();
-            renderer.fill();
-        }
-
-        return this;
-    }
-
     at(p) {
         return this.start.center.add(this.vector.mult(p));
     }

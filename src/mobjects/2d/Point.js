@@ -19,17 +19,6 @@ export default class Point extends Arc {
         this.center[2] = this.center[2] ?? 0;
     }
 
-    renderByCanvas2d(renderer) {
-        if (!renderer || !this.visible) return this;
-
-        renderer.style(this);
-        renderer.begin();
-        renderer.arc2D(this.center, this.radius, 0, Math.PI * 2);
-        renderer.fill();
-
-        return this;
-    }
-
     moveTo(pos, { runTime = 1 } = {}) {
         const list = this.layer.actionList;
         let start, displace;

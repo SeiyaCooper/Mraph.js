@@ -11,26 +11,6 @@ export default class Axis extends Line {
         this.unit = unit;
     }
 
-    renderByCanvas2d(renderer) {
-        super.renderByCanvas2d(renderer);
-
-        const len = this.length;
-        const tick = this.vector
-            .trans(this.rot90OnNorVec)
-            .normal()
-            .mult(this.tickLength);
-
-        renderer.style(this);
-        for (let pos = 0; pos <= len; pos += this.unit) {
-            const at = this.at(pos / len);
-            renderer.move(at.reduce(tick));
-            renderer.line3D(at.add(tick));
-        }
-        renderer.stroke();
-
-        return this;
-    }
-
     static fromRange(base, dir, range) {
         dir = dir.normal();
 

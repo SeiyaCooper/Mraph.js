@@ -25,6 +25,8 @@ export * as COLORS from "./constants/colors.js";
 
 export * as MathFunc from "./math/math_func.js";
 
+export * as OBJLoader from "./extra/OBJLoader.js";
+
 export {
     WebglRenderer,
     Matrix,

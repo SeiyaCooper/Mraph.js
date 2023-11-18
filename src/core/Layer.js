@@ -1,5 +1,5 @@
 import ActionList from "../animation/ActionList.js";
-import CanvasRenderer from "../renderer/CanvasRenderer.js";
+import WebglRenderer from "../renderer/WebglRenderer.js";
 import Camera from "./Camera.js";
 import Control from "../extra/Control.js";
 import Program from "./Program.js";
@@ -13,7 +13,7 @@ export default class Layer {
     constructor({
         fillScreen = true,
         appendTo = undefined,
-        rendererClass = CanvasRenderer,
+        rendererClass = WebglRenderer,
     } = {}) {
         this.canvas = document.createElement("canvas");
 
@@ -42,9 +42,6 @@ export default class Layer {
                 position: 3,
                 color: 4,
             },
-            uniforms: {
-                cameraMat: this.camera.matrix,
-            },
         });
     }
 
@@ -68,9 +65,7 @@ export default class Layer {
 
         for (let el of els) {
             el.layer = this;
-            if (this.renderer.gl) {
-                el.gl = this.renderer.gl;
-            }
+            el.gl = this.renderer.gl;
         }
 
         return this;
@@ -81,14 +76,11 @@ export default class Layer {
      * @returns {this}
      */
     render() {
-        if (this.renderer.gl) {
-            this.program.setUniform("cameraMat", this.camera.matrix);
-        } else {
-            this.renderer.matrix = this.camera.matrix;
-        }
-
+        this.program.setUniform("cameraMat", this.camera.matrix);
         for (let el of this.elements) {
-            this.renderer.render(el, this.program);
+            if (el.program)
+                el.program.setUniform("cameraMat", this.camera.matrix);
+            this.renderer.render(el, el.program ?? this.program);
         }
         return this;
     }

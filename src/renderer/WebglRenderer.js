@@ -54,9 +54,12 @@ export default class WebglRenderer {
                 new Uint16Array(indices.data),
                 this.usage
             );
-            gl.drawElements(mesh.mode, indices.data.length, indices.type, 0);
+
+            const type = indices.glType ?? gl.UNSIGNED_SHORT;
+
+            gl.drawElements(mesh.glMode, indices.data.length, type, 0);
         } else {
-            gl.drawArrays(mesh.mode, 0, indices);
+            gl.drawArrays(mesh.glMode, 0, indices);
         }
 
         for (let child of mesh.children ?? []) {

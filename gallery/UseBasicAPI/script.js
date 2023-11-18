@@ -1,10 +1,17 @@
-import { WebglRenderer, Program, Camera, Control } from "../../src/mraph.js";
+import {
+    WebglRenderer,
+    Program,
+    Camera,
+    Control,
+    COLORS,
+    OBJLoader,
+} from "../../src/mraph.js";
 
 const vs = `
-    attribute vec2 position;
+    attribute vec3 position;
     uniform mat4 cameraMat;
     void main() {
-        gl_Position = cameraMat * vec4(position, 0.0, 1.0);
+        gl_Position = cameraMat * vec4(position, 1.0);
     }
 `;
 const fs = `
@@ -15,32 +22,44 @@ const fs = `
 const main = document.querySelector("#main");
 main.width = window.innerWidth;
 main.height = window.innerHeight;
+
 const renderer = new WebglRenderer(main);
+
 const camera = new Camera();
 camera.perspective({ aspect: main.width / main.height });
+camera.position[2] = 2;
+
 const control = new Control(camera);
 
 const gl = renderer.gl;
+
 const program = new Program(gl, {
     vs,
     fs,
-    attributes: { position: 2 },
-    uniforms: { cameraMat: camera.matrix },
+    attributes: { position: 3 },
 });
-const mesh = {
+
+let mesh = {
+    glMode: gl.LINES,
     attributes: {
-        position: { data: [1, 0, 0, 1, -1, 0] },
+        position: {},
     },
-    indices: 3,
-    mode: gl.TRIANGLES,
+    indices: {
+        data: {},
+    },
 };
+(async () => {
+    const data = await OBJLoader.parseToObject("./Rubik's Cube.obj");
+    mesh.attributes.position.data = data.position;
+    mesh.indices.data = data.index;
+    console.log(Math.max(...mesh.indices.data), mesh);
+    requestAnimationFrame(render);
+})();
 
 function render() {
-    program.setUniform("cameraMat", camera.matrix);
-
     control.update();
-    renderer.clear();
+    program.setUniform("cameraMat", camera.matrix);
+    renderer.clear(...COLORS.GRAY_E);
     renderer.render(mesh, program);
     requestAnimationFrame(render);
 }
-requestAnimationFrame(render);

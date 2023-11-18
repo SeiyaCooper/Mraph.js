@@ -23,6 +23,8 @@ export default class Program {
         const gl = this.gl;
         const location = this.gl.getUniformLocation(this.program, name);
 
+        this.gl.useProgram(this.program);
+
         if (Array.isArray(data[0])) {
             const n = data[0].length;
             const arr = new Float32Array(data.flat());

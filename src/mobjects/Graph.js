@@ -22,10 +22,10 @@ export default class Graph {
     prepareToRender() {
         const gl = this.gl;
 
-        this.mode = gl[this.mode];
+        this.glMode = gl[this.mode];
 
         if (typeof this.indices !== "number") {
-            this.indices.type = gl.UNSIGNED_SHORT;
+            this.indices.glType = gl.UNSIGNED_SHORT;
         }
 
         this.update?.();
