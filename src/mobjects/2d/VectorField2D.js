@@ -1,13 +1,13 @@
 import Arrow from "./Arrow.js";
 import Point from "./Point.js";
 import Vector from "../../math/Vector.js";
-import * as math from "../../utils/math.js";
+import * as MathFunc from "../../math/math_func.js";
 import Graph2D from "../Graph2D.js";
 import Color from "../../core/Color.js";
 
 export default class VectorField2D extends Graph2D {
     lengthFunc = (length) => {
-        return math.sigmoid(length / 50);
+        return MathFunc.sigmoid(length / 50);
     };
     colorFunc = () => new Color(1, 1, 1);
     _center = new Vector(0, 0, 0);

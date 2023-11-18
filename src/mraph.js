@@ -23,6 +23,8 @@ import Axes from "./mobjects/3d/Axes.js";
 
 export * as COLORS from "./constants/colors.js";
 
+export * as MathFunc from "./math/math_func.js";
+
 export {
     WebglRenderer,
     Matrix,
