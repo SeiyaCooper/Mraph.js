@@ -740,7 +740,17 @@ declare module "mobjects/2d/Arrow" {
     import Line from "mobjects/2d/Line";
 }
 declare module "utils/math" {
-    export function sigmoid(x: any): number;
+    /**
+     * sigmoid function
+     * @param {number} x
+     * @returns
+     */
+    export function sigmoid(x: number): number;
+    /**
+     * get mean value from a set numbers
+     * @param  {...number} nums
+     */
+    export function mean(...nums: number[]): number;
 }
 declare module "mobjects/2d/VectorField2D" {
     export default class VectorField2D extends Graph2D {

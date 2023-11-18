@@ -2,9 +2,7 @@ import { WebglRenderer, Program, Camera, Control } from "../../src/mraph.js";
 
 const vs = `
     attribute vec2 position;
-
     uniform mat4 cameraMat;
-
     void main() {
         gl_Position = cameraMat * vec4(position, 0.0, 1.0);
     }
