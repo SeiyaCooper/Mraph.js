@@ -1,27 +1,38 @@
-// TODO
-const commands = {
-    v: (data, out) => {
-        out.position.push(...data.map((str) => +str));
-    },
-    vt: (data, out) => {
-        out.uv.push(...data.map((str) => +str));
-    },
-    vn: (data, out) => {
-        out.normal.push(...data.map((str) => +str));
-    },
-    f: (data, out) => {
-        data = data.map((index) => +index.split("/")[0]);
+let oriData, parsedData;
 
-        for (let n = 0; n < data.length - 2; n++) {
-            out.index.push(data[n] - 1, data[n + 1] - 1, data[n + 2] - 1);
-        }
+function addVertex(data, i) {
+    parsedData.position.push(...oriData.position[data[i][0]]);
+    parsedData.uv.push(...oriData.uv[data[i][1]]);
+    parsedData.normal.push(...oriData.normal[data[i][2]]);
+}
+
+const commands = {
+    v: data => {
+        oriData.position.push(data.map(parseFloat));
     },
+    vt: data => {
+        oriData.uv.push(data.map(parseFloat));
+    },
+    vn: data => {
+        oriData.normal.push(data.map(parseFloat));
+    },
+    f: data => {
+        data = data.map(index => index.split("/").map(val => +val));
+
+        let double = 1;
+        for (let i = 0; i < data.length; i += 2, double++) {
+            addVertex(data, i);
+            addVertex(data, i + 1);
+            addVertex(data, double % 2 === 0 ? i - 2 : i + 2);
+        }
+    }
 };
 
 export async function parseToObject(src) {
-    const out = { position: [], normal: [], uv: [], index: [] };
     const text = await readFile(src);
     const reg = /(\w*)(?: )*(.*)/;
+    oriData = { normal: [[]], uv: [[]], position: [[]] };
+    parsedData = { position: [], normal: [], uv: [] };
 
     for (let line of text.split("\n")) {
         if (line.startsWith("#") || line === "") continue;
@@ -31,10 +42,10 @@ export async function parseToObject(src) {
 
         if (!handler) continue;
 
-        handler(data.split(" "), out);
+        handler(data.split(" "));
     }
 
-    return out;
+    return parsedData;
 }
 
 async function readFile(src) {
