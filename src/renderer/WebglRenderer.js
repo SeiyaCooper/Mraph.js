@@ -46,6 +46,7 @@ export default class WebglRenderer {
         }
 
         const indices = mesh.indices;
+        const mode = mesh.webglMode ?? gl.TRIANGLES;
         if (typeof indices !== "number") {
             const buffer = gl.createBuffer();
             gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffer);
@@ -55,11 +56,11 @@ export default class WebglRenderer {
                 this.usage
             );
 
-            const type = indices.glType ?? gl.UNSIGNED_SHORT;
+            const type = indices.webglType ?? gl.UNSIGNED_SHORT;
 
-            gl.drawElements(mesh.glMode, indices.data.length, type, 0);
+            gl.drawElements(mode, indices.data.length, type, 0);
         } else {
-            gl.drawArrays(mesh.glMode, 0, indices);
+            gl.drawArrays(mode, 0, indices);
         }
 
         for (let child of mesh.children ?? []) {
