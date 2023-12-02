@@ -6,7 +6,7 @@ import Color from "./core/Color.js";
 
 import Control from "./extra/Control.js";
 
-import WebglRenderer from "./renderer/WebglRenderer.js";
+import WebglRenderer from "./core/renderer/WebglRenderer.js";
 
 import Matrix from "./math/Matrix.js";
 import Vector from "./math/Vector.js";

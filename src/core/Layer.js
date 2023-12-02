@@ -1,5 +1,5 @@
 import ActionList from "../animation/ActionList.js";
-import WebglRenderer from "../renderer/WebglRenderer.js";
+import WebglRenderer from "./renderer/WebglRenderer.js";
 import Camera from "./Camera.js";
 import Control from "../extra/Control.js";
 import Program from "./Program.js";
