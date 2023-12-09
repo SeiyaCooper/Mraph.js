@@ -7,17 +7,17 @@ function addVertex(data, i) {
 }
 
 const commands = {
-    v: data => {
+    v: (data) => {
         oriData.position.push(data.map(parseFloat));
     },
-    vt: data => {
+    vt: (data) => {
         oriData.uv.push(data.map(parseFloat));
     },
-    vn: data => {
+    vn: (data) => {
         oriData.normal.push(data.map(parseFloat));
     },
-    f: data => {
-        data = data.map(index => index.split("/").map(val => +val));
+    f: (data) => {
+        data = data.map((index) => index.split("/").map((val) => +val));
 
         let double = 1;
         for (let i = 0; i < data.length; i += 2, double++) {
@@ -25,7 +25,7 @@ const commands = {
             addVertex(data, i + 1);
             addVertex(data, double % 2 === 0 ? i - 2 : i + 2);
         }
-    }
+    },
 };
 
 export async function parseToObject(src) {

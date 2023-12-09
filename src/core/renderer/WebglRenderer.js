@@ -22,23 +22,8 @@ export default class WebglRenderer {
                 value.needsUpdate = true;
             }
 
-            const buffer = value.buffer;
-            const location = program.locations.get(name);
-            const n = program.attributes[name];
-
-            gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-
-            if (value.needsUpdate ?? true) {
-                gl.bufferData(
-                    gl.ARRAY_BUFFER,
-                    new Float32Array(value.data),
-                    this.usage
-                );
-                value.needsUpdate = false;
-            }
-
-            gl.enableVertexAttribArray(location);
-            gl.vertexAttribPointer(location, n, gl.FLOAT, false, 0, 0);
+            const n = value.n ?? program.attributes[name];
+            program.setAttriBuffer(name, value, n, this.usage);
         }
 
         for (let [name, data] of Object.entries(mesh.uniforms ?? {})) {

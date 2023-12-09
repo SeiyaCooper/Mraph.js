@@ -11,6 +11,8 @@ import WebglRenderer from "./core/renderer/WebglRenderer.js";
 import Matrix from "./math/Matrix.js";
 import Vector from "./math/Vector.js";
 
+import Graph from "./mobjects/Graph.js";
+import Graph2D from "./mobjects/Graph2D.js";
 import Line from "./mobjects/2d/Line.js";
 import Arc from "./mobjects/2d/Arc.js";
 import Path from "./mobjects/2d/Path.js";
@@ -37,6 +39,8 @@ export {
     Texture,
     Color,
     Control,
+    Graph,
+    Graph2D,
     Line,
     Arc,
     Path,

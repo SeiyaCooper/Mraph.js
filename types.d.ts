@@ -404,34 +404,15 @@ declare module "animation/ActionList" {
         get minTime(): number;
     }
 }
-declare module "renderer/CanvasRenderer" {
-    export default class CanvasRenderer {
+declare module "core/renderer/WebglRenderer" {
+    export default class WebglRenderer {
         constructor(canvas: any);
-        matrix: Matrix;
-        modelMat: Matrix;
-        set canvas(arg: any);
-        get canvas(): any;
-        resolution: Vector;
-        render(mesh: any): void;
-        begin(): CanvasRenderer;
-        close(): CanvasRenderer;
-        fill(): CanvasRenderer;
-        stroke(): CanvasRenderer;
-        clear(r: any, g: any, b: any, a: any): CanvasRenderer;
-        style(el: any): CanvasRenderer;
-        move(pos: any): CanvasRenderer;
-        line3D(pos: any): CanvasRenderer;
-        arc2D(pos: any, radius: any, stAng: any, edAng: any, anticlockwise?: boolean): CanvasRenderer;
-        toScreenPos(pos: any): Vector;
-        _canvas: any;
-        context: any;
-        /**
-         * Returns the number of pixels in scene space per unit length on the screen
-         */
-        get sceneUnit(): number;
+        canvas: any;
+        gl: any;
+        usage: any;
+        render(mesh: any, program: any): void;
+        clear(r: any, g: any, b: any, a: any): void;
     }
-    import Matrix from "math/Matrix";
-    import Vector from "math/Vector";
 }
 declare module "extra/Control" {
     export default class Control {
@@ -488,7 +469,9 @@ declare module "core/Program" {
         get uniforms(): any;
         set textures(arg: any);
         get textures(): any;
+        use(): void;
         setUniform(name: any, data: any): void;
+        setAttriBuffer(name: any, value: any, n: any, usage: any): void;
         getExtension(name: any): any;
         _attributes: any;
         _uniforms: any;
@@ -532,13 +515,13 @@ declare module "core/Layer" {
         constructor({ fillScreen, appendTo, rendererClass, }?: {
             fillScreen?: boolean;
             appendTo?: any;
-            rendererClass?: typeof CanvasRenderer;
+            rendererClass?: typeof WebglRenderer;
         });
         elements: any[];
         camera: Camera;
         actionList: ActionList;
         canvas: HTMLCanvasElement;
-        renderer: CanvasRenderer;
+        renderer: WebglRenderer;
         program: Program;
         /**
          * append this.canvas to a HTMLElement
@@ -581,33 +564,31 @@ declare module "core/Layer" {
     }
     import Camera from "core/Camera";
     import ActionList from "animation/ActionList";
-    import CanvasRenderer from "renderer/CanvasRenderer";
+    import WebglRenderer from "core/renderer/WebglRenderer";
     import Program from "core/Program";
     import Control from "extra/Control";
 }
 declare module "core/Texture" {
     export default class Texture {
-        constructor(gl: any, { image, target, flipY }?: {
+        constructor(gl: any, { image, target, flipY, minFilter, magFilter, }?: {
             image: any;
             target?: any;
             flipY?: boolean;
+            minFilter?: any;
+            magFilter?: any;
         });
         gl: any;
         image: any;
         target: any;
         flipY: boolean;
         texture: any;
+        set minFilter(arg: any);
+        get minFilter(): any;
+        set magFilter(arg: any);
+        get magFilter(): any;
         upload(): void;
-    }
-}
-declare module "renderer/WebglRenderer" {
-    export default class WebglRenderer {
-        constructor(canvas: any);
-        canvas: any;
-        gl: any;
-        usage: any;
-        render(mesh: any, program: any): void;
-        clear(r: any, g: any, b: any, a: any): void;
+        __minFilter: any;
+        __magFilter: any;
     }
 }
 declare module "mobjects/Graph" {
@@ -634,6 +615,7 @@ declare module "mobjects/Graph" {
          * set some properties after get gl context
          */
         prepareToRender(): void;
+        glMode: any;
         set gl(arg: any);
         get gl(): any;
         _gl: any;
@@ -671,7 +653,6 @@ declare module "mobjects/2d/Arc" {
         radius: number;
         center: number[];
         update(): void;
-        renderByCanvas2d(renderer: any): Arc;
     }
     import Graph2D from "mobjects/Graph2D";
 }
@@ -681,7 +662,6 @@ declare module "mobjects/2d/Point" {
         _v: Vector;
         _a: Vector;
         center: any;
-        renderByCanvas2d(renderer: any): Point;
         moveTo(pos: any, { runTime }?: {
             runTime?: number;
         }): void;
@@ -710,7 +690,6 @@ declare module "mobjects/2d/Line" {
         start: Point;
         end: Point;
         update(): void;
-        renderByCanvas2d(renderer: any): Segment;
         at(p: any): any;
         addTip(at: any, reverse?: boolean): void;
         set vector(arg: any);
@@ -728,10 +707,12 @@ declare module "mobjects/2d/Path" {
         _close: boolean;
         points: any[];
         update(): void;
+        program: Program;
         set close(arg: boolean);
         get close(): boolean;
     }
     import Graph2D from "mobjects/Graph2D";
+    import Program from "core/Program";
 }
 declare module "mobjects/2d/Arrow" {
     export default class Arrow extends Line {
@@ -739,7 +720,7 @@ declare module "mobjects/2d/Arrow" {
     }
     import Line from "mobjects/2d/Line";
 }
-declare module "utils/math" {
+declare module "math/math_func" {
     /**
      * sigmoid function
      * @param {number} x
@@ -779,7 +760,6 @@ declare module "mobjects/2d/Axis" {
         });
         tickLength: number;
         unit: number;
-        renderByCanvas2d(renderer: any): Axis;
     }
     import Line from "mobjects/2d/Line";
 }
@@ -804,9 +784,18 @@ declare module "mobjects/3d/Axes" {
     import Point from "mobjects/2d/Point";
     import Axis from "mobjects/2d/Axis";
 }
+declare module "extra/OBJLoader" {
+    export function parseToObject(src: any): Promise<{
+        position: any[];
+        normal: any[];
+        uv: any[];
+    }>;
+}
 declare module "mraph" {
     export * as COLORS from "constants/colors";
-    import WebglRenderer from "renderer/WebglRenderer";
+    export * as MathFunc from "math/math_func";
+    export * as OBJLoader from "extra/OBJLoader";
+    import WebglRenderer from "core/renderer/WebglRenderer";
     import Matrix from "math/Matrix";
     import Vector from "math/Vector";
     import Camera from "core/Camera";
@@ -815,6 +804,8 @@ declare module "mraph" {
     import Texture from "core/Texture";
     import Color from "core/Color";
     import Control from "extra/Control";
+    import Graph from "mobjects/Graph";
+    import Graph2D from "mobjects/Graph2D";
     import Line from "mobjects/2d/Line";
     import Arc from "mobjects/2d/Arc";
     import Path from "mobjects/2d/Path";
@@ -823,5 +814,5 @@ declare module "mraph" {
     import VectorField2D from "mobjects/2d/VectorField2D";
     import Axis from "mobjects/2d/Axis";
     import Axes from "mobjects/3d/Axes";
-    export { WebglRenderer, Matrix, Vector, Camera, Layer, Program, Texture, Color, Control, Line, Arc, Path, Point, Arrow, VectorField2D, Axis, Axes };
+    export { WebglRenderer, Matrix, Vector, Camera, Layer, Program, Texture, Color, Control, Graph, Graph2D, Line, Arc, Path, Point, Arrow, VectorField2D, Axis, Axes };
 }
