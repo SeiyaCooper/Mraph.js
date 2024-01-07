@@ -3,9 +3,9 @@
 [![GitHub](https://img.shields.io/github/license/SeiyaCooper/Mraph.js)](https://github.com/SeiyaCooper/Mraph.js/blob/main/LICENSE)
 [![last commit](https://img.shields.io/github/last-commit/SeiyaCooper/Mraph.js)](https://github.com/SeiyaCooper/Mraph.js/commits/main)
 
-
 Mraph.js is a library for drawing geometric shapes in browser  
-⚠⚠⚠**This lib is still WIP**⚠⚠⚠
+
+***Notice: This lib is for personal use***
 
 # Usage
 
