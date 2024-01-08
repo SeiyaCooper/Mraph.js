@@ -5,7 +5,8 @@
 
 Mraph.js is a library for drawing geometric shapes in browser  
 
-***Notice: This lib is for personal use***
+> [!IMPORTANT]
+> This lib is for personal use
 
 # Usage
 
