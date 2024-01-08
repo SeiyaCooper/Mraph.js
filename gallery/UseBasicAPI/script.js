@@ -34,12 +34,10 @@ const fragmentShader = `
         gl_FragColor.a = 1.0;
     }
 `;
-const layer = new mp.Layer().appendTo(document.body);
-layer.add(new mp.Plane());
-layer.play();
 
-const renderer = layer.renderer;
-const gl = renderer.gl;
+const layer = new mp.Layer().appendTo(document.body);
+
+const gl = layer.renderer.gl;
 
 const mesh = new mp.Geometry();
 mesh.material = new mp.CustomMaterial({ vertexShader, fragmentShader });
@@ -53,6 +51,8 @@ mesh.material = new mp.CustomMaterial({ vertexShader, fragmentShader });
     mesh.indices = data.position.length / 3;
 
     layer.add(mesh);
+    layer.enableOribitControl();
+    layer.play();
 })();
 
 const texture = new mp.Texture(gl);
