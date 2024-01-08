@@ -1,4 +1,6 @@
-export default class WebglRenderer {
+import * as DrawModes from "../../constants/draw_modes.js";
+
+export default class WebGLRenderer {
     constructor(canvas) {
         this.canvas = canvas;
 
@@ -7,21 +9,24 @@ export default class WebglRenderer {
 
         const gl = this.gl;
         this.usage = gl.STATIC_DRAW;
-        gl.enable(gl.DEPTH_TEST);
         gl.enable(gl.BLEND);
+        gl.enable(gl.DEPTH_TEST);
         gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
         gl.viewport(0, 0, canvas.width, canvas.height);
     }
 
-    render(mesh, program) {
+    render(mesh, camera, material) {
         const gl = this.gl;
 
-        for (let [name, value] of Object.entries(mesh.attributes ?? {})) {
-            if (!value.buffer) {
-                value.buffer = gl.createBuffer();
-                value.needsUpdate = true;
-            }
+        if (material.transparent) gl.disable(gl.DEPTH_TEST);
 
+        if (!material.program) material.initProgram(this.gl);
+        const program = material.program;
+
+        program.setUniform("viewMat", camera.viewMat);
+        program.setUniform("projectionMat", camera.projectionMat);
+
+        for (let [name, value] of Object.entries(mesh.attributes ?? {})) {
             const n = value.n ?? program.attributes[name];
             program.setAttriBuffer(name, value, n, this.usage);
         }
@@ -31,7 +36,14 @@ export default class WebglRenderer {
         }
 
         const indices = mesh.indices;
-        const mode = mesh.webglMode ?? gl.TRIANGLES;
+
+        let mode;
+        if (mesh.glMode) mode = mesh.glMode;
+        else if (mesh.mode) {
+            mode = DrawModes.toWebGLMode(gl, mesh.mode);
+            mesh.glMode = mode;
+        } else mode = gl.TRIANGLES;
+
         if (typeof indices !== "number") {
             const buffer = gl.createBuffer();
             gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffer);
@@ -49,8 +61,10 @@ export default class WebglRenderer {
         }
 
         for (let child of mesh.children ?? []) {
-            this.render(child, program);
+            this.render(child, camera, material);
         }
+
+        if (material.transparent) gl.enable(gl.DEPTH_TEST);
     }
 
     clear(r, g, b, a) {

@@ -1,4 +1,4 @@
-import { mergeObject } from "../utils/utils.js";
+import { mergeObject } from "../../utils/utils.js";
 
 export default class Program {
     locations = new Map();
@@ -45,10 +45,20 @@ export default class Program {
 
     setAttriBuffer(name, value, n, usage) {
         const gl = this.gl;
-        const buffer = value.buffer;
-        const location = this.locations.get(name);
+        let location;
 
+        if (!value.buffer) {
+            value.buffer = gl.createBuffer();
+            value.needsUpdate = true;
+        }
+        const buffer = value.buffer;
         gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+
+        if (this.locations.has(name)) {
+            location = this.locations.get(name);
+        } else {
+            location = gl.getAttribLocation(this.program, name);
+        }
 
         if (value.needsUpdate ?? true) {
             gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(value.data), usage);

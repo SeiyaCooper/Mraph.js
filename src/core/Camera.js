@@ -36,7 +36,6 @@ export default class Camera {
             .trans(Matrix.rotateX(-rotation[0]))
             .trans(Matrix.rotateY(-rotation[1]))
             .trans(Matrix.rotateZ(-rotation[2]));
-        this.matrix = this.projectionMat.mult(this.viewMat);
     }
 
     perspective({ fov = 45, near = 0.01, far = 100, aspect = 1 } = {}) {

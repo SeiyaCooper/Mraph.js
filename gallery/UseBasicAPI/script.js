@@ -1,30 +1,24 @@
-import {
-    WebglRenderer,
-    Program,
-    Camera,
-    Control,
-    COLORS,
-    OBJLoader,
-    Texture,
-} from "../../src/mraph.js";
+import * as mp from "../../src/mraph.js";
 
-const vs = `
+const vertexShader = `
     attribute vec3 position;
     attribute vec3 normal;
     attribute vec2 uv;
 
-    uniform mat4 cameraMat;
+    uniform mat4 viewMat;
+    uniform mat4 projectionMat;
+    uniform mat4 modelMat;
 
     varying vec3 v_normal;
     varying vec2 v_uv;
 
     void main() {
-        gl_Position = cameraMat * vec4(position, 1.0);
+        gl_Position = projectionMat * viewMat * modelMat * vec4(position, 1.0);
         v_normal = normal;
         v_uv = uv;
     }
 `;
-const fs = `
+const fragmentShader = `
     precision mediump float;
 
     varying vec3 v_normal;
@@ -40,44 +34,28 @@ const fs = `
         gl_FragColor.a = 1.0;
     }
 `;
-const main = document.querySelector("#main");
-main.width = window.innerWidth;
-main.height = window.innerHeight;
+const layer = new mp.Layer().appendTo(document.body);
+layer.add(new mp.Plane());
+layer.play();
 
-const renderer = new WebglRenderer(main);
-
-const camera = new Camera();
-camera.perspective({ aspect: main.width / main.height });
-camera.position[2] = 2;
-
-const control = new Control(camera);
-
+const renderer = layer.renderer;
 const gl = renderer.gl;
 
-const program = new Program(gl, {
-    vs,
-    fs,
-    attributes: { position: 3, normal: 3, uv: 2 },
-});
+const mesh = new mp.Geometry();
+mesh.material = new mp.CustomMaterial({ vertexShader, fragmentShader });
 
-let mesh = {
-    webglMode: gl.TRIANGLES,
-    attributes: {
-        position: {},
-        normal: {},
-        uv: {},
-    },
-};
 (async () => {
-    const data = await OBJLoader.parseToObject("./Rubik's Cube.obj");
-    mesh.attributes.position.data = data.position;
-    mesh.attributes.normal.data = data.normal;
-    mesh.attributes.uv.data = data.uv;
+    const data = await mp.OBJLoader.parseToObject("./Rubik's Cube.obj");
+
+    mesh.setAttribute("position", data.position, 3);
+    mesh.setAttribute("uv", data.uv, 2);
+    mesh.setAttribute("normal", data.normal, 3);
     mesh.indices = data.position.length / 3;
-    requestAnimationFrame(render);
+
+    layer.add(mesh);
 })();
 
-const texture = new Texture(gl);
+const texture = new mp.Texture(gl);
 const img = new Image();
 img.src = "./Rubik's Cube.png";
 img.onload = () => {
@@ -85,11 +63,3 @@ img.onload = () => {
     texture.magFilter = gl.NEAREST;
     texture.upload();
 };
-
-function render() {
-    control.update();
-    program.setUniform("cameraMat", camera.matrix);
-    renderer.clear(...COLORS.GRAY_E);
-    renderer.render(mesh, program);
-    requestAnimationFrame(render);
-}

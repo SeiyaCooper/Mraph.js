@@ -1,4 +1,5 @@
 import { deepCopy } from "../utils/utils.js";
+import * as MathFunc from "./math_func.js";
 import Matrix from "./Matrix.js";
 
 export default class Vector extends Array {
@@ -130,6 +131,16 @@ export default class Vector extends Array {
     }
 
     /**
+     * returns linear interpolation results
+     * @param {Vector} to
+     * @param {number} p percent
+     * @returns {Vector}
+     */
+    lerp(to, p) {
+        return Vector.lerp(this, to, p);
+    }
+
+    /**
      * return a deep copy clone of this vector
      * @returns {Vector}
      */
@@ -155,6 +166,17 @@ export default class Vector extends Array {
     }
 
     /**
+     * Lerp between two vectors
+     * @param {Vector} from
+     * @param {Vector} to
+     * @param {number} p percent
+     * @returns {Vector}
+     */
+    static lerp(from, to, p) {
+        return Vector.fromArray(MathFunc.lerpArray(from, to, p));
+    }
+
+    /**
      * @param {*} obj
      * @returns {boolean}
      */
@@ -172,6 +194,7 @@ export default class Vector extends Array {
     }
 
     /**
+     * Creates a Vector from an array-like object
      * @param {Array | Vector} arr
      * @returns {Vector}
      */

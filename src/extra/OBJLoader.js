@@ -19,11 +19,10 @@ const commands = {
     f: (data) => {
         data = data.map((index) => index.split("/").map((val) => +val));
 
-        let double = 1;
-        for (let i = 0; i < data.length; i += 2, double++) {
+        for (let i = 2; i < data.length; i++) {
+            addVertex(data, 0);
+            addVertex(data, i - 1);
             addVertex(data, i);
-            addVertex(data, i + 1);
-            addVertex(data, double % 2 === 0 ? i - 2 : i + 2);
         }
     },
 };

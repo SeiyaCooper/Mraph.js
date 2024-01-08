@@ -5,11 +5,13 @@ let startedPos = [],
     startTheta = 0,
     startPhi = 0,
     targetTheta = 0,
-    targetPhi = 0;
-const STATE = { WAIT: 0, ROTATE: 1, ZOOM: 2 };
+    targetPhi = 0,
+    startCenter = new Vector(0, 0, 0),
+    targetCenter = new Vector(0, 0, 0);
+const STATE = { WAIT: 0, ROTATE: 1, ZOOM: 2, MOVE: 3 };
 let state = STATE.WAIT;
 
-export default class Control {
+export default class OrbitControl {
     center = new Vector(0, 0, 0);
     _element = document;
 
@@ -26,6 +28,10 @@ export default class Control {
     deltaAngleMax = 0.1;
     rotateSpeed = 0.01;
     rotateEase = 0.1;
+
+    enableMove = true;
+    moveSpeed = 0.01;
+    moveEase = 0.15;
 
     constructor(camera, { element = document } = {}) {
         this.camera = camera;
@@ -48,25 +54,37 @@ export default class Control {
         );
         this.theta += deltaTheta;
 
+        const center = this.center;
+        center.copy(center.lerp(targetCenter, this.moveEase));
+
         this.camera.position.copy(
             new Vector(0, 0, this.radius * this.scale)
                 .trans(Matrix.rotateX(this.phi, 3))
                 .trans(Matrix.rotateY(-this.theta, 3))
-                .add(this.center)
+                .add(center)
         );
-        this.camera.lookAt(this.center);
+        this.camera.lookAt(center);
     }
 
-    handleRotate(pos, startPos) {
-        const deltaY = pos.y - startPos.y;
-        const deltaX = pos.x - startPos.x;
-
-        targetPhi = startPhi + this.rotateSpeed * deltaY;
-        targetTheta = startTheta + this.rotateSpeed * deltaX;
+    rotate(deltaPhi, deltaTheta) {
+        targetPhi = startPhi + deltaPhi;
+        targetTheta = startTheta + deltaTheta;
     }
 
-    handleZoom(scale) {
+    zoom(scale) {
         this.scale = scale;
+    }
+
+    move(deltaX, deltaY) {
+        const camera = this.camera;
+        const zAxis = this.center.reduce(camera.position);
+        const xAxis = zAxis.cross(camera.up);
+        const yAxis = xAxis.cross(zAxis);
+
+        xAxis.norm = deltaX;
+        yAxis.norm = deltaY;
+
+        targetCenter = startCenter.add(xAxis).add(yAxis);
     }
 
     handleTouchStart(e) {
@@ -78,23 +96,36 @@ export default class Control {
         }
         startPhi = this.phi;
         startTheta = this.theta;
+        startCenter.copy(this.center);
     }
 
     handleTouchMove(e) {
-        if (this.enableZoom && e.touches.length > 1) {
+        if (e.touches.length > 1) {
             const touch0 = getPos(e.touches[0]);
             const touch1 = getPos(e.touches[1]);
             const touchStart0 = findPosById(touch0.id, startedPos);
             const touchStart1 = findPosById(touch1.id, startedPos);
 
-            this.handleZoom(
-                getLen(touchStart0, touchStart1) / getLen(touch0, touch1)
-            );
-            state = STATE.ZOOM;
+            if (this.enableZoom) {
+                this.zoom(
+                    getLen(touchStart0, touchStart1) / getLen(touch0, touch1)
+                );
+                state = STATE.ZOOM;
+            }
+            if (this.enableMove) {
+                const deltaX =
+                    (touch0.x + touch1.x - touchStart0.x - touchStart1.x) / -2;
+                const deltaY =
+                    (touch0.y + touch1.y - touchStart0.y - touchStart1.y) / 2;
+                this.move(deltaX * this.moveSpeed, deltaY * this.moveSpeed);
+            }
         } else if (this.enableRotate) {
-            const touch = getPos(e.touches[0]);
+            const pos = getPos(e.touches[0]);
+            const startPos = findPosById(pos.id, startedPos);
+            const deltaPhi = this.rotateSpeed * (pos.y - startPos.y);
+            const deltaTheta = this.rotateSpeed * (pos.x - startPos.x);
 
-            this.handleRotate(touch, findPosById(touch.id, startedPos));
+            this.rotate(deltaPhi, deltaTheta);
             state = STATE.ROTATE;
         }
     }
@@ -120,7 +151,7 @@ export default class Control {
         if (!this.enableRotate) return;
         if (state !== STATE.ROTATE) return;
 
-        this.handleRotate(getPos(e), startedPos[0]);
+        this.rotate(getPos(e), startedPos[0]);
     }
 
     handleMouseUp() {
@@ -131,9 +162,9 @@ export default class Control {
         if (!this.enableZoom) return;
 
         if (e.deltaY > 0) {
-            this.handleZoom(this.scale * this.zoomSpeed);
+            this.zoom(this.scale * this.zoomSpeed);
         } else {
-            this.handleZoom(this.scale / this.zoomSpeed);
+            this.zoom(this.scale / this.zoomSpeed);
         }
         state = STATE.ZOOM;
     }

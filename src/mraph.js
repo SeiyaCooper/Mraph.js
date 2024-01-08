@@ -1,52 +1,53 @@
-import Camera from "./core/Camera.js";
 import Layer from "./core/Layer.js";
-import Program from "./core/Program.js";
+import Camera from "./core/Camera.js";
 import Texture from "./core/Texture.js";
 import Color from "./core/Color.js";
 
-import Control from "./extra/Control.js";
+import Action from "./animation/Action.js";
+import Timeline from "./animation/Timeline.js";
+import Subscriber from "./animation/Subscriber.js";
 
-import WebglRenderer from "./core/renderer/WebglRenderer.js";
+import OrbitControl from "./extra/OrbitControl.js";
+
+import WebGLRenderer from "./core/WebGL/WebGLRenderer.js";
+import WebGLProgram from "./core/WebGL/WebGLProgram.js";
+
+import CustomMaterial from "./material/CustomMaterial.js";
+import BasicMaterial from "./material/BasicMaterial.js";
 
 import Matrix from "./math/Matrix.js";
 import Vector from "./math/Vector.js";
 
-import Graph from "./mobjects/Graph.js";
-import Graph2D from "./mobjects/Graph2D.js";
-import Line from "./mobjects/2d/Line.js";
-import Arc from "./mobjects/2d/Arc.js";
-import Path from "./mobjects/2d/Path.js";
-import Point from "./mobjects/2d/Point.js";
-import Arrow from "./mobjects/2d/Arrow.js";
-import VectorField2D from "./mobjects/2d/VectorField2D.js";
-import Axis from "./mobjects/2d/Axis.js";
-
-import Axes from "./mobjects/3d/Axes.js";
-
-export * as COLORS from "./constants/colors.js";
+import Geometry from "./geometry/Geometry.js";
+import Plane from "./geometry/Plane.js";
+import Box from "./geometry/Box.js";
+import Segment from "./geometry/Segment.js";
 
 export * as MathFunc from "./math/math_func.js";
 
 export * as OBJLoader from "./extra/OBJLoader.js";
 
+export * as COLORS from "./constants/colors.js";
+export * as VECTORS from "./constants/vectors.js";
+export * as DrawModes from "./constants/draw_modes.js";
+
 export {
-    WebglRenderer,
     Matrix,
     Vector,
-    Camera,
+    Geometry,
+    Plane,
+    Box,
+    Segment,
     Layer,
-    Program,
+    Camera,
     Texture,
     Color,
-    Control,
-    Graph,
-    Graph2D,
-    Line,
-    Arc,
-    Path,
-    Point,
-    Arrow,
-    VectorField2D,
-    Axis,
-    Axes,
+    WebGLRenderer,
+    WebGLProgram,
+    CustomMaterial,
+    BasicMaterial,
+    Action,
+    Timeline,
+    Subscriber,
+    OrbitControl,
 };
