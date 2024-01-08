@@ -1,6 +1,6 @@
 import Action from "./Action.js";
 
-export default class ActionList {
+export default class Timeline {
     /**
      * list for actions to be called
      * @type {Map}

@@ -1,4 +1,4 @@
-import { mergeObject } from "../utils/utils.js";
+import { mergeObject } from "../../utils/utils.js";
 
 export default class Program {
     locations = new Map();
@@ -19,9 +19,15 @@ export default class Program {
         mergeObject(this, this.getExtension("OES_vertex_array_object"));
     }
 
+    use() {
+        this.gl.useProgram(this.program);
+    }
+
     setUniform(name, data) {
         const gl = this.gl;
         const location = this.gl.getUniformLocation(this.program, name);
+
+        this.use();
 
         if (Array.isArray(data[0])) {
             const n = data[0].length;
@@ -35,6 +41,32 @@ export default class Program {
             const arr = new Float32Array(data.data);
             gl["uniform" + data.n + "fv"](location, arr);
         }
+    }
+
+    setAttriBuffer(name, value, n, usage) {
+        const gl = this.gl;
+        let location;
+
+        if (!value.buffer) {
+            value.buffer = gl.createBuffer();
+            value.needsUpdate = true;
+        }
+        const buffer = value.buffer;
+        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+
+        if (this.locations.has(name)) {
+            location = this.locations.get(name);
+        } else {
+            location = gl.getAttribLocation(this.program, name);
+        }
+
+        if (value.needsUpdate ?? true) {
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(value.data), usage);
+            value.needsUpdate = false;
+        }
+
+        gl.enableVertexAttribArray(location);
+        gl.vertexAttribPointer(location, n, gl.FLOAT, false, 0, 0);
     }
 
     getExtension(name) {

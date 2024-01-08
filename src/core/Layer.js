@@ -1,19 +1,21 @@
-import ActionList from "../animation/ActionList.js";
-import CanvasRenderer from "../renderer/CanvasRenderer.js";
+import Timeline from "../animation/Timeline.js";
+import WebGLRenderer from "./WebGL/WebGLRenderer.js";
 import Camera from "./Camera.js";
-import Control from "../extra/Control.js";
-import Program from "./Program.js";
+import OrbitControl from "../extra/OrbitControl.js";
+import Subscriber from "../animation/Subscriber.js";
 import * as COLORS from "../constants/colors.js";
+import BasicMaterial from "../material/BasicMaterial.js";
 
 export default class Layer {
     elements = [];
     camera = new Camera();
-    actionList = new ActionList();
+    timeline = new Timeline();
+    defaultMaterial = new BasicMaterial();
 
     constructor({
         fillScreen = true,
         appendTo = undefined,
-        rendererClass = CanvasRenderer,
+        rendererClass = WebGLRenderer,
     } = {}) {
         this.canvas = document.createElement("canvas");
 
@@ -33,19 +35,6 @@ export default class Layer {
         });
         this.renderer = new rendererClass(this.canvas);
         this.clear(COLORS.GRAY_E);
-
-        if (!this.renderer.gl) return this;
-        this.program = new Program(this.renderer.gl, {
-            vs: vertexShader,
-            fs: fragmentShader,
-            attributes: {
-                position: 3,
-                color: 4,
-            },
-            uniforms: {
-                cameraMat: this.camera.matrix,
-            },
-        });
     }
 
     /**
@@ -77,18 +66,40 @@ export default class Layer {
     }
 
     /**
+     * create a mobject
+     * @param {function} mobjClass constructor of this mobject
+     * @param {any} [...attrs]
+     * @returns {this}
+     */
+    create(mobjClass, ...attrs) {
+        const mobj = new mobjClass(...attrs);
+        this.add(mobj);
+        return Subscriber.watch(
+            mobj,
+            {
+                set: () => {
+                    mobj.needsUpdate = true;
+                },
+            },
+            {
+                whiteList: mobj.watchList ?? [],
+            }
+        );
+    }
+
+    /**
      * render mobjects
      * @returns {this}
      */
     render() {
-        if (this.renderer.gl) {
-            this.program.setUniform("cameraMat", this.camera.matrix);
-        } else {
-            this.renderer.matrix = this.camera.matrix;
-        }
-
         for (let el of this.elements) {
-            this.renderer.render(el, this.program);
+            if (el.needsUpdate) {
+                el.update?.();
+                el.needsUpdate = false;
+            }
+
+            const material = el.material ?? this.defaultMaterial;
+            this.renderer.render(el, this.camera, material);
         }
         return this;
     }
@@ -109,14 +120,14 @@ export default class Layer {
      * @returns {this}
      */
     play(color = COLORS.GRAY_E) {
-        const list = this.actionList;
-        list.addGlobal({
+        const line = this.timeline;
+        line.addGlobal({
             update: () => {
                 this.clear(color);
                 this.render();
             },
         });
-        list.play();
+        line.play();
         return this;
     }
 
@@ -125,7 +136,7 @@ export default class Layer {
      * @param {number} [time=1] in seconds
      */
     wait(time = 1) {
-        this.actionList.maxTime += time;
+        this.timeline.maxTime += time;
         return this;
     }
 
@@ -133,8 +144,8 @@ export default class Layer {
      * @returns Control
      */
     enableOrbitControl() {
-        const control = new Control(this.camera, { element: this.canvas });
-        this.actionList.addInfinity({
+        const control = new OrbitControl(this.camera, { element: this.canvas });
+        this.timeline.addInfinity({
             update: () => {
                 control.update();
             },
@@ -142,28 +153,3 @@ export default class Layer {
         return control;
     }
 }
-
-const vertexShader = `
-    attribute vec3 position;
-    attribute vec4 color;
-
-    uniform mat4 cameraMat;
-    uniform mat4 modelMat;
-
-    varying vec4 v_color;
-
-    void main() {
-        gl_Position = cameraMat * modelMat * vec4(position, 1.0);
-        v_color = color;
-    }
-`;
-
-const fragmentShader = `
-    precision mediump float;
-
-    varying vec4 v_color;
-
-    void main() {
-        gl_FragColor = v_color;
-    }
-`;
