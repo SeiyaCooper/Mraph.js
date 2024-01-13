@@ -151,7 +151,12 @@ export default class OrbitControl {
         if (!this.enableRotate) return;
         if (state !== STATE.ROTATE) return;
 
-        this.rotate(getPos(e), startedPos[0]);
+        const pos = getPos(e);
+        const startPos = startedPos[0];
+        const deltaPhi = this.rotateSpeed * (pos.y - startPos.y);
+        const deltaTheta = this.rotateSpeed * (pos.x - startPos.x);
+
+        this.rotate(deltaPhi, deltaTheta);
     }
 
     handleMouseUp() {

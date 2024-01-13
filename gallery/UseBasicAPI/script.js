@@ -50,8 +50,10 @@ mesh.material = new mp.CustomMaterial({ vertexShader, fragmentShader });
     mesh.setAttribute("normal", data.normal, 3);
     mesh.indices = data.position.length / 3;
 
+    layer.camera.position[2] = 3;
+
     layer.add(mesh);
-    layer.enableOribitControl();
+    layer.enableOrbitControl();
     layer.play();
 })();
 
