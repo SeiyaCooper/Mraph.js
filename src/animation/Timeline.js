@@ -18,7 +18,7 @@ export default class Timeline {
     _minTime = Infinity;
 
     /**
-     * add an action to action list
+     * add an event to this timeline
      * @param {Number} start
      * @param {Number} stop
      * @param {Object} handle
@@ -35,14 +35,23 @@ export default class Timeline {
             list.set(index, action);
         }
 
-        this._maxTime = Math.max(stop * 1000, this.maxTime);
-        this._minTime = Math.min(start * 1000, this.minTime);
+        this._maxTime = Math.max(stop * 1000, this._maxTime);
+        this._minTime = Math.min(start * 1000, this._minTime);
 
         return this;
     }
 
     /**
-     * add an action to action list following last action
+     * add a one-time-only event
+     * @param {number} at
+     * @param {Function} handler
+     */
+    once(at, handler) {
+        this.add(at, at, { stop: handler });
+    }
+
+    /**
+     * add an event to action list following last action
      * @param {Number} hold
      * @param {Object} handle
      * @return {this}
@@ -53,7 +62,7 @@ export default class Timeline {
     }
 
     /**
-     * add action globally (from  min time to max time)
+     * add event globally (from  min time to max time)
      * @param {Object} handle
      * @returns {this}
      */
@@ -81,13 +90,14 @@ export default class Timeline {
     }
 
     /**
-     * play this action list
+     * trigger events at time order
      */
     play() {
         const list = this.list;
         const startTime = +new Date();
         const minTime = this._minTime;
         const maxTime = this._maxTime;
+        const self = this;
         let timer;
 
         (function animate() {
@@ -101,7 +111,7 @@ export default class Timeline {
             if (now < minTime) {
                 timer = requestAnimationFrame(animate);
                 return;
-            } else if (now > maxTime) {
+            } else if (now > maxTime && self.allStopped) {
                 cancelAnimationFrame(timer);
                 return;
             }
@@ -124,5 +134,13 @@ export default class Timeline {
 
     get minTime() {
         return this._minTime / 1000;
+    }
+
+    get allStopped() {
+        let isStopped = true;
+        for (const [, action] of this.list) {
+            if (!action.isStopped) isStopped = false;
+        }
+        return isStopped;
     }
 }

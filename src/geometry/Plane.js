@@ -25,7 +25,6 @@ export default class Plane extends Geometry {
     update() {
         const normal = this.normal;
         const position = this.position;
-        const attrs = this.attributes;
 
         const yAxis = new Vector(normal[1], normal[2], normal[0]);
         yAxis.norm = this.height;
@@ -33,13 +32,12 @@ export default class Plane extends Geometry {
         const xAxis = yAxis.cross(normal);
         xAxis.norm = this.width;
 
-        attrs.position.data = [];
-        attrs.position.data.push(
+        const data = [
             ...position,
-            ...position.add(xAxis),
             ...position.add(yAxis),
-            ...position.add(xAxis).add(yAxis)
-        );
-        attrs.position.needsUpdate = true;
+            ...position.add(xAxis),
+            ...position.add(xAxis).add(yAxis),
+        ];
+        this.setAttribute("position", data, 3);
     }
 }

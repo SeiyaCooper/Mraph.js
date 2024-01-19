@@ -61,4 +61,16 @@ export default class Geometry extends Object3D {
 
         if (!this.attributes[name]) this.attributes[name] = attr;
     }
+
+    /**
+     * set index
+     * @param {number | number[]} data
+     */
+    setIndex(data) {
+        if (typeof data === "number") {
+            this.indices = data;
+        } else {
+            this.indices = { data: data };
+        }
+    }
 }

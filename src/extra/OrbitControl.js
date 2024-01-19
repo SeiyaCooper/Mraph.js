@@ -142,16 +142,32 @@ export default class OrbitControl {
         e.preventDefault();
 
         startedPos = [getPos(e)];
-        startPhi = this.phi;
-        startTheta = this.theta;
-        state = STATE.ROTATE;
+        if (e.shiftKey) {
+            state = STATE.MOVE;
+        } else {
+            startPhi = this.phi;
+            startTheta = this.theta;
+            state = STATE.ROTATE;
+        }
     }
 
     handleMouseMove(e) {
-        if (!this.enableRotate) return;
-        if (state !== STATE.ROTATE) return;
+        const pos = getPos(e);
+        const startPos = startedPos[0];
 
-        this.rotate(getPos(e), startedPos[0]);
+        if (e.shiftKey) {
+            if (!this.enableMove) return;
+            if (state !== STATE.MOVE) return;
+            const deltaX = (startPos.x - pos.x) / 2;
+            const deltaY = (pos.y - startPos.y) / 2;
+            this.move(deltaX * this.moveSpeed, deltaY * this.moveSpeed);
+        } else {
+            if (!this.enableRotate) return;
+            if (state !== STATE.ROTATE) return;
+            const deltaPhi = this.rotateSpeed * (pos.y - startPos.y);
+            const deltaTheta = this.rotateSpeed * (pos.x - startPos.x);
+            this.rotate(deltaPhi, deltaTheta);
+        }
     }
 
     handleMouseUp() {
