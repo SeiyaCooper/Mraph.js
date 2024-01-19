@@ -115,19 +115,19 @@ export default class Layer {
     }
 
     /**
-     * play animation by a refresh color
-     * @param {color} [color = COLORS.GRAY_E]
+     * play animation with a refresh color
+     * @param {Color} [color = COLORS.GRAY_E]
      * @returns {this}
      */
     play(color = COLORS.GRAY_E) {
-        const line = this.timeline;
-        line.addGlobal({
+        const timeline = this.timeline;
+        timeline.addGlobal({
             update: () => {
                 this.clear(color);
                 this.render();
             },
         });
-        line.play();
+        timeline.play();
         return this;
     }
 

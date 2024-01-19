@@ -2,7 +2,7 @@ import Matrix from "../math/Matrix.js";
 import Vector from "../math/Vector.js";
 
 export default class Camera {
-    position = new Vector(0, 0, 10);
+    position = new Vector(0, 0, -10);
     rotation = new Vector(0, 0, 0);
     up = new Vector(0, 1, 0);
     projectionMat = Matrix.identity(4);
