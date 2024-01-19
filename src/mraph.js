@@ -22,6 +22,7 @@ import Geometry from "./geometry/Geometry.js";
 import Plane from "./geometry/Plane.js";
 import Box from "./geometry/Box.js";
 import Segment from "./geometry/Segment.js";
+import Sphere from "./geometry/Sphere.js";
 
 export * as MathFunc from "./math/math_func.js";
 
@@ -38,6 +39,7 @@ export {
     Plane,
     Box,
     Segment,
+    Sphere,
     Layer,
     Camera,
     Texture,
