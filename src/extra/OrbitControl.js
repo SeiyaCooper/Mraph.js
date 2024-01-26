@@ -81,8 +81,8 @@ export default class OrbitControl {
         const xAxis = zAxis.cross(camera.up);
         const yAxis = xAxis.cross(zAxis);
 
-        xAxis.norm = deltaX * this.radius;
-        yAxis.norm = deltaY * this.radius;
+        xAxis.norm = deltaX * this.radius * this.scale;
+        yAxis.norm = deltaY * this.radius * this.scale;
 
         targetCenter = startCenter.add(xAxis).add(yAxis);
     }
@@ -144,6 +144,7 @@ export default class OrbitControl {
         startedPos = [getPos(e)];
         if (e.shiftKey) {
             state = STATE.MOVE;
+            startCenter.copy(this.center);
         } else {
             startPhi = this.phi;
             startTheta = this.theta;
@@ -158,8 +159,8 @@ export default class OrbitControl {
         if (e.shiftKey) {
             if (!this.enableMove) return;
             if (state !== STATE.MOVE) return;
-            const deltaX = (startPos.x - pos.x) / 2;
-            const deltaY = (pos.y - startPos.y) / 2;
+            const deltaX = (startPos.x - pos.x) * 2;
+            const deltaY = (pos.y - startPos.y) * 2;
             this.move(deltaX * this.moveSpeed, deltaY * this.moveSpeed);
         } else {
             if (!this.enableRotate) return;
