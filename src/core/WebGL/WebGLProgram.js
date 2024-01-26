@@ -65,6 +65,9 @@ export default class Program {
             value.needsUpdate = false;
         }
 
+        // Can not find this variable, then do nothing
+        if (location === -1) return;
+
         gl.enableVertexAttribArray(location);
         gl.vertexAttribPointer(location, n, gl.FLOAT, false, 0, 0);
     }

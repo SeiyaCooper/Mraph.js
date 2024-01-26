@@ -386,7 +386,7 @@ declare module "animation/Timeline" {
          */
         _minTime: number;
         /**
-         * add an action to action list
+         * add an event to this timeline
          * @param {Number} start
          * @param {Number} stop
          * @param {Object} handle
@@ -394,14 +394,20 @@ declare module "animation/Timeline" {
          */
         add(start: number, stop: number, handle: any): this;
         /**
-         * add an action to action list following last action
+         * add a one-time-only event
+         * @param {number} at
+         * @param {Function} handler
+         */
+        once(at: number, handler: Function): void;
+        /**
+         * add an event to action list following last action
          * @param {Number} hold
          * @param {Object} handle
          * @return {this}
          */
         addFollow(hold: number, handle: any): this;
         /**
-         * add action globally (from  min time to max time)
+         * add event globally (from  min time to max time)
          * @param {Object} handle
          * @returns {this}
          */
@@ -413,13 +419,14 @@ declare module "animation/Timeline" {
          */
         addInfinity(handle: any): this;
         /**
-         * play this action list
+         * trigger events at time order
          */
         play(): void;
         set maxTime(arg: number);
         get maxTime(): number;
         set minTime(arg: number);
         get minTime(): number;
+        get allStopped(): boolean;
     }
 }
 declare module "constants/draw_modes" {
@@ -639,11 +646,11 @@ declare module "core/Layer" {
          */
         clear([r, g, b, a]?: number[] | Color): this;
         /**
-         * play animation by a refresh color
-         * @param {color} [color = COLORS.GRAY_E]
+         * play animation with a refresh color
+         * @param {Color} [color = COLORS.GRAY_E]
          * @returns {this}
          */
-        play(color?: any): this;
+        play(color?: Color): this;
         /**
          * pause for a while between animations
          * @param {number} [time=1] in seconds
@@ -762,6 +769,11 @@ declare module "geometry/Geometry" {
          * @param {number} n
          */
         setAttribute(name: string, data: number[], n: number): void;
+        /**
+         * set index
+         * @param {number | number[]} data
+         */
+        setIndex(data: number | number[]): void;
     }
     import Object3D from "core/Object3D";
 }
@@ -836,12 +848,35 @@ declare module "geometry/Segment" {
     import Geometry from "geometry/Geometry";
     import Color from "core/Color";
 }
+declare module "geometry/Sphere" {
+    export default class Sphere extends Geometry {
+        constructor({ radius, phiStart, phiEnd, phiSegments, thetaStart, thetaEnd, thetaSegments, }?: {
+            radius?: number;
+            phiStart?: number;
+            phiEnd?: number;
+            phiSegments?: number;
+            thetaStart?: number;
+            thetaEnd?: number;
+            thetaSegments?: number;
+        });
+        radius: number;
+        phiStart: number;
+        phiEnd: number;
+        phiSegments: number;
+        thetaStart: number;
+        thetaEnd: number;
+        thetaSegments: number;
+    }
+    import Geometry from "geometry/Geometry";
+}
 declare module "extra/OBJLoader" {
+    export function parseToGeometry(src: any): Promise<Geometry>;
     export function parseToObject(src: any): Promise<{
         position: any[];
         normal: any[];
         uv: any[];
     }>;
+    import Geometry from "geometry/Geometry";
 }
 declare module "mraph" {
     export * as MathFunc from "math/math_func";
@@ -855,6 +890,7 @@ declare module "mraph" {
     import Plane from "geometry/Plane";
     import Box from "geometry/Box";
     import Segment from "geometry/Segment";
+    import Sphere from "geometry/Sphere";
     import Layer from "core/Layer";
     import Camera from "core/Camera";
     import Texture from "core/Texture";
@@ -867,5 +903,5 @@ declare module "mraph" {
     import Timeline from "animation/Timeline";
     import Subscriber from "animation/Subscriber";
     import OrbitControl from "extra/OrbitControl";
-    export { Matrix, Vector, Geometry, Plane, Box, Segment, Layer, Camera, Texture, Color, WebGLRenderer, WebGLProgram, CustomMaterial, BasicMaterial, Action, Timeline, Subscriber, OrbitControl };
+    export { Matrix, Vector, Geometry, Plane, Box, Segment, Sphere, Layer, Camera, Texture, Color, WebGLRenderer, WebGLProgram, CustomMaterial, BasicMaterial, Action, Timeline, Subscriber, OrbitControl };
 }

@@ -187,22 +187,22 @@ export default class OrbitControl {
 
     set element(el) {
         this._element = el;
-        el.addEventListener("touchstart", e => {
+        el.addEventListener("touchstart", (e) => {
             this.handleTouchStart(e);
         });
-        el.addEventListener("touchmove", e => {
+        el.addEventListener("touchmove", (e) => {
             this.handleTouchMove(e);
         });
-        el.addEventListener("touchend", e => {
+        el.addEventListener("touchend", (e) => {
             this.handleTouchEnd(e);
         });
-        el.addEventListener("wheel", e => {
+        el.addEventListener("wheel", (e) => {
             this.handleWheel(e);
         });
-        el.addEventListener("mousedown", e => {
+        el.addEventListener("mousedown", (e) => {
             this.handleMouseDown(e);
         });
-        el.addEventListener("mousemove", e => {
+        el.addEventListener("mousemove", (e) => {
             this.handleMouseMove(e);
         });
         el.addEventListener("mouseup", this.handleMouseUp);

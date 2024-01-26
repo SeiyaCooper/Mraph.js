@@ -1,3 +1,5 @@
+import Geometry from "../geometry/Geometry.js";
+
 let oriData, parsedData;
 
 function addVertex(data, i) {
@@ -26,6 +28,18 @@ const commands = {
         }
     },
 };
+
+export async function parseToGeometry(src) {
+    const data = await parseToObject(src);
+    const out = new Geometry();
+
+    out.setAttribute("position", data.position, 3);
+    out.setAttribute("normal", data.normal, 3);
+    out.setAttribute("uv", data.uv, 2);
+    out.setIndex(data.position.length / 3);
+
+    return out;
+}
 
 export async function parseToObject(src) {
     const text = await readFile(src);
