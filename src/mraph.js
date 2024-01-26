@@ -24,6 +24,8 @@ import Box from "./geometry/Box.js";
 import Segment from "./geometry/Segment.js";
 import Sphere from "./geometry/Sphere.js";
 
+import Graph2D from "./mobjects/Graph2D.js";
+
 export * as MathFunc from "./math/math_func.js";
 
 export * as OBJLoader from "./extra/OBJLoader.js";
@@ -40,6 +42,7 @@ export {
     Box,
     Segment,
     Sphere,
+    Graph2D,
     Layer,
     Camera,
     Texture,

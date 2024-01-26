@@ -869,6 +869,21 @@ declare module "geometry/Sphere" {
     }
     import Geometry from "geometry/Geometry";
 }
+declare module "mobjects/Graph2D" {
+    export default class Graph2D extends Geometry {
+        normal: Vector;
+        up: Vector;
+        pointBuffer: any[];
+        commandBuffer: any[];
+        begin(): void;
+        move(pos: any): void;
+        line(pos: any): void;
+        fill(): void;
+        toWorldPos(pos: any): any;
+    }
+    import Geometry from "geometry/Geometry";
+    import Vector from "math/Vector";
+}
 declare module "extra/OBJLoader" {
     export function parseToGeometry(src: any): Promise<Geometry>;
     export function parseToObject(src: any): Promise<{
@@ -891,6 +906,7 @@ declare module "mraph" {
     import Box from "geometry/Box";
     import Segment from "geometry/Segment";
     import Sphere from "geometry/Sphere";
+    import Graph2D from "mobjects/Graph2D";
     import Layer from "core/Layer";
     import Camera from "core/Camera";
     import Texture from "core/Texture";
@@ -903,5 +919,5 @@ declare module "mraph" {
     import Timeline from "animation/Timeline";
     import Subscriber from "animation/Subscriber";
     import OrbitControl from "extra/OrbitControl";
-    export { Matrix, Vector, Geometry, Plane, Box, Segment, Sphere, Layer, Camera, Texture, Color, WebGLRenderer, WebGLProgram, CustomMaterial, BasicMaterial, Action, Timeline, Subscriber, OrbitControl };
+    export { Matrix, Vector, Geometry, Plane, Box, Segment, Sphere, Graph2D, Layer, Camera, Texture, Color, WebGLRenderer, WebGLProgram, CustomMaterial, BasicMaterial, Action, Timeline, Subscriber, OrbitControl };
 }
