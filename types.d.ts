@@ -941,6 +941,28 @@ declare module "mobjects/Arrow" {
     }
     import Line from "mobjects/Line";
 }
+declare module "mobjects/VectorField2D" {
+    export default class VectorField2D extends Geometry {
+        constructor({ func, xRange, yRange, }?: {
+            func?: (x: any, y: any) => any[];
+            xRange?: number[];
+            yRange?: number[];
+        });
+        lengthFunc: (length: any) => number;
+        colorFunc: () => Color;
+        _center: Vector;
+        xRange: number[];
+        yRange: number[];
+        set func(arg: any);
+        get func(): any;
+        _func: any;
+        set center(arg: Vector);
+        get center(): Vector;
+    }
+    import Geometry from "geometry/Geometry";
+    import Color from "core/Color";
+    import Vector from "math/Vector";
+}
 declare module "extra/OBJLoader" {
     export function parseToGeometry(src: any): Promise<Geometry>;
     export function parseToObject(src: any): Promise<{
@@ -967,6 +989,7 @@ declare module "mraph" {
     import Point from "mobjects/Point";
     import Line from "mobjects/Line";
     import Arrow from "mobjects/Arrow";
+    import VectorField2D from "mobjects/VectorField2D";
     import Layer from "core/Layer";
     import Camera from "core/Camera";
     import Texture from "core/Texture";
@@ -979,5 +1002,5 @@ declare module "mraph" {
     import Timeline from "animation/Timeline";
     import Subscriber from "animation/Subscriber";
     import OrbitControl from "extra/OrbitControl";
-    export { Matrix, Vector, Geometry, Plane, Box, Segment, Sphere, Graph2D, Point, Line, Arrow, Layer, Camera, Texture, Color, WebGLRenderer, WebGLProgram, CustomMaterial, BasicMaterial, Action, Timeline, Subscriber, OrbitControl };
+    export { Matrix, Vector, Geometry, Plane, Box, Segment, Sphere, Graph2D, Point, Line, Arrow, VectorField2D, Layer, Camera, Texture, Color, WebGLRenderer, WebGLProgram, CustomMaterial, BasicMaterial, Action, Timeline, Subscriber, OrbitControl };
 }
