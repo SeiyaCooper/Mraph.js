@@ -763,12 +763,19 @@ declare module "geometry/Geometry" {
          */
         update(): void;
         /**
-         * Set value of a single attribute
+         * Set value of a single attribute variable
          * @param {string} name
          * @param {number[]} data
          * @param {number} n
          */
         setAttribute(name: string, data: number[], n: number): void;
+        /**
+         * Get value of a single attribute variable
+         * @param {string} name
+         * @param {number[]} data
+         * @param {number} n
+         */
+        getAttribute(name: string): any;
         /**
          * set index
          * @param {number | number[]} data
@@ -875,14 +882,64 @@ declare module "mobjects/Graph2D" {
         up: Vector;
         pointBuffer: any[];
         commandBuffer: any[];
+        fillColor: Color;
+        strokeColor: Color;
+        strokeWidth: number;
         begin(): void;
         move(pos: any): void;
         line(pos: any): void;
+        stroke(): void;
         fill(): void;
+        clear(): void;
         toWorldPos(pos: any): any;
     }
     import Geometry from "geometry/Geometry";
     import Vector from "math/Vector";
+    import Color from "core/Color";
+}
+declare module "mobjects/Point" {
+    export default class Point extends Graph2D {
+        constructor(...args: any[]);
+        _v: Vector;
+        _a: Vector;
+        center: any;
+        update(): Point;
+        set x(arg: any);
+        get x(): any;
+        set y(arg: any);
+        get y(): any;
+        set z(arg: any);
+        get z(): any;
+    }
+    import Graph2D from "mobjects/Graph2D";
+    import Vector from "math/Vector";
+}
+declare module "mobjects/Line" {
+    export default class Line extends Graph2D {
+        constructor(start?: Point, end?: Point);
+        indices: {
+            data: number[];
+        };
+        tips: any[];
+        start: Point;
+        end: Point;
+        update(): Line;
+        at(p: any): any;
+        addTip(at: any, reverse?: boolean): void;
+        set vector(arg: any);
+        get vector(): any;
+        set length(arg: any);
+        get length(): any;
+        get slope(): number;
+    }
+    import Graph2D from "mobjects/Graph2D";
+    import Point from "mobjects/Point";
+}
+declare module "mobjects/Arrow" {
+    export default class Arrow extends Line {
+        constructor(...param: any[]);
+    }
+    import Line from "mobjects/Line";
 }
 declare module "extra/OBJLoader" {
     export function parseToGeometry(src: any): Promise<Geometry>;
@@ -907,6 +964,9 @@ declare module "mraph" {
     import Segment from "geometry/Segment";
     import Sphere from "geometry/Sphere";
     import Graph2D from "mobjects/Graph2D";
+    import Point from "mobjects/Point";
+    import Line from "mobjects/Line";
+    import Arrow from "mobjects/Arrow";
     import Layer from "core/Layer";
     import Camera from "core/Camera";
     import Texture from "core/Texture";
@@ -919,5 +979,5 @@ declare module "mraph" {
     import Timeline from "animation/Timeline";
     import Subscriber from "animation/Subscriber";
     import OrbitControl from "extra/OrbitControl";
-    export { Matrix, Vector, Geometry, Plane, Box, Segment, Sphere, Graph2D, Layer, Camera, Texture, Color, WebGLRenderer, WebGLProgram, CustomMaterial, BasicMaterial, Action, Timeline, Subscriber, OrbitControl };
+    export { Matrix, Vector, Geometry, Plane, Box, Segment, Sphere, Graph2D, Point, Line, Arrow, Layer, Camera, Texture, Color, WebGLRenderer, WebGLProgram, CustomMaterial, BasicMaterial, Action, Timeline, Subscriber, OrbitControl };
 }

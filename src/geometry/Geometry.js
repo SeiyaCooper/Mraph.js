@@ -48,7 +48,7 @@ export default class Geometry extends Object3D {
     update() {}
 
     /**
-     * Set value of a single attribute
+     * Set value of a single attribute variable
      * @param {string} name
      * @param {number[]} data
      * @param {number} n
@@ -60,6 +60,17 @@ export default class Geometry extends Object3D {
         attr.needsUpdate = true;
 
         if (!this.attributes[name]) this.attributes[name] = attr;
+    }
+
+    /**
+     * Get value of a single attribute variable
+     * @param {string} name
+     * @param {number[]} data
+     * @param {number} n
+     */
+    getAttribute(name) {
+        const attr = this.attributes[name].data ?? [];
+        return attr;
     }
 
     /**

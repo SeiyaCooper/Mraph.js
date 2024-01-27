@@ -25,6 +25,9 @@ import Segment from "./geometry/Segment.js";
 import Sphere from "./geometry/Sphere.js";
 
 import Graph2D from "./mobjects/Graph2D.js";
+import Point from "./mobjects/Point.js";
+import Line from "./mobjects/Line.js";
+import Arrow from "./mobjects/Arrow.js";
 
 export * as MathFunc from "./math/math_func.js";
 
@@ -43,6 +46,9 @@ export {
     Segment,
     Sphere,
     Graph2D,
+    Point,
+    Line,
+    Arrow,
     Layer,
     Camera,
     Texture,
