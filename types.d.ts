@@ -724,7 +724,7 @@ declare module "core/Object3D" {
         /**
          * delete all children
          */
-        clearChild(): void;
+        clearChildren(): void;
     }
 }
 declare module "geometry/Geometry" {
@@ -762,6 +762,11 @@ declare module "geometry/Geometry" {
          * so that it can be updated when needed.
          */
         update(): void;
+        /**
+         * Merge all children into this geometry.
+         * This method will only remain position variable and drop others
+         */
+        combineChildren(): void;
         /**
          * Set value of a single attribute variable
          * @param {string} name

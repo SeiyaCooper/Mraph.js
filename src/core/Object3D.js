@@ -32,7 +32,7 @@ export default class Object3D {
     /**
      * delete all children
      */
-    clearChild() {
+    clearChildren() {
         this.deleteChild(...this.children);
     }
 }

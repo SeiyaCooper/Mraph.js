@@ -77,6 +77,7 @@ export default class Graph2D extends Geometry {
 
         pb.push(null);
         cb.push(CMD.STROKE);
+        this.combineChildren();
     }
 
     fill() {
@@ -133,7 +134,7 @@ export default class Graph2D extends Geometry {
 
     clear() {
         this.begin();
-        this.clearChild();
+        this.clearChildren();
         this.setAttribute("position", [], 3);
     }
 

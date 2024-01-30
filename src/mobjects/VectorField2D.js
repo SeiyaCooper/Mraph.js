@@ -26,6 +26,8 @@ export default class VectorField2D extends Geometry {
     }
 
     update() {
+        this.setAttribute("position", []);
+
         const func = this._func;
         const xRange = this.xRange;
         const yRange = this.yRange;
@@ -40,6 +42,8 @@ export default class VectorField2D extends Geometry {
                 this.addChild(arrow);
             }
         }
+
+        this.combineChildren();
     }
 
     set func(func) {
