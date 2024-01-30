@@ -8,6 +8,13 @@ export function sigmoid(x) {
 }
 
 /**
+ * linear function
+ * @param {number} x
+ * @returns {number}
+ */
+export const linear = (x) => x;
+
+/**
  * get mean value from a set numbers
  * @param  {...number} nums
  * @returns {number}

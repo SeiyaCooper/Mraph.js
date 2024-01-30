@@ -27,6 +27,7 @@ declare module "math/math_func" {
      * @returns {number[]}
      */
     export function lerpArray(from: number[], to: number[], p: number): number[];
+    export function linear(x: number): number;
 }
 declare module "math/Matrix" {
     export default class Matrix extends Array<any> {
