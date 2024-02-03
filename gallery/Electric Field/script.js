@@ -13,9 +13,9 @@ class Charge extends mp.Point {
 // Init charges
 const chargeList = [
     new Charge(3, 0, 0),
-    new Charge(0.5, 0, 3),
-    new Charge(2, 0, 1),
-    new Charge(1, -1, 0),
+    new Charge(0.1, 4, -4),
+    new Charge(2, -3, 1),
+    new Charge(-2, -1, -3),
     new Charge(0.1, 2, 0),
 ];
 for (let charge of chargeList) {
@@ -23,13 +23,16 @@ for (let charge of chargeList) {
 }
 
 // Init electric field
-const electricField = new mp.VectorField2D();
+const electricField = new mp.VectorField2D({ xRange: [-4, 4, 1] });
 electricField.func = (x, y) => {
     const force = new mp.Vector(0, 0, 0);
     const pos = new mp.Vector(x, y, 0);
 
     for (let charge of chargeList) {
-        const radius = pos.reduce(charge.center).mult(charge.charge).normal();
+        let radius = pos.reduce(charge.center);
+
+        // The inverse square law
+        radius = radius.mult(charge.charge).mult(1 / radius.norm ** 3);
         force.copy(force.add(radius));
     }
 
@@ -38,5 +41,6 @@ electricField.func = (x, y) => {
 layer.add(electricField);
 
 // Use orbit control and start animation
-layer.enableOrbitControl();
+layer.camera.position[2] = 15;
+layer.enableOrbitControl().enableRotate = false;
 layer.play();
