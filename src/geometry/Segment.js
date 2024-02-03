@@ -8,9 +8,7 @@ export default class Segment extends Geometry {
     strokeColor = new Color(1, 1, 1, 1);
     normal = VECTORS.OUT();
     indices = { data: [0, 1, 3, 2, 0, 3] };
-    attributes = {
-        position: { data: [] },
-    };
+    attributes = {};
     watchList = ["start", "end", "strokeWidth", "strokeColor", "normal"];
 
     constructor(start = VECTORS.ORIGIN(), end = VECTORS.RIGHT()) {
@@ -33,8 +31,14 @@ export default class Segment extends Geometry {
             end.add(vec),
             end.reduce(vec),
         ].flat(2);
-        this.attributes.position.data = vertices;
-        this.attributes.position.needsUpdate = true;
+        const colors = [
+            ...this.strokeColor,
+            ...this.strokeColor,
+            ...this.strokeColor,
+            ...this.strokeColor,
+        ];
+        this.setAttribute("position", vertices, 3);
+        this.setAttribute("color", colors, 4);
     }
 
     get vector() {

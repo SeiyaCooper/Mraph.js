@@ -86,9 +86,8 @@ export default class Graph2D extends Geometry {
     }
 
     fill() {
-        const vertices = [];
-        const colors = [];
-        const position = this.getAttribute("position");
+        const vertices = this.getAttribute("position");
+        const colors = this.getAttribute("color");
 
         const pb = this.argumentBuffer;
         const cb = this.commandBuffer;
@@ -186,8 +185,8 @@ export default class Graph2D extends Geometry {
         pb.push(null);
         cb.push(CMD.FILL);
 
-        this.setAttribute("position", position.concat(vertices), 3);
-        this.setAttribute("color", vertices, 3);
+        this.setAttribute("position", vertices, 3);
+        this.setAttribute("color", colors, 4);
         this.setIndex(vertices.length / 3);
     }
 
@@ -205,5 +204,10 @@ export default class Graph2D extends Geometry {
         xAsix.norm = pos[0];
 
         return xAsix.add(yAsix);
+    }
+
+    setColor(color) {
+        this.strokeColor = color;
+        this.fillColor = color;
     }
 }

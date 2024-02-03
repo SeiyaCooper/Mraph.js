@@ -4,13 +4,13 @@ import Camera from "./Camera.js";
 import OrbitControl from "../extra/OrbitControl.js";
 import Subscriber from "../animation/Subscriber.js";
 import * as COLORS from "../constants/colors.js";
-import BasicMaterial from "../material/BasicMaterial.js";
+import MobjectMaterial from "../material/MobjectMaterial.js";
 
 export default class Layer {
     elements = [];
     camera = new Camera();
     timeline = new Timeline();
-    defaultMaterial = new BasicMaterial();
+    defaultMaterial = new MobjectMaterial();
 
     constructor({
         fillScreen = true,

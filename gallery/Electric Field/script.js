@@ -7,13 +7,15 @@ class Charge extends mp.Point {
     constructor(charge, x, y) {
         super([x, y, 0]);
         this.charge = charge;
+        this.radius = 0.1;
+        this.setColor(charge > 0 ? mp.COLORS.RED : mp.COLORS.BLUE);
     }
 }
 
 // Init charges
 // Try to change the parameters!!
 const chargeList = [
-    new Charge(3, 0, 0),
+    new Charge(1, 0, 0),
     new Charge(0.1, 4, -4),
     new Charge(2, -3, 2),
     new Charge(-2, -1, -3),
@@ -38,6 +40,13 @@ electricField.func = (x, y) => {
     }
 
     return force;
+};
+electricField.lengthFunc = (length) => {
+    return mp.MathFunc.sigmoid(length / 2);
+};
+electricField.colorFunc = (x, y, length) => {
+    const hue = length - 0.1;
+    return mp.MathFunc.lerpArray(mp.COLORS.BLUE, mp.COLORS.RED, hue);
 };
 layer.add(electricField);
 

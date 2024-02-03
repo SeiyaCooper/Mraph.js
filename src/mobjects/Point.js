@@ -8,7 +8,7 @@ export default class Point extends Arc {
     _a = new Vector(0, 0, 0);
 
     constructor(...args) {
-        super(0, 2 * Math.PI, 0.09);
+        super(0, 2 * Math.PI, 0.06);
 
         if (Vector.isVector(args[0])) {
             this.center = args[0];

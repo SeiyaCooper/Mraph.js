@@ -545,6 +545,8 @@ declare module "core/Color" {
     }
 }
 declare module "constants/colors" {
+    export const RED_C: Color;
+    export const RED: Color;
     export const BLUE_A: Color;
     export const BLUE_B: Color;
     export const BLUE_C: Color;
@@ -588,19 +590,13 @@ declare module "core/WebGL/WebGLProgram" {
         _textures: any;
     }
 }
-declare module "material/BasicMaterial" {
-    export default class BasicMaterial {
-        constructor({ color }?: {
-            color?: Color;
-        });
+declare module "material/MobjectMaterial" {
+    export default class MobjectMaterial {
         vertexShader: string;
         fragmentShader: string;
-        color: Color;
         initProgram(gl: any): void;
         program: WebGLProgram;
-        get transparent(): boolean;
     }
-    import Color from "core/Color";
     import WebGLProgram from "core/WebGL/WebGLProgram";
 }
 declare module "core/Layer" {
@@ -613,7 +609,7 @@ declare module "core/Layer" {
         elements: any[];
         camera: Camera;
         timeline: Timeline;
-        defaultMaterial: BasicMaterial;
+        defaultMaterial: MobjectMaterial;
         canvas: HTMLCanvasElement;
         renderer: WebGLRenderer;
         /**
@@ -664,7 +660,7 @@ declare module "core/Layer" {
     }
     import Camera from "core/Camera";
     import Timeline from "animation/Timeline";
-    import BasicMaterial from "material/BasicMaterial";
+    import MobjectMaterial from "material/MobjectMaterial";
     import WebGLRenderer from "core/WebGL/WebGLRenderer";
     import OrbitControl from "extra/OrbitControl";
 }
@@ -702,6 +698,21 @@ declare module "material/CustomMaterial" {
         initProgram(gl: any): void;
         program: WebGLProgram;
     }
+    import WebGLProgram from "core/WebGL/WebGLProgram";
+}
+declare module "material/BasicMaterial" {
+    export default class BasicMaterial {
+        constructor({ color }?: {
+            color?: Color;
+        });
+        vertexShader: string;
+        fragmentShader: string;
+        color: Color;
+        initProgram(gl: any): void;
+        program: WebGLProgram;
+        get transparent(): boolean;
+    }
+    import Color from "core/Color";
     import WebGLProgram from "core/WebGL/WebGLProgram";
 }
 declare module "core/Object3D" {
@@ -765,7 +776,7 @@ declare module "geometry/Geometry" {
         update(): void;
         /**
          * Merge all children into this geometry.
-         * This method will only remain position variable and drop others
+         * This method assuming all children have and only have two variables, position and color.
          */
         combineChildren(): void;
         /**
@@ -849,11 +860,7 @@ declare module "geometry/Segment" {
         indices: {
             data: number[];
         };
-        attributes: {
-            position: {
-                data: any[];
-            };
-        };
+        attributes: {};
         start: import("mraph").Vector;
         end: import("mraph").Vector;
         get vector(): import("mraph").Vector;
@@ -899,6 +906,7 @@ declare module "mobjects/Graph2D" {
         fill(): void;
         clear(): void;
         toWorldPos(pos: any): any;
+        setColor(color: any): void;
     }
     import Geometry from "geometry/Geometry";
     import Color from "core/Color";
@@ -970,9 +978,7 @@ declare module "mobjects/VectorField2D" {
         _center: Vector;
         xRange: number[];
         yRange: number[];
-        set func(arg: any);
-        get func(): any;
-        _func: any;
+        func: (x: any, y: any) => any[];
         set center(arg: Vector);
         get center(): Vector;
     }

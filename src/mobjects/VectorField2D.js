@@ -26,9 +26,11 @@ export default class VectorField2D extends Geometry {
     }
 
     update() {
-        this.setAttribute("position", []);
+        this.setAttribute("position", [], 3);
+        this.setAttribute("color", [], 4);
+        this.clearChildren();
 
-        const func = this._func;
+        const func = this.func;
         const xRange = this.xRange;
         const yRange = this.yRange;
         for (let x = xRange[0]; x <= xRange[1]; x += xRange[2]) {
@@ -37,22 +39,15 @@ export default class VectorField2D extends Geometry {
                     new Point(new Vector(x, y, 0).add(this.center)),
                     new Vector(...func(x, y, this.center[2]))
                 );
-                arrow.length = this.lengthFunc(arrow.length);
+                const length = this.lengthFunc(arrow.length);
+                arrow.length = length;
+                arrow.setColor(this.colorFunc(x, y, length));
                 arrow.update();
                 this.addChild(arrow);
             }
         }
 
         this.combineChildren();
-    }
-
-    set func(func) {
-        this._func = func;
-        this.update();
-    }
-
-    get func() {
-        return this._func;
     }
 
     set center(center) {

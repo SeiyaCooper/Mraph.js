@@ -1,5 +1,8 @@
 import Color from "../core/Color.js";
 
+export const RED_C = new Color(0.93, 0.3, 0.25);
+export const RED = RED_C;
+
 export const BLUE_A = new Color(0.8, 0.9, 1);
 export const BLUE_B = new Color(0.6, 0.85, 1);
 export const BLUE_C = new Color(0.43, 0.78, 0.95);

@@ -49,25 +49,34 @@ export default class Geometry extends Object3D {
 
     /**
      * Merge all children into this geometry.
-     * This method will only remain position variable and drop others
+     * This method assuming all children have and only have two variables, position and color.
      */
     combineChildren() {
         const vertices = this.getAttribute("position");
+        const colors = this.getAttribute("color");
 
         for (let child of this.children) {
-            const data = child.getAttribute("position");
+            const position = child.getAttribute("position");
+            const oriColors = child.getAttribute("color");
+
             if (typeof child.indices !== "number") {
                 for (let i of child.indices.data) {
-                    vertices.push(data[i * 3]);
-                    vertices.push(data[i * 3 + 1]);
-                    vertices.push(data[i * 3 + 2]);
+                    vertices.push(position[i * 3]);
+                    vertices.push(position[i * 3 + 1]);
+                    vertices.push(position[i * 3 + 2]);
+                    colors.push(oriColors[i * 4]);
+                    colors.push(oriColors[i * 4 + 1]);
+                    colors.push(oriColors[i * 4 + 2]);
+                    colors.push(oriColors[i * 4 + 3]);
                 }
             } else {
-                vertices.push(...data);
+                vertices.push(...position);
+                colors.push(...oriColors);
             }
         }
 
-        this.setAttribute("position", vertices);
+        this.setAttribute("position", vertices, 3);
+        this.setAttribute("color", colors, 4);
         this.setIndex(vertices.length / 3);
         this.clearChildren();
     }
@@ -94,8 +103,7 @@ export default class Geometry extends Object3D {
      * @param {number} n
      */
     getAttribute(name) {
-        const attr = this.attributes[name].data ?? [];
-        return attr;
+        return this.attributes[name]?.data ?? [];
     }
 
     /**
