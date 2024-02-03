@@ -1,6 +1,9 @@
 import Color from "../core/Color.js";
 
+export const RED_A = new Color(1, 0.8, 0.8);
+export const RED_B = new Color(0.83, 0.35, 0.35);
 export const RED_C = new Color(0.93, 0.3, 0.25);
+export const RED_D = new Color(0.81, 0.1, 0.1);
 export const RED = RED_C;
 
 export const BLUE_A = new Color(0.8, 0.9, 1);

@@ -26,7 +26,10 @@ for (let charge of chargeList) {
 }
 
 // Init electric field
-const electricField = new mp.VectorField2D({ xRange: [-4, 4, 1] });
+const electricField = new mp.VectorField2D({
+    xRange: [-6, 6, 1],
+    yRange: [-6, 6, 1],
+});
 electricField.func = (x, y) => {
     const force = new mp.Vector(0, 0, 0);
     const pos = new mp.Vector(x, y, 0);
@@ -45,8 +48,12 @@ electricField.lengthFunc = (length) => {
     return mp.MathFunc.sigmoid(length / 2);
 };
 electricField.colorFunc = (x, y, length) => {
-    const hue = length - 0.1;
-    return mp.MathFunc.lerpArray(mp.COLORS.BLUE, mp.COLORS.RED, hue);
+    const hue = (length - 0.1) * 4 - 1.35;
+    return mp.MathFunc.lerpArray(
+        new mp.Color(0, 0.9, 1),
+        new mp.Color(1, 0.1, 0.1),
+        hue
+    );
 };
 layer.add(electricField);
 

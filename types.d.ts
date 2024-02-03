@@ -545,7 +545,10 @@ declare module "core/Color" {
     }
 }
 declare module "constants/colors" {
+    export const RED_A: Color;
+    export const RED_B: Color;
     export const RED_C: Color;
+    export const RED_D: Color;
     export const RED: Color;
     export const BLUE_A: Color;
     export const BLUE_B: Color;
