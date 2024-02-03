@@ -114,9 +114,9 @@ export default class OrbitControl {
             }
             if (this.enableMove) {
                 const deltaX =
-                    (touch0.x + touch1.x - touchStart0.x - touchStart1.x) / -3;
+                    (touch0.x + touch1.x - touchStart0.x - touchStart1.x) / -2;
                 const deltaY =
-                    (touch0.y + touch1.y - touchStart0.y - touchStart1.y) / 3;
+                    (touch0.y + touch1.y - touchStart0.y - touchStart1.y) / 2;
                 this.move(deltaX * this.moveSpeed, deltaY * this.moveSpeed);
             }
         } else if (this.enableRotate) {
