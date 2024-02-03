@@ -884,9 +884,9 @@ declare module "geometry/Sphere" {
 }
 declare module "mobjects/Graph2D" {
     export default class Graph2D extends Geometry {
-        normal: Vector;
-        up: Vector;
-        pointBuffer: any[];
+        normal: import("mraph").Vector;
+        up: import("mraph").Vector;
+        argumentBuffer: any[];
         commandBuffer: any[];
         fillColor: Color;
         strokeColor: Color;
@@ -894,17 +894,28 @@ declare module "mobjects/Graph2D" {
         begin(): void;
         move(pos: any): void;
         line(pos: any): void;
+        arc(radius: any, startAngle: any, endAngle: any, clockwise?: boolean): void;
         stroke(): void;
         fill(): void;
         clear(): void;
         toWorldPos(pos: any): any;
     }
     import Geometry from "geometry/Geometry";
-    import Vector from "math/Vector";
     import Color from "core/Color";
 }
+declare module "mobjects/Arc" {
+    export default class Arc extends Graph {
+        constructor(startAng?: number, endAng?: number, radius?: number, center?: number[]);
+        startAng: number;
+        endAng: number;
+        radius: number;
+        center: number[];
+        update(): Arc;
+    }
+    import Graph from "mobjects/Graph2D";
+}
 declare module "mobjects/Point" {
-    export default class Point extends Graph2D {
+    export default class Point extends Arc {
         constructor(...args: any[]);
         _v: Vector;
         _a: Vector;
@@ -917,7 +928,7 @@ declare module "mobjects/Point" {
         set z(arg: any);
         get z(): any;
     }
-    import Graph2D from "mobjects/Graph2D";
+    import Arc from "mobjects/Arc";
     import Vector from "math/Vector";
 }
 declare module "mobjects/Line" {
@@ -994,6 +1005,7 @@ declare module "mraph" {
     import Graph2D from "mobjects/Graph2D";
     import Point from "mobjects/Point";
     import Line from "mobjects/Line";
+    import Arc from "mobjects/Arc";
     import Arrow from "mobjects/Arrow";
     import VectorField2D from "mobjects/VectorField2D";
     import Layer from "core/Layer";
@@ -1008,5 +1020,5 @@ declare module "mraph" {
     import Timeline from "animation/Timeline";
     import Subscriber from "animation/Subscriber";
     import OrbitControl from "extra/OrbitControl";
-    export { Matrix, Vector, Geometry, Plane, Box, Segment, Sphere, Graph2D, Point, Line, Arrow, VectorField2D, Layer, Camera, Texture, Color, WebGLRenderer, WebGLProgram, CustomMaterial, BasicMaterial, Action, Timeline, Subscriber, OrbitControl };
+    export { Matrix, Vector, Geometry, Plane, Box, Segment, Sphere, Graph2D, Point, Line, Arc, Arrow, VectorField2D, Layer, Camera, Texture, Color, WebGLRenderer, WebGLProgram, CustomMaterial, BasicMaterial, Action, Timeline, Subscriber, OrbitControl };
 }

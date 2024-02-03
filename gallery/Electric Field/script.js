@@ -11,12 +11,13 @@ class Charge extends mp.Point {
 }
 
 // Init charges
+// Try to change the parameters!!
 const chargeList = [
     new Charge(3, 0, 0),
     new Charge(0.1, 4, -4),
-    new Charge(2, -3, 1),
+    new Charge(2, -3, 2),
     new Charge(-2, -1, -3),
-    new Charge(0.1, 2, 0),
+    new Charge(-1, 3, 3),
 ];
 for (let charge of chargeList) {
     layer.add(charge);

@@ -1,14 +1,15 @@
 import Vector from "../math/Vector.js";
 import Color from "../core/Color.js";
-import Graph2D from "./Graph2D.js";
+import Arc from "./Arc.js";
 
-export default class Point extends Graph2D {
+export default class Point extends Arc {
     fillColor = new Color(1, 1, 1, 1);
     _v = new Vector(0, 0, 0);
     _a = new Vector(0, 0, 0);
 
     constructor(...args) {
-        super(0, 2 * Math.PI, 0.02);
+        super(0, 2 * Math.PI, 0.09);
+
         if (Vector.isVector(args[0])) {
             this.center = args[0];
         } else if (Array.isArray(args[0])) {
@@ -20,10 +21,10 @@ export default class Point extends Graph2D {
     }
 
     update() {
-        this.begin();
-
-        // TODO
-
+        this.clear();
+        this.move(this.center);
+        this.arc(this.radius, 0, Math.PI * 2, false);
+        this.fill();
         return this;
     }
 

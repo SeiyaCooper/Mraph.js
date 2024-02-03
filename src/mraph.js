@@ -27,6 +27,7 @@ import Sphere from "./geometry/Sphere.js";
 import Graph2D from "./mobjects/Graph2D.js";
 import Point from "./mobjects/Point.js";
 import Line from "./mobjects/Line.js";
+import Arc from "./mobjects/Arc.js";
 import Arrow from "./mobjects/Arrow.js";
 import VectorField2D from "./mobjects/VectorField2D.js";
 
@@ -49,6 +50,7 @@ export {
     Graph2D,
     Point,
     Line,
+    Arc,
     Arrow,
     VectorField2D,
     Layer,
