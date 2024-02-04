@@ -325,8 +325,8 @@ declare module "utils/utils" {
      */
     export function deepCopy(obj: any): any;
 }
-declare module "animation/Action" {
-    export default class Action {
+declare module "animation/Event" {
+    export default class Event {
         /**
          * @constructor
          * @param {Object} handle - the object to construct by
@@ -374,10 +374,34 @@ declare module "animation/Action" {
 declare module "animation/Timeline" {
     export default class Timeline {
         /**
-         * list for actions to be called
+         * A single number to describe state
+         * 0 - stopped
+         * 1 - active
+         * 2 - paused
+         * @type {number}
+         */
+        state: number;
+        /**
+         * list for events to be called
          * @type {Map}
          */
-        list: Map<any, any>;
+        events: Map<any, any>;
+        /**
+         * list for events which would be called during active
+         * @type {Map}
+         */
+        globalEvents: Map<any, any>;
+        /**
+         * list for events that would always be called,
+         * those events will keep this timeline active
+         * @type {Map}
+         */
+        infinityEvents: Map<any, any>;
+        /**
+         * return value of requsetAnimationFrame()
+         * @type {number | null}
+         */
+        clock: number | null;
         /**
          * @type {number}
          */
@@ -386,6 +410,14 @@ declare module "animation/Timeline" {
          * @type {number}
          */
         _minTime: number;
+        /**
+         * @type {number}
+         */
+        current: number;
+        /**
+         * @type {number}
+         */
+        fps: number;
         /**
          * add an event to this timeline
          * @param {Number} start
@@ -401,28 +433,33 @@ declare module "animation/Timeline" {
          */
         once(at: number, handler: Function): void;
         /**
-         * add an event to action list following last action
+         * add an event to event list following last event
          * @param {Number} hold
-         * @param {Object} handle
+         * @param {Object} handler
          * @return {this}
          */
-        addFollow(hold: number, handle: any): this;
+        addFollow(hold: number, handler: any): this;
         /**
-         * add event globally (from  min time to max time)
-         * @param {Object} handle
+         * add global event
+         * @param {Object} handler
          * @returns {this}
          */
-        addGlobal(handle: any): this;
+        addGlobal(handler: any): this;
         /**
-         * equals to this.add(0, Infinity, handle)
-         * @param {Object} handle
+         * add infinity event
+         * @param {Object} handler
          * @returns {this}
          */
-        addInfinity(handle: any): this;
+        addInfinity(handler: any): this;
         /**
          * trigger events at time order
          */
         play(): void;
+        process(): void;
+        /**
+         * Stop palying aniamtion
+         */
+        pause(): void;
         set maxTime(arg: number);
         get maxTime(): number;
         set minTime(arg: number);
@@ -1084,9 +1121,9 @@ declare module "mraph" {
     import WebGLProgram from "core/WebGL/WebGLProgram";
     import CustomMaterial from "material/CustomMaterial";
     import BasicMaterial from "material/BasicMaterial";
-    import Action from "animation/Action";
+    import Event from "animation/Event";
     import Timeline from "animation/Timeline";
     import Subscriber from "animation/Subscriber";
     import OrbitControl from "extra/OrbitControl";
-    export { Matrix, Vector, Geometry, Plane, Box, Segment, Sphere, Graph2D, Point, Line, Arc, Arrow, Axis, Axes, VectorField2D, Layer, Camera, Texture, Color, WebGLRenderer, WebGLProgram, CustomMaterial, BasicMaterial, Action, Timeline, Subscriber, OrbitControl };
+    export { Matrix, Vector, Geometry, Plane, Box, Segment, Sphere, Graph2D, Point, Line, Arc, Arrow, Axis, Axes, VectorField2D, Layer, Camera, Texture, Color, WebGLRenderer, WebGLProgram, CustomMaterial, BasicMaterial, Event, Timeline, Subscriber, OrbitControl };
 }

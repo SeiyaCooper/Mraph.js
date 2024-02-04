@@ -1,11 +1,45 @@
-import Action from "./Action.js";
+import Event from "./Event.js";
+
+const STATE = {
+    STOPPED: 0,
+    PLAYING: 1,
+    PAUSED: 2,
+};
 
 export default class Timeline {
     /**
-     * list for actions to be called
+     * A single number to describe state
+     * 0 - stopped
+     * 1 - active
+     * 2 - paused
+     * @type {number}
+     */
+    state = STATE.STOPPED;
+
+    /**
+     * list for events to be called
      * @type {Map}
      */
-    list = new Map();
+    events = new Map();
+
+    /**
+     * list for events which would be called during active
+     * @type {Map}
+     */
+    globalEvents = [];
+
+    /**
+     * list for events that would always be called,
+     * those events will keep this timeline active
+     * @type {Map}
+     */
+    infinityEvents = [];
+
+    /**
+     * return value of requsetAnimationFrame()
+     * @type {number | null}
+     */
+    clock = null;
 
     /**
      * @type {number}
@@ -18,6 +52,16 @@ export default class Timeline {
     _minTime = Infinity;
 
     /**
+     * @type {number}
+     */
+    current = 0;
+
+    /**
+     * @type {number}
+     */
+    fps = 0;
+
+    /**
      * add an event to this timeline
      * @param {Number} start
      * @param {Number} stop
@@ -25,14 +69,14 @@ export default class Timeline {
      * @return {this}
      */
     add(start, stop, handle) {
-        const action = new Action(handle);
-        const list = this.list;
-        const index = [start * 1000, stop * 1000];
+        const action = new Event(handle);
+        const events = this.events;
+        const index = [start, stop];
 
-        if (list.has(index)) {
-            list.set(index, list.get(index).merge(action));
+        if (events.has(index)) {
+            events.set(index, events.get(index).merge(action));
         } else {
-            list.set(index, action);
+            events.set(index, action);
         }
 
         this._maxTime = Math.max(stop * 1000, this._maxTime);
@@ -47,77 +91,92 @@ export default class Timeline {
      * @param {Function} handler
      */
     once(at, handler) {
-        this.add(at, at, { stop: handler });
+        this.add(at, at, { start: handler });
     }
 
     /**
-     * add an event to action list following last action
+     * add an event to event list following last event
      * @param {Number} hold
-     * @param {Object} handle
+     * @param {Object} handler
      * @return {this}
      */
-    addFollow(hold, handle) {
-        this.add(this.maxTime, this.maxTime + hold, handle);
+    addFollow(hold, handler) {
+        this.add(this.maxTime, this.maxTime + hold, handler);
         return this;
     }
 
     /**
-     * add event globally (from  min time to max time)
-     * @param {Object} handle
+     * add global event
+     * @param {Object} handler
      * @returns {this}
      */
-    addGlobal(handle) {
-        const action = new Action(handle);
-        const list = this.list;
-        const index = [0, Infinity];
-
-        if (list.has(index)) {
-            list.set(index, list.get(index).merge(action));
-        } else {
-            list.set(index, action);
-        }
-        return this;
+    addGlobal(handler) {
+        this.globalEvents.push(handler);
     }
 
     /**
-     * equals to this.add(0, Infinity, handle)
-     * @param {Object} handle
+     * add infinity event
+     * @param {Object} handler
      * @returns {this}
      */
-    addInfinity(handle) {
-        this.add(0, Infinity, handle);
-        return this;
+    addInfinity(handler) {
+        this.infinityEvents.push(handler);
     }
 
     /**
      * trigger events at time order
      */
     play() {
-        const list = this.list;
-        const startTime = +new Date();
-        const minTime = this._minTime;
-        const maxTime = this._maxTime;
         const self = this;
-        let timer;
+        const startTime = +new Date();
+        let frame = 0;
 
+        this.state = STATE.PLAYING;
         (function animate() {
-            const now = +new Date() - startTime;
+            if (self.state !== STATE.PLAYING) return;
 
-            for (const [index, action] of list) {
-                action.excute(...index, now);
-                if (action.isStopped) list.delete(index);
+            frame++;
+            const now = self.fps
+                ? frame / self.fps
+                : (+new Date() - startTime) / 1000;
+
+            if (
+                now > self.maxTime &&
+                self.allStopped &&
+                self.infinityEvents.length === 0
+            ) {
+                self.state = STATE.STOPPED;
+                return;
             }
 
-            if (now < minTime) {
-                timer = requestAnimationFrame(animate);
-                return;
-            } else if (now > maxTime && self.allStopped) {
-                cancelAnimationFrame(timer);
-                return;
-            }
-
-            timer = requestAnimationFrame(animate);
+            self.current = now;
+            self.process();
+            self.clock = requestAnimationFrame(animate);
         })();
+    }
+
+    process() {
+        const events = this.events;
+        const now = this.current;
+
+        for (let handler of this.infinityEvents) {
+            handler();
+        }
+
+        if (now < this.minTime) return;
+        for (let handler of this.globalEvents) {
+            handler();
+        }
+        for (let [index, action] of events) {
+            action.excute(...index, now);
+        }
+    }
+
+    /**
+     * Stop palying aniamtion
+     */
+    pause() {
+        if (this.clock) this.state = STATE.PAUSED;
     }
 
     set maxTime(val) {
@@ -138,7 +197,7 @@ export default class Timeline {
 
     get allStopped() {
         let isStopped = true;
-        for (const [, action] of this.list) {
+        for (const [, action] of this.events) {
             if (!action.isStopped) isStopped = false;
         }
         return isStopped;

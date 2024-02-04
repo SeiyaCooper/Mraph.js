@@ -1,6 +1,6 @@
 import * as utils from "../utils/utils.js";
 
-export default class Action {
+export default class Event {
     /**
      * @type {Function}
      */
@@ -44,6 +44,7 @@ export default class Action {
      * @return {null}
      */
     excute(start, stop, now) {
+        if (this.isStopped) return;
         if (this.isStarted && !this.isStopped) {
             if (now > stop) {
                 this.update(1, stop - start);
@@ -56,6 +57,7 @@ export default class Action {
             this.start();
             this.update(0, 0);
             this.isStarted = true;
+            this.excute(start, stop, now);
         }
     }
 

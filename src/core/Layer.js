@@ -121,11 +121,9 @@ export default class Layer {
      */
     play(color = COLORS.GRAY_E) {
         const timeline = this.timeline;
-        timeline.addGlobal({
-            update: () => {
-                this.clear(color);
-                this.render();
-            },
+        timeline.addGlobal(() => {
+            this.clear(color);
+            this.render();
         });
         timeline.play();
         return this;
@@ -145,10 +143,8 @@ export default class Layer {
      */
     enableOrbitControl() {
         const control = new OrbitControl(this.camera, { element: this.canvas });
-        this.timeline.addInfinity({
-            update: () => {
-                control.update();
-            },
+        this.timeline.addInfinity(() => {
+            control.update();
         });
         return control;
     }

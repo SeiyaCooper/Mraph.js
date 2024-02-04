@@ -3,7 +3,7 @@ import Camera from "./core/Camera.js";
 import Texture from "./core/Texture.js";
 import Color from "./core/Color.js";
 
-import Action from "./animation/Action.js";
+import Event from "./animation/Event.js";
 import Timeline from "./animation/Timeline.js";
 import Subscriber from "./animation/Subscriber.js";
 
@@ -65,7 +65,7 @@ export {
     WebGLProgram,
     CustomMaterial,
     BasicMaterial,
-    Action,
+    Event,
     Timeline,
     Subscriber,
     OrbitControl,
