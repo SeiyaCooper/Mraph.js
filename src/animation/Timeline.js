@@ -66,9 +66,10 @@ export default class Timeline {
      * @param {Number} start
      * @param {Number} stop
      * @param {Object} handle
+     * @param {Object} config
      * @return {this}
      */
-    add(start, stop, handle) {
+    add(start, stop, handle, { updateMax = true, updateMin = true } = {}) {
         const action = new Event(handle);
         const events = this.events;
         const index = [start, stop];
@@ -79,8 +80,8 @@ export default class Timeline {
             events.set(index, action);
         }
 
-        this._maxTime = Math.max(stop * 1000, this._maxTime);
-        this._minTime = Math.min(start * 1000, this._minTime);
+        if (updateMax) this._maxTime = Math.max(stop * 1000, this._maxTime);
+        if (updateMin) this._minTime = Math.min(start * 1000, this._minTime);
 
         return this;
     }
@@ -98,10 +99,11 @@ export default class Timeline {
      * add an event to event list following last event
      * @param {Number} hold
      * @param {Object} handler
+     * @param {Object} config
      * @return {this}
      */
-    addFollow(hold, handler) {
-        this.add(this.maxTime, this.maxTime + hold, handler);
+    addFollow(hold, handler, config) {
+        this.add(this.maxTime, this.maxTime + hold, handler, config);
         return this;
     }
 

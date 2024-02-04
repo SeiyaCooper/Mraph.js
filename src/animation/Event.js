@@ -48,13 +48,13 @@ export default class Event {
         if (this.isStarted && !this.isStopped) {
             if (now > stop) {
                 this.update(1, stop - start);
-                this.stop();
+                this.stop(stop);
                 this.isStopped = true;
             } else {
                 this.update((now - start) / (stop - start), now - start);
             }
         } else if (now > start) {
-            this.start();
+            this.start(start);
             this.update(0, 0);
             this.isStarted = true;
             this.excute(start, stop, now);

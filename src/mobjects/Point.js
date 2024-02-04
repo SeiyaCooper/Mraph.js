@@ -47,15 +47,20 @@ export default class Point extends Arc {
         if (velo.norm !== 0) return;
 
         let lastTime = 0;
-        this.layer.timeline.addInfinity({
-            update: (_, elapsedTime) => {
-                this.center = this.center.add(
-                    this._v.mult((elapsedTime - lastTime) / 1000)
-                );
-                this.update();
-                lastTime = elapsedTime;
+        this.layer.timeline.add(
+            this.layer.timeline.current,
+            Infinity,
+            {
+                update: (_, elapsedTime) => {
+                    this.center = this.center.add(
+                        this._v.mult(elapsedTime - lastTime)
+                    );
+                    this.update();
+                    lastTime = elapsedTime;
+                },
             },
-        });
+            { updateMax: false }
+        );
     }
 
     get v() {
@@ -68,14 +73,17 @@ export default class Point extends Arc {
         if (acce.norm !== 0) return;
 
         let lastTime = 0;
-        this.layer.timeline.addInfinity({
-            update: (_, elapsedTime) => {
-                this.v = this._v.add(
-                    this._a.mult((elapsedTime - lastTime) / 1000)
-                );
-                lastTime = elapsedTime;
+        this.layer.timeline.add(
+            this.layer.timeline.current,
+            Infinity,
+            {
+                update: (_, elapsedTime) => {
+                    this.v = this._v.add(this._a.mult(elapsedTime - lastTime));
+                    lastTime = elapsedTime;
+                },
             },
-        });
+            { updateMax: false }
+        );
     }
 
     get a() {

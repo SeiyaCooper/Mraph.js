@@ -423,9 +423,10 @@ declare module "animation/Timeline" {
          * @param {Number} start
          * @param {Number} stop
          * @param {Object} handle
+         * @param {Object} config
          * @return {this}
          */
-        add(start: number, stop: number, handle: any): this;
+        add(start: number, stop: number, handle: any, { updateMax, updateMin }?: any): this;
         /**
          * add a one-time-only event
          * @param {number} at
@@ -436,9 +437,10 @@ declare module "animation/Timeline" {
          * add an event to event list following last event
          * @param {Number} hold
          * @param {Object} handler
+         * @param {Object} config
          * @return {this}
          */
-        addFollow(hold: number, handler: any): this;
+        addFollow(hold: number, handler: any, config: any): this;
         /**
          * add global event
          * @param {Object} handler
