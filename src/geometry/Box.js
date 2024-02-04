@@ -36,7 +36,7 @@ export default class Box extends Geometry {
             );
         }
 
-        const vertices = this.attributes.position.data;
+        const vertices = this.getAttribute("position");
         const c = this.center,
             w = this.width,
             h = this.height,
@@ -85,7 +85,7 @@ export default class Box extends Geometry {
             VECTORS.DOWN()
         );
 
-        this.attributes.position.needsUpdate = true;
+        this.setAttribute("position", vertices);
         this.indices = vertices.length / 3;
     }
 }
