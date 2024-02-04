@@ -454,9 +454,12 @@ declare module "animation/Timeline" {
          */
         addInfinity(handler: any): this;
         /**
-         * trigger events at time order
+         * start palying animation
          */
         play(): void;
+        /**
+         * trigger events by current time
+         */
         process(): void;
         /**
          * Stop palying aniamtion

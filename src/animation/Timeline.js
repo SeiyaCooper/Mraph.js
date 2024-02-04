@@ -126,7 +126,7 @@ export default class Timeline {
     }
 
     /**
-     * trigger events at time order
+     * start palying animation
      */
     play() {
         const self = this;
@@ -157,6 +157,9 @@ export default class Timeline {
         })();
     }
 
+    /**
+     * trigger events by current time
+     */
     process() {
         const events = this.events;
         const now = this.current;
@@ -165,10 +168,13 @@ export default class Timeline {
             handler();
         }
 
-        if (now < this.minTime) return;
-        for (let handler of this.globalEvents) {
-            handler();
+        if (now > this.minTime || this.infinityEvents.length !== 0) {
+            for (let handler of this.globalEvents) {
+                handler();
+            }
         }
+
+        if (now < this.minTime) return;
         for (let [index, action] of events) {
             action.excute(...index, now);
         }
