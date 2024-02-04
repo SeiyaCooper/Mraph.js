@@ -729,6 +729,10 @@ declare module "core/Object3D" {
          */
         children: Geometry[];
         /**
+         * @type {Matrix}
+         */
+        _matrix: Matrix;
+        /**
          * @param  {...Geometry} objs
          */
         addChild(...objs: Geometry[]): void;
@@ -740,7 +744,10 @@ declare module "core/Object3D" {
          * delete all children
          */
         clearChildren(): void;
+        set matrix(arg: any);
+        get matrix(): any;
     }
+    import Matrix from "math/Matrix";
 }
 declare module "geometry/Geometry" {
     export default class Geometry extends Object3D {
@@ -976,6 +983,49 @@ declare module "mobjects/Arrow" {
     }
     import Line from "mobjects/Line";
 }
+declare module "mobjects/Axis" {
+    export default class Axis extends Line {
+        /**
+         * Create an Axis from oringin point, direction vector and range
+         * @param {Point | Vector} base
+         * @param {Vector} dir - direction vector
+         * @param {number[]} range - an array to describe range,
+         *                           it should be formated like [start, end, unit]
+         * @returns
+         */
+        static fromRange(base: Point | Vector, dir: Vector, range: number[]): Axis;
+        constructor(start: any, end: any, { unit }?: {
+            unit?: number;
+        });
+        tickLength: number;
+        unit: number;
+        update(): Axis;
+    }
+    import Line from "mobjects/Line";
+    import Point from "mobjects/Point";
+    import Vector from "math/Vector";
+}
+declare module "mobjects/Axes" {
+    export default class Axes extends Graph2D {
+        constructor({ xRange, yRange, zRange, center, }?: {
+            xRange?: number[];
+            yRange?: number[];
+            zRange?: number[];
+            center?: Point;
+        });
+        _tickLength: number;
+        center: Point;
+        xAxis: Axis;
+        yAxis: Axis;
+        zAxis: Axis;
+        addTip(): void;
+        set tickLength(arg: number);
+        get tickLength(): number;
+    }
+    import Graph2D from "mobjects/Graph2D";
+    import Point from "mobjects/Point";
+    import Axis from "mobjects/Axis";
+}
 declare module "mobjects/VectorField2D" {
     export default class VectorField2D extends Geometry {
         constructor({ func, xRange, yRange, }?: {
@@ -1023,6 +1073,8 @@ declare module "mraph" {
     import Line from "mobjects/Line";
     import Arc from "mobjects/Arc";
     import Arrow from "mobjects/Arrow";
+    import Axis from "mobjects/Axis";
+    import Axes from "mobjects/Axes";
     import VectorField2D from "mobjects/VectorField2D";
     import Layer from "core/Layer";
     import Camera from "core/Camera";
@@ -1036,5 +1088,5 @@ declare module "mraph" {
     import Timeline from "animation/Timeline";
     import Subscriber from "animation/Subscriber";
     import OrbitControl from "extra/OrbitControl";
-    export { Matrix, Vector, Geometry, Plane, Box, Segment, Sphere, Graph2D, Point, Line, Arc, Arrow, VectorField2D, Layer, Camera, Texture, Color, WebGLRenderer, WebGLProgram, CustomMaterial, BasicMaterial, Action, Timeline, Subscriber, OrbitControl };
+    export { Matrix, Vector, Geometry, Plane, Box, Segment, Sphere, Graph2D, Point, Line, Arc, Arrow, Axis, Axes, VectorField2D, Layer, Camera, Texture, Color, WebGLRenderer, WebGLProgram, CustomMaterial, BasicMaterial, Action, Timeline, Subscriber, OrbitControl };
 }

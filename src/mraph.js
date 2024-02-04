@@ -29,6 +29,8 @@ import Point from "./mobjects/Point.js";
 import Line from "./mobjects/Line.js";
 import Arc from "./mobjects/Arc.js";
 import Arrow from "./mobjects/Arrow.js";
+import Axis from "./mobjects/Axis.js";
+import Axes from "./mobjects/Axes.js";
 import VectorField2D from "./mobjects/VectorField2D.js";
 
 export * as MathFunc from "./math/math_func.js";
@@ -52,6 +54,8 @@ export {
     Line,
     Arc,
     Arrow,
+    Axis,
+    Axes,
     VectorField2D,
     Layer,
     Camera,

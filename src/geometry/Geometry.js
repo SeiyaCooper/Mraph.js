@@ -1,23 +1,18 @@
 import * as DrawMode from "../constants/draw_modes.js";
 import Object3D from "../core/Object3D.js";
-import Matrix from "../math/Matrix.js";
 
 export default class Geometry extends Object3D {
     /**
      * attribute variables
      * @type {Object}
      */
-    attributes = {
-        position: { data: [] },
-    };
+    attributes = {};
 
     /**
      * uniform variables
      * @type {Object}
      */
-    uniforms = {
-        modelMat: Matrix.identity(4),
-    };
+    uniforms = {};
 
     /**
      * @type {number}

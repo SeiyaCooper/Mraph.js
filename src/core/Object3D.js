@@ -1,3 +1,5 @@
+import Matrix from "../math/Matrix.js";
+
 export default class Object3D {
     /**
      * @type {Geometry | undefined}
@@ -8,6 +10,11 @@ export default class Object3D {
      * @type {Geometry[]}
      */
     children = [];
+
+    /**
+     * @type {Matrix}
+     */
+    _matrix = Matrix.identity(4);
 
     /**
      * @param  {...Geometry} objs
@@ -34,5 +41,17 @@ export default class Object3D {
      */
     clearChildren() {
         this.deleteChild(...this.children);
+    }
+
+    set matrix(val) {
+        this._matrix = val;
+    }
+
+    get matrix() {
+        if (this.parent) {
+            return this.parent.matrix.mult(this._matrix);
+        } else {
+            return this._matrix;
+        }
     }
 }

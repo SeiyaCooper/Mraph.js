@@ -1,3 +1,4 @@
+import Matrix from "../../math/Matrix.js";
 import * as DrawModes from "../../constants/draw_modes.js";
 
 export default class WebGLRenderer {
@@ -25,6 +26,7 @@ export default class WebGLRenderer {
 
         program.setUniform("viewMat", camera.viewMat);
         program.setUniform("projectionMat", camera.projectionMat);
+        program.setUniform("modelMat", mesh.matrix ?? Matrix.identity(4));
 
         for (let [name, value] of Object.entries(mesh.attributes ?? {})) {
             const n = value.n ?? program.attributes[name];
