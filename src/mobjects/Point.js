@@ -28,6 +28,60 @@ export default class Point extends Arc {
         return this;
     }
 
+    moveTo(pos, { runTime = 1 } = {}) {
+        let start;
+        this.layer.timeline.addFollow(runTime, {
+            start: () => {
+                start = this.center;
+            },
+            update: (p) => {
+                this.center = start.lerp(pos, p);
+                this.update();
+            },
+        });
+    }
+
+    set v(val) {
+        const velo = this._v;
+        this._v = val;
+        if (velo.norm !== 0) return;
+
+        let lastTime = 0;
+        this.layer.timeline.addInfinity({
+            update: (_, elapsedTime) => {
+                this.center = this.center.add(
+                    this._v.mult((elapsedTime - lastTime) / 1000)
+                );
+                this.update();
+                lastTime = elapsedTime;
+            },
+        });
+    }
+
+    get v() {
+        return this._v;
+    }
+
+    set a(val) {
+        const acce = this._a;
+        this._a = val;
+        if (acce.norm !== 0) return;
+
+        let lastTime = 0;
+        this.layer.timeline.addInfinity({
+            update: (_, elapsedTime) => {
+                this.v = this._v.add(
+                    this._a.mult((elapsedTime - lastTime) / 1000)
+                );
+                lastTime = elapsedTime;
+            },
+        });
+    }
+
+    get a() {
+        return this._a;
+    }
+
     set x(val) {
         this.center[0] = val;
     }

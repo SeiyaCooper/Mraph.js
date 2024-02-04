@@ -932,6 +932,13 @@ declare module "mobjects/Point" {
         _a: Vector;
         center: any;
         update(): Point;
+        moveTo(pos: any, { runTime }?: {
+            runTime?: number;
+        }): void;
+        set v(arg: Vector);
+        get v(): Vector;
+        set a(arg: Vector);
+        get a(): Vector;
         set x(arg: any);
         get x(): any;
         set y(arg: any);

@@ -7,7 +7,7 @@ class Charge extends mp.Point {
     constructor(charge, x, y) {
         super([x, y, 0]);
         this.charge = charge;
-        this.radius = 0.1;
+        this.radius = 0.15;
         this.setColor(charge > 0 ? mp.COLORS.RED : mp.COLORS.BLUE);
     }
 }
