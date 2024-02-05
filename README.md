@@ -4,21 +4,24 @@
 [![last commit](https://img.shields.io/github/last-commit/SeiyaCooper/Mraph.js)](https://github.com/SeiyaCooper/Mraph.js/commits/main)
 
 Mraph.js is a library for drawing geometric shapes in browser  
+[Github](https://github.com/SeiyaCooper/Mraph.js) | 
+[NPM](https://www.npmjs.com/package/mraph) | 
+[Examples](https://seiyacooper.github.io/Mraph.js/gallery/)
 
 > [!IMPORTANT]
 > This lib is for personal use
 
 # Usage
 
-Install with npm:
+## Install with npm:
 
 ```shell
 npm install --save mraph
 ```
 
-A short example:
+## A short example:
 
-```JavaScript
+```js
 import { Layer, Point, Vector } from "mraph";
 
 // Create a new Layer
@@ -36,6 +39,8 @@ point.a = new Vector(0.5, 1, 0);
 // Start animation
 layer.play();
 ```
+
+[See more](https://seiyacooper.github.io/Mraph.js/gallery/)
 
 # Contribution
 
