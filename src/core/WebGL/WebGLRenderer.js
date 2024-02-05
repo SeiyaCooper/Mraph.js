@@ -2,11 +2,11 @@ import Matrix from "../../math/Matrix.js";
 import * as DrawModes from "../../constants/draw_modes.js";
 
 export default class WebGLRenderer {
-    constructor(canvas) {
+    constructor(canvas, contextConfig = {}) {
         this.canvas = canvas;
 
-        this.gl = canvas.getContext("webgl2");
-        if (!this.gl) this.gl = canvas.getContext("webgl");
+        this.gl = canvas.getContext("webgl2", contextConfig);
+        if (!this.gl) this.gl = canvas.getContext("webgl", contextConfig);
 
         const gl = this.gl;
         this.usage = gl.STATIC_DRAW;

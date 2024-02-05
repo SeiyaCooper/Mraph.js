@@ -16,6 +16,7 @@ export default class Layer {
         fillScreen = true,
         appendTo = undefined,
         rendererClass = WebGLRenderer,
+        contextConfig = {},
     } = {}) {
         this.canvas = document.createElement("canvas");
 
@@ -34,7 +35,7 @@ export default class Layer {
         this.camera.perspective({
             aspect: this.canvas.width / this.canvas.height,
         });
-        this.renderer = new rendererClass(this.canvas);
+        this.renderer = new rendererClass(this.canvas, contextConfig);
         this.clear(COLORS.GRAY_E);
     }
 

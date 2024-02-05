@@ -484,7 +484,7 @@ declare module "constants/draw_modes" {
 }
 declare module "core/WebGL/WebGLRenderer" {
     export default class WebGLRenderer {
-        constructor(canvas: any);
+        constructor(canvas: any, contextConfig?: {});
         canvas: any;
         gl: any;
         usage: any;
@@ -646,10 +646,11 @@ declare module "material/MobjectMaterial" {
 }
 declare module "core/Layer" {
     export default class Layer {
-        constructor({ fillScreen, appendTo, rendererClass, }?: {
+        constructor({ fillScreen, appendTo, rendererClass, contextConfig, }?: {
             fillScreen?: boolean;
             appendTo?: any;
             rendererClass?: typeof WebGLRenderer;
+            contextConfig?: {};
         });
         elements: any[];
         camera: Camera;
