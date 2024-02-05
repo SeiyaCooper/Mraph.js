@@ -24,6 +24,7 @@ export default class Layer {
             this.canvas.height = 1.5 * window.innerHeight;
             this.canvas.style.width = "100%";
             this.canvas.style.height = "100%";
+            this.canvas.style.display = "block";
         }
 
         if (appendTo) {
