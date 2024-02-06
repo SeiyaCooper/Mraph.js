@@ -1,0 +1,17 @@
+---
+import Main from "../../layouts/Main.astro";
+---
+
+<Main>
+    <script>
+        const examples = [
+            "Basic Example",
+            "Rubik's Cube",
+            "Electric Field",
+            "Magnetic Focus",
+        ];
+        const example = examples[Math.floor(Math.random() * examples.length)];
+
+        window.location.replace(`/Mraph.js/gallery/${example}`);
+    </script>
+</Main>

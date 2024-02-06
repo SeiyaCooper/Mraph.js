@@ -1,0 +1,35 @@
+---
+import "github-markdown-css";
+
+interface Props {
+    title?: string;
+}
+
+const { title = "" } = Astro.props;
+---
+
+<!doctype html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>{title}</title>
+    </head>
+    <body class="markdown-body">
+        <slot />
+    </body>
+</html>
+
+<style>
+    .markdown-body {
+        min-width: 200px;
+        max-width: 980px;
+        padding: 45px;
+    }
+
+    @media (max-width: 767px) {
+        .markdown-body {
+            padding: 15px;
+        }
+    }
+</style>

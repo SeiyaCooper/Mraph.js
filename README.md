@@ -6,7 +6,7 @@
 Mraph.js is a library for drawing geometric shapes in browser  
 [Github](https://github.com/SeiyaCooper/Mraph.js) | 
 [NPM](https://www.npmjs.com/package/mraph) | 
-[Examples](https://seiyacooper.github.io/Mraph.js/gallery/)
+[Examples](/Mraph.js/gallery)
 
 > [!IMPORTANT]
 > This lib is for personal use
@@ -40,7 +40,7 @@ point.a = new Vector(0.5, 1, 0);
 layer.play();
 ```
 
-[See more](https://seiyacooper.github.io/Mraph.js/gallery/)
+[See more](/Mraph.js/gallery)
 
 # Contribution
 

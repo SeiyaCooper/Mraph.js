@@ -1,0 +1,60 @@
+---
+import Link from "./Link.astro";
+
+interface Props {
+    list?: string[];
+    focus?: string;
+}
+
+const { list = [""], focus = "" } = Astro.props;
+---
+
+<button></button>
+<ul>
+    {
+        list.map((title) => (
+            <Link title={title} src={`/Mraph.js/gallery/${title}`} />
+        ))
+    }
+</ul>
+
+<script>
+    const button = document.querySelector("button");
+    const ul = document.querySelector("ul");
+    let visible = false;
+    button.onclick = () => {
+        visible = !visible;
+        if (visible) {
+            ul.style.left = "0";
+            button.style.rotate = "180deg";
+        } else {
+            ul.style.left = "-100%";
+            button.style.rotate = "0deg";
+        }
+    };
+</script>
+
+<style>
+    button {
+        width: 8vh;
+        height: 8vh;
+        position: absolute;
+        top: 0;
+        left: 0;
+        background-color: transparent;
+        background-image: url("/Mraph.js/chevrons-right.svg");
+        background-size: contain;
+        border: none;
+        transition: rotate 0.3s;
+    }
+
+    ul {
+        position: absolute;
+        margin: 0;
+        padding: 0;
+        top: 8vh;
+        left: -100%;
+        list-style: none;
+        transition: all 0.3s;
+    }
+</style>

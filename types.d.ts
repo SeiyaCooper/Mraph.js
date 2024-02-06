@@ -159,8 +159,7 @@ declare module "math/Matrix" {
          * copy value from another matrix
          * @param {Matrix} mat
          */
-        copy(mat: Matrix): Matrix;
-        length: any;
+        copy(mat: Matrix): this;
         /**
          * resize this matrix with a number to fill
          * @param {number} row
@@ -176,7 +175,7 @@ declare module "math/Matrix" {
         /**
          * @param {number} val
          */
-        set norm(arg: number);
+        set norm(val: number);
         /**
          * @returns {number} F-norm of this matrix
          */
@@ -292,7 +291,7 @@ declare module "math/Vector" {
         /**
          * copy values from another vector
          */
-        copy(vec: any): Vector;
+        copy(vec: any): this;
         /**
          * @returns {Matrix}
          */
@@ -300,7 +299,7 @@ declare module "math/Vector" {
         /**
          * @param {number} val
          */
-        set norm(arg: number);
+        set norm(val: number);
         /**
          * @type {number}
          */
@@ -465,9 +464,9 @@ declare module "animation/Timeline" {
          * Stop palying aniamtion
          */
         pause(): void;
-        set maxTime(arg: number);
+        set maxTime(val: number);
         get maxTime(): number;
-        set minTime(arg: number);
+        set minTime(val: number);
         get minTime(): number;
         get allStopped(): boolean;
     }
@@ -505,7 +504,7 @@ declare module "core/Camera" {
             near?: number;
             far?: number;
             aspect?: number;
-        }): Camera;
+        }): this;
         ortho({ left, right, bottom, top, near, far, }?: {
             left?: number;
             right?: number;
@@ -513,8 +512,8 @@ declare module "core/Camera" {
             top?: number;
             near?: number;
             far?: number;
-        }): Camera;
-        lookAt(target: any): Camera;
+        }): this;
+        lookAt(target: any): this;
         matrix: Matrix;
     }
     import Vector from "math/Vector";
@@ -543,7 +542,7 @@ declare module "extra/OrbitControl" {
         moveSpeed: number;
         moveEase: number;
         camera: any;
-        set element(arg: Document);
+        set element(el: Document);
         get element(): Document;
         update(): void;
         rotate(deltaPhi: any, deltaTheta: any): void;
@@ -620,11 +619,11 @@ declare module "core/WebGL/WebGLProgram" {
         vs: any;
         fs: any;
         program: any;
-        set attributes(arg: any);
+        set attributes(val: any);
         get attributes(): any;
-        set uniforms(arg: any);
+        set uniforms(val: any);
         get uniforms(): any;
-        set textures(arg: any);
+        set textures(val: any);
         get textures(): any;
         use(): void;
         setUniform(name: any, data: any): void;
@@ -698,7 +697,7 @@ declare module "core/Layer" {
          * pause for a while between animations
          * @param {number} [time=1] in seconds
          */
-        wait(time?: number): Layer;
+        wait(time?: number): this;
         /**
          * @returns Control
          */
@@ -724,9 +723,9 @@ declare module "core/Texture" {
         target: any;
         flipY: boolean;
         texture: any;
-        set minFilter(arg: any);
+        set minFilter(val: any);
         get minFilter(): any;
-        set magFilter(arg: any);
+        set magFilter(val: any);
         get magFilter(): any;
         upload(): void;
         __minFilter: any;
@@ -787,7 +786,7 @@ declare module "core/Object3D" {
          * delete all children
          */
         clearChildren(): void;
-        set matrix(arg: any);
+        set matrix(val: any);
         get matrix(): any;
     }
     import Matrix from "math/Matrix";
@@ -971,7 +970,7 @@ declare module "mobjects/Arc" {
         endAng: number;
         radius: number;
         center: number[];
-        update(): Arc;
+        update(): this;
     }
     import Graph from "mobjects/Graph2D";
 }
@@ -981,19 +980,19 @@ declare module "mobjects/Point" {
         _v: Vector;
         _a: Vector;
         center: any;
-        update(): Point;
+        update(): this;
         moveTo(pos: any, { runTime }?: {
             runTime?: number;
         }): void;
-        set v(arg: Vector);
+        set v(val: Vector);
         get v(): Vector;
-        set a(arg: Vector);
+        set a(val: Vector);
         get a(): Vector;
-        set x(arg: any);
+        set x(val: any);
         get x(): any;
-        set y(arg: any);
+        set y(val: any);
         get y(): any;
-        set z(arg: any);
+        set z(val: any);
         get z(): any;
     }
     import Arc from "mobjects/Arc";
@@ -1008,12 +1007,12 @@ declare module "mobjects/Line" {
         tips: any[];
         start: Point;
         end: Point;
-        update(): Line;
+        update(): this;
         at(p: any): any;
         addTip(at: any, reverse?: boolean): void;
-        set vector(arg: any);
+        set vector(vec: any);
         get vector(): any;
-        set length(arg: any);
+        set length(val: any);
         get length(): any;
         get slope(): number;
     }
@@ -1042,7 +1041,7 @@ declare module "mobjects/Axis" {
         });
         tickLength: number;
         unit: number;
-        update(): Axis;
+        update(): this;
     }
     import Line from "mobjects/Line";
     import Point from "mobjects/Point";
@@ -1062,7 +1061,7 @@ declare module "mobjects/Axes" {
         yAxis: Axis;
         zAxis: Axis;
         addTip(): void;
-        set tickLength(arg: number);
+        set tickLength(val: number);
         get tickLength(): number;
     }
     import Graph2D from "mobjects/Graph2D";
@@ -1082,7 +1081,7 @@ declare module "mobjects/VectorField2D" {
         xRange: number[];
         yRange: number[];
         func: (x: any, y: any) => any[];
-        set center(arg: Vector);
+        set center(center: Vector);
         get center(): Vector;
     }
     import Geometry from "geometry/Geometry";

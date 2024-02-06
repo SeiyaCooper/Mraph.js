@@ -1,0 +1,46 @@
+---
+interface Props {
+    title?: string;
+    src?: string;
+}
+
+const { title = "", src = "" } = Astro.props;
+---
+
+<li>
+    <a href={src}>{title}</a>
+</li>
+
+<style>
+    li {
+        height: 40px;
+        width: 60vw;
+        min-width: 100px;
+        background-color: rgba(20, 20, 25, 1);
+        padding: 10px;
+        margin: 1px;
+        display: flex;
+        align-items: center;
+        transition: all 0.2s;
+    }
+
+    li:hover {
+        background-color: aliceblue;
+    }
+
+    li:hover a {
+        color: dodgerblue;
+    }
+
+    a {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        color: aliceblue;
+        text-decoration: none;
+        font-family: Helvetica;
+        font-size: 100%;
+        font-weight: bolder;
+    }
+</style>
