@@ -22,13 +22,15 @@ const examples = [
 
 <style>
     div {
-        width: 100%;
-        height: 8%;
+        width: calc(100% - 2px);
+        height: 10%;
         position: fixed;
-        background-color: rgba(20, 20, 25, 1);
+        background-color: rgba(15, 15, 25, 0.5);
+        border: 1px solid rgba(220, 220, 255, 0.3);
         display: flex;
         justify-content: center;
         align-items: center;
+        backdrop-filter: blur(6px);
     }
 
     div h1 {

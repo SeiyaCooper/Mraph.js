@@ -19,8 +19,8 @@ const { list = [""], focus = "" } = Astro.props;
 </ul>
 
 <script>
-    const button = document.querySelector("button");
-    const ul = document.querySelector("ul");
+    const button = document.querySelector("button") as HTMLButtonElement;
+    const ul = document.querySelector("ul") as HTMLUListElement;
     let visible = false;
     button.onclick = () => {
         visible = !visible;
@@ -36,25 +36,39 @@ const { list = [""], focus = "" } = Astro.props;
 
 <style>
     button {
-        width: 8vh;
-        height: 8vh;
+        width: 10vh;
+        height: 10vh;
         position: absolute;
         top: 0;
         left: 0;
         background-color: transparent;
         background-image: url("/Mraph.js/chevrons-right.svg");
-        background-size: contain;
+        background-size: 65%;
+        background-position: center;
+        background-repeat: no-repeat;
         border: none;
         transition: rotate 0.3s;
     }
 
     ul {
         position: absolute;
+        width: 20vw;
+        height: 100vh;
+        overflow-y: auto;
         margin: 0;
-        padding: 0;
-        top: 8vh;
+        padding-left: 10px;
+        padding-top: 10px;
+        padding-right: 10px;
+        top: calc(10vh + 1px);
         left: -100%;
         list-style: none;
-        transition: all 0.3s;
+        transition: left ease-in-out 0.3s;
+        background-color: rgba(30, 30, 30, 0.5);
+    }
+
+    @media (max-width: 767px) {
+        ul {
+            width: 55vw;
+        }
     }
 </style>

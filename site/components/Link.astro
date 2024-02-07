@@ -13,10 +13,9 @@ const { title = "", src = "" } = Astro.props;
 
 <style>
     li {
-        height: 40px;
-        width: 60vw;
+        height: 20px;
         min-width: 100px;
-        background-color: rgba(20, 20, 25, 1);
+        background-color: rgba(20, 20, 25, 0.3);
         padding: 10px;
         margin: 1px;
         display: flex;
@@ -25,7 +24,7 @@ const { title = "", src = "" } = Astro.props;
     }
 
     li:hover {
-        background-color: aliceblue;
+        background-color: rgba(215, 215, 240, 0.7);
     }
 
     li:hover a {
@@ -40,7 +39,7 @@ const { title = "", src = "" } = Astro.props;
         color: aliceblue;
         text-decoration: none;
         font-family: Helvetica;
-        font-size: 100%;
+        font-size: 80%;
         font-weight: bolder;
     }
 </style>
