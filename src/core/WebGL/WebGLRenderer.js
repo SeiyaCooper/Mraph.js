@@ -22,6 +22,7 @@ export default class WebGLRenderer {
         if (material.transparent) gl.disable(gl.DEPTH_TEST);
 
         if (!material.program) material.initProgram(this.gl);
+        material.beforeRender?.({ mesh, camera });
         const program = material.program;
 
         program.setUniform("viewMat", camera.viewMat);

@@ -33,13 +33,11 @@ export default class Program {
             const n = data[0].length;
             const arr = new Float32Array(data.flat());
             gl["uniformMatrix" + n + "fv"](location, false, arr);
-        } else if (Array.isArray(data.data[0])) {
-            const n = data.n ?? data.data[0].length;
-            const arr = new Float32Array(data.data.flat());
-            gl["uniformMatrix" + n + "fv"](location, arr);
+        } else if (Array.isArray(data)) {
+            const arr = new Float32Array(data);
+            gl["uniform" + data.length + "fv"](location, arr);
         } else {
-            const arr = new Float32Array(data.data);
-            gl["uniform" + data.n + "fv"](location, arr);
+            gl.uniform1f(location, data);
         }
     }
 

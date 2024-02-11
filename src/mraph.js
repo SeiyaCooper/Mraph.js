@@ -14,6 +14,8 @@ import WebGLProgram from "./core/WebGL/WebGLProgram.js";
 
 import CustomMaterial from "./material/CustomMaterial.js";
 import BasicMaterial from "./material/BasicMaterial.js";
+import MobjectMaterial from "./material/MobjectMaterial.js";
+import DepthMaterial from "./material/DepthMaterial.js";
 
 import Matrix from "./math/Matrix.js";
 import Vector from "./math/Vector.js";
@@ -65,6 +67,8 @@ export {
     WebGLProgram,
     CustomMaterial,
     BasicMaterial,
+    MobjectMaterial,
+    DepthMaterial,
     Event,
     Timeline,
     Subscriber,

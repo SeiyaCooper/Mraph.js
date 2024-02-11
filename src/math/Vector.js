@@ -121,6 +121,15 @@ export default class Vector extends Array {
     }
 
     /**
+     * Project to another vector
+     * @param {Vector} vec
+     * @returns {Vector}
+     */
+    project(vec) {
+        return vec.normal().mult(this.dot(vec) / vec.norm);
+    }
+
+    /**
      * normalize this vector
      * @returns {Vector}
      */

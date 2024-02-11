@@ -272,6 +272,12 @@ declare module "math/Vector" {
          */
         reduce(vec: Vector): Vector;
         /**
+         * Project to another vector
+         * @param {Vector} vec
+         * @returns {Vector}
+         */
+        project(vec: Vector): Vector;
+        /**
          * normalize this vector
          * @returns {Vector}
          */
@@ -505,6 +511,8 @@ declare module "core/Camera" {
             far?: number;
             aspect?: number;
         }): this;
+        near: number;
+        far: number;
         ortho({ left, right, bottom, top, near, far, }?: {
             left?: number;
             right?: number;
@@ -758,6 +766,17 @@ declare module "material/BasicMaterial" {
         get transparent(): boolean;
     }
     import Color from "core/Color";
+    import WebGLProgram from "core/WebGL/WebGLProgram";
+}
+declare module "material/DepthMaterial" {
+    export default class BasicMaterial {
+        transparent: boolean;
+        vertexShader: string;
+        fragmentShader: string;
+        initProgram(gl: any): void;
+        program: WebGLProgram;
+        beforeRender(scene: any): void;
+    }
     import WebGLProgram from "core/WebGL/WebGLProgram";
 }
 declare module "core/Object3D" {
@@ -1126,9 +1145,11 @@ declare module "mraph" {
     import WebGLProgram from "core/WebGL/WebGLProgram";
     import CustomMaterial from "material/CustomMaterial";
     import BasicMaterial from "material/BasicMaterial";
+    import MobjectMaterial from "material/MobjectMaterial";
+    import DepthMaterial from "material/DepthMaterial";
     import Event from "animation/Event";
     import Timeline from "animation/Timeline";
     import Subscriber from "animation/Subscriber";
     import OrbitControl from "extra/OrbitControl";
-    export { Matrix, Vector, Geometry, Plane, Box, Segment, Sphere, Graph2D, Point, Line, Arc, Arrow, Axis, Axes, VectorField2D, Layer, Camera, Texture, Color, WebGLRenderer, WebGLProgram, CustomMaterial, BasicMaterial, Event, Timeline, Subscriber, OrbitControl };
+    export { Matrix, Vector, Geometry, Plane, Box, Segment, Sphere, Graph2D, Point, Line, Arc, Arrow, Axis, Axes, VectorField2D, Layer, Camera, Texture, Color, WebGLRenderer, WebGLProgram, CustomMaterial, BasicMaterial, MobjectMaterial, DepthMaterial, Event, Timeline, Subscriber, OrbitControl };
 }
