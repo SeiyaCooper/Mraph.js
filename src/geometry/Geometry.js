@@ -47,12 +47,12 @@ export default class Geometry extends Object3D {
      * This method assuming all children have and only have two variables, position and color.
      */
     combineChildren() {
-        const vertices = this.getAttribute("position");
-        const colors = this.getAttribute("color");
+        const vertices = this.getAttributeVal("position");
+        const colors = this.getAttributeVal("color");
 
         for (let child of this.children) {
-            const position = child.getAttribute("position");
-            const oriColors = child.getAttribute("color");
+            const position = child.getAttributeVal("position");
+            const oriColors = child.getAttributeVal("color");
 
             if (typeof child.indices !== "number") {
                 for (let i of child.indices.data) {
@@ -97,7 +97,7 @@ export default class Geometry extends Object3D {
      * @param {number[]} data
      * @param {number} n
      */
-    getAttribute(name) {
+    getAttributeVal(name) {
         return this.attributes[name]?.data ?? [];
     }
 

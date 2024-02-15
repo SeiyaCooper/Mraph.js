@@ -38,7 +38,7 @@ export default class BasicMaterial {
                 position: 3,
             },
             uniforms: {
-                color: { data: this.color, n: 4 },
+                color: this.color,
             },
         });
     }

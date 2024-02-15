@@ -23,6 +23,10 @@ export default class Axes extends Graph2D {
         this.addChild(this.xAxis);
         this.addChild(this.yAxis);
         this.addChild(this.zAxis);
+
+        for (let axis of this.children) {
+            axis.update();
+        }
     }
 
     addTip() {

@@ -1,213 +1,154 @@
 import Geometry from "../geometry/Geometry.js";
-import * as VECTORS from "../constants/vectors.js";
 import Color from "../core/Color.js";
+import * as Utils from "../utils/utils.js";
 import Segment from "../geometry/Segment.js";
-
-const CMD = {
-    MOVE: 0,
-    LINE: 1,
-    FILL: 2,
-    STROKE: 3,
-    ARC: 4,
-};
+import Vector from "../math/Vector.js";
+import * as VECTORS from "../constants/vectors.js";
 
 export default class Graph2D extends Geometry {
-    normal = VECTORS.OUT();
-    up = VECTORS.UP();
-
-    argumentBuffer = [];
-    commandBuffer = [];
-
+    points = [];
+    polygons = [];
     fillColor = new Color(1, 1, 1, 1);
     strokeColor = new Color(1, 1, 1, 1);
     strokeWidth = 0.05;
+    normal = VECTORS.OUT();
 
-    begin() {
-        this.argumentBuffer = [];
-        this.commandBuffer = [];
+    move(point) {
+        if (this.points.length !== 0) this.finish();
+        this.points.push(point);
     }
 
-    move(pos) {
-        this.argumentBuffer.push(pos);
-        this.commandBuffer.push(CMD.MOVE);
-    }
-
-    line(pos) {
-        this.argumentBuffer.push(pos);
-        this.commandBuffer.push(CMD.LINE);
+    line(point) {
+        this.points.push(point);
     }
 
     arc(radius, startAngle, endAngle, clockwise = true) {
-        this.argumentBuffer.push([radius, startAngle, endAngle, clockwise]);
-        this.commandBuffer.push(CMD.ARC);
-    }
+        if (radius === 0) return;
 
-    stroke() {
-        const pb = this.argumentBuffer;
-        const cb = this.commandBuffer;
-
-        function createSegment(Type, self, i) {
-            const seg = new Type(
-                self.toWorldPos(pb[i]),
-                self.toWorldPos(pb[i + 1])
-            );
-            seg.strokeColor = self.strokeColor;
-            seg.strokeWidth = self.strokeWidth;
-            seg.update();
-            return seg;
-        }
-
-        function addSegment(self, i) {
-            switch (cb[i + 1]) {
-                case CMD.LINE:
-                    self.addChild(createSegment(Segment, self, i));
-                    return false;
-                default:
-                    return true;
-            }
-        }
-
-        function addSegments(self, i) {
-            for (let j = i; j < cb.length; j++) {
-                if (addSegment(self, j)) break;
-            }
-        }
-
-        for (let i = 0; i < cb.length; i++) {
-            const cmd = cb[i];
-            if (cmd === CMD.MOVE) {
-                addSegments(this, i);
-            }
-        }
-
-        pb.push(null);
-        cb.push(CMD.STROKE);
-        this.combineChildren();
+        let center;
+        if (this.points.length === 0) center = [0, 0, 0];
+        else center = this.points[this.points.length - 1];
+        this.polygons.push(
+            new ArcPath(center, radius, startAngle, endAngle, clockwise)
+        );
     }
 
     fill() {
-        const vertices = this.getAttribute("position");
-        const colors = this.getAttribute("color");
+        if (this.points.length !== 0) this.finish();
 
-        const pb = this.argumentBuffer;
-        const cb = this.commandBuffer;
-
-        function fillPolygon(self, startIndex) {
-            let endIndex = cb.findIndex((el, index) => {
-                if (index <= startIndex) return false;
-                if (el === CMD.LINE) return false;
-                return true;
-            });
-
-            if (endIndex === startIndex + 1) return;
-            if (endIndex === -1) endIndex = cb.length;
-
-            const basePoint = self.toWorldPos(pb[startIndex]);
-            for (let i = startIndex + 1; i < endIndex - 1; i++) {
-                vertices.push(...basePoint);
-                vertices.push(...self.toWorldPos(pb[i]));
-                vertices.push(...self.toWorldPos(pb[i + 1]));
-
-                colors.push(...self.fillColor);
-                colors.push(...self.fillColor);
-                colors.push(...self.fillColor);
+        const vertices = this.getAttributeVal("position");
+        const colors = this.getAttributeVal("color");
+        for (let polygon of this.polygons) {
+            if (!Array.isArray(polygon)) {
+                polygon.fill(this, vertices, colors);
+                continue;
+            }
+            if (polygon.length < 3) continue;
+            for (let point of polygon) {
+                vertices.push(...point);
+                colors.push(...this.fillColor);
             }
         }
-
-        function fillArc(self, index) {
-            const c = pb[index];
-            const basePoint = self.toWorldPos(c);
-            const sin = Math.sin,
-                cos = Math.cos;
-            let [r, stAng, edAng, clockwise] = pb[index + 1];
-            let unit;
-
-            if (stAng > edAng) {
-                stAng = edAng;
-                edAng = pb[index + 1][1];
-                clockwise = !clockwise;
-            }
-
-            if (clockwise) {
-                unit = (edAng - stAng - Math.PI * 2) / 25;
-            } else {
-                unit = (edAng - stAng) / 25;
-            }
-
-            function fillTriangle(ang) {
-                vertices.push(...basePoint);
-                vertices.push(
-                    ...self.toWorldPos([
-                        cos(ang) * r + c[0],
-                        sin(ang) * r + c[1],
-                    ])
-                );
-                vertices.push(
-                    ...self.toWorldPos([
-                        cos(ang + unit) * r + c[0],
-                        sin(ang + unit) * r + c[1],
-                    ])
-                );
-
-                colors.push(...self.fillColor);
-                colors.push(...self.fillColor);
-                colors.push(...self.fillColor);
-            }
-
-            for (let i = 0; i < 25; i++) {
-                fillTriangle(stAng + i * unit);
-            }
-        }
-
-        function startFill(self, i) {
-            // if the last command is move
-            if (i === cb.length - 1) return;
-
-            switch (cb[i + 1]) {
-                case CMD.LINE:
-                    fillPolygon(self, i);
-                    return false;
-                case CMD.ARC:
-                    fillArc(self, i);
-                    return false;
-                default:
-                    return true;
-            }
-        }
-
-        for (let i = 0; i < cb.length; i++) {
-            const cmd = cb[i];
-            if (cmd === CMD.MOVE) {
-                startFill(this, i);
-            }
-        }
-
-        pb.push(null);
-        cb.push(CMD.FILL);
 
         this.setAttribute("position", vertices, 3);
         this.setAttribute("color", colors, 4);
         this.setIndex(vertices.length / 3);
     }
 
-    clear() {
-        this.begin();
-        this.clearChildren();
-        this.setAttribute("position", [], 3);
+    stroke() {
+        if (this.points.length !== 0) this.finish();
+
+        for (let polygon of this.polygons) {
+            if (!Array.isArray(polygon)) {
+                polygon.stroke(this);
+                continue;
+            }
+            for (let i = 0; i < polygon.length - 1; i++) {
+                const point = polygon[i];
+                const next = polygon[i + 1];
+                const seg = new Segment(
+                    Vector.fromArray(point),
+                    Vector.fromArray(next)
+                );
+                seg.strokeWidth = this.strokeWidth;
+                seg.strokeColor = this.strokeColor;
+                seg.normal = this.normal;
+                seg.update();
+                this.addChild(seg);
+            }
+        }
+
+        this.combineChildren();
     }
 
-    toWorldPos(pos) {
-        const xAsix = this.up.cross(this.normal);
-        const yAsix = this.normal.cross(xAsix);
+    clear() {
+        this.points = [];
+        this.polygons = [];
+        this.setAttribute("position", [], 3);
+        this.setAttribute("color", [], 4);
+    }
 
-        yAsix.norm = pos[1];
-        xAsix.norm = pos[0];
-
-        return xAsix.add(yAsix);
+    finish() {
+        this.polygons.push(Utils.deepCopy(this.points));
+        this.points = [];
     }
 
     setColor(color) {
         this.strokeColor = color;
         this.fillColor = color;
     }
+}
+
+class ArcPath {
+    constructor(center, radius, startAngle, endAngle, clockwise = true) {
+        this.center = center;
+        this.radius = radius;
+        this.startAngle = startAngle;
+        this.endAngle = endAngle;
+        this.clockwise = clockwise;
+    }
+
+    fill(target, vertices, colors) {
+        const fillColor = target.fillColor;
+        const center = Vector.fromArray(this.center);
+        const xAxis = new Vector(0, 1, 0).cross(target.normal);
+        const yAxis = target.normal.cross(xAxis);
+        const r = this.radius;
+
+        let stAng = this.startAngle;
+        let edAng = this.endAngle;
+        let clockwise = this.clockwise;
+        if (stAng > edAng) {
+            stAng = edAng;
+            edAng = this.startAngle;
+            clockwise = !clockwise;
+        }
+
+        let unit;
+        if (clockwise) {
+            unit = (edAng - stAng - Math.PI * 2) / 25;
+        } else {
+            unit = (edAng - stAng) / 25;
+        }
+
+        for (let i = 0; i < 25; i++) {
+            vertices.push(...center);
+            colors.push(...fillColor);
+            addPointAt(stAng + i * unit);
+            addPointAt(stAng + i * unit + unit);
+        }
+
+        function addPointAt(ang) {
+            const x = xAxis.clone();
+            const y = yAxis.clone();
+
+            x.norm = Math.cos(ang) * r;
+            y.norm = Math.sin(ang) * r;
+            vertices.push(...center.add(x).add(y));
+
+            colors.push(...fillColor);
+        }
+    }
+
+    stroke() {}
 }

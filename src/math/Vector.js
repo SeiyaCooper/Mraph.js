@@ -50,7 +50,7 @@ export default class Vector extends Array {
      * @returns
      */
     cross(vec) {
-        if (vec.row === 2) {
+        if (this.row === 2) {
             return this[0] * vec[1] - this[1] * vec[0];
         } else {
             const ans = Vector.fromRow(3);

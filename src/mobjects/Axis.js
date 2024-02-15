@@ -4,7 +4,7 @@ import Vector from "../math/Vector.js";
 import Matrix from "../math/Matrix.js";
 
 export default class Axis extends Line {
-    strokeWidth = 0.02;
+    strokeWidth = 0.03;
     tickLength = 0.08;
 
     constructor(start, end, { unit = 1 } = {}) {

@@ -36,7 +36,7 @@ export default class Box extends Geometry {
             );
         }
 
-        const vertices = this.getAttribute("position");
+        const vertices = this.getAttributeVal("position");
         const c = this.center,
             w = this.width,
             h = this.height,

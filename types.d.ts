@@ -863,7 +863,7 @@ declare module "geometry/Geometry" {
          * @param {number[]} data
          * @param {number} n
          */
-        getAttribute(name: string): any;
+        getAttributeVal(name: string): any;
         /**
          * set index
          * @param {number | number[]} data
@@ -962,25 +962,24 @@ declare module "geometry/Sphere" {
 }
 declare module "mobjects/Graph2D" {
     export default class Graph2D extends Geometry {
-        normal: import("mraph").Vector;
-        up: import("mraph").Vector;
-        argumentBuffer: any[];
-        commandBuffer: any[];
+        points: any[];
+        polygons: any[];
         fillColor: Color;
         strokeColor: Color;
         strokeWidth: number;
-        begin(): void;
-        move(pos: any): void;
-        line(pos: any): void;
+        normal: Vector;
+        move(point: any): void;
+        line(point: any): void;
         arc(radius: any, startAngle: any, endAngle: any, clockwise?: boolean): void;
-        stroke(): void;
         fill(): void;
+        stroke(): void;
         clear(): void;
-        toWorldPos(pos: any): any;
+        finish(): void;
         setColor(color: any): void;
     }
     import Geometry from "geometry/Geometry";
     import Color from "core/Color";
+    import Vector from "math/Vector";
 }
 declare module "mobjects/Arc" {
     export default class Arc extends Graph {
