@@ -8,13 +8,13 @@ const vertexShader = `
     uniform mat4 modelMat;
     uniform float far;
     uniform float near;
-    uniform vec3 cameraDir;
+    uniform vec3 cameraPos;
     
     varying float v_distance;
 
     void main() {
         gl_Position = projectionMat * viewMat * modelMat * vec4(position, 1.0);
-        v_distance = distance(cameraDir, gl_Position.xyz)  / (near - far) + 1.0;
+        v_distance = distance(cameraPos, position)  / (near - far) + 1.0;
     }
 `;
 
@@ -46,7 +46,7 @@ export default class BasicMaterial {
 
     beforeRender(scene) {
         const camera = scene.camera;
-        this.program.setUniform("cameraDir", camera.position.mult(-1));
+        this.program.setUniform("cameraPos", camera.position);
         this.program.setUniform("near", camera.near);
         this.program.setUniform("far", camera.far);
     }
