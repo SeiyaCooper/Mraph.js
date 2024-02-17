@@ -10,6 +10,7 @@ import Example from "../../layouts/Example.astro";
 
         /// Custom Mobjects
         class UniformMagneticField extends mp.Point {
+            strokeWidth = 0.01;
             radius = 1;
             strength = new mp.Vector(0, 0, 0);
 
@@ -17,6 +18,19 @@ import Example from "../../layouts/Example.astro";
                 super(...args);
                 this.strength = strength;
                 this.setColor(mp.COLORS.RED_A);
+            }
+
+            update() {
+                this.clear();
+                this.move(this.center);
+                this.arc(
+                    this.radius,
+                    this.startAng,
+                    this.endAng,
+                    this.startAng > this.endAng
+                );
+                this.stroke();
+                return this;
             }
         }
         class Charge extends mp.Point {

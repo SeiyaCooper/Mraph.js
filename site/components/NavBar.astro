@@ -11,6 +11,8 @@ const { list = [""], focus = "" } = Astro.props;
 
 <button></button>
 <ul>
+    <a href="https://github.com/SeiyaCooper/Mraph.js">Mraph.js</a>
+    <p>Examples</p>
     {
         list.map((title) => (
             <Link title={title} src={`/Mraph.js/gallery/${title}`} />
@@ -52,7 +54,7 @@ const { list = [""], focus = "" } = Astro.props;
 
     ul {
         position: absolute;
-        width: 20vw;
+        width: 22vw;
         height: 100vh;
         overflow-y: auto;
         margin: 0;
@@ -63,12 +65,22 @@ const { list = [""], focus = "" } = Astro.props;
         left: -100%;
         list-style: none;
         transition: left ease-in-out 0.3s;
-        background-color: rgba(30, 30, 30, 0.5);
+        background-color: rgba(15, 15, 25, 0.5);
     }
 
-    @media (max-width: 767px) {
-        ul {
-            width: 55vw;
-        }
+    ul a {
+        position: relative;
+        left: 0;
+        color: aliceblue;
+        font-family: Helvetica;
+        font-weight: bold;
+        font-size: large;
+    }
+
+    ul p {
+        color: aliceblue;
+        padding: 0;
+        font-family: Helvetica;
+        font-size: small;
     }
 </style>
