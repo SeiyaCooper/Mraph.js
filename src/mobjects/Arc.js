@@ -28,7 +28,7 @@ export default class Arc extends Graph {
             this.endAng,
             this.startAng > this.endAng
         );
-        this.fill();
+        this.stroke();
         return this;
     }
 }

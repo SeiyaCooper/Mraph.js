@@ -24,6 +24,7 @@ export default class Graph2D extends Geometry {
 
     arc(radius, startAngle, endAngle, clockwise = true) {
         if (radius === 0) return;
+        if (startAngle === endAngle) return;
 
         let center;
         if (this.points.length === 0) center = [0, 0, 0];
@@ -145,10 +146,53 @@ class ArcPath {
             x.norm = Math.cos(ang) * r;
             y.norm = Math.sin(ang) * r;
             vertices.push(...center.add(x).add(y));
-
             colors.push(...fillColor);
         }
     }
 
-    stroke() {}
+    stroke(target) {
+        const vertices = target.getAttributeVal("position");
+        const colors = target.getAttributeVal("color");
+        const strokeWidth = target.strokeWidth;
+
+        const innerPoints = [];
+        const innerColors = [];
+        const outerPoints = [];
+        const outerColors = [];
+
+        const colorBak = target.fillColor;
+        target.fillColor = target.strokeColor;
+        this.radius -= strokeWidth / 2;
+        this.fill(target, innerPoints, innerColors);
+        this.radius += strokeWidth;
+        this.fill(target, outerPoints, outerColors);
+        this.radius -= strokeWidth / 2;
+        target.fillColor = colorBak;
+
+        for (let i = 0; i < innerPoints.length / 3; i++) {
+            addPointAt(innerPoints, innerColors, i);
+            addPointAt(outerPoints, outerColors, i);
+            addPointAt(innerPoints, innerColors, i + 1);
+            addPointAt(outerPoints, outerColors, i);
+            addPointAt(innerPoints, innerColors, i + 1);
+            addPointAt(outerPoints, outerColors, i + 1);
+        }
+
+        function addPointAt(points, oriColors, i) {
+            i *= 3;
+            vertices.push(points[i]);
+            vertices.push(points[i + 1]);
+            vertices.push(points[i + 2]);
+
+            i *= 4 / 3;
+            colors.push(oriColors[i]);
+            colors.push(oriColors[i + 1]);
+            colors.push(oriColors[i + 2]);
+            colors.push(oriColors[i + 3]);
+        }
+
+        target.setAttribute("position", vertices, 3);
+        target.setAttribute("color", colors, 4);
+        target.setIndex(vertices.length / 3);
+    }
 }
