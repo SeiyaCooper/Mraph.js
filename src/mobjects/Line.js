@@ -8,6 +8,8 @@ export default class Line extends Graph2D {
     strokeColor = new Color(1, 1, 1, 1);
     indices = { data: [0, 1, 3, 2, 0, 3] };
     tips = [];
+    tipWidth = 0.06;
+    tipLength = 0.12;
 
     constructor(start = new Point(-1, 0), end = new Point(1, 0)) {
         super();
@@ -21,7 +23,7 @@ export default class Line extends Graph2D {
         this.line(this.end.center);
         this.stroke();
 
-        // add tips
+        // draw tips
         if (!this.tips.length) return this;
         const start = this.start.center;
         for (let [at, reverse] of this.tips) {
@@ -32,9 +34,10 @@ export default class Line extends Graph2D {
             this.move(vec);
 
             const h = this.vector;
-            h.norm = this.strokeWidth * 3;
+            h.norm = this.tipLength;
 
-            const w = h.mult(1 / 2);
+            const w = h.clone();
+            w.norm = this.tipWidth;
 
             if (reverse) {
                 this.line(

@@ -15,6 +15,7 @@ export default class Axis extends Line {
     update() {
         super.update();
 
+        this.clearPath();
         const len = this.length;
         const tick = this.vector
             .trans(Matrix.rotateOn(this.normal, Math.PI / 2, 3))

@@ -974,6 +974,7 @@ declare module "mobjects/Graph2D" {
         fill(): void;
         stroke(): void;
         clear(): void;
+        clearPath(): void;
         finish(): void;
         setColor(color: any): void;
     }
@@ -1023,6 +1024,8 @@ declare module "mobjects/Line" {
             data: number[];
         };
         tips: any[];
+        tipWidth: number;
+        tipLength: number;
         start: Point;
         end: Point;
         update(): this;

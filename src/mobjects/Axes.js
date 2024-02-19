@@ -33,6 +33,10 @@ export default class Axes extends Graph2D {
         this.xAxis.addTip(1);
         this.yAxis.addTip(1);
         this.zAxis.addTip(1);
+
+        for (let axis of this.children) {
+            axis.update();
+        }
     }
 
     set tickLength(val) {

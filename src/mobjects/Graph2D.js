@@ -83,10 +83,14 @@ export default class Graph2D extends Geometry {
     }
 
     clear() {
-        this.points = [];
-        this.polygons = [];
+        this.clearPath();
         this.setAttribute("position", [], 3);
         this.setAttribute("color", [], 4);
+    }
+
+    clearPath() {
+        this.points = [];
+        this.polygons = [];
     }
 
     finish() {
