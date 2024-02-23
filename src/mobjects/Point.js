@@ -42,10 +42,7 @@ export default class Point extends Arc {
     }
 
     set v(val) {
-        const velo = this._v;
         this._v = val;
-        if (velo.norm !== 0) return;
-
         let lastTime = 0;
         this.layer.timeline.add(
             this.layer.timeline.current,
@@ -61,6 +58,16 @@ export default class Point extends Arc {
             },
             { updateMax: false }
         );
+
+        // Do not add event to timeline again
+        Object.defineProperty(this, "v", {
+            set: (val) => {
+                this._v = val;
+            },
+            get: () => {
+                return this._v;
+            },
+        });
     }
 
     get v() {
@@ -68,9 +75,7 @@ export default class Point extends Arc {
     }
 
     set a(val) {
-        const acce = this._a;
         this._a = val;
-        if (acce.norm !== 0) return;
 
         let lastTime = 0;
         this.layer.timeline.add(
@@ -84,6 +89,16 @@ export default class Point extends Arc {
             },
             { updateMax: false }
         );
+
+        // Do not add event to timeline again
+        Object.defineProperty(this, "a", {
+            set: (val) => {
+                this._a = val;
+            },
+            get: () => {
+                return this._a;
+            },
+        });
     }
 
     get a() {
