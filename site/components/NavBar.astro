@@ -68,6 +68,12 @@ const { list = [""], focus = "" } = Astro.props;
         background-color: rgba(15, 15, 25, 0.5);
     }
 
+    @media (max-width: 767px) {
+        ul {
+            width: 55vw;
+        }
+    }
+
     ul a {
         position: relative;
         left: 0;
