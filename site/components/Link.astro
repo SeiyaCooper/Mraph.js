@@ -13,15 +13,16 @@ const { title = "", src = "" } = Astro.props;
 
 <style>
     li {
-        height: 30px;
+        height: 25px;
         min-width: 100px;
         background-color: rgba(10, 10, 15, 0.3);
         padding: 10px;
         margin: 3px;
-        border-bottom: 1px solid rgba(220, 220, 255, 0.3);
+        border: 1px solid rgba(220, 220, 255, 0.3);
         display: flex;
         align-items: center;
         transition: all 0.2s;
+        border-radius: 3px;
     }
 
     li:hover {
