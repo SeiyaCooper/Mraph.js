@@ -75,4 +75,8 @@ export default class WebGLRenderer {
         gl.clearColor(r, g, b, a);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     }
+
+    resize(width, height) {
+        this.gl.viewport(0, 0, width, height);
+    }
 }

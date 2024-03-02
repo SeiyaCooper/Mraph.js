@@ -13,30 +13,49 @@ export default class Layer {
     defaultMaterial = new MobjectMaterial();
 
     constructor({
-        fillScreen = true,
+        fullScreen = true,
         appendTo = undefined,
         rendererClass = WebGLRenderer,
         contextConfig = {},
     } = {}) {
         this.canvas = document.createElement("canvas");
 
-        if (fillScreen) {
-            this.canvas.width = 1.5 * window.innerWidth;
-            this.canvas.height = 1.5 * window.innerHeight;
-            this.canvas.style.width = "100%";
-            this.canvas.style.height = "100%";
-            this.canvas.style.display = "block";
+        if (fullScreen) {
+            this.fillScreen();
+            window.addEventListener("resize", () => {
+                this.fillScreen();
+            });
         }
 
         if (appendTo) {
             this.appendTo(appendTo);
         }
+        this.renderer = new rendererClass(this.canvas, contextConfig);
+        this.clear(COLORS.GRAY_E);
+    }
 
+    /**
+     * Adjust the canvas to the new width and height
+     * @param {number} width
+     * @param {number} height
+     */
+    resize(width, height) {
+        this.canvas.width = width;
+        this.canvas.height = height;
         this.camera.perspective({
             aspect: this.canvas.width / this.canvas.height,
         });
-        this.renderer = new rendererClass(this.canvas, contextConfig);
-        this.clear(COLORS.GRAY_E);
+        this.renderer?.resize(width, height);
+    }
+
+    /**
+     * Adjust the canvas to full screen
+     */
+    fillScreen() {
+        this.resize(1.5 * window.innerWidth, 1.5 * window.innerHeight);
+        this.canvas.style.width = "100%";
+        this.canvas.style.height = "100%";
+        this.canvas.style.display = "block";
     }
 
     /**

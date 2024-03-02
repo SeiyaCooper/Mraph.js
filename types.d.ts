@@ -495,6 +495,7 @@ declare module "core/WebGL/WebGLRenderer" {
         usage: any;
         render(mesh: any, camera: any, material: any): void;
         clear(r: any, g: any, b: any, a: any): void;
+        resize(width: any, height: any): void;
     }
 }
 declare module "core/Camera" {
@@ -653,8 +654,8 @@ declare module "material/MobjectMaterial" {
 }
 declare module "core/Layer" {
     export default class Layer {
-        constructor({ fillScreen, appendTo, rendererClass, contextConfig, }?: {
-            fillScreen?: boolean;
+        constructor({ fullScreen, appendTo, rendererClass, contextConfig, }?: {
+            fullScreen?: boolean;
             appendTo?: any;
             rendererClass?: typeof WebGLRenderer;
             contextConfig?: {};
@@ -665,6 +666,16 @@ declare module "core/Layer" {
         defaultMaterial: MobjectMaterial;
         canvas: HTMLCanvasElement;
         renderer: WebGLRenderer;
+        /**
+         * Adjust the canvas to the new width and height
+         * @param {number} width
+         * @param {number} height
+         */
+        resize(width: number, height: number): void;
+        /**
+         * Adjust the canvas to full screen
+         */
+        fillScreen(): void;
         /**
          * append this.canvas to a HTMLElement
          * @param {HTMLElement} el
