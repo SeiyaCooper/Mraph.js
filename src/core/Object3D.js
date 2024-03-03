@@ -43,6 +43,19 @@ export default class Object3D {
         this.deleteChild(...this.children);
     }
 
+    /**
+     * Set attributes for all children
+     * @param {string} key
+     * @param {any} value
+     */
+    set(key, value) {
+        this[key] = value;
+
+        for (let child of this.children) {
+            child.set(key, value);
+        }
+    }
+
     set matrix(val) {
         this._matrix = val;
     }

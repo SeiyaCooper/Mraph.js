@@ -2,6 +2,7 @@ import Graph2D from "./Graph2D.js";
 import Vector from "../math/Vector.js";
 import Axis from "./Axis.js";
 import Point from "./Point.js";
+import FunctionGraph2D from "./FunctionGraph2D.js";
 
 export default class Axes extends Graph2D {
     _tickLength = 0.08;
@@ -20,6 +21,10 @@ export default class Axes extends Graph2D {
         this.zAxis = Axis.fromRange(center, new Vector(0, 0, 1), zRange);
         this.zAxis.normal = new Vector(1, 0, 0);
 
+        this.xRange = xRange;
+        this.yRange = yRange;
+        this.zRange = zRange;
+
         this.addChild(this.xAxis);
         this.addChild(this.yAxis);
         this.addChild(this.zAxis);
@@ -37,6 +42,15 @@ export default class Axes extends Graph2D {
         for (let axis of this.children) {
             axis.update();
         }
+    }
+
+    drawFunction2D(func, step = 0.1) {
+        const range = this.xRange;
+        range[2] = step;
+        const graph = new FunctionGraph2D(func, { xRange: range });
+        graph.update();
+        this.addChild(graph);
+        return graph;
     }
 
     set tickLength(val) {

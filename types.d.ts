@@ -816,6 +816,12 @@ declare module "core/Object3D" {
          * delete all children
          */
         clearChildren(): void;
+        /**
+         * Set attributes for all children
+         * @param {string} key
+         * @param {any} value
+         */
+        set(key: string, value: any): void;
         set matrix(val: any);
         get matrix(): any;
     }
@@ -1079,6 +1085,16 @@ declare module "mobjects/Axis" {
     import Point from "mobjects/Point";
     import Vector from "math/Vector";
 }
+declare module "mobjects/FunctionGraph2D" {
+    export default class FunctionGraph2D extends Graph2D {
+        constructor(func?: (x: any) => any, { xRange }?: {
+            xRange?: number[];
+        });
+        xRange: number[];
+        func: (x: any) => any;
+    }
+    import Graph2D from "mobjects/Graph2D";
+}
 declare module "mobjects/Axes" {
     export default class Axes extends Graph2D {
         constructor({ xRange, yRange, zRange, center, }?: {
@@ -1092,13 +1108,18 @@ declare module "mobjects/Axes" {
         xAxis: Axis;
         yAxis: Axis;
         zAxis: Axis;
+        xRange: number[];
+        yRange: number[];
+        zRange: number[];
         addTip(): void;
+        drawFunction2D(func: any, step?: number): FunctionGraph2D;
         set tickLength(val: number);
         get tickLength(): number;
     }
     import Graph2D from "mobjects/Graph2D";
     import Point from "mobjects/Point";
     import Axis from "mobjects/Axis";
+    import FunctionGraph2D from "mobjects/FunctionGraph2D";
 }
 declare module "mobjects/VectorField2D" {
     export default class VectorField2D extends Geometry {
@@ -1150,6 +1171,7 @@ declare module "mraph" {
     import Axis from "mobjects/Axis";
     import Axes from "mobjects/Axes";
     import VectorField2D from "mobjects/VectorField2D";
+    import FunctionGraph2D from "mobjects/FunctionGraph2D";
     import Layer from "core/Layer";
     import Camera from "core/Camera";
     import Texture from "core/Texture";
@@ -1164,5 +1186,5 @@ declare module "mraph" {
     import Timeline from "animation/Timeline";
     import Subscriber from "animation/Subscriber";
     import OrbitControl from "extra/OrbitControl";
-    export { Matrix, Vector, Geometry, Plane, Box, Segment, Sphere, Graph2D, Point, Line, Arc, Arrow, Axis, Axes, VectorField2D, Layer, Camera, Texture, Color, WebGLRenderer, WebGLProgram, CustomMaterial, BasicMaterial, MobjectMaterial, DepthMaterial, Event, Timeline, Subscriber, OrbitControl };
+    export { Matrix, Vector, Geometry, Plane, Box, Segment, Sphere, Graph2D, Point, Line, Arc, Arrow, Axis, Axes, VectorField2D, FunctionGraph2D, Layer, Camera, Texture, Color, WebGLRenderer, WebGLProgram, CustomMaterial, BasicMaterial, MobjectMaterial, DepthMaterial, Event, Timeline, Subscriber, OrbitControl };
 }

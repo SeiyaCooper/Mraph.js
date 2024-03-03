@@ -34,6 +34,7 @@ import Arrow from "./mobjects/Arrow.js";
 import Axis from "./mobjects/Axis.js";
 import Axes from "./mobjects/Axes.js";
 import VectorField2D from "./mobjects/VectorField2D.js";
+import FunctionGraph2D from "./mobjects/FunctionGraph2D.js";
 
 export * as MathFunc from "./math/math_func.js";
 
@@ -59,6 +60,7 @@ export {
     Axis,
     Axes,
     VectorField2D,
+    FunctionGraph2D,
     Layer,
     Camera,
     Texture,
