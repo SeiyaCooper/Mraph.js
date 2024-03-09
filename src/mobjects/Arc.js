@@ -1,7 +1,7 @@
-import Graph from "./Graph2D.js";
+import Graph2D from "./Graph2D.js";
 import Color from "../core/Color.js";
 
-export default class Arc extends Graph {
+export default class Arc extends Graph2D {
     strokeWidth = 0.05;
     strokeColor = new Color(1, 1, 1, 1);
     fillColor = new Color(0, 0, 0, 0);
@@ -9,7 +9,7 @@ export default class Arc extends Graph {
     constructor(
         startAng = 0,
         endAng = Math.PI,
-        radius = 0.5,
+        radius = 1,
         center = [0, 0, 0]
     ) {
         super();
@@ -28,6 +28,11 @@ export default class Arc extends Graph {
             this.endAng,
             this.startAng > this.endAng
         );
+        this.stroke();
+        return this;
+    }
+
+    redraw() {
         this.stroke();
         return this;
     }

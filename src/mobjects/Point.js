@@ -28,6 +28,11 @@ export default class Point extends Arc {
         return this;
     }
 
+    redraw() {
+        this.fill();
+        return this;
+    }
+
     moveTo(pos, { runTime = 1 } = {}) {
         let start;
         this.layer.timeline.addFollow(runTime, {

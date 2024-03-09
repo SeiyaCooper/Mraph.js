@@ -990,25 +990,31 @@ declare module "mobjects/Graph2D" {
         arc(radius: any, startAngle: any, endAngle: any, clockwise?: boolean): void;
         fill(): void;
         stroke(): void;
+        redraw(): void;
         clear(): void;
         clearPath(): void;
+        clearBuffer(): void;
         finish(): void;
         setColor(color: any): void;
+        applyPointwiseTransform(trans: any, { runTime }?: {
+            runTime?: number;
+        }): void;
     }
     import Geometry from "geometry/Geometry";
     import Color from "core/Color";
     import Vector from "math/Vector";
 }
 declare module "mobjects/Arc" {
-    export default class Arc extends Graph {
+    export default class Arc extends Graph2D {
         constructor(startAng?: number, endAng?: number, radius?: number, center?: number[]);
         startAng: number;
         endAng: number;
         radius: number;
         center: number[];
         update(): this;
+        redraw(): this;
     }
-    import Graph from "mobjects/Graph2D";
+    import Graph2D from "mobjects/Graph2D";
 }
 declare module "mobjects/Point" {
     export default class Point extends Arc {
@@ -1017,6 +1023,7 @@ declare module "mobjects/Point" {
         _a: Vector;
         center: any;
         update(): this;
+        redraw(): this;
         moveTo(pos: any, { runTime }?: {
             runTime?: number;
         }): void;
@@ -1046,6 +1053,8 @@ declare module "mobjects/Line" {
         start: Point;
         end: Point;
         update(): this;
+        drawTips(): this;
+        redraw(): this;
         at(p: any): any;
         addTip(at: any, reverse?: boolean): void;
         set vector(vec: any);
@@ -1080,6 +1089,7 @@ declare module "mobjects/Axis" {
         tickLength: number;
         unit: number;
         update(): this;
+        redraw(): this;
     }
     import Line from "mobjects/Line";
     import Point from "mobjects/Point";
@@ -1092,6 +1102,8 @@ declare module "mobjects/FunctionGraph2D" {
         });
         xRange: number[];
         func: (x: any) => any;
+        update(): this;
+        redraw(): this;
     }
     import Graph2D from "mobjects/Graph2D";
 }

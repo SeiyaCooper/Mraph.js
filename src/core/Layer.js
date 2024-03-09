@@ -77,7 +77,7 @@ export default class Layer {
         this.elements.push(...els);
 
         for (let el of els) {
-            el.layer = this;
+            el.set("layer", this);
             if (this.renderer.gl) {
                 el.gl = this.renderer.gl;
             }

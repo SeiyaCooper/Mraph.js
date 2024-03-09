@@ -24,6 +24,11 @@ export default class Line extends Graph2D {
         this.stroke();
 
         // draw tips
+        this.drawTips();
+        return this;
+    }
+
+    drawTips() {
         if (!this.tips.length) return this;
         const start = this.start.center;
         for (let [at, reverse] of this.tips) {
@@ -56,6 +61,12 @@ export default class Line extends Graph2D {
             }
         }
         this.fill();
+        return this;
+    }
+
+    redraw() {
+        this.stroke();
+        this.drawTips();
         return this;
     }
 

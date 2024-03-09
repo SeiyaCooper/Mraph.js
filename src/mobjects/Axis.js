@@ -32,6 +32,12 @@ export default class Axis extends Line {
         return this;
     }
 
+    redraw() {
+        super.redraw();
+        this.stroke();
+        return this;
+    }
+
     /**
      * Create an Axis from oringin point, direction vector and range
      * @param {Point | Vector} base

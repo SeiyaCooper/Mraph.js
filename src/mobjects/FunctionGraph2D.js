@@ -19,5 +19,11 @@ export default class FunctionGraph2D extends Graph2D {
             this.line([i, func(i), 0]);
         }
         this.stroke();
+        return this;
+    }
+
+    redraw() {
+        this.stroke();
+        return this;
     }
 }
