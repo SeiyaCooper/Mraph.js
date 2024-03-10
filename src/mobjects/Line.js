@@ -10,6 +10,7 @@ export default class Line extends Graph2D {
     tips = [];
     tipWidth = 0.06;
     tipLength = 0.12;
+    lineJoin = "none";
 
     constructor(start = new Point(-1, 0), end = new Point(1, 0)) {
         super();

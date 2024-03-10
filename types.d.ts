@@ -981,15 +981,17 @@ declare module "mobjects/Graph2D" {
     export default class Graph2D extends Geometry {
         points: any[];
         polygons: any[];
+        normal: Vector;
         fillColor: Color;
         strokeColor: Color;
         strokeWidth: number;
-        normal: Vector;
+        lineJoin: string;
         move(point: any): void;
         line(point: any): void;
         arc(radius: any, startAngle: any, endAngle: any, clockwise?: boolean): void;
         fill(): void;
         stroke(): void;
+        modifyLineJoin2Miter(target: any): void;
         redraw(): void;
         clear(): void;
         clearPath(): void;
@@ -1001,8 +1003,8 @@ declare module "mobjects/Graph2D" {
         }): void;
     }
     import Geometry from "geometry/Geometry";
-    import Color from "core/Color";
     import Vector from "math/Vector";
+    import Color from "core/Color";
 }
 declare module "mobjects/Arc" {
     export default class Arc extends Graph2D {

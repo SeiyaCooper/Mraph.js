@@ -3,16 +3,20 @@ import Color from "../core/Color.js";
 import * as Utils from "../utils/utils.js";
 import Segment from "../geometry/Segment.js";
 import Vector from "../math/Vector.js";
+import Matrix from "../math/Matrix.js";
 import * as VECTORS from "../constants/vectors.js";
 import * as MathFunc from "../math/math_func.js";
 
 export default class Graph2D extends Geometry {
     points = [];
     polygons = [];
+    normal = VECTORS.OUT();
+
     fillColor = new Color(1, 1, 1, 1);
     strokeColor = new Color(1, 1, 1, 1);
     strokeWidth = 0.05;
-    normal = VECTORS.OUT();
+
+    lineJoin = "miter";
 
     move(point) {
         if (this.points.length !== 0) this.finish();
@@ -57,6 +61,8 @@ export default class Graph2D extends Geometry {
         if (this.points.length !== 0) this.finish();
 
         for (let polygon of this.polygons) {
+            const target = [];
+
             for (let i = 0; i < polygon.length - 1; i++) {
                 const point = polygon[i];
                 const next = polygon[i + 1];
@@ -69,10 +75,43 @@ export default class Graph2D extends Geometry {
                 seg.normal = this.normal;
                 seg.update();
                 this.addChild(seg);
+                target.push(seg);
             }
-        }
 
-        this.combineChildren();
+            switch (this.lineJoin) {
+                case "miter":
+                    this.modifyLineJoin2Miter(target);
+                    break;
+                default:
+                    break;
+            }
+
+            this.combineChildren();
+        }
+    }
+
+    modifyLineJoin2Miter(target) {
+        for (let i = 0; i < target.length - 1; i++) {
+            const l0 = target[i];
+            const l1 = target[i + 1];
+            const v0 = l0.vector;
+            const v1 = l1.vector;
+
+            if (v0.cross(v1).norm === 0) return;
+
+            const tangent = v1.mult(-1).normal().add(v0.normal());
+            const tmp = v0
+                .trans(Matrix.rotateOn(this.normal, Math.PI / 2, 3))
+                .normal();
+            const cosine = tmp.dot(tangent);
+            const halfWidth = l0.strokeWidth / 2;
+            const join = tangent.mult(halfWidth / cosine);
+
+            l0.getAttributeVal("position").splice(6, 3, ...l0.end.add(join));
+            l1.getAttributeVal("position").splice(0, 3, ...l0.end.add(join));
+            l0.getAttributeVal("position").splice(9, 3, ...l0.end.reduce(join));
+            l1.getAttributeVal("position").splice(3, 3, ...l0.end.reduce(join));
+        }
     }
 
     redraw() {}
