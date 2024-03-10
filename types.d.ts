@@ -988,7 +988,7 @@ declare module "mobjects/Graph2D" {
         lineJoin: string;
         move(point: any): void;
         line(point: any): void;
-        arc(radius: any, startAngle: any, endAngle: any, clockwise?: boolean): void;
+        arc(radius: any, startAngle: any, endAngle: any, clockwise?: boolean, segments?: number): void;
         fill(): void;
         stroke(): void;
         modifyLineJoin2Miter(target: any): void;

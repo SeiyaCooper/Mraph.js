@@ -17,7 +17,8 @@ import Example from "../../layouts/Example.astro";
             constructor(strength, ...args) {
                 super(...args);
                 this.strength = strength;
-                this.setColor(mp.COLORS.RED_A);
+                this.strokeColor = mp.COLORS.RED_C;
+                this.fillColor = new mp.Color(0.81, 0.1, 0.1, 0.1);
             }
 
             update() {
@@ -27,9 +28,11 @@ import Example from "../../layouts/Example.astro";
                     this.radius,
                     this.startAng,
                     this.endAng,
-                    this.startAng > this.endAng
+                    this.startAng > this.endAng,
+                    50
                 );
                 this.stroke();
+                this.fill();
                 return this;
             }
         }
@@ -68,7 +71,7 @@ import Example from "../../layouts/Example.astro";
          * Lock FPS for more accurate output
          * Note: If the fps are locked, the animation will not play in real-time. Try to change the fps to 120 or higher.
          */
-        layer.timeline.fps = 120;
+        layer.timeline.fps = 60;
         layer.timeline.addInfinity(() => {
             for (let charge of chargeList) {
                 if (charge.center.norm > 1) continue;

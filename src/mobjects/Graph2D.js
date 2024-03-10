@@ -27,7 +27,7 @@ export default class Graph2D extends Geometry {
         this.points.push(point);
     }
 
-    arc(radius, startAngle, endAngle, clockwise = true) {
+    arc(radius, startAngle, endAngle, clockwise = true, segments = 25) {
         if (radius === 0) return;
         if (startAngle === endAngle) return;
 
@@ -35,7 +35,15 @@ export default class Graph2D extends Geometry {
         if (this.points.length === 0) center = [0, 0, 0];
         else center = this.points[this.points.length - 1];
         this.polygons.push(
-            generateArc(center, radius, startAngle, endAngle, clockwise, this)
+            generateArc(
+                center,
+                radius,
+                startAngle,
+                endAngle,
+                clockwise,
+                segments,
+                this
+            )
         );
     }
 
@@ -46,8 +54,14 @@ export default class Graph2D extends Geometry {
         const colors = this.getAttributeVal("color");
         for (let polygon of this.polygons) {
             if (polygon.length < 3) continue;
-            for (let point of polygon) {
-                vertices.push(...point);
+
+            const first = polygon[0];
+            for (let i = 1; i < polygon.length - 1; i++) {
+                vertices.push(...first);
+                vertices.push(...polygon[i]);
+                vertices.push(...polygon[i + 1]);
+                colors.push(...this.fillColor);
+                colors.push(...this.fillColor);
                 colors.push(...this.fillColor);
             }
         }
@@ -97,9 +111,9 @@ export default class Graph2D extends Geometry {
             const v0 = l0.vector;
             const v1 = l1.vector;
 
-            if (v0.cross(v1).norm === 0) return;
+            if (v0.cross(v1).norm === 0) continue;
 
-            const tangent = v1.mult(-1).normal().add(v0.normal());
+            const tangent = v1.mult(-1).normal().add(v0.normal()).normal();
             const tmp = v0
                 .trans(Matrix.rotateOn(this.normal, Math.PI / 2, 3))
                 .normal();
@@ -171,7 +185,15 @@ export default class Graph2D extends Geometry {
     }
 }
 
-function generateArc(center, radius, startAngle, endAngle, clockwise, target) {
+function generateArc(
+    center,
+    radius,
+    startAngle,
+    endAngle,
+    clockwise,
+    segments,
+    target
+) {
     const xAxis = new Vector(0, 1, 0).cross(target.normal);
     const yAxis = target.normal.cross(xAxis);
     const r = radius;
@@ -188,14 +210,13 @@ function generateArc(center, radius, startAngle, endAngle, clockwise, target) {
 
     let unit;
     if (clockwise) {
-        unit = (edAng - stAng - Math.PI * 2) / 25;
+        unit = (edAng - stAng - Math.PI * 2) / segments;
     } else {
-        unit = (edAng - stAng) / 25;
+        unit = (edAng - stAng) / segments;
     }
 
-    for (let i = 0; i < 25; i++) {
+    for (let i = 0; i < segments + 1; i++) {
         addPointAt(stAng + i * unit);
-        addPointAt(stAng + i * unit + unit);
     }
 
     function addPointAt(ang) {
