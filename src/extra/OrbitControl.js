@@ -127,6 +127,12 @@ export default class OrbitControl {
 
             this.rotate(deltaPhi, deltaTheta);
             state = STATE.ROTATE;
+        } else if (this.enableMove) {
+            const from = getPos(e.touches[0]);
+            const to = findPosById(from.id, startedPos);
+            const deltaX = (to.x - from.x) / 2;
+            const deltaY = (from.y - to.y) / 2;
+            this.move(deltaX * this.moveSpeed, deltaY * this.moveSpeed);
         }
     }
 
@@ -142,7 +148,7 @@ export default class OrbitControl {
         e.preventDefault();
 
         startedPos = [getPos(e)];
-        if (e.shiftKey) {
+        if (e.shiftKey || !this.enableRotate) {
             state = STATE.MOVE;
             startCenter.copy(this.center);
         } else {
@@ -156,14 +162,13 @@ export default class OrbitControl {
         const pos = getPos(e);
         const startPos = startedPos[0];
 
-        if (e.shiftKey) {
+        if (e.shiftKey || !this.enableRotate) {
             if (!this.enableMove) return;
             if (state !== STATE.MOVE) return;
             const deltaX = (startPos.x - pos.x) * 2;
             const deltaY = (pos.y - startPos.y) * 2;
             this.move(deltaX * this.moveSpeed, deltaY * this.moveSpeed);
         } else {
-            if (!this.enableRotate) return;
             if (state !== STATE.ROTATE) return;
             const deltaPhi = this.rotateSpeed * (pos.y - startPos.y);
             const deltaTheta = this.rotateSpeed * (pos.x - startPos.x);
