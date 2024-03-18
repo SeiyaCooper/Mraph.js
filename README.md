@@ -10,13 +10,19 @@ Mraph.js is a library for drawing geometric shapes in browser
 
 # Usage
 
-## Install with npm:
+#### Install with npm:
 
 ```shell
 npm install --save mraph
 ```
 
-## A short example:
+#### or use yarn:
+
+```shell
+yarn add mraph
+```
+
+#### A short example:
 
 ```js
 import { Layer, Point, Vector } from "mraph";
