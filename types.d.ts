@@ -577,6 +577,9 @@ declare module "animation/Subscriber" {
 }
 declare module "core/Color" {
     export default class Color extends Array<any> {
+        static fromHex(hex: any): Color;
+        static fromHexStr(str: any): Color;
+        static lerpRGBA(from: any, to: any, p: any): number[];
         /**
          * @param {number} [r=0]
          * @param {number} [g=0]
@@ -595,10 +598,13 @@ declare module "core/Color" {
     }
 }
 declare module "constants/colors" {
+    export const WHITE: Color;
+    export const BLACK: Color;
     export const RED_A: Color;
     export const RED_B: Color;
     export const RED_C: Color;
     export const RED_D: Color;
+    export const RED_E: Color;
     export const RED: Color;
     export const BLUE_A: Color;
     export const BLUE_B: Color;
@@ -606,12 +612,26 @@ declare module "constants/colors" {
     export const BLUE_D: Color;
     export const BLUE_E: Color;
     export const BLUE: Color;
+    export const YELLOW_A: Color;
+    export const YELLOW_B: Color;
+    export const YELLOW_C: Color;
+    export const YELLOW_D: Color;
+    export const YELLOW_E: Color;
+    export const YELLOW: Color;
+    export const GREEN_A: Color;
+    export const GREEN_B: Color;
+    export const GREEN_C: Color;
+    export const GREEN_D: Color;
+    export const GREEN_E: Color;
+    export const GREEN: Color;
     export const GRAY_A: Color;
     export const GRAY_B: Color;
     export const GRAY_C: Color;
     export const GRAY_D: Color;
     export const GRAY_E: Color;
     export const GRAY: Color;
+    export const COOPER_ORANGE: Color;
+    export const SEIYA_PINK: Color;
     import Color from "core/Color";
 }
 declare module "core/WebGL/WebGLProgram" {

@@ -1,3 +1,5 @@
+import * as MathFunc from "../math/math_func.js";
+
 export default class Color extends Array {
     /**
      * @param {number} [r=0]
@@ -34,5 +36,28 @@ export default class Color extends Array {
 
     toIntRGBAStr() {
         return `rgba(${this.toIntRGBA().toString()})`;
+    }
+
+    static fromHex(hex) {
+        if (hex <= 16777215 /*0xffffff*/) {
+            const r = ((hex >> 16) & 255) / 255;
+            const g = ((hex >> 8) & 255) / 255;
+            const b = (hex & 255) / 255;
+            return new Color(r, g, b, 1);
+        } else {
+            const r = ((hex >> 24) & 255) / 255;
+            const g = ((hex >> 16) & 255) / 255;
+            const b = ((hex >> 8) & 255) / 255;
+            const a = (hex & 255) / 255;
+            return new Color(r, g, b, a);
+        }
+    }
+
+    static fromHexStr(str) {
+        return Color.fromHex(Number.parseInt(str.substring(1), 16));
+    }
+
+    static lerpRGBA(from, to, p) {
+        return MathFunc.lerpArray(from, to, p);
     }
 }
