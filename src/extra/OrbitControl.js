@@ -130,8 +130,8 @@ export default class OrbitControl {
         } else if (this.enableMove) {
             const from = getPos(e.touches[0]);
             const to = findPosById(from.id, startedPos);
-            const deltaX = (to.x - from.x) / 2;
-            const deltaY = (from.y - to.y) / 2;
+            const deltaX = (to.x - from.x) * 1.5;
+            const deltaY = (from.y - to.y) * 1.5;
             this.move(deltaX * this.moveSpeed, deltaY * this.moveSpeed);
         }
     }
