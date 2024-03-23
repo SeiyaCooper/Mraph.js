@@ -25,6 +25,8 @@ export default class Axes extends Graph2D {
         this.yRange = yRange;
         this.zRange = zRange;
 
+        this.graphs = [];
+
         this.addChild(this.xAxis);
         this.addChild(this.yAxis);
         this.addChild(this.zAxis);
@@ -44,12 +46,17 @@ export default class Axes extends Graph2D {
         }
     }
 
-    drawFunction2D(func, step = 0.1) {
+    drawFunction2D(func, { step = 0.1, autoStack = true } = {}) {
         const range = this.xRange;
         range[2] = step;
-        const graph = new FunctionGraph2D(func, { xRange: range });
+        const last = this.graphs[this.graphs.length - 1];
+        const z = autoStack && last ? last.z + 0.001 : 0.01;
+
+        const graph = new FunctionGraph2D(func, { xRange: range, z: z });
         graph.update();
+
         this.addChild(graph);
+        this.graphs.push(graph);
         return graph;
     }
 

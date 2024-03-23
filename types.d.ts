@@ -1445,11 +1445,13 @@ declare module "mobjects/Axis" {
 }
 declare module "mobjects/FunctionGraph2D" {
     export default class FunctionGraph2D extends Graph2D {
-        constructor(func?: (x: any) => any, { xRange }?: {
+        constructor(func?: (x: any) => any, { xRange, z }?: {
             xRange?: number[];
+            z?: number;
         });
         xRange: number[];
         func: (x: any) => any;
+        z: number;
         update(): this;
         redraw(): this;
     }
@@ -1471,8 +1473,12 @@ declare module "mobjects/Axes" {
         xRange: number[];
         yRange: number[];
         zRange: number[];
+        graphs: any[];
         addTip(): void;
-        drawFunction2D(func: any, step?: number): FunctionGraph2D;
+        drawFunction2D(func: any, { step, autoStack }?: {
+            step?: number;
+            autoStack?: boolean;
+        }): FunctionGraph2D;
         set tickLength(val: number);
         get tickLength(): number;
     }
