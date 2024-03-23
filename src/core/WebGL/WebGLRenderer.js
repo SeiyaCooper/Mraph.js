@@ -1,5 +1,5 @@
 import Matrix from "../../math/Matrix.js";
-import * as DrawModes from "../../constants/draw_modes.js";
+import * as GLENUM from "../../constants/glenum.js";
 
 export default class WebGLRenderer {
     constructor(canvas, contextConfig = {}) {
@@ -39,13 +39,7 @@ export default class WebGLRenderer {
         }
 
         const indices = mesh.indices;
-
-        let mode;
-        if (mesh.glMode) mode = mesh.glMode;
-        else if (mesh.mode) {
-            mode = DrawModes.toWebGLMode(gl, mesh.mode);
-            mesh.glMode = mode;
-        } else mode = gl.TRIANGLES;
+        const mode = mesh.glMode ?? GLENUM.TRIANGLES;
 
         if (typeof indices !== "number") {
             const buffer = gl.createBuffer();

@@ -1,4 +1,4 @@
-import * as DrawModes from "../constants/draw_modes.js";
+import * as GLENUM from "../constants/glenum.js";
 import Geometry from "./Geometry.js";
 
 export default class Sphere extends Geometry {
@@ -51,7 +51,7 @@ export default class Sphere extends Geometry {
         }
 
         function addPlane(a, b, c, d, mode) {
-            if (mode === DrawModes.LINES) {
+            if (mode === GLENUM.LINES) {
                 indices.push(a, b, c);
                 indices.push(b, d, c);
             } else {
@@ -74,7 +74,7 @@ export default class Sphere extends Geometry {
                 const c = offset + phiSegments + n;
                 const d = offset + n;
 
-                addPlane(a, b, c, d, this.mode);
+                addPlane(a, b, c, d, this.glMode);
             }
         }
 

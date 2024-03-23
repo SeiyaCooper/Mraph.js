@@ -42,7 +42,7 @@ export * as OBJLoader from "./extra/OBJLoader.js";
 
 export * as COLORS from "./constants/colors.js";
 export * as VECTORS from "./constants/vectors.js";
-export * as DrawModes from "./constants/draw_modes.js";
+export * as GLENUM from "./constants/glenum.js";
 
 export {
     Matrix,

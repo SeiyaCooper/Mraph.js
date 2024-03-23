@@ -1,5 +1,5 @@
-import * as DrawMode from "../constants/draw_modes.js";
 import Object3D from "../core/Object3D.js";
+import * as GLENUM from "../constants/glenum.js";
 
 export default class Geometry extends Object3D {
     /**
@@ -17,7 +17,7 @@ export default class Geometry extends Object3D {
     /**
      * @type {number}
      */
-    mode = DrawMode.TRIANGLES;
+    glMode = GLENUM.TRIANGLES;
 
     /**
      * @type {number | Object}
