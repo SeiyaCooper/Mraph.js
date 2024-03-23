@@ -961,13 +961,19 @@ declare module "core/WebGL/WebGLProgram" {
         _textures: any;
     }
 }
+declare module "material/Material" {
+    export default class Material {
+        depthTest: boolean;
+    }
+}
 declare module "material/MobjectMaterial" {
-    export default class MobjectMaterial {
+    export default class MobjectMaterial extends Material {
         vertexShader: string;
         fragmentShader: string;
         initProgram(gl: any): void;
         program: WebGLProgram;
     }
+    import Material from "material/Material";
     import WebGLProgram from "core/WebGL/WebGLProgram";
 }
 declare module "core/Layer" {
@@ -1070,7 +1076,7 @@ declare module "core/Texture" {
     }
 }
 declare module "material/CustomMaterial" {
-    export default class CustomMaterial {
+    export default class CustomMaterial extends Material {
         constructor({ vertexShader, fragmentShader }?: {
             vertexShader?: string;
             fragmentShader?: string;
@@ -1080,10 +1086,11 @@ declare module "material/CustomMaterial" {
         initProgram(gl: any): void;
         program: WebGLProgram;
     }
+    import Material from "material/Material";
     import WebGLProgram from "core/WebGL/WebGLProgram";
 }
 declare module "material/BasicMaterial" {
-    export default class BasicMaterial {
+    export default class BasicMaterial extends Material {
         constructor({ color }?: {
             color?: Color;
         });
@@ -1092,20 +1099,21 @@ declare module "material/BasicMaterial" {
         color: Color;
         initProgram(gl: any): void;
         program: WebGLProgram;
-        get transparent(): boolean;
+        get depthTest(): boolean;
     }
+    import Material from "material/Material";
     import Color from "core/Color";
     import WebGLProgram from "core/WebGL/WebGLProgram";
 }
 declare module "material/DepthMaterial" {
-    export default class DepthMaterial {
-        transparent: boolean;
+    export default class DepthMaterial extends Material {
         vertexShader: string;
         fragmentShader: string;
         initProgram(gl: any): void;
         program: WebGLProgram;
         beforeRender(scene: any): void;
     }
+    import Material from "material/Material";
     import WebGLProgram from "core/WebGL/WebGLProgram";
 }
 declare module "core/Object3D" {
@@ -1338,15 +1346,21 @@ declare module "mobjects/Arc" {
 }
 declare module "mobjects/Point" {
     export default class Point extends Arc {
+        /**
+         * @param  {Vector | number[] | ...number} position
+         */
         constructor(...args: any[]);
         _v: Vector;
         _a: Vector;
         center: any;
         update(): this;
         redraw(): this;
-        moveTo(pos: any, { runTime }?: {
-            runTime?: number;
-        }): void;
+        /**
+         * shift this point to a new place
+         * @param {Vector} pos
+         * @param {Object} config
+         */
+        moveTo(pos: Vector, { runTime }?: any): void;
         set v(val: Vector);
         get v(): Vector;
         set a(val: Vector);
@@ -1363,6 +1377,10 @@ declare module "mobjects/Point" {
 }
 declare module "mobjects/Line" {
     export default class Line extends Graph2D {
+        /**
+         * @param {Point} start
+         * @param {Point} end
+         */
         constructor(start?: Point, end?: Point);
         indices: {
             data: number[];
@@ -1375,8 +1393,18 @@ declare module "mobjects/Line" {
         update(): this;
         drawTips(): this;
         redraw(): this;
+        /**
+         * return a position where corresponds a precent
+         * @param {number} precent
+         * @returns
+         */
         at(p: any): any;
-        addTip(at: any, reverse?: boolean): void;
+        /**
+         * add a tip to this line
+         * @param {number} at
+         * @param {Boolean} reverse
+         */
+        addTip(at: number, reverse?: boolean): void;
         set vector(vec: any);
         get vector(): any;
         set length(val: any);

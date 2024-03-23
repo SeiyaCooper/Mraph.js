@@ -12,6 +12,10 @@ export default class Line extends Graph2D {
     tipLength = 0.12;
     lineJoin = "none";
 
+    /**
+     * @param {Point} start
+     * @param {Point} end
+     */
     constructor(start = new Point(-1, 0), end = new Point(1, 0)) {
         super();
         this.start = start;
@@ -71,10 +75,20 @@ export default class Line extends Graph2D {
         return this;
     }
 
+    /**
+     * return a position where corresponds a precent
+     * @param {number} precent
+     * @returns
+     */
     at(p) {
         return this.start.center.add(this.vector.mult(p));
     }
 
+    /**
+     * add a tip to this line
+     * @param {number} at
+     * @param {Boolean} reverse
+     */
     addTip(at, reverse = false) {
         this.tips.push([at, reverse]);
     }

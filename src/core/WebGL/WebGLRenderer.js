@@ -21,7 +21,7 @@ export default class WebGLRenderer {
     render(mesh, camera, material) {
         const gl = this.gl;
 
-        if (material.transparent) gl.disable(gl.DEPTH_TEST);
+        if (!material.depthTest) gl.disable(gl.DEPTH_TEST);
 
         if (!material.program)
             this.programManager.setProgram(material, this.gl);
@@ -64,7 +64,7 @@ export default class WebGLRenderer {
             this.render(child, camera, material);
         }
 
-        if (material.transparent) gl.enable(gl.DEPTH_TEST);
+        if (!material.depthTest) gl.enable(gl.DEPTH_TEST);
     }
 
     clear(r, g, b, a) {

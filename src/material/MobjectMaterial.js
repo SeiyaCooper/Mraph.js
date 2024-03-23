@@ -1,4 +1,5 @@
 import WebGLProgram from "../core/WebGL/WebGLProgram.js";
+import Material from "./Material.js";
 
 const vertexShader = `
     attribute vec3 position;
@@ -26,8 +27,9 @@ const fragmentShader = `
     }
 `;
 
-export default class MobjectMaterial {
+export default class MobjectMaterial extends Material {
     constructor() {
+        super();
         this.vertexShader = vertexShader;
         this.fragmentShader = fragmentShader;
     }

@@ -7,6 +7,9 @@ export default class Point extends Arc {
     _v = new Vector(0, 0, 0);
     _a = new Vector(0, 0, 0);
 
+    /**
+     * @param  {Vector | number[] | ...number} position
+     */
     constructor(...args) {
         super(0, 2 * Math.PI, 0.06);
 
@@ -33,6 +36,11 @@ export default class Point extends Arc {
         return this;
     }
 
+    /**
+     * shift this point to a new place
+     * @param {Vector} pos
+     * @param {Object} config
+     */
     moveTo(pos, { runTime = 1 } = {}) {
         let start;
         this.layer.timeline.addFollow(runTime, {

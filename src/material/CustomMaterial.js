@@ -1,7 +1,9 @@
 import WebGLProgram from "../core/WebGL/WebGLProgram.js";
+import Material from "./Material.js";
 
-export default class CustomMaterial {
+export default class CustomMaterial extends Material {
     constructor({ vertexShader = "", fragmentShader = "" } = {}) {
+        super();
         this.vertexShader = vertexShader;
         this.fragmentShader = fragmentShader;
     }

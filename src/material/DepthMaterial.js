@@ -1,4 +1,5 @@
 import WebGLProgram from "../core/WebGL/WebGLProgram.js";
+import Material from "./Material.js";
 
 const vertexShader = `
     attribute vec3 position;
@@ -29,10 +30,11 @@ const fragmentShader = `
     }
 `;
 
-export default class DepthMaterial {
-    transparent = false;
+export default class DepthMaterial extends Material {
+    depthTest = false;
 
     constructor() {
+        super();
         this.vertexShader = vertexShader;
         this.fragmentShader = fragmentShader;
     }

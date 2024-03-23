@@ -1,5 +1,6 @@
 import WebGLProgram from "../core/WebGL/WebGLProgram.js";
 import Color from "../core/Color.js";
+import Material from "./Material.js";
 
 const vertexShader = `
     attribute vec3 position;
@@ -23,8 +24,9 @@ const fragmentShader = `
     }
 `;
 
-export default class BasicMaterial {
+export default class BasicMaterial extends Material {
     constructor({ color = new Color(1, 1, 1, 1) } = {}) {
+        super();
         this.vertexShader = vertexShader;
         this.fragmentShader = fragmentShader;
         this.color = color;
@@ -43,7 +45,7 @@ export default class BasicMaterial {
         });
     }
 
-    get transparent() {
+    get depthTest() {
         return this.color.a === 1 ? false : true;
     }
 }

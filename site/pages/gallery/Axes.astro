@@ -12,13 +12,15 @@ import Example from "../../layouts/Example.astro";
         const axes = new mp.Axes({
             xRange: [-10, 10, 1], // You can set the length of every axis like this
         });
+        axes.material = new mp.MobjectMaterial();
+        axes.material.depthTest = false;
 
         // Draw function figures
         const figure0 = axes.drawFunction2D((x) => x);
         figure0.set("strokeColor", mp.COLORS.BLUE);
         figure0.update();
         const figure1 = axes.drawFunction2D((x) => x ** 2);
-        figure1.set("strokeColor", mp.COLORS.RED);
+        figure1.set("strokeColor", mp.COLORS.COOPER_ORANGE);
         figure1.update();
         const figure2 = axes.drawFunction2D((x) => Math.sin(x));
         figure2.set("strokeColor", mp.COLORS.SEIYA_PINK);
