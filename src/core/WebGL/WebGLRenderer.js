@@ -1,9 +1,11 @@
 import Matrix from "../../math/Matrix.js";
 import * as GLENUM from "../../constants/glenum.js";
+import ProgramManager from "./ProgramManager.js";
 
 export default class WebGLRenderer {
     constructor(canvas, contextConfig = {}) {
         this.canvas = canvas;
+        this.programManager = new ProgramManager();
 
         this.gl = canvas.getContext("webgl2", contextConfig);
         if (!this.gl) this.gl = canvas.getContext("webgl", contextConfig);
@@ -21,10 +23,11 @@ export default class WebGLRenderer {
 
         if (material.transparent) gl.disable(gl.DEPTH_TEST);
 
-        if (!material.program) material.initProgram(this.gl);
-        material.beforeRender?.({ mesh, camera });
+        if (!material.program)
+            this.programManager.setProgram(material, this.gl);
         const program = material.program;
 
+        material.beforeRender?.({ mesh, camera });
         program.setUniform("viewMat", camera.viewMat);
         program.setUniform("projectionMat", camera.projectionMat);
         program.setUniform("modelMat", mesh.matrix ?? Matrix.identity(4));

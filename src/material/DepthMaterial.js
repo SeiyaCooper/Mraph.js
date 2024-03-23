@@ -29,7 +29,7 @@ const fragmentShader = `
     }
 `;
 
-export default class BasicMaterial {
+export default class DepthMaterial {
     transparent = false;
 
     constructor() {

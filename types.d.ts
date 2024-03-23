@@ -776,16 +776,25 @@ declare module "constants/glenum" {
     export const UNPACK_COLORSPACE_CONVERSION_WEBGL: 37443;
     export const BROWSER_DEFAULT_WEBGL: 37444;
 }
+declare module "core/WebGL/ProgramManager" {
+    export default class ProgramManager {
+        programPool: {};
+        setProgram(material: any, gl: any): void;
+        getProgramKey(material: any): any;
+    }
+}
 declare module "core/WebGL/WebGLRenderer" {
     export default class WebGLRenderer {
         constructor(canvas: any, contextConfig?: {});
         canvas: any;
+        programManager: ProgramManager;
         gl: any;
         usage: any;
         render(mesh: any, camera: any, material: any): void;
         clear(r: any, g: any, b: any, a: any): void;
         resize(width: any, height: any): void;
     }
+    import ProgramManager from "core/WebGL/ProgramManager";
 }
 declare module "core/Camera" {
     export default class Camera {
@@ -1089,7 +1098,7 @@ declare module "material/BasicMaterial" {
     import WebGLProgram from "core/WebGL/WebGLProgram";
 }
 declare module "material/DepthMaterial" {
-    export default class BasicMaterial {
+    export default class DepthMaterial {
         transparent: boolean;
         vertexShader: string;
         fragmentShader: string;
