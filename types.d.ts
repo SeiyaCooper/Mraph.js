@@ -967,8 +967,8 @@ declare module "material/Material" {
 }
 declare module "material/MobjectMaterial" {
     export default class MobjectMaterial extends Material {
-        vertexShader: string;
-        fragmentShader: string;
+        vertexShader: any;
+        fragmentShader: any;
         initProgram(gl: any): void;
         program: WebGLProgram;
     }
@@ -1093,8 +1093,8 @@ declare module "material/BasicMaterial" {
         constructor({ color }?: {
             color?: Color;
         });
-        vertexShader: string;
-        fragmentShader: string;
+        vertexShader: any;
+        fragmentShader: any;
         color: Color;
         initProgram(gl: any): void;
         program: WebGLProgram;
@@ -1106,8 +1106,8 @@ declare module "material/BasicMaterial" {
 }
 declare module "material/DepthMaterial" {
     export default class DepthMaterial extends Material {
-        vertexShader: string;
-        fragmentShader: string;
+        vertexShader: any;
+        fragmentShader: any;
         initProgram(gl: any): void;
         program: WebGLProgram;
         beforeRender(scene: any): void;
