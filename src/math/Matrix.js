@@ -94,11 +94,10 @@ export default class Matrix extends Array {
     }
 
     /**
-     *
      * @param {Matrix} mat
      * @returns {Matrix}
      */
-    reduce(mat) {
+    minus(mat) {
         const ans = Matrix.zeros(this.row, this.column);
 
         for (let i = 0; i < this[0].length; i++) {

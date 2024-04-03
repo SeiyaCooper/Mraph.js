@@ -19,6 +19,7 @@ import DepthMaterial from "./material/DepthMaterial.js";
 
 import Matrix from "./math/Matrix.js";
 import Vector from "./math/Vector.js";
+import Quat from "./math/Quat.js";
 
 import Geometry from "./geometry/Geometry.js";
 import Plane from "./geometry/Plane.js";
@@ -47,6 +48,7 @@ export * as GLENUM from "./constants/glenum.js";
 export {
     Matrix,
     Vector,
+    Quat,
     Geometry,
     Plane,
     Box,

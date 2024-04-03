@@ -77,7 +77,7 @@ export default class OrbitControl {
 
     move(deltaX, deltaY) {
         const camera = this.camera;
-        const zAxis = this.center.reduce(camera.position);
+        const zAxis = this.center.minus(camera.position);
         const xAxis = zAxis.cross(camera.up);
         const yAxis = xAxis.cross(zAxis);
 

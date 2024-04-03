@@ -145,11 +145,10 @@ declare module "math/Matrix" {
          */
         add(mat: Matrix): Matrix;
         /**
-         *
          * @param {Matrix} mat
          * @returns {Matrix}
          */
-        reduce(mat: Matrix): Matrix;
+        minus(mat: Matrix): Matrix;
         /**
          * return a deep copy clone of this matrix
          * @returns {Matrix}
@@ -270,7 +269,7 @@ declare module "math/Vector" {
          * @param {Vector} vec
          * @returns {Vector}
          */
-        reduce(vec: Vector): Vector;
+        minus(vec: Vector): Vector;
         /**
          * Project to another vector
          * @param {Vector} vec
@@ -1116,6 +1115,116 @@ declare module "material/DepthMaterial" {
     import Material from "material/Material";
     import WebGLProgram from "core/WebGL/WebGLProgram";
 }
+declare module "math/Quat" {
+    export default class Quat extends Array<any> {
+        /**
+         * Returns [0,0,0,0]
+         * @returns {Quat}
+         */
+        static zeros(): Quat;
+        /**
+         * Create a quternion from a scalar
+         * @param {number} num
+         * @returns {Quat}
+         */
+        static fromScalar(num: number): Quat;
+        /**
+         * @param {number} [x=0]
+         * @param {number} [y=0]
+         * @param {number} [z=0]
+         * @param {number} [w=0]
+         */
+        constructor(x?: number, y?: number, z?: number, w?: number);
+        /**
+         * @param {Quat} quat
+         * @returns {Quat}
+         */
+        add(quat: Quat): Quat;
+        /**
+         * @param {Quat} quat
+         * @returns {Quat}
+         */
+        minus(quat: Quat): Quat;
+        /**
+         * @param {Quat} quat
+         * @returns {Quat}
+         */
+        mult(quat: Quat): Quat;
+        /**
+         * @param {number} num
+         * @returns {Quat}
+         */
+        multNum(num: number): Quat;
+        /**
+         * @param {Quat} quat
+         * @returns {Quat}
+         */
+        dot(quat: Quat): Quat;
+        /**
+         * @param {Quat | number[]} arraylike
+         * @returns {this}
+         */
+        copy(arraylike: Quat | number[]): this;
+        /**
+         * @param {number} val
+         */
+        set x(val: number);
+        /**
+         * @returns {number}
+         */
+        get x(): number;
+        /**
+         * @param {number} val
+         */
+        set y(val: number);
+        /**
+         * @returns {number}
+         */
+        get y(): number;
+        /**
+         * @param {number} val
+         */
+        set z(val: number);
+        /**
+         * @returns {number}
+         */
+        get z(): number;
+        /**
+         * @param {number} val
+         */
+        set w(val: number);
+        /**
+         * @returns {number}
+         */
+        get w(): number;
+        /**
+         * @param {number} val
+         */
+        set norm(val: number);
+        /**
+         * @returns {number}
+         */
+        get norm(): number;
+        0: number;
+        1: number;
+        2: number;
+        3: number;
+        /**
+         * Conjugate quternion
+         */
+        get C(): Quat;
+        get I(): Quat;
+        /**
+         * returns scalar part of this quternion
+         */
+        get scalar(): number;
+        /**
+         * returns vector part of this quternion
+         */
+        get vector(): Vector;
+    }
+    import Vector from "math/Vector";
+}
 declare module "core/Object3D" {
     export default class Object3D {
         /**
@@ -1216,13 +1325,13 @@ declare module "geometry/Geometry" {
     import Object3D from "core/Object3D";
 }
 declare module "constants/vectors" {
-    export function ORIGIN(): Vector;
-    export function UP(): Vector;
-    export function DOWN(): Vector;
-    export function RIGHT(): Vector;
-    export function LEFT(): Vector;
-    export function IN(): Vector;
-    export function OUT(): Vector;
+    export const ORIGIN: Vector;
+    export const UP: Vector;
+    export const DOWN: Vector;
+    export const RIGHT: Vector;
+    export const LEFT: Vector;
+    export const IN: Vector;
+    export const OUT: Vector;
     import Vector from "math/Vector";
 }
 declare module "geometry/Plane" {
@@ -1524,6 +1633,7 @@ declare module "mraph" {
     export * as GLENUM from "constants/glenum";
     import Matrix from "math/Matrix";
     import Vector from "math/Vector";
+    import Quat from "math/Quat";
     import Geometry from "geometry/Geometry";
     import Plane from "geometry/Plane";
     import Box from "geometry/Box";
@@ -1552,5 +1662,5 @@ declare module "mraph" {
     import Timeline from "animation/Timeline";
     import Subscriber from "animation/Subscriber";
     import OrbitControl from "extra/OrbitControl";
-    export { Matrix, Vector, Geometry, Plane, Box, Segment, Sphere, Graph2D, Point, Line, Arc, Arrow, Axis, Axes, VectorField2D, FunctionGraph2D, Layer, Camera, Texture, Color, WebGLRenderer, WebGLProgram, CustomMaterial, BasicMaterial, MobjectMaterial, DepthMaterial, Event, Timeline, Subscriber, OrbitControl };
+    export { Matrix, Vector, Quat, Geometry, Plane, Box, Segment, Sphere, Graph2D, Point, Line, Arc, Arrow, Axis, Axes, VectorField2D, FunctionGraph2D, Layer, Camera, Texture, Color, WebGLRenderer, WebGLProgram, CustomMaterial, BasicMaterial, MobjectMaterial, DepthMaterial, Event, Timeline, Subscriber, OrbitControl };
 }

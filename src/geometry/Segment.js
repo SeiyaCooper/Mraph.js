@@ -6,12 +6,12 @@ import * as VECTORS from "../constants/vectors.js";
 export default class Segment extends Geometry {
     strokeWidth = 0.1;
     strokeColor = new Color(1, 1, 1, 1);
-    normal = VECTORS.OUT();
+    normal = VECTORS.OUT.clone();
     indices = { data: [0, 1, 3, 2, 0, 3] };
     attributes = {};
     watchList = ["start", "end", "strokeWidth", "strokeColor", "normal"];
 
-    constructor(start = VECTORS.ORIGIN(), end = VECTORS.RIGHT()) {
+    constructor(start = VECTORS.ORIGIN.clone(), end = VECTORS.RIGHT.clone()) {
         super();
         this.start = start;
         this.end = end;
@@ -27,9 +27,9 @@ export default class Segment extends Geometry {
 
         const vertices = [
             start.add(vec),
-            start.reduce(vec),
+            start.minus(vec),
             end.add(vec),
-            end.reduce(vec),
+            end.minus(vec),
         ].flat(2);
         const colors = [
             ...this.strokeColor,
@@ -42,6 +42,6 @@ export default class Segment extends Geometry {
     }
 
     get vector() {
-        return this.end.reduce(this.start);
+        return this.end.minus(this.start);
     }
 }

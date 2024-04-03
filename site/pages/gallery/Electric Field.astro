@@ -41,7 +41,7 @@ import Example from "../../layouts/Example.astro";
             const pos = new mp.Vector(x, y, 0);
 
             for (let charge of chargeList) {
-                let radius = pos.reduce(charge.center);
+                let radius = pos.minus(charge.center);
 
                 // The inverse square law
                 radius = radius.mult(charge.charge).mult(1 / radius.norm ** 3);

@@ -6,7 +6,7 @@ export default class Box extends Geometry {
     watchList = ["width", "height", "depth", "color", "center"];
 
     constructor({
-        center = VECTORS.ORIGIN(),
+        center = VECTORS.ORIGIN.clone(),
         width = 1,
         height = 1,
         depth = 1,
@@ -47,42 +47,42 @@ export default class Box extends Geometry {
             c.add(new Vector(-w / 2, -h / 2, -d / 2)),
             w,
             h,
-            VECTORS.OUT()
+            VECTORS.OUT.clone()
         );
         buildPlane(
             vertices,
             c.add(new Vector(-w / 2, -h / 2, d / 2)),
             w,
             h,
-            VECTORS.OUT()
+            VECTORS.OUT.clone()
         );
         buildPlane(
             vertices,
             c.add(new Vector(w / 2, -h / 2, -d / 2)),
             h,
             d,
-            VECTORS.RIGHT()
+            VECTORS.RIGHT.clone()
         );
         buildPlane(
             vertices,
             c.add(new Vector(-w / 2, -h / 2, d / 2)),
             h,
             d,
-            VECTORS.LEFT()
+            VECTORS.LEFT.clone()
         );
         buildPlane(
             vertices,
             c.add(new Vector(-w / 2, h / 2, -d / 2)),
             d,
             w,
-            VECTORS.UP()
+            VECTORS.UP.clone()
         );
         buildPlane(
             vertices,
             c.add(new Vector(w / 2, -h / 2, -d / 2)),
             d,
             w,
-            VECTORS.DOWN()
+            VECTORS.DOWN.clone()
         );
 
         this.setAttribute("position", vertices, 3);

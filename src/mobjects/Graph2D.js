@@ -10,7 +10,7 @@ import * as MathFunc from "../math/math_func.js";
 export default class Graph2D extends Geometry {
     points = [];
     polygons = [];
-    normal = VECTORS.OUT();
+    normal = VECTORS.OUT.clone();
 
     fillColor = new Color(1, 1, 1, 1);
     strokeColor = new Color(1, 1, 1, 1);
@@ -123,8 +123,8 @@ export default class Graph2D extends Geometry {
 
             l0.getAttributeVal("position").splice(6, 3, ...l0.end.add(join));
             l1.getAttributeVal("position").splice(0, 3, ...l0.end.add(join));
-            l0.getAttributeVal("position").splice(9, 3, ...l0.end.reduce(join));
-            l1.getAttributeVal("position").splice(3, 3, ...l0.end.reduce(join));
+            l0.getAttributeVal("position").splice(9, 3, ...l0.end.minus(join));
+            l1.getAttributeVal("position").splice(3, 3, ...l0.end.minus(join));
         }
     }
 

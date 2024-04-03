@@ -10,10 +10,10 @@ export default class Plane extends Geometry {
     watchList = ["width", "height", "normal", "color"];
 
     constructor({
-        position = VECTORS.ORIGIN(),
+        position = VECTORS.ORIGIN.clone(),
         width = 1,
         height = 1,
-        normal = VECTORS.OUT(),
+        normal = VECTORS.OUT.clone(),
     } = {}) {
         super();
         this.position = position;

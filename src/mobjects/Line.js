@@ -58,10 +58,10 @@ export default class Line extends Graph2D {
                 );
             } else {
                 this.line(
-                    vec.reduce(h).add(w.trans(Matrix.rotateZ(Math.PI / 2, 3)))
+                    vec.minus(h).add(w.trans(Matrix.rotateZ(Math.PI / 2, 3)))
                 );
                 this.line(
-                    vec.reduce(h).add(w.trans(Matrix.rotateZ(-Math.PI / 2, 3)))
+                    vec.minus(h).add(w.trans(Matrix.rotateZ(-Math.PI / 2, 3)))
                 );
             }
         }
@@ -98,7 +98,7 @@ export default class Line extends Graph2D {
     }
 
     get vector() {
-        return this.end.center.reduce(this.start.center);
+        return this.end.center.minus(this.start.center);
     }
 
     set length(val) {

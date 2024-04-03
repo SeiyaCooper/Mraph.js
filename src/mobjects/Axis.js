@@ -23,7 +23,7 @@ export default class Axis extends Line {
 
         for (let pos = 0; pos <= len; pos += this.unit) {
             const at = this.at(pos / len);
-            this.move(at.reduce(tick));
+            this.move(at.minus(tick));
             this.line(at.add(tick));
         }
         this.stroke();

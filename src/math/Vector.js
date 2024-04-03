@@ -110,7 +110,7 @@ export default class Vector extends Array {
      * @param {Vector} vec
      * @returns {Vector}
      */
-    reduce(vec) {
+    minus(vec) {
         const ans = Vector.fromRow(this.row, 0);
 
         for (let j = 0; j < this.length; j++) {
