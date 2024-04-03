@@ -2,5 +2,8 @@
     "tabWidth": 4,
     "printWidth": 80,
     "trailingComma": "es5",
-    "plugins": ["prettier-plugin-glsl"]
+    "plugins": ["prettier-plugin-glsl"],
+    "overrides": [
+        { "files": ["*.frag"], "options": { "parser": "glsl-parser" } }
+    ]
 }

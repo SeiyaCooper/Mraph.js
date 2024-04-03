@@ -23,19 +23,22 @@ export default class Program {
         this.gl.useProgram(this.program);
     }
 
-    setUniform(name, data) {
+    setUniform(name, data, n) {
         const gl = this.gl;
         const location = this.gl.getUniformLocation(this.program, name);
 
         this.use();
 
         if (Array.isArray(data[0])) {
-            const n = data[0].length;
             const arr = new Float32Array(data.flat());
-            gl["uniformMatrix" + n + "fv"](location, false, arr);
+            gl["uniformMatrix" + (n ?? data[0].length) + "fv"](
+                location,
+                false,
+                arr
+            );
         } else if (Array.isArray(data)) {
             const arr = new Float32Array(data);
-            gl["uniform" + data.length + "fv"](location, arr);
+            gl["uniform" + (n ?? data.length) + "fv"](location, arr);
         } else {
             gl.uniform1f(location, data);
         }

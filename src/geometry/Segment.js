@@ -1,6 +1,6 @@
 import Geometry from "./Geometry.js";
 import Matrix from "../math/Matrix.js";
-import Color from "../core/Color.js";
+import Color from "../math/Color.js";
 import * as VECTORS from "../constants/vectors.js";
 
 export default class Segment extends Geometry {

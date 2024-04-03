@@ -1,5 +1,5 @@
 import Geometry from "../geometry/Geometry.js";
-import Color from "../core/Color.js";
+import Color from "../math/Color.js";
 import * as Utils from "../utils/utils.js";
 import Segment from "../geometry/Segment.js";
 import Vector from "../math/Vector.js";

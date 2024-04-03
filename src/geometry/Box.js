@@ -19,14 +19,21 @@ export default class Box extends Geometry {
     }
 
     update() {
-        function buildPlane(target, position, width, height, normal) {
+        function buildPlane(
+            vertices,
+            normals,
+            position,
+            width,
+            height,
+            normal
+        ) {
             const yAxis = new Vector(normal[1], normal[2], normal[0]);
             yAxis.norm = height;
 
             const xAxis = yAxis.cross(normal);
             xAxis.norm = width;
 
-            target.push(
+            vertices.push(
                 ...position,
                 ...position.add(xAxis),
                 ...position.add(xAxis).add(yAxis),
@@ -34,9 +41,16 @@ export default class Box extends Geometry {
                 ...position,
                 ...position.add(xAxis).add(yAxis)
             );
+            normals.push(...normal);
+            normals.push(...normal);
+            normals.push(...normal);
+            normals.push(...normal);
+            normals.push(...normal);
+            normals.push(...normal);
         }
 
         const vertices = this.getAttributeVal("position");
+        const normal = [];
         const c = this.center,
             w = this.width,
             h = this.height,
@@ -44,6 +58,7 @@ export default class Box extends Geometry {
 
         buildPlane(
             vertices,
+            normal,
             c.add(new Vector(-w / 2, -h / 2, -d / 2)),
             w,
             h,
@@ -51,6 +66,7 @@ export default class Box extends Geometry {
         );
         buildPlane(
             vertices,
+            normal,
             c.add(new Vector(-w / 2, -h / 2, d / 2)),
             w,
             h,
@@ -58,6 +74,7 @@ export default class Box extends Geometry {
         );
         buildPlane(
             vertices,
+            normal,
             c.add(new Vector(w / 2, -h / 2, -d / 2)),
             h,
             d,
@@ -65,6 +82,7 @@ export default class Box extends Geometry {
         );
         buildPlane(
             vertices,
+            normal,
             c.add(new Vector(-w / 2, -h / 2, d / 2)),
             h,
             d,
@@ -72,6 +90,7 @@ export default class Box extends Geometry {
         );
         buildPlane(
             vertices,
+            normal,
             c.add(new Vector(-w / 2, h / 2, -d / 2)),
             d,
             w,
@@ -79,6 +98,7 @@ export default class Box extends Geometry {
         );
         buildPlane(
             vertices,
+            normal,
             c.add(new Vector(w / 2, -h / 2, -d / 2)),
             d,
             w,
@@ -86,6 +106,7 @@ export default class Box extends Geometry {
         );
 
         this.setAttribute("position", vertices, 3);
+        this.setAttribute("normal", normal, 3);
         this.indices = vertices.length / 3;
     }
 }

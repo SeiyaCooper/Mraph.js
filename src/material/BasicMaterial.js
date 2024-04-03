@@ -1,5 +1,5 @@
 import WebGLProgram from "../core/WebGL/WebGLProgram.js";
-import Color from "../core/Color.js";
+import Color from "../math/Color.js";
 import Material from "./Material.js";
 
 import vertexShader from "./shader/basic.vert?raw";

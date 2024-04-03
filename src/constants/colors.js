@@ -1,4 +1,4 @@
-import Color from "../core/Color.js";
+import Color from "../math/Color.js";
 
 export const WHITE = Color.fromHex(0xffffff);
 export const BLACK = Color.fromHex(0x000000);

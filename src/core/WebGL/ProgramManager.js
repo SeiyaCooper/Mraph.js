@@ -3,13 +3,13 @@ export default class ProgramManager {
         this.programPool = {};
     }
 
-    setProgram(material, gl) {
+    setProgram(material, gl, scene) {
         const key = this.getProgramKey(material);
         const program = this.programPool[key];
 
         if (program) material.program = program;
         else {
-            material.initProgram(gl);
+            material.initProgram(gl, scene);
             this.programPool[key] = material.program;
         }
     }

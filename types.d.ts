@@ -778,7 +778,7 @@ declare module "constants/glenum" {
 declare module "core/WebGL/ProgramManager" {
     export default class ProgramManager {
         programPool: {};
-        setProgram(material: any, gl: any): void;
+        setProgram(material: any, gl: any, scene: any): void;
         getProgramKey(material: any): any;
     }
 }
@@ -789,7 +789,7 @@ declare module "core/WebGL/WebGLRenderer" {
         programManager: ProgramManager;
         gl: any;
         usage: any;
-        render(mesh: any, camera: any, material: any): void;
+        render(mesh: any, camera: any, material: any, surroundings: any): void;
         clear(r: any, g: any, b: any, a: any): void;
         resize(width: any, height: any): void;
     }
@@ -872,7 +872,7 @@ declare module "animation/Subscriber" {
         }): any;
     }
 }
-declare module "core/Color" {
+declare module "math/Color" {
     export default class Color extends Array<any> {
         static fromHex(hex: any): Color;
         static fromHexStr(str: any): Color;
@@ -929,7 +929,7 @@ declare module "constants/colors" {
     export const GRAY: Color;
     export const COOPER_ORANGE: Color;
     export const SEIYA_PINK: Color;
-    import Color from "core/Color";
+    import Color from "math/Color";
 }
 declare module "core/WebGL/WebGLProgram" {
     export default class Program {
@@ -952,7 +952,7 @@ declare module "core/WebGL/WebGLProgram" {
         set textures(val: any);
         get textures(): any;
         use(): void;
-        setUniform(name: any, data: any): void;
+        setUniform(name: any, data: any, n: any): void;
         setAttriBuffer(name: any, value: any, n: any, usage: any): void;
         getExtension(name: any): any;
         _attributes: any;
@@ -975,6 +975,29 @@ declare module "material/MobjectMaterial" {
     import Material from "material/Material";
     import WebGLProgram from "core/WebGL/WebGLProgram";
 }
+declare module "constants/vectors" {
+    export const ORIGIN: Vector;
+    export const UP: Vector;
+    export const DOWN: Vector;
+    export const RIGHT: Vector;
+    export const LEFT: Vector;
+    export const IN: Vector;
+    export const OUT: Vector;
+    import Vector from "math/Vector";
+}
+declare module "light/PointLight" {
+    export default class PointLight {
+        static isInstance(obj: any): boolean;
+        constructor({ position, color, intensity, }?: {
+            position?: import("mraph").Vector;
+            color?: import("mraph").Color;
+            intensity?: number;
+        });
+        position: import("mraph").Vector;
+        color: import("mraph").Color;
+        intensity: number;
+    }
+}
 declare module "core/Layer" {
     export default class Layer {
         constructor({ fullScreen, appendTo, rendererClass, contextConfig, }?: {
@@ -987,6 +1010,9 @@ declare module "core/Layer" {
         camera: Camera;
         timeline: Timeline;
         defaultMaterial: MobjectMaterial;
+        surroundings: {
+            pointLights: any[];
+        };
         canvas: HTMLCanvasElement;
         renderer: WebGLRenderer;
         /**
@@ -1006,11 +1032,16 @@ declare module "core/Layer" {
          */
         appendTo(el: HTMLElement): this;
         /**
-         * add mobjects to layer
-         * @param  {...mobject} els
+         * add mobjects, lights to scene
+         * @param  {...mobject | light} els
          * @returns {this}
          */
-        add(...els: mobject[]): this;
+        add(...els: (mobject | light)[]): this;
+        /**
+         * add something to surroundings
+         * @param {light} obj
+         */
+        addSurrounding(obj: light): void;
         /**
          * create a mobject
          * @param {function} mobjClass constructor of this mobject
@@ -1101,7 +1132,7 @@ declare module "material/BasicMaterial" {
         get depthTest(): boolean;
     }
     import Material from "material/Material";
-    import Color from "core/Color";
+    import Color from "math/Color";
     import WebGLProgram from "core/WebGL/WebGLProgram";
 }
 declare module "material/DepthMaterial" {
@@ -1110,7 +1141,24 @@ declare module "material/DepthMaterial" {
         fragmentShader: any;
         initProgram(gl: any): void;
         program: WebGLProgram;
-        beforeRender(scene: any): void;
+        beforeRender({ camera }: {
+            camera: any;
+        }): void;
+    }
+    import Material from "material/Material";
+    import WebGLProgram from "core/WebGL/WebGLProgram";
+}
+declare module "material/LambertMaterial" {
+    export default class LambertMaterial extends Material {
+        vertexShader: any;
+        fragmentShader: any;
+        initProgram(gl: any, { surroundings }: {
+            surroundings: any;
+        }): void;
+        program: WebGLProgram;
+        beforeRender({ surroundings }: {
+            surroundings: any;
+        }): void;
     }
     import Material from "material/Material";
     import WebGLProgram from "core/WebGL/WebGLProgram";
@@ -1324,16 +1372,6 @@ declare module "geometry/Geometry" {
     }
     import Object3D from "core/Object3D";
 }
-declare module "constants/vectors" {
-    export const ORIGIN: Vector;
-    export const UP: Vector;
-    export const DOWN: Vector;
-    export const RIGHT: Vector;
-    export const LEFT: Vector;
-    export const IN: Vector;
-    export const OUT: Vector;
-    import Vector from "math/Vector";
-}
 declare module "geometry/Plane" {
     export default class Plane extends Geometry {
         constructor({ position, width, height, normal, }?: {
@@ -1389,7 +1427,7 @@ declare module "geometry/Segment" {
         get vector(): import("mraph").Vector;
     }
     import Geometry from "geometry/Geometry";
-    import Color from "core/Color";
+    import Color from "math/Color";
 }
 declare module "geometry/Sphere" {
     export default class Sphere extends Geometry {
@@ -1411,6 +1449,17 @@ declare module "geometry/Sphere" {
         thetaSegments: number;
     }
     import Geometry from "geometry/Geometry";
+}
+declare module "light/DirectionalLight" {
+    export default class DirectionalLight {
+        static isInstance(obj: any): boolean;
+        constructor({ direction, color }?: {
+            direction?: import("mraph").Vector;
+            color?: import("mraph").Color;
+        });
+        direction: import("mraph").Vector;
+        color: import("mraph").Color;
+    }
 }
 declare module "mobjects/Graph2D" {
     export default class Graph2D extends Geometry {
@@ -1439,7 +1488,7 @@ declare module "mobjects/Graph2D" {
     }
     import Geometry from "geometry/Geometry";
     import Vector from "math/Vector";
-    import Color from "core/Color";
+    import Color from "math/Color";
 }
 declare module "mobjects/Arc" {
     export default class Arc extends Graph2D {
@@ -1613,7 +1662,7 @@ declare module "mobjects/VectorField2D" {
         get center(): Vector;
     }
     import Geometry from "geometry/Geometry";
-    import Color from "core/Color";
+    import Color from "math/Color";
     import Vector from "math/Vector";
 }
 declare module "extra/OBJLoader" {
@@ -1631,6 +1680,7 @@ declare module "mraph" {
     export * as COLORS from "constants/colors";
     export * as VECTORS from "constants/vectors";
     export * as GLENUM from "constants/glenum";
+    import Color from "math/Color";
     import Matrix from "math/Matrix";
     import Vector from "math/Vector";
     import Quat from "math/Quat";
@@ -1639,6 +1689,8 @@ declare module "mraph" {
     import Box from "geometry/Box";
     import Segment from "geometry/Segment";
     import Sphere from "geometry/Sphere";
+    import DirectionalLight from "light/DirectionalLight";
+    import PointLight from "light/PointLight";
     import Graph2D from "mobjects/Graph2D";
     import Point from "mobjects/Point";
     import Line from "mobjects/Line";
@@ -1651,16 +1703,16 @@ declare module "mraph" {
     import Layer from "core/Layer";
     import Camera from "core/Camera";
     import Texture from "core/Texture";
-    import Color from "core/Color";
     import WebGLRenderer from "core/WebGL/WebGLRenderer";
     import WebGLProgram from "core/WebGL/WebGLProgram";
     import CustomMaterial from "material/CustomMaterial";
     import BasicMaterial from "material/BasicMaterial";
     import MobjectMaterial from "material/MobjectMaterial";
     import DepthMaterial from "material/DepthMaterial";
+    import LambertMaterial from "material/LambertMaterial";
     import Event from "animation/Event";
     import Timeline from "animation/Timeline";
     import Subscriber from "animation/Subscriber";
     import OrbitControl from "extra/OrbitControl";
-    export { Matrix, Vector, Quat, Geometry, Plane, Box, Segment, Sphere, Graph2D, Point, Line, Arc, Arrow, Axis, Axes, VectorField2D, FunctionGraph2D, Layer, Camera, Texture, Color, WebGLRenderer, WebGLProgram, CustomMaterial, BasicMaterial, MobjectMaterial, DepthMaterial, Event, Timeline, Subscriber, OrbitControl };
+    export { Color, Matrix, Vector, Quat, Geometry, Plane, Box, Segment, Sphere, DirectionalLight, PointLight, Graph2D, Point, Line, Arc, Arrow, Axis, Axes, VectorField2D, FunctionGraph2D, Layer, Camera, Texture, WebGLRenderer, WebGLProgram, CustomMaterial, BasicMaterial, MobjectMaterial, DepthMaterial, LambertMaterial, Event, Timeline, Subscriber, OrbitControl };
 }

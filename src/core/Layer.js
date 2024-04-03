@@ -5,12 +5,16 @@ import OrbitControl from "../extra/OrbitControl.js";
 import Subscriber from "../animation/Subscriber.js";
 import * as COLORS from "../constants/colors.js";
 import MobjectMaterial from "../material/MobjectMaterial.js";
+import PointLight from "../light/PointLight.js";
 
 export default class Layer {
     elements = [];
     camera = new Camera();
     timeline = new Timeline();
     defaultMaterial = new MobjectMaterial();
+    surroundings = {
+        pointLights: [],
+    };
 
     constructor({
         fullScreen = true,
@@ -69,21 +73,30 @@ export default class Layer {
     }
 
     /**
-     * add mobjects to layer
-     * @param  {...mobject} els
+     * add mobjects, lights to scene
+     * @param  {...mobject | light} els
      * @returns {this}
      */
     add(...els) {
-        this.elements.push(...els);
-
         for (let el of els) {
-            el.set("layer", this);
-            if (this.renderer.gl) {
-                el.gl = this.renderer.gl;
+            if (typeof el.attributes === "object") {
+                el.set("layer", this);
+                el.set("gl", this.renderer.gl);
+                this.elements.push(el);
+            } else {
+                this.addSurrounding(el);
             }
         }
 
         return this;
+    }
+
+    /**
+     * add something to surroundings
+     * @param {light} obj
+     */
+    addSurrounding(obj) {
+        if (PointLight.isInstance(obj)) this.surroundings.pointLights.push(obj);
     }
 
     /**
@@ -120,7 +133,7 @@ export default class Layer {
             }
 
             const material = el.material ?? this.defaultMaterial;
-            this.renderer.render(el, this.camera, material);
+            this.renderer.render(el, this.camera, material, this.surroundings);
         }
         return this;
     }

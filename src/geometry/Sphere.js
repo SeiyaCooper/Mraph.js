@@ -34,6 +34,7 @@ export default class Sphere extends Geometry {
         const r = this.radius;
 
         const vertices = [];
+        const normal = [];
         const indices = [];
 
         // get vetices
@@ -43,6 +44,11 @@ export default class Sphere extends Geometry {
                 const theta = thetaStart + i * thetaUnit;
 
                 vertices.push(
+                    r * Math.cos(phi) * Math.sin(theta),
+                    r * Math.cos(theta),
+                    r * Math.sin(phi) * Math.sin(theta)
+                );
+                normal.push(
                     r * Math.cos(phi) * Math.sin(theta),
                     r * Math.cos(theta),
                     r * Math.sin(phi) * Math.sin(theta)
@@ -79,6 +85,7 @@ export default class Sphere extends Geometry {
         }
 
         this.setAttribute("position", vertices, 3);
+        this.setAttribute("normal", normal, 3);
         this.setIndex(indices);
     }
 }

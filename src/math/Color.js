@@ -1,4 +1,4 @@
-import * as MathFunc from "../math/math_func.js";
+import * as MathFunc from "./math_func.js";
 
 export default class Color extends Array {
     /**

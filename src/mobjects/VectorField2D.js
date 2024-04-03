@@ -2,7 +2,7 @@ import Arrow from "./Arrow.js";
 import Point from "./Point.js";
 import Vector from "../math/Vector.js";
 import * as MathFunc from "../math/math_func.js";
-import Color from "../core/Color.js";
+import Color from "../math/Color.js";
 import Geometry from "../geometry/Geometry.js";
 
 export default class VectorField2D extends Geometry {

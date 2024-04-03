@@ -18,16 +18,17 @@ export default class WebGLRenderer {
         gl.viewport(0, 0, canvas.width, canvas.height);
     }
 
-    render(mesh, camera, material) {
+    render(mesh, camera, material, surroundings) {
         const gl = this.gl;
+        const scene = { mesh, camera, surroundings };
 
         if (!material.depthTest) gl.disable(gl.DEPTH_TEST);
 
         if (!material.program)
-            this.programManager.setProgram(material, this.gl);
+            this.programManager.setProgram(material, this.gl, scene);
         const program = material.program;
 
-        material.beforeRender?.({ mesh, camera });
+        material.beforeRender?.(scene);
         program.setUniform("viewMat", camera.viewMat);
         program.setUniform("projectionMat", camera.projectionMat);
         program.setUniform("modelMat", mesh.matrix ?? Matrix.identity(4));
