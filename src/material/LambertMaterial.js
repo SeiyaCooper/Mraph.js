@@ -1,5 +1,6 @@
 import WebGLProgram from "../core/WebGL/WebGLProgram.js";
 import Material from "./Material.js";
+import * as SlotParser from "./SlotParser.js";
 
 import vertexShader from "./shader/lambert.vert?raw";
 import fragmentShader from "./shader/lambert.frag?raw";
@@ -12,10 +13,11 @@ export default class LambertMaterial extends Material {
     }
 
     initProgram(gl, { surroundings }) {
-        const findSlot = /!slot::([0-9a-zA-Z-_]+)/g;
-        const finalFragCode = this.fragmentShader.replace(findSlot, () => {
-            return surroundings.pointLights.length;
-        });
+        const finalFragCode = SlotParser.replace(
+            fragmentShader,
+            "light_num",
+            surroundings.pointLights.length
+        );
 
         this.program = new WebGLProgram(gl, {
             vs: this.vertexShader,

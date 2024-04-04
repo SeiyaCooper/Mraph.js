@@ -11,6 +11,7 @@ import OrbitControl from "./extra/OrbitControl.js";
 import WebGLRenderer from "./core/WebGL/WebGLRenderer.js";
 import WebGLProgram from "./core/WebGL/WebGLProgram.js";
 
+export * as SlotParser from "./material/SlotParser.js";
 import CustomMaterial from "./material/CustomMaterial.js";
 import BasicMaterial from "./material/BasicMaterial.js";
 import MobjectMaterial from "./material/MobjectMaterial.js";

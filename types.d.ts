@@ -1105,6 +1105,9 @@ declare module "core/Texture" {
         __magFilter: any;
     }
 }
+declare module "material/SlotParser" {
+    export function replace(origin: any, name: any, value: any): any;
+}
 declare module "material/CustomMaterial" {
     export default class CustomMaterial extends Material {
         constructor({ vertexShader, fragmentShader }?: {
@@ -1675,6 +1678,7 @@ declare module "extra/OBJLoader" {
     import Geometry from "geometry/Geometry";
 }
 declare module "mraph" {
+    export * as SlotParser from "material/SlotParser";
     export * as MathFunc from "math/math_func";
     export * as OBJLoader from "extra/OBJLoader";
     export * as COLORS from "constants/colors";
