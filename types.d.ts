@@ -1353,7 +1353,7 @@ declare module "geometry/Geometry" {
         update(): void;
         /**
          * Merge all children into this geometry.
-         * This method assuming all children have and only have two variables, position and color.
+         * This method assuming all children have and only have three variables, normal, position and color.
          */
         combineChildren(): void;
         /**

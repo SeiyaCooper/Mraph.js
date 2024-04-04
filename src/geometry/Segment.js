@@ -37,8 +37,15 @@ export default class Segment extends Geometry {
             ...this.strokeColor,
             ...this.strokeColor,
         ];
+        const normal = [
+            ...this.normal,
+            ...this.normal,
+            ...this.normal,
+            ...this.normal,
+        ];
         this.setAttribute("position", vertices, 3);
         this.setAttribute("color", colors, 4);
+        this.setAttribute("normal", normal, 3);
     }
 
     get vector() {

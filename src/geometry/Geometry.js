@@ -44,15 +44,17 @@ export default class Geometry extends Object3D {
 
     /**
      * Merge all children into this geometry.
-     * This method assuming all children have and only have two variables, position and color.
+     * This method assuming all children have and only have three variables, normal, position and color.
      */
     combineChildren() {
         const vertices = this.getAttributeVal("position");
         const colors = this.getAttributeVal("color");
+        const normal = this.getAttributeVal("normal");
 
         for (let child of this.children) {
             const position = child.getAttributeVal("position");
             const oriColors = child.getAttributeVal("color");
+            const oriNormal = child.getAttributeVal("normal");
 
             if (typeof child.indices !== "number") {
                 for (let i of child.indices.data) {
@@ -63,15 +65,20 @@ export default class Geometry extends Object3D {
                     colors.push(oriColors[i * 4 + 1]);
                     colors.push(oriColors[i * 4 + 2]);
                     colors.push(oriColors[i * 4 + 3]);
+                    normal.push(oriNormal[i * 3]);
+                    normal.push(oriNormal[i * 3 + 1]);
+                    normal.push(oriNormal[i * 3 + 2]);
                 }
             } else {
                 vertices.push(...position);
                 colors.push(...oriColors);
+                normal.push(...oriNormal);
             }
         }
 
         this.setAttribute("position", vertices, 3);
         this.setAttribute("color", colors, 4);
+        this.setAttribute("normal", normal, 3);
         this.setIndex(vertices.length / 3);
         this.clearChildren();
     }
