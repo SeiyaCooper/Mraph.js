@@ -27,6 +27,8 @@ export default class LambertMaterial extends Material {
         const program = this.program;
 
         const pointLights = surroundings.pointLights;
+
+        if (pointLights.length < 1) return;
         const pointLightsPosition = [];
         const pointLightsColor = [];
         const pointLightsIntensity = [];
