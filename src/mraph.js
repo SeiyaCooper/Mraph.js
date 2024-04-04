@@ -14,7 +14,6 @@ import WebGLProgram from "./core/WebGL/WebGLProgram.js";
 export * as SlotParser from "./material/SlotParser.js";
 import CustomMaterial from "./material/CustomMaterial.js";
 import BasicMaterial from "./material/BasicMaterial.js";
-import MobjectMaterial from "./material/MobjectMaterial.js";
 import DepthMaterial from "./material/DepthMaterial.js";
 import LambertMaterial from "./material/LambertMaterial.js";
 
@@ -89,7 +88,6 @@ export {
     WebGLProgram,
     CustomMaterial,
     BasicMaterial,
-    MobjectMaterial,
     DepthMaterial,
     LambertMaterial,
 

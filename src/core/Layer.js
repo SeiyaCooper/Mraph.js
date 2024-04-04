@@ -4,14 +4,14 @@ import Camera from "./Camera.js";
 import OrbitControl from "../extra/OrbitControl.js";
 import Subscriber from "../animation/Subscriber.js";
 import * as COLORS from "../constants/colors.js";
-import MobjectMaterial from "../material/MobjectMaterial.js";
+import BasicMaterial from "../material/BasicMaterial.js";
 import PointLight from "../light/PointLight.js";
 
 export default class Layer {
     elements = [];
     camera = new Camera();
     timeline = new Timeline();
-    defaultMaterial = new MobjectMaterial();
+    defaultMaterial = new BasicMaterial();
     surroundings = {
         pointLights: [],
     };
@@ -36,6 +36,7 @@ export default class Layer {
         }
         this.renderer = new rendererClass(this.canvas, contextConfig);
         this.clear(COLORS.GRAY_E);
+        this.defaultMaterial.colorMode = "vertex";
     }
 
     /**

@@ -6,8 +6,9 @@ uniform vec4 point_light_color[!slot::light_num];
 uniform float point_light_intensity[!slot::light_num];
 #endif
 
-varying vec4 v_color;
 varying vec3 v_normal;
+
+!slot::get_color
 
 void main() {
     vec4 shade = vec4(0.0);
@@ -21,5 +22,8 @@ void main() {
     }
     #endif
 
-    gl_FragColor = v_color + shade;
+    !slot::get_color::main
+
+    gl_FragColor.rgb = color.rgb * 0.5 + shade.rgb;
+    gl_FragColor.a = color.a;
 }

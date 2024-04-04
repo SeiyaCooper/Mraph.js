@@ -15,6 +15,6 @@ export default class ProgramManager {
     }
 
     getProgramKey(material) {
-        return material.constructor.name;
+        return material.constructor.name + material.colorMode;
     }
 }

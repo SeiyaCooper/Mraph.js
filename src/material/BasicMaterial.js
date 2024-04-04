@@ -1,29 +1,26 @@
 import WebGLProgram from "../core/WebGL/WebGLProgram.js";
-import Color from "../math/Color.js";
 import Material from "./Material.js";
 
 import vertexShader from "./shader/basic.vert?raw";
 import fragmentShader from "./shader/basic.frag?raw";
 
 export default class BasicMaterial extends Material {
-    constructor({ color = new Color(1, 1, 1, 1) } = {}) {
+    constructor() {
         super();
         this.vertexShader = vertexShader;
         this.fragmentShader = fragmentShader;
-        this.color = color;
     }
 
     initProgram(gl) {
+        const { vs, fs } = super.compileComponents();
         this.program = new WebGLProgram(gl, {
-            vs: this.vertexShader,
-            fs: this.fragmentShader,
-            attributes: {
-                position: 3,
-            },
-            uniforms: {
-                color: this.color,
-            },
+            vs,
+            fs,
         });
+    }
+
+    beforeRender() {
+        this.passComponentVariables();
     }
 
     get depthTest() {

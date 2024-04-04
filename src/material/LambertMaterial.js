@@ -13,21 +13,17 @@ export default class LambertMaterial extends Material {
     }
 
     initProgram(gl, { surroundings }) {
-        const finalFragCode = SlotParser.replace(
-            fragmentShader,
+        let { vs, fs } = super.compileComponents();
+        fs = SlotParser.replace(
+            fs,
             "light_num",
             surroundings.pointLights.length
         );
-
-        this.program = new WebGLProgram(gl, {
-            vs: this.vertexShader,
-            fs: finalFragCode,
-        });
+        this.program = new WebGLProgram(gl, { vs, fs });
     }
 
     beforeRender({ surroundings }) {
         const program = this.program;
-
         const pointLights = surroundings.pointLights;
 
         if (pointLights.length < 1) return;
@@ -42,5 +38,6 @@ export default class LambertMaterial extends Material {
         program.setUniform("point_light_position", pointLightsPosition, 3);
         program.setUniform("point_light_color", pointLightsColor, 4);
         program.setUniform("point_light_intensity", pointLightsIntensity, 1);
+        this.passComponentVariables();
     }
 }

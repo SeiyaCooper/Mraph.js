@@ -1,4 +1,4 @@
-const findSlot = /!slot::([0-9a-zA-Z-_]+)/g;
+const findSlot = /!slot::([0-9a-zA-Z-_:]+)/g;
 
 export function replace(origin, name, value) {
     return origin.replace(findSlot, (match, key) => {

@@ -960,17 +960,41 @@ declare module "core/WebGL/WebGLProgram" {
         _textures: any;
     }
 }
+declare module "material/SlotParser" {
+    export function replace(origin: any, name: any, value: any): any;
+}
+declare module "material/components/GetColorComponent" {
+    export default class GetColorComponent {
+        compile(vs: any, fs: any, { colorMode }: {
+            colorMode: any;
+        }): {
+            vs: any;
+            fs: any;
+        };
+        passVariables(target: any): void;
+    }
+}
 declare module "material/Material" {
     export default class Material {
         depthTest: boolean;
+        colorMode: string;
+        color: import("mraph").Color;
+        vertexShader: string;
+        fragmentShader: string;
+        components: any[];
+        attachComponent(component: any): void;
+        compileComponents(): any;
+        passComponentVariables(): void;
     }
 }
-declare module "material/MobjectMaterial" {
-    export default class MobjectMaterial extends Material {
+declare module "material/BasicMaterial" {
+    export default class BasicMaterial extends Material {
         vertexShader: any;
         fragmentShader: any;
         initProgram(gl: any): void;
         program: WebGLProgram;
+        beforeRender(): void;
+        get depthTest(): boolean;
     }
     import Material from "material/Material";
     import WebGLProgram from "core/WebGL/WebGLProgram";
@@ -1009,7 +1033,7 @@ declare module "core/Layer" {
         elements: any[];
         camera: Camera;
         timeline: Timeline;
-        defaultMaterial: MobjectMaterial;
+        defaultMaterial: BasicMaterial;
         surroundings: {
             pointLights: any[];
         };
@@ -1078,7 +1102,7 @@ declare module "core/Layer" {
     }
     import Camera from "core/Camera";
     import Timeline from "animation/Timeline";
-    import MobjectMaterial from "material/MobjectMaterial";
+    import BasicMaterial from "material/BasicMaterial";
     import WebGLRenderer from "core/WebGL/WebGLRenderer";
     import OrbitControl from "extra/OrbitControl";
 }
@@ -1105,37 +1129,16 @@ declare module "core/Texture" {
         __magFilter: any;
     }
 }
-declare module "material/SlotParser" {
-    export function replace(origin: any, name: any, value: any): any;
-}
 declare module "material/CustomMaterial" {
     export default class CustomMaterial extends Material {
         constructor({ vertexShader, fragmentShader }?: {
             vertexShader?: string;
             fragmentShader?: string;
         });
-        vertexShader: string;
-        fragmentShader: string;
         initProgram(gl: any): void;
         program: WebGLProgram;
     }
     import Material from "material/Material";
-    import WebGLProgram from "core/WebGL/WebGLProgram";
-}
-declare module "material/BasicMaterial" {
-    export default class BasicMaterial extends Material {
-        constructor({ color }?: {
-            color?: Color;
-        });
-        vertexShader: any;
-        fragmentShader: any;
-        color: Color;
-        initProgram(gl: any): void;
-        program: WebGLProgram;
-        get depthTest(): boolean;
-    }
-    import Material from "material/Material";
-    import Color from "math/Color";
     import WebGLProgram from "core/WebGL/WebGLProgram";
 }
 declare module "material/DepthMaterial" {
@@ -1711,12 +1714,11 @@ declare module "mraph" {
     import WebGLProgram from "core/WebGL/WebGLProgram";
     import CustomMaterial from "material/CustomMaterial";
     import BasicMaterial from "material/BasicMaterial";
-    import MobjectMaterial from "material/MobjectMaterial";
     import DepthMaterial from "material/DepthMaterial";
     import LambertMaterial from "material/LambertMaterial";
     import Event from "animation/Event";
     import Timeline from "animation/Timeline";
     import Subscriber from "animation/Subscriber";
     import OrbitControl from "extra/OrbitControl";
-    export { Color, Matrix, Vector, Quat, Geometry, Plane, Box, Segment, Sphere, DirectionalLight, PointLight, Graph2D, Point, Line, Arc, Arrow, Axis, Axes, VectorField2D, FunctionGraph2D, Layer, Camera, Texture, WebGLRenderer, WebGLProgram, CustomMaterial, BasicMaterial, MobjectMaterial, DepthMaterial, LambertMaterial, Event, Timeline, Subscriber, OrbitControl };
+    export { Color, Matrix, Vector, Quat, Geometry, Plane, Box, Segment, Sphere, DirectionalLight, PointLight, Graph2D, Point, Line, Arc, Arrow, Axis, Axes, VectorField2D, FunctionGraph2D, Layer, Camera, Texture, WebGLRenderer, WebGLProgram, CustomMaterial, BasicMaterial, DepthMaterial, LambertMaterial, Event, Timeline, Subscriber, OrbitControl };
 }
