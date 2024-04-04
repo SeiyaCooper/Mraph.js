@@ -5,73 +5,33 @@ import Example from "../../layouts/Example.astro";
 <Example title="Rubik's Cube">
     <script>
         import * as mp from "../../../src/mraph.js";
-
-        const vertexShader = `
-            attribute vec3 position;
-            attribute vec3 normal;
-            attribute vec2 uv;
-        
-            uniform mat4 viewMat;
-            uniform mat4 projectionMat;
-            uniform mat4 modelMat;
-        
-            varying vec3 v_normal;
-            varying vec2 v_uv;
-        
-            void main() {
-                gl_Position = projectionMat * viewMat * modelMat * vec4(position, 1.0);
-                v_normal = normal;
-                v_uv = uv;
-            }
-        `;
-        const fragmentShader = `
-            precision mediump float;
-        
-            varying vec3 v_normal;
-            varying vec2 v_uv;
-        
-            uniform sampler2D sampler;
-        
-            void main() {
-                float shade = dot(normalize(vec3(1, 3, 7)), v_normal);
-                vec3 propor_color = texture2D(sampler, v_uv).rgb;
-        
-                gl_FragColor.rgb = propor_color * 0.8 + shade * 0.2;
-                gl_FragColor.a = 1.0;
-            }
-        `;
-
         const layer = new mp.Layer().appendTo(document.body);
-
         const gl = layer.renderer.gl;
 
-        const mesh = new mp.Geometry();
-        mesh.material = new mp.CustomMaterial({ vertexShader, fragmentShader });
+        const mesh = await mp.OBJLoader.parseToGeometry(
+            "/Mraph.js/Rubik's Cube.obj"
+        );
+        mesh.material = new mp.LambertMaterial();
+        mesh.material.colorMode = "texture";
+        layer.add(mesh);
 
-        (async () => {
-            const data = await mp.OBJLoader.parseToObject(
-                "/Mraph.js/Rubik's Cube.obj"
-            );
-
-            mesh.setAttribute("position", data.position, 3);
-            mesh.setAttribute("uv", data.uv, 2);
-            mesh.setAttribute("normal", data.normal, 3);
-            mesh.indices = data.position.length / 3;
-
-            layer.camera.position[2] = 3;
-
-            layer.add(mesh);
-            layer.enableOrbitControl();
-            layer.play();
-        })();
+        const pointLight = new mp.PointLight({
+            position: new mp.Vector(1, 3, 7),
+            intensity: 0.5,
+        });
+        layer.add(pointLight);
 
         const texture = new mp.Texture(gl);
         const img = new Image();
         img.src = "/Mraph.js/Rubik's Cube.png";
         img.onload = () => {
             texture.image = img;
-            texture.magFilter = gl.NEAREST;
+            texture.magFilter = mp.GLENUM.NEAREST;
             texture.upload();
         };
+
+        layer.camera.position[2] = 3;
+        layer.enableOrbitControl();
+        layer.play();
     </script>
 </Example>

@@ -8,6 +8,17 @@ const vsMainVertex = `v_color = color;`;
 const fsVertex = `varying vec4 v_color;`;
 const fsMainVertex = `vec4 color = v_color;`;
 
+const vsTexture = `
+attribute vec2 uv;
+varying vec2 v_uv;
+`;
+const vsMainTexture = `v_uv = uv;`;
+const fsTexture = `
+varying vec2 v_uv;
+uniform sampler2D sampler;
+`;
+const fsMainTexture = `vec4 color = texture2D(sampler, v_uv);`;
+
 export default class GetColorComponent {
     compile(vs, fs, { colorMode }) {
         switch (colorMode) {
@@ -22,6 +33,12 @@ export default class GetColorComponent {
                 vs = SlotParser.replace(vs, "get_color::main", vsMainVertex);
                 fs = SlotParser.replace(fs, "get_color", fsVertex);
                 fs = SlotParser.replace(fs, "get_color::main", fsMainVertex);
+                break;
+            case "texture":
+                vs = SlotParser.replace(vs, "get_color", vsTexture);
+                vs = SlotParser.replace(vs, "get_color::main", vsMainTexture);
+                fs = SlotParser.replace(fs, "get_color", fsTexture);
+                fs = SlotParser.replace(fs, "get_color::main", fsMainTexture);
                 break;
             default:
                 console.log(`Invalid color mode: ${colorMode}`);
