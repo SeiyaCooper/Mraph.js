@@ -4,7 +4,7 @@
 [![GitHub](https://img.shields.io/github/license/SeiyaCooper/Mraph.js)](https://github.com/SeiyaCooper/Mraph.js/blob/main/LICENSE)
 [![last commit](https://img.shields.io/github/last-commit/SeiyaCooper/Mraph.js)](https://github.com/SeiyaCooper/Mraph.js/commits/main)
 
-Mraph.js is a library for drawing geometric shapes in browser  
+Mraph.js is my personal rendering engine for drawing geometric shapes in a browser, inspired by Manim  
 [Github](https://github.com/SeiyaCooper/Mraph.js) |
 [NPM](https://www.npmjs.com/package/mraph) |
 [Examples](/Mraph.js/gallery)
