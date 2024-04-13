@@ -24,7 +24,6 @@ export default class LambertMaterial extends Material {
             "directional_light_num",
             surroundings.directionalLights.length
         );
-        console.log(fs);
         this.program = new WebGLProgram(gl, { vs, fs });
     }
 
