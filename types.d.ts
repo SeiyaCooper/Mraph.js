@@ -1022,6 +1022,19 @@ declare module "light/PointLight" {
         intensity: number;
     }
 }
+declare module "light/DirectionalLight" {
+    export default class DirectionalLight {
+        static isInstance(obj: any): boolean;
+        constructor({ direction, color, intensity, }?: {
+            direction?: import("mraph").Vector;
+            color?: import("mraph").Color;
+            intensity?: number;
+        });
+        direction: import("mraph").Vector;
+        color: import("mraph").Color;
+        intensity: number;
+    }
+}
 declare module "core/Layer" {
     export default class Layer {
         constructor({ fullScreen, appendTo, rendererClass, contextConfig, }?: {
@@ -1036,6 +1049,7 @@ declare module "core/Layer" {
         defaultMaterial: BasicMaterial;
         surroundings: {
             pointLights: any[];
+            directionalLights: any[];
         };
         canvas: HTMLCanvasElement;
         renderer: WebGLRenderer;
@@ -1108,23 +1122,28 @@ declare module "core/Layer" {
 }
 declare module "core/Texture" {
     export default class Texture {
-        constructor(gl: any, { image, target, flipY, minFilter, magFilter, }?: {
+        static loadFile(gl: any, src: any): Texture;
+        constructor(gl: any, { image, target, flipY, minFilter, magFilter, unit, }?: {
             image: any;
             target?: any;
             flipY?: boolean;
             minFilter?: any;
             magFilter?: any;
+            unit?: number;
         });
         gl: any;
         image: any;
         target: any;
         flipY: boolean;
         texture: any;
+        unit: number;
         set minFilter(val: any);
         get minFilter(): any;
         set magFilter(val: any);
         get magFilter(): any;
+        bind(): void;
         upload(): void;
+        get isImgReady(): boolean;
         __minFilter: any;
         __magFilter: any;
     }
@@ -1455,17 +1474,6 @@ declare module "geometry/Sphere" {
         thetaSegments: number;
     }
     import Geometry from "geometry/Geometry";
-}
-declare module "light/DirectionalLight" {
-    export default class DirectionalLight {
-        static isInstance(obj: any): boolean;
-        constructor({ direction, color }?: {
-            direction?: import("mraph").Vector;
-            color?: import("mraph").Color;
-        });
-        direction: import("mraph").Vector;
-        color: import("mraph").Color;
-    }
 }
 declare module "mobjects/Graph2D" {
     export default class Graph2D extends Geometry {

@@ -6,6 +6,7 @@ import Subscriber from "../animation/Subscriber.js";
 import * as COLORS from "../constants/colors.js";
 import BasicMaterial from "../material/BasicMaterial.js";
 import PointLight from "../light/PointLight.js";
+import DirectionalLight from "../light/DirectionalLight.js";
 
 export default class Layer {
     elements = [];
@@ -14,6 +15,7 @@ export default class Layer {
     defaultMaterial = new BasicMaterial();
     surroundings = {
         pointLights: [],
+        directionalLights: [],
     };
 
     constructor({
@@ -98,6 +100,8 @@ export default class Layer {
      */
     addSurrounding(obj) {
         if (PointLight.isInstance(obj)) this.surroundings.pointLights.push(obj);
+        if (DirectionalLight.isInstance(obj))
+            this.surroundings.directionalLights.push(obj);
     }
 
     /**
