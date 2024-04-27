@@ -13,7 +13,7 @@ export default class Point extends Arc {
     constructor(...args) {
         super(0, 2 * Math.PI, 0.06);
 
-        if (Vector.isVector(args[0])) {
+        if (Vector.isInstance(args[0])) {
             this.center = args[0];
         } else if (Array.isArray(args[0])) {
             this.center = new Vector(...args[0]);

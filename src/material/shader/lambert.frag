@@ -19,6 +19,7 @@ varying vec3 v_position;
 
 void main() {
     vec4 shade = vec4(0.0);
+    vec3 normal = normalize(v_normal);
 
     #if !slot::point_light_num > 0
     for (int i = 0; i < !slot::point_light_num; i++) {
@@ -27,7 +28,7 @@ void main() {
         float intensity = point_light_intensity[i];
         vec3 lenVec = v_position - pos;
 
-        shade += 1.0 / dot(lenVec, lenVec) * intensity * max(dot(normalize(pos), v_normal), 0.0) * color;
+        shade += 1.0 / dot(lenVec, lenVec) * intensity * max(dot(normalize(pos), normal), 0.0) * color;
     }
     #endif
 
@@ -37,7 +38,7 @@ void main() {
         vec4 color = directional_light_color[i];
         float intensity = directional_light_intensity[i];
 
-        shade += intensity * max(dot(normalize(-1.0 * dir), v_normal), 0.0) * color;
+        shade += intensity * max(dot(normalize(-1.0 * dir), normal), 0.0) * color;
     }
     #endif
 

@@ -35,7 +35,7 @@ declare module "math/Matrix" {
          * @param {*} obj
          * @returns {boolean}
          */
-        static isMatrix(obj: any): boolean;
+        static isInstance(obj: any): boolean;
         /**
          * create zeros from shape
          * @param {number} column
@@ -209,7 +209,7 @@ declare module "math/Vector" {
          * @param {*} obj
          * @returns {boolean}
          */
-        static isVector(obj: any): boolean;
+        static isInstance(obj: any): boolean;
         /**
          * @param {number} row
          * @param {number} n

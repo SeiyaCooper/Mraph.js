@@ -175,6 +175,14 @@ export default class Vector extends Array {
     }
 
     /**
+     * Returns a string to print this vector
+     * @returns {string}
+     */
+    toString() {
+        return `[${super.toString()}]`;
+    }
+
+    /**
      * Lerp between two vectors
      * @param {Vector} from
      * @param {Vector} to
@@ -189,7 +197,7 @@ export default class Vector extends Array {
      * @param {*} obj
      * @returns {boolean}
      */
-    static isVector(obj) {
+    static isInstance(obj) {
         return obj instanceof Vector;
     }
 
@@ -208,7 +216,7 @@ export default class Vector extends Array {
      * @returns {Vector}
      */
     static fromArray(arr) {
-        if (Vector.isVector()) {
+        if (Vector.isInstance()) {
             return arr.clone();
         } else {
             return new Vector(...arr);

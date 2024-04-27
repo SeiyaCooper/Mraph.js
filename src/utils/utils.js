@@ -16,7 +16,7 @@ export function mergeObject(obj, ...source) {
 export function deepCopy(obj) {
     let out;
 
-    if (Vector.isVector(obj)) {
+    if (Vector.isInstance(obj)) {
         out = new Vector();
     } else if (Array.isArray(obj)) {
         out = [];

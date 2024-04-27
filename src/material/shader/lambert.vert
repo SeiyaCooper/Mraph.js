@@ -13,7 +13,7 @@ varying vec3 v_position;
 void main() {
     v_position = (modelMat * vec4(position, 1.0)).xyz;
     gl_Position = projectionMat * viewMat * vec4(v_position, 1.0);
-    v_normal = normal;
+    v_normal = (modelMat * vec4(normal, 1.0)).xyz;
 
     !slot::get_color::main
 }
