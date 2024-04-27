@@ -1,9 +1,9 @@
 import Event from "./Event.js";
 
 const STATE = {
-    STOPPED: 0,
-    PLAYING: 1,
-    PAUSED: 2,
+    STOPPED: "STOPPED",
+    PLAYING: "PLAYING",
+    PAUSED: "PAUSED",
 };
 
 export default class Timeline {
@@ -24,14 +24,14 @@ export default class Timeline {
 
     /**
      * list for events which would be called during active
-     * @type {Map}
+     * @type {Array}
      */
     globalEvents = [];
 
     /**
      * list for events that would always be called,
      * those events will keep this timeline active
-     * @type {Map}
+     * @type {Array}
      */
     infinityEvents = [];
 

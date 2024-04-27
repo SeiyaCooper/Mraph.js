@@ -392,15 +392,15 @@ declare module "animation/Timeline" {
         events: Map<any, any>;
         /**
          * list for events which would be called during active
-         * @type {Map}
+         * @type {Array}
          */
-        globalEvents: Map<any, any>;
+        globalEvents: any[];
         /**
          * list for events that would always be called,
          * those events will keep this timeline active
-         * @type {Map}
+         * @type {Array}
          */
-        infinityEvents: Map<any, any>;
+        infinityEvents: any[];
         /**
          * return value of requsetAnimationFrame()
          * @type {number | null}
