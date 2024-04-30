@@ -41,6 +41,13 @@
     },
     "files": [
         "dist",
+        "src",
         "types.d.ts"
+    ],
+    "keywords": [
+        "webgl",
+        "graphics",
+        "graph",
+        "math"
     ]
 }
