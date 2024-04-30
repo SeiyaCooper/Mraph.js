@@ -89,6 +89,13 @@ export default class Quat extends Array {
     }
 
     /**
+     * print this quaternion on the console
+     */
+    print() {
+        console.log(this.toString());
+    }
+
+    /**
      * Returns a string to print this quaternion
      * @returns {string}
      */

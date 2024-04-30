@@ -37,7 +37,7 @@ export default class Layer {
             this.appendTo(appendTo);
         }
         this.renderer = new rendererClass(this.canvas, contextConfig);
-        this.clear(COLORS.GRAY_E);
+        this.clearCanvas(COLORS.GRAY_E);
         this.defaultMaterial.colorMode = "vertex";
     }
 
@@ -83,6 +83,8 @@ export default class Layer {
     add(...els) {
         for (let el of els) {
             if (typeof el.attributes === "object") {
+                // if adding a drawable object
+
                 el.set("layer", this);
                 el.set("gl", this.renderer.gl);
                 this.elements.push(el);
@@ -92,6 +94,20 @@ export default class Layer {
         }
 
         return this;
+    }
+
+    /**
+     * delete mobjects or lgihts
+     * @param  {...mobject | light} els
+     */
+    delete(...els) {
+        const elements = this.elements;
+        const surroundings = this.surroundings;
+        for (let el of els) {
+            if (typeof el.attributes === "object")
+                elements.splice(elements.indexOf(el), 1);
+            else surroundings.splice(surroundings.indexOf(el), 1);
+        }
     }
 
     /**
@@ -148,7 +164,7 @@ export default class Layer {
      * @param {number[] | Color} [color = COLORS.GRAY_E]
      * @returns {this}
      */
-    clear([r, g, b, a] = COLORS.GRAY_E) {
+    clearCanvas([r, g, b, a] = COLORS.GRAY_E) {
         this.renderer.clear(r, g, b, a);
         return this;
     }
@@ -161,7 +177,7 @@ export default class Layer {
     play(color = COLORS.GRAY_E) {
         const timeline = this.timeline;
         timeline.addGlobal(() => {
-            this.clear(color);
+            this.clearCanvas(color);
             this.render();
         });
         timeline.play();

@@ -10,9 +10,9 @@ import Example from "../../layouts/Example.astro";
 
         /// Custom Mobjects
         class UniformMagneticField extends mp.Point {
-            strokeWidth = 0.01;
-            radius = 1;
-            strength = new mp.Vector(0, 0, 0);
+            strokeWidth: number = 0.01;
+            radius: number = 1;
+            strength: mp.Vector = new mp.Vector(0, 0, 0);
 
             constructor(strength, ...args) {
                 super(...args);
@@ -37,7 +37,7 @@ import Example from "../../layouts/Example.astro";
             }
         }
         class Charge extends mp.Point {
-            charge = 0;
+            charge: number = 0;
 
             constructor(charge, x, y) {
                 super([x, y, 0]);
@@ -47,7 +47,7 @@ import Example from "../../layouts/Example.astro";
         }
 
         /// Init charges
-        const chargeList = [
+        const charges = [
             new Charge(1, -2, 0.8),
             new Charge(1, -2, 0.6),
             new Charge(1, -2, 0.4),
@@ -57,7 +57,7 @@ import Example from "../../layouts/Example.astro";
             new Charge(-1, -2, -0.6),
             new Charge(-1, -2, -0.8),
         ];
-        for (let charge of chargeList) {
+        for (let charge of charges) {
             layer.add(charge);
             charge.v = new mp.Vector(1, 0, 0);
         }
@@ -71,22 +71,23 @@ import Example from "../../layouts/Example.astro";
          * Lock FPS for more accurate output
          * Note: If the fps are locked, the animation will not play in real-time. Try to change the fps to 120 or higher.
          */
-        layer.timeline.fps = 60;
-        layer.timeline.addInfinity(() => {
-            for (let charge of chargeList) {
+        const animator = new mp.Timeline();
+        animator.fps = 60;
+        animator.addInfinity(() => {
+            for (let charge of charges) {
                 if (charge.center.norm > 1) continue;
-                charge.a = charge._v
-                    .mult(charge.charge)
-                    .cross(field.strength) as mp.Vector;
+                charge.a = charge._v.mult(charge.charge).cross(field.strength);
             }
         });
         layer.timeline.once(10, () => {
-            layer.timeline.pause();
+            animator.pause();
+            layer.delete(...charges);
         });
 
         /// Render part
         layer.camera.position[2] = 5;
         layer.enableOrbitControl().enableRotate = false;
         layer.play();
+        animator.play();
     </script>
 </Example>

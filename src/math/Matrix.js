@@ -155,6 +155,13 @@ export default class Matrix extends Array {
     }
 
     /**
+     * print this matrix on the console
+     */
+    print() {
+        console.log(this.toString());
+    }
+
+    /**
      * Returns a vector constructed by flattening this matrix
      * @returns {Vector}
      */

@@ -1,3 +1,189 @@
+declare module "animation/Event" {
+    export default class Event {
+        /**
+         * @constructor
+         * @param {object} config
+         * @return {Action}
+         */
+        constructor(startTime?: number, stopTime?: number, { start, stop, update }?: {
+            start?: () => void;
+            stop?: () => void;
+            update?: () => void;
+        });
+        /**
+         * @type {number}
+         */
+        startTime: number;
+        /**
+         * @type {number}
+         */
+        stopTime: number;
+        /**
+         * @type {Function}
+         */
+        start: Function;
+        /**
+         * @type {Function}
+         */
+        update: Function;
+        /**
+         * @type {Function}
+         */
+        stop: Function;
+        /**
+         * @type {boolean}
+         */
+        isStarted: boolean;
+        /**
+         * @type {boolean}
+         */
+        isStopped: boolean;
+        /**
+         * @type {number}
+         */
+        id: number;
+        /**
+         * trigger this event by current time
+         * @param {number} now - the current time
+         * @return {void}
+         */
+        execute(now: number): void;
+    }
+}
+declare module "animation/SpecialEvent" {
+    /**
+     * infinity event or global event
+     */
+    export default class SpecialEvent {
+        /**
+         * @param {Function} updater
+         */
+        constructor(updater: Function);
+        /**
+         * @type {Function}
+         */
+        update: Function;
+        /**
+         * @type {number}
+         */
+        id: number;
+        /**
+         * trigger this event
+         */
+        execute(): void;
+    }
+}
+declare module "animation/Timeline" {
+    export default class Timeline {
+        /**
+         * A short string to describe state
+         * @type {string}
+         */
+        state: string;
+        /**
+         * list for events to be called
+         * @type {Event[]}
+         */
+        events: Event[];
+        /**
+         * list for events which would be called during active
+         * @type {SpecialEvent[]}
+         */
+        globalEvents: SpecialEvent[];
+        /**
+         * list for events that would always be called,
+         * those events will keep this timeline active
+         * @type {SpecialEvent[]}
+         */
+        infinityEvents: SpecialEvent[];
+        /**
+         * return value of requsetAnimationFrame()
+         * @type {number | null}
+         */
+        clock: number | null;
+        /**
+         * @type {number}
+         */
+        _maxTime: number;
+        /**
+         * @type {number}
+         */
+        _minTime: number;
+        /**
+         * @type {number}
+         */
+        current: number;
+        /**
+         * @type {number}
+         */
+        fps: number;
+        /**
+         * add an event to this timeline
+         * @param {Number} start
+         * @param {Number} stop
+         * @param {Object} handle
+         * @param {Object} config
+         * @return {Event}
+         */
+        add(start: number, stop: number, handle: any, { updateMax, updateMin }?: any): Event;
+        /**
+         * add a one-time-only event
+         * @param {number} at
+         * @param {Function} handler
+         */
+        once(at: number, handler: Function): Event;
+        /**
+         * add an event to event list following last event
+         * @param {Number} hold
+         * @param {Object} handler
+         * @param {Object} config
+         * @return {this}
+         */
+        addFollow(hold: number, handler: any, config: any): this;
+        /**
+         * add global event
+         * @param {Object} handler
+         * @returns {this}
+         */
+        addGlobal(handler: any): this;
+        /**
+         * add infinity event
+         * @param {Object} handler
+         * @returns {this}
+         */
+        addInfinity(handler: any): this;
+        /**
+         * delete an event from this timeline
+         * @param {object | number} target
+         */
+        delete(target: object | number): void;
+        /**
+         * delete an event accroding to its id
+         * @param {number} id
+         */
+        deleteById(id: number): void;
+        /**
+         * start palying animation
+         * @returns {void}
+         */
+        play(): void;
+        /**
+         * trigger events by current time
+         */
+        process(): void;
+        /**
+         * Stop palying aniamtion
+         */
+        pause(): void;
+        set maxTime(val: number);
+        get maxTime(): number;
+        set minTime(val: number);
+        get minTime(): number;
+        get allStopped(): boolean;
+    }
+    import Event from "animation/Event";
+    import SpecialEvent from "animation/SpecialEvent";
+}
 declare module "math/math_func" {
     /**
      * sigmoid function
@@ -28,6 +214,144 @@ declare module "math/math_func" {
      */
     export function lerpArray(from: number[], to: number[], p: number): number[];
     export function linear(x: number): number;
+}
+declare module "math/Vector" {
+    export default class Vector extends Array<any> {
+        /**
+         * Lerp between two vectors
+         * @param {Vector} from
+         * @param {Vector} to
+         * @param {number} p percent
+         * @returns {Vector}
+         */
+        static lerp(from: Vector, to: Vector, p: number): Vector;
+        /**
+         * @param {*} obj
+         * @returns {boolean}
+         */
+        static isInstance(obj: any): boolean;
+        /**
+         * @param {number} row
+         * @param {number} n
+         * @returns {Vector}
+         */
+        static fromRow(row: number, n?: number): Vector;
+        /**
+         * Creates a Vector from an array-like object
+         * @param {Array | Vector} arr
+         * @returns {Vector}
+         */
+        static fromArray(arr: any[] | Vector): Vector;
+        /**
+         * @param  {...number} nums
+         */
+        constructor(...nums: number[]);
+        /**
+         * mult a scalar
+         * @param {number} num
+         * @returns {Vector}
+         */
+        mult(num: number): Vector;
+        /**
+         * returns mat.mult(this)
+         * @param {Matrix} mat
+         * @returns {Vector}
+         */
+        trans(mat: Matrix): Vector;
+        /**
+         * @param {Vector} vec
+         * @returns {number}
+         */
+        dot(vec: Vector): number;
+        /**
+         * returns cross product of this vector and vec
+         * @param {Vector} vec
+         * @returns
+         */
+        cross(vec: Vector): number | Vector;
+        /**
+         * returns hadamard product of this vector and vec
+         * @param {Vector} vec
+         * @returns {Vector}
+         */
+        elMult(vec: Vector): Vector;
+        /**
+         * divide by a number
+         * @param {number} num
+         */
+        divide(num: number): Vector;
+        /**
+         * @param {Vector} vec
+         * @returns {Vector}
+         */
+        add(vec: Vector): Vector;
+        /**
+         * @param {Vector} vec
+         * @returns {Vector}
+         */
+        minus(vec: Vector): Vector;
+        /**
+         * Project to another vector
+         * @param {Vector} vec
+         * @returns {Vector}
+         */
+        project(vec: Vector): Vector;
+        /**
+         * normalize this vector
+         * @returns {Vector}
+         */
+        normal(): Vector;
+        /**
+         * returns linear interpolation results
+         * @param {Vector} to
+         * @param {number} p percent
+         * @returns {Vector}
+         */
+        lerp(to: Vector, p: number): Vector;
+        /**
+         * return a deep copy clone of this vector
+         * @returns {Vector}
+         */
+        clone(): Vector;
+        /**
+         * copy values from another vector
+         */
+        copy(vec: any): this;
+        /**
+         * print this vertor on the console
+         */
+        print(): void;
+        /**
+         * @returns {Matrix}
+         */
+        toMatrix(): Matrix;
+        /**
+         * @param {number} val
+         */
+        set norm(val: number);
+        /**
+         * @type {number}
+         */
+        get norm(): number;
+        /**
+         * @type {number}
+         */
+        get row(): number;
+    }
+    import Matrix from "math/Matrix";
+}
+declare module "utils/utils" {
+    /**
+     * @param {Object} obj
+     * @param {...Object} source
+     * @returns {Object}
+     */
+    export function mergeObject(obj: any, ...source: any[]): any;
+    /**
+     * @param {Object} obj
+     * @returns {Object}
+     */
+    export function deepCopy(obj: any): any;
 }
 declare module "math/Matrix" {
     export default class Matrix extends Array<any> {
@@ -167,6 +491,10 @@ declare module "math/Matrix" {
          */
         resize(row: number, column: number, n?: number): Matrix;
         /**
+         * print this matrix on the console
+         */
+        print(): void;
+        /**
          * Returns a vector constructed by flattening this matrix
          * @returns {Vector}
          */
@@ -194,287 +522,6 @@ declare module "math/Matrix" {
         get row(): number;
     }
     import Vector from "math/Vector";
-}
-declare module "math/Vector" {
-    export default class Vector extends Array<any> {
-        /**
-         * Lerp between two vectors
-         * @param {Vector} from
-         * @param {Vector} to
-         * @param {number} p percent
-         * @returns {Vector}
-         */
-        static lerp(from: Vector, to: Vector, p: number): Vector;
-        /**
-         * @param {*} obj
-         * @returns {boolean}
-         */
-        static isInstance(obj: any): boolean;
-        /**
-         * @param {number} row
-         * @param {number} n
-         * @returns {Vector}
-         */
-        static fromRow(row: number, n?: number): Vector;
-        /**
-         * Creates a Vector from an array-like object
-         * @param {Array | Vector} arr
-         * @returns {Vector}
-         */
-        static fromArray(arr: any[] | Vector): Vector;
-        /**
-         * @param  {...number} nums
-         */
-        constructor(...nums: number[]);
-        /**
-         * mult a scalar
-         * @param {number} num
-         * @returns {Vector}
-         */
-        mult(num: number): Vector;
-        /**
-         * returns mat.mult(this)
-         * @param {Matrix} mat
-         * @returns {Vector}
-         */
-        trans(mat: Matrix): Vector;
-        /**
-         * @param {Vector} vec
-         * @returns {number}
-         */
-        dot(vec: Vector): number;
-        /**
-         * returns cross product of this vector and vec
-         * @param {Vector} vec
-         * @returns
-         */
-        cross(vec: Vector): number | Vector;
-        /**
-         * returns hadamard product of this vector and vec
-         * @param {Vector} vec
-         * @returns {Vector}
-         */
-        elMult(vec: Vector): Vector;
-        /**
-         * divide by a number
-         * @param {number} num
-         */
-        divide(num: number): Vector;
-        /**
-         * @param {Vector} vec
-         * @returns {Vector}
-         */
-        add(vec: Vector): Vector;
-        /**
-         * @param {Vector} vec
-         * @returns {Vector}
-         */
-        minus(vec: Vector): Vector;
-        /**
-         * Project to another vector
-         * @param {Vector} vec
-         * @returns {Vector}
-         */
-        project(vec: Vector): Vector;
-        /**
-         * normalize this vector
-         * @returns {Vector}
-         */
-        normal(): Vector;
-        /**
-         * returns linear interpolation results
-         * @param {Vector} to
-         * @param {number} p percent
-         * @returns {Vector}
-         */
-        lerp(to: Vector, p: number): Vector;
-        /**
-         * return a deep copy clone of this vector
-         * @returns {Vector}
-         */
-        clone(): Vector;
-        /**
-         * copy values from another vector
-         */
-        copy(vec: any): this;
-        /**
-         * @returns {Matrix}
-         */
-        toMatrix(): Matrix;
-        /**
-         * @param {number} val
-         */
-        set norm(val: number);
-        /**
-         * @type {number}
-         */
-        get norm(): number;
-        /**
-         * @type {number}
-         */
-        get row(): number;
-    }
-    import Matrix from "math/Matrix";
-}
-declare module "utils/utils" {
-    /**
-     * @param {Object} obj
-     * @param {...Object} source
-     * @returns {Object}
-     */
-    export function mergeObject(obj: any, ...source: any[]): any;
-    /**
-     * @param {Object} obj
-     * @returns {Object}
-     */
-    export function deepCopy(obj: any): any;
-}
-declare module "animation/Event" {
-    export default class Event {
-        /**
-         * @constructor
-         * @param {Object} handle - the object to construct by
-         *                          which may include function start(), update(), stop()
-         * @return {Action}
-         */
-        constructor(handle: any);
-        /**
-         * @type {Function}
-         */
-        start: Function;
-        /**
-         * @type {Function}
-         */
-        update: Function;
-        /**
-         * @type {Function}
-         */
-        stop: Function;
-        /**
-         * @type {Boolean}
-         */
-        isStarted: boolean;
-        /**
-         * @type {Boolean}
-         */
-        isStopped: boolean;
-        /**
-         * excute this action by current time
-         * @param {Number} start - the start time
-         * @param {Number} stop - the stop time
-         * @param {Number} now - the current time
-         * @return {null}
-         */
-        excute(start: number, stop: number, now: number): null;
-        /**
-         * merge this action with another
-         * they should have same start time and stop time
-         * @param {Action} - another action
-         * @return {Action}
-         */
-        merge(action: any): Action;
-    }
-}
-declare module "animation/Timeline" {
-    export default class Timeline {
-        /**
-         * A single number to describe state
-         * 0 - stopped
-         * 1 - active
-         * 2 - paused
-         * @type {number}
-         */
-        state: number;
-        /**
-         * list for events to be called
-         * @type {Map}
-         */
-        events: Map<any, any>;
-        /**
-         * list for events which would be called during active
-         * @type {Array}
-         */
-        globalEvents: any[];
-        /**
-         * list for events that would always be called,
-         * those events will keep this timeline active
-         * @type {Array}
-         */
-        infinityEvents: any[];
-        /**
-         * return value of requsetAnimationFrame()
-         * @type {number | null}
-         */
-        clock: number | null;
-        /**
-         * @type {number}
-         */
-        _maxTime: number;
-        /**
-         * @type {number}
-         */
-        _minTime: number;
-        /**
-         * @type {number}
-         */
-        current: number;
-        /**
-         * @type {number}
-         */
-        fps: number;
-        /**
-         * add an event to this timeline
-         * @param {Number} start
-         * @param {Number} stop
-         * @param {Object} handle
-         * @param {Object} config
-         * @return {this}
-         */
-        add(start: number, stop: number, handle: any, { updateMax, updateMin }?: any): this;
-        /**
-         * add a one-time-only event
-         * @param {number} at
-         * @param {Function} handler
-         */
-        once(at: number, handler: Function): void;
-        /**
-         * add an event to event list following last event
-         * @param {Number} hold
-         * @param {Object} handler
-         * @param {Object} config
-         * @return {this}
-         */
-        addFollow(hold: number, handler: any, config: any): this;
-        /**
-         * add global event
-         * @param {Object} handler
-         * @returns {this}
-         */
-        addGlobal(handler: any): this;
-        /**
-         * add infinity event
-         * @param {Object} handler
-         * @returns {this}
-         */
-        addInfinity(handler: any): this;
-        /**
-         * start palying animation
-         */
-        play(): void;
-        /**
-         * trigger events by current time
-         */
-        process(): void;
-        /**
-         * Stop palying aniamtion
-         */
-        pause(): void;
-        set maxTime(val: number);
-        get maxTime(): number;
-        set minTime(val: number);
-        get minTime(): number;
-        get allStopped(): boolean;
-    }
 }
 declare module "constants/glenum" {
     export const DEPTH_BUFFER_BIT: 256;
@@ -1076,6 +1123,11 @@ declare module "core/Layer" {
          */
         add(...els: (mobject | light)[]): this;
         /**
+         * delete mobjects or lgihts
+         * @param  {...mobject | light} els
+         */
+        delete(...els: (mobject | light)[]): void;
+        /**
          * add something to surroundings
          * @param {light} obj
          */
@@ -1097,7 +1149,7 @@ declare module "core/Layer" {
          * @param {number[] | Color} [color = COLORS.GRAY_E]
          * @returns {this}
          */
-        clear([r, g, b, a]?: number[] | Color): this;
+        clearCanvas([r, g, b, a]?: number[] | Color): this;
         /**
          * play animation with a refresh color
          * @param {Color} [color = COLORS.GRAY_E]
@@ -1233,6 +1285,10 @@ declare module "math/Quat" {
          * @returns {Quat}
          */
         dot(quat: Quat): Quat;
+        /**
+         * print this quaternion on the console
+         */
+        print(): void;
         /**
          * @param {Quat | number[]} arraylike
          * @returns {this}

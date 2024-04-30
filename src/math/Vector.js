@@ -168,6 +168,13 @@ export default class Vector extends Array {
     }
 
     /**
+     * print this vertor on the console
+     */
+    print() {
+        console.log(this.toString());
+    }
+
+    /**
      * @returns {Matrix}
      */
     toMatrix() {
