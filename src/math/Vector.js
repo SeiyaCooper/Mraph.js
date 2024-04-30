@@ -168,10 +168,25 @@ export default class Vector extends Array {
     }
 
     /**
+     * print this vertor on the console
+     */
+    print() {
+        console.log(this.toString());
+    }
+
+    /**
      * @returns {Matrix}
      */
     toMatrix() {
         return new Matrix(Array.from(this));
+    }
+
+    /**
+     * Returns a string to print this vector
+     * @returns {string}
+     */
+    toString() {
+        return `[${super.toString()}]`;
     }
 
     /**
@@ -189,7 +204,7 @@ export default class Vector extends Array {
      * @param {*} obj
      * @returns {boolean}
      */
-    static isVector(obj) {
+    static isInstance(obj) {
         return obj instanceof Vector;
     }
 
@@ -208,7 +223,7 @@ export default class Vector extends Array {
      * @returns {Vector}
      */
     static fromArray(arr) {
-        if (Vector.isVector()) {
+        if (Vector.isInstance()) {
             return arr.clone();
         } else {
             return new Vector(...arr);

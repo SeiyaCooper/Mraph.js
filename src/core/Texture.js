@@ -7,6 +7,7 @@ export default class Texture {
             flipY = true,
             minFilter = gl.LINEAR,
             magFilter = gl.LINEAR,
+            unit = 0,
         } = {}
     ) {
         this.gl = gl;
@@ -14,10 +15,18 @@ export default class Texture {
         this.target = target;
         this.flipY = flipY;
         this.texture = gl.createTexture();
+        this.unit = unit;
+        this.bind();
 
-        gl.bindTexture(this.target, this.texture);
+        this.bind();
         this.minFilter = minFilter;
         this.magFilter = magFilter;
+    }
+
+    bind() {
+        const gl = this.gl;
+        gl.activeTexture(gl.TEXTURE0 + this.unit);
+        gl.bindTexture(this.target, this.texture);
     }
 
     upload() {
@@ -27,7 +36,7 @@ export default class Texture {
             gl.pixelStorei(this.gl.UNPACK_FLIP_Y_WEBGL, true);
         }
 
-        gl.bindTexture(this.target, this.texture);
+        this.bind();
         gl.texImage2D(
             this.target,
             0,
@@ -37,6 +46,22 @@ export default class Texture {
             this.image
         );
         gl.generateMipmap(this.target);
+    }
+
+    get isImgReady() {
+        return Boolean(this.image);
+    }
+
+    static loadFile(gl, src) {
+        const texture = new Texture(gl);
+
+        const img = new Image();
+        img.src = src;
+        img.onload = () => {
+            texture.image = img;
+        };
+
+        return texture;
     }
 
     set minFilter(val) {

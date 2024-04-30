@@ -1,37 +1,37 @@
 import Event from "./Event.js";
+import SpecialEvent from "./SpecialEvent.js";
 
 const STATE = {
-    STOPPED: 0,
-    PLAYING: 1,
-    PAUSED: 2,
+    STOPPED: "STOPPED",
+    PLAYING: "PLAYING",
+    PAUSED: "PAUSED",
 };
+
+let eventId = 0;
 
 export default class Timeline {
     /**
-     * A single number to describe state
-     * 0 - stopped
-     * 1 - active
-     * 2 - paused
-     * @type {number}
+     * A short string to describe state
+     * @type {string}
      */
     state = STATE.STOPPED;
 
     /**
      * list for events to be called
-     * @type {Map}
+     * @type {Event[]}
      */
-    events = new Map();
+    events = [];
 
     /**
      * list for events which would be called during active
-     * @type {Map}
+     * @type {SpecialEvent[]}
      */
     globalEvents = [];
 
     /**
      * list for events that would always be called,
      * those events will keep this timeline active
-     * @type {Map}
+     * @type {SpecialEvent[]}
      */
     infinityEvents = [];
 
@@ -67,23 +67,19 @@ export default class Timeline {
      * @param {Number} stop
      * @param {Object} handle
      * @param {Object} config
-     * @return {this}
+     * @return {Event}
      */
     add(start, stop, handle, { updateMax = true, updateMin = true } = {}) {
-        const action = new Event(handle);
-        const events = this.events;
-        const index = [start, stop];
+        const event = new Event(start, stop, handle);
+        event.id = eventId;
+        eventId++;
 
-        if (events.has(index)) {
-            events.set(index, events.get(index).merge(action));
-        } else {
-            events.set(index, action);
-        }
+        this.events.push(event);
 
         if (updateMax) this._maxTime = Math.max(stop * 1000, this._maxTime);
         if (updateMin) this._minTime = Math.min(start * 1000, this._minTime);
 
-        return this;
+        return event;
     }
 
     /**
@@ -92,7 +88,7 @@ export default class Timeline {
      * @param {Function} handler
      */
     once(at, handler) {
-        this.add(at, at, { start: handler });
+        return this.add(at, at, { start: handler });
     }
 
     /**
@@ -103,8 +99,7 @@ export default class Timeline {
      * @return {this}
      */
     addFollow(hold, handler, config) {
-        this.add(this.maxTime, this.maxTime + hold, handler, config);
-        return this;
+        return this.add(this.maxTime, this.maxTime + hold, handler, config);
     }
 
     /**
@@ -113,7 +108,10 @@ export default class Timeline {
      * @returns {this}
      */
     addGlobal(handler) {
-        this.globalEvents.push(handler);
+        const event = new SpecialEvent(handler);
+        event.id = eventId;
+        eventId++;
+        this.globalEvents.push(event);
     }
 
     /**
@@ -122,11 +120,42 @@ export default class Timeline {
      * @returns {this}
      */
     addInfinity(handler) {
-        this.infinityEvents.push(handler);
+        const event = new SpecialEvent(handler);
+        event.id = eventId;
+        eventId++;
+        this.infinityEvents.push(event);
+    }
+
+    /**
+     * delete an event from this timeline
+     * @param {object | number} target
+     */
+    delete(target) {
+        if (typeof target === "number") this.deleteById(target);
+        this.deleteById(target.id);
+    }
+
+    /**
+     * delete an event accroding to its id
+     * @param {number} id
+     */
+    deleteById(id) {
+        for (let index in this.events) {
+            if (this.events[index].id === id) this.events.splice(index, 1);
+        }
+        for (let index in this.infinityEvents) {
+            if (this.infinityEvents[index].id === id)
+                this.infinityEvents.splice(index, 1);
+        }
+        for (let index in this.globalEvents) {
+            if (this.globalEvents[index].id === id)
+                this.globalEvents.splice(index, 1);
+        }
     }
 
     /**
      * start palying animation
+     * @returns {void}
      */
     play() {
         const self = this;
@@ -165,18 +194,18 @@ export default class Timeline {
         const now = this.current;
 
         for (let handler of this.infinityEvents) {
-            handler();
+            handler.execute();
         }
 
         if (now > this.minTime || this.infinityEvents.length !== 0) {
             for (let handler of this.globalEvents) {
-                handler();
+                handler.execute();
             }
         }
 
         if (now < this.minTime) return;
-        for (let [index, action] of events) {
-            action.excute(...index, now);
+        for (let event of events) {
+            event.execute(now);
         }
     }
 
@@ -205,8 +234,8 @@ export default class Timeline {
 
     get allStopped() {
         let isStopped = true;
-        for (const [, action] of this.events) {
-            if (!action.isStopped) isStopped = false;
+        for (const event of this.events) {
+            if (!event.isStopped) isStopped = false;
         }
         return isStopped;
     }

@@ -9,10 +9,11 @@ import Example from "../../layouts/Example.astro";
         const layer = new mp.Layer().appendTo(document.body);
 
         const box = new mp.Box();
-        box.material = new mp.BasicMaterial({ color: mp.COLORS.RED });
-
+        box.material = new mp.BasicMaterial();
+        box.material.color = mp.COLORS.COOPER_ORANGE;
         layer.add(box);
 
-        layer.render();
+        layer.enableOrbitControl();
+        layer.play();
     </script>
 </Example>

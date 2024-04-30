@@ -16,8 +16,8 @@ export default class Matrix extends Array {
      * @returns {Matrix}
      */
     mult(mat) {
-        if (Vector.isVector(mat)) mat = mat.toMatrix();
-        if (!Matrix.isMatrix(mat)) return this.multNum(mat);
+        if (Vector.isInstance(mat)) mat = mat.toMatrix();
+        if (!Matrix.isInstance(mat)) return this.multNum(mat);
 
         let ans = Matrix.zeros(this.row, mat.column);
 
@@ -155,6 +155,13 @@ export default class Matrix extends Array {
     }
 
     /**
+     * print this matrix on the console
+     */
+    print() {
+        console.log(this.toString());
+    }
+
+    /**
      * Returns a vector constructed by flattening this matrix
      * @returns {Vector}
      */
@@ -163,10 +170,26 @@ export default class Matrix extends Array {
     }
 
     /**
+     * Returns a string to print this matrix
+     * @returns {string}
+     */
+    toString() {
+        let out = "[";
+        for (let i = 0; i < this.length; i++) {
+            for (let num of this[i]) {
+                out += `${num}, `;
+            }
+            if (i < this.length - 1) out += "\n";
+        }
+        out += "]";
+        return out;
+    }
+
+    /**
      * @param {*} obj
      * @returns {boolean}
      */
-    static isMatrix(obj) {
+    static isInstance(obj) {
         return obj instanceof Matrix && Array.isArray(obj[0]);
     }
 

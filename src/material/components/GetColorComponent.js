@@ -48,7 +48,18 @@ export default class GetColorComponent {
     }
 
     passVariables(target) {
-        if (target.colorMode === "single")
+        if (target.colorMode === "single") {
             target.program.setUniform("color", target.color);
+            return;
+        }
+
+        if (target.colorMode === "texture") {
+            const map = target.map;
+
+            if (!map) return;
+            map.bind();
+            if (map.isImgReady) map.upload();
+            return;
+        }
     }
 }

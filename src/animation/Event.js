@@ -1,6 +1,14 @@
-import * as utils from "../utils/utils.js";
-
 export default class Event {
+    /**
+     * @type {number}
+     */
+    startTime = 0;
+
+    /**
+     * @type {number}
+     */
+    stopTime = 1;
+
     /**
      * @type {Function}
      */
@@ -17,33 +25,46 @@ export default class Event {
     stop = () => {};
 
     /**
-     * @type {Boolean}
+     * @type {boolean}
      */
     isStarted = false;
 
     /**
-     * @type {Boolean}
+     * @type {boolean}
      */
     isStopped = false;
 
     /**
+     * @type {number}
+     */
+    id = 0;
+
+    /**
      * @constructor
-     * @param {Object} handle - the object to construct by
-     *                          which may include function start(), update(), stop()
+     * @param {object} config
      * @return {Action}
      */
-    constructor(handle) {
-        utils.mergeObject(this, handle);
+    constructor(
+        startTime = 0,
+        stopTime = 1,
+        { start = () => {}, stop = () => {}, update = () => {} } = {}
+    ) {
+        this.start = start;
+        this.stop = stop;
+        this.update = update;
+        this.startTime = startTime;
+        this.stopTime = stopTime;
     }
 
     /**
-     * excute this action by current time
-     * @param {Number} start - the start time
-     * @param {Number} stop - the stop time
-     * @param {Number} now - the current time
-     * @return {null}
+     * trigger this event by current time
+     * @param {number} now - the current time
+     * @return {void}
      */
-    excute(start, stop, now) {
+    execute(now) {
+        const start = this.startTime;
+        const stop = this.stopTime;
+
         if (this.isStopped) return;
         if (this.isStarted && !this.isStopped) {
             if (now > stop) {
@@ -57,30 +78,7 @@ export default class Event {
             this.start(start);
             this.update(0, 0);
             this.isStarted = true;
-            this.excute(start, stop, now);
+            this.execute(start, stop, now);
         }
-    }
-
-    /**
-     * merge this action with another
-     * they should have same start time and stop time
-     * @param {Action} - another action
-     * @return {Action}
-     */
-    merge(action) {
-        this.start = () => {
-            action.start();
-            this.start();
-        };
-        this.update = (p, e) => {
-            action.update(p, e);
-            this.update(p, e);
-        };
-        this.stop = () => {
-            action.stop();
-            this.stop();
-        };
-
-        return this;
     }
 }

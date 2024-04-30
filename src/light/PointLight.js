@@ -5,7 +5,7 @@ export default class PointLight {
     constructor({
         position = VECTORS.UP,
         color = COLORS.WHITE,
-        intensity = 0.75,
+        intensity = 1.5,
     } = {}) {
         this.position = position;
         this.color = color;

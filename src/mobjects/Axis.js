@@ -48,7 +48,7 @@ export default class Axis extends Line {
     static fromRange(base, dir, range) {
         dir = dir.normal();
 
-        const pos = Vector.isVector(base) ? base : base.center;
+        const pos = Vector.isInstance(base) ? base : base.center;
         const start = new Point(pos.add(dir.mult(range[0])));
         const end = new Point(pos.add(dir.mult(range[1])));
 

@@ -2,9 +2,14 @@ import * as VECTORS from "../constants/vectors.js";
 import * as COLORS from "../constants/colors.js";
 
 export default class DirectionalLight {
-    constructor({ direction = VECTORS.IN, color = COLORS.WHITE } = {}) {
+    constructor({
+        direction = VECTORS.DOWN,
+        color = COLORS.WHITE,
+        intensity = 0.5,
+    } = {}) {
         this.direction = direction;
         this.color = color;
+        this.intensity = intensity;
     }
 
     static isInstance(obj) {
