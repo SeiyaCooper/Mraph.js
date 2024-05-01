@@ -25,12 +25,6 @@ export default class Geometry extends Object3D {
     indices = 0;
 
     /**
-     * properties to be watched so that this geometry can be updated when needed
-     * @type {string[]}
-     */
-    watchList = [];
-
-    /**
      * @type {boolean}
      */
     needsUpdate = true;

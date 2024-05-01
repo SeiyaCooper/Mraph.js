@@ -4,19 +4,9 @@ import * as VECTORS from "../constants/vectors.js";
 
 export default class Plane extends Geometry {
     indices = { data: [0, 1, 3, 2, 0, 3] };
-    attributes = {
-        position: { data: [] },
-    };
-    watchList = ["width", "height", "normal", "color"];
 
-    constructor({
-        position = VECTORS.ORIGIN.clone(),
-        width = 1,
-        height = 1,
-        normal = VECTORS.OUT.clone(),
-    } = {}) {
+    constructor({ width = 1, height = 1, normal = VECTORS.OUT.clone() } = {}) {
         super();
-        this.position = position;
         this.width = width;
         this.height = height;
         this.normal = normal;
@@ -24,7 +14,6 @@ export default class Plane extends Geometry {
 
     update() {
         const normal = this.normal;
-        const position = this.position;
 
         const yAxis = new Vector(normal[1], normal[2], normal[0]);
         yAxis.norm = this.height;
@@ -33,10 +22,10 @@ export default class Plane extends Geometry {
         xAxis.norm = this.width;
 
         const data = [
-            ...position,
-            ...position.add(yAxis),
-            ...position.add(xAxis),
-            ...position.add(xAxis).add(yAxis),
+            ...VECTORS.ORIGIN,
+            ...yAxis,
+            ...xAxis,
+            ...xAxis.add(yAxis),
         ];
         this.setAttribute("position", data, 3);
     }

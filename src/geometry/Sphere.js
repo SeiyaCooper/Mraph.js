@@ -2,6 +2,19 @@ import * as GLENUM from "../constants/glenum.js";
 import Geometry from "./Geometry.js";
 
 export default class Sphere extends Geometry {
+    /**
+     * @param {object} config
+     * An object used to define following parameters, optional
+     * * radius {number[]} sets radius for this sphere
+     *
+     * * phiStarts{number} sets start angle of azimuth.
+     * * phiEnd {number} sets end angle of azimuth.
+     * * phiSegment {number} sets segmentation along the azimuth.
+     *
+     * * thetaStart {number} sets start angle of elevation.
+     * * thetaEnd {number} sets end angle of elevation.
+     * * thetaSegment {number} sets segmentation along the elevation.
+     */
     constructor({
         radius = 1,
         phiStart = 0,
@@ -14,15 +27,21 @@ export default class Sphere extends Geometry {
         super();
         this.radius = radius;
 
+        /** azimuth */
         this.phiStart = phiStart;
         this.phiEnd = phiEnd;
         this.phiSegments = phiSegments;
 
+        /** elevation */
         this.thetaStart = thetaStart;
         this.thetaEnd = thetaEnd;
         this.thetaSegments = thetaSegments;
     }
 
+    /**
+     * Implementation for Geometry.update()
+     * Sets attributes of this geometry automatically.
+     */
     update() {
         const phiStart = this.phiStart;
         const phiSegments = this.phiSegments;
@@ -43,16 +62,14 @@ export default class Sphere extends Geometry {
                 const phi = phiStart + j * phiUnit;
                 const theta = thetaStart + i * thetaUnit;
 
-                vertices.push(
+                const pos = [
                     r * Math.cos(phi) * Math.sin(theta),
                     r * Math.cos(theta),
-                    r * Math.sin(phi) * Math.sin(theta)
-                );
-                normal.push(
-                    r * Math.cos(phi) * Math.sin(theta),
-                    r * Math.cos(theta),
-                    r * Math.sin(phi) * Math.sin(theta)
-                );
+                    r * Math.sin(phi) * Math.sin(theta),
+                ];
+
+                vertices.push(...pos);
+                normal.push(...pos);
             }
         }
 

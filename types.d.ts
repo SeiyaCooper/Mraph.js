@@ -911,14 +911,6 @@ declare module "extra/OrbitControl" {
     }
     import Vector from "math/Vector";
 }
-declare module "animation/Subscriber" {
-    export default class Subscriber {
-        static watch(target: any, handler: any, { maxDepth, whiteList }?: {
-            maxDepth?: number;
-            whiteList?: any[];
-        }): any;
-    }
-}
 declare module "math/Color" {
     export default class Color extends Array<any> {
         static fromHex(hex: any): Color;
@@ -1123,6 +1115,12 @@ declare module "core/Layer" {
          */
         add(...els: (mobject | light)[]): this;
         /**
+         * Create a mobject or geometry and automatically add it to the layer
+         * @param {mobject | geometry} Mobject
+         * @param  {...any} params
+         */
+        create(Mobject: any, ...params: any[]): any;
+        /**
          * delete mobjects or lgihts
          * @param  {...mobject | light} els
          */
@@ -1132,13 +1130,6 @@ declare module "core/Layer" {
          * @param {light} obj
          */
         addSurrounding(obj: light): void;
-        /**
-         * create a mobject
-         * @param {function} mobjClass constructor of this mobject
-         * @param {any} [...attrs]
-         * @returns {this}
-         */
-        create(mobjClass: Function, ...attrs: any[]): this;
         /**
          * render mobjects
          * @returns {this}
@@ -1412,11 +1403,6 @@ declare module "geometry/Geometry" {
          */
         indices: number | any;
         /**
-         * properties to be watched so that this geometry can be updated when needed
-         * @type {string[]}
-         */
-        watchList: string[];
-        /**
          * @type {boolean}
          */
         needsUpdate: boolean;
@@ -1455,8 +1441,7 @@ declare module "geometry/Geometry" {
 }
 declare module "geometry/Plane" {
     export default class Plane extends Geometry {
-        constructor({ position, width, height, normal, }?: {
-            position?: Vector;
+        constructor({ width, height, normal }?: {
             width?: number;
             height?: number;
             normal?: Vector;
@@ -1464,12 +1449,6 @@ declare module "geometry/Plane" {
         indices: {
             data: number[];
         };
-        attributes: {
-            position: {
-                data: any[];
-            };
-        };
-        position: Vector;
         width: number;
         height: number;
         normal: Vector;
@@ -1479,19 +1458,16 @@ declare module "geometry/Plane" {
 }
 declare module "geometry/Box" {
     export default class Box extends Geometry {
-        constructor({ center, width, height, depth, }?: {
-            center?: Vector;
+        constructor({ width, height, depth }?: {
             width?: number;
             height?: number;
             depth?: number;
         });
-        center: Vector;
         width: number;
         height: number;
         depth: number;
     }
     import Geometry from "geometry/Geometry";
-    import Vector from "math/Vector";
 }
 declare module "geometry/Segment" {
     export default class Segment extends Geometry {
@@ -1502,7 +1478,6 @@ declare module "geometry/Segment" {
         indices: {
             data: number[];
         };
-        attributes: {};
         start: import("mraph").Vector;
         end: import("mraph").Vector;
         get vector(): import("mraph").Vector;
@@ -1512,22 +1487,54 @@ declare module "geometry/Segment" {
 }
 declare module "geometry/Sphere" {
     export default class Sphere extends Geometry {
-        constructor({ radius, phiStart, phiEnd, phiSegments, thetaStart, thetaEnd, thetaSegments, }?: {
-            radius?: number;
-            phiStart?: number;
-            phiEnd?: number;
-            phiSegments?: number;
-            thetaStart?: number;
-            thetaEnd?: number;
-            thetaSegments?: number;
-        });
-        radius: number;
-        phiStart: number;
-        phiEnd: number;
-        phiSegments: number;
-        thetaStart: number;
-        thetaEnd: number;
-        thetaSegments: number;
+        /**
+         * @param {object} config
+         * An object used to define following parameters, optional
+         * * radius {number[]} sets radius for this sphere
+         *
+         * * phiStarts{number} sets start angle of azimuth.
+         * * phiEnd {number} sets end angle of azimuth.
+         * * phiSegment {number} sets segmentation along the azimuth.
+         *
+         * * thetaStart {number} sets start angle of elevation.
+         * * thetaEnd {number} sets end angle of elevation.
+         * * thetaSegment {number} sets segmentation along the elevation.
+         */
+        constructor({ radius, phiStart, phiEnd, phiSegments, thetaStart, thetaEnd, thetaSegments, }?: object);
+        radius: any;
+        /** azimuth */
+        phiStart: any;
+        phiEnd: any;
+        phiSegments: any;
+        /** elevation */
+        thetaStart: any;
+        thetaEnd: any;
+        thetaSegments: any;
+    }
+    import Geometry from "geometry/Geometry";
+}
+declare module "geometry/Cylinder" {
+    export default class Cylinder extends Geometry {
+        /**
+         * @param {object} config
+         * An object used to define following parameters, optional
+         * * radii {number[]} sets radius for each cross section
+         * * heightSegments {number | number[]} controls vertical segmentation.
+         * *                                    You can use a uniform value for all sections by providing a single number,
+         * *                                    or set diffrent values for each subpart by simply providing an array.
+         * * phiStarts {number | number[]} sets start angle of azimuth. The usage is just like "heigjtSegments".
+         * * phiEnds {number | number[]} sets end angle of azimuth. The usage is just like "heigjtSegments".
+         * * phiSegments {number | number[]} sets segmentation along the azimuth. The usage is just like "heigjtSegments".
+         * * heights {number | number[]} sets the height for each section. The usage is just like "heigjtSegments".
+         */
+        constructor({ radii, heightSegments, phiStarts, phiEnds, phiSegments, heights, }?: object);
+        radii: any;
+        heightSegments: any;
+        heights: any;
+        /** azimuth */
+        phiStarts: any;
+        phiEnds: any;
+        phiSegments: any;
     }
     import Geometry from "geometry/Geometry";
 }
@@ -1760,6 +1767,7 @@ declare module "mraph" {
     import Box from "geometry/Box";
     import Segment from "geometry/Segment";
     import Sphere from "geometry/Sphere";
+    import Cylinder from "geometry/Cylinder";
     import DirectionalLight from "light/DirectionalLight";
     import PointLight from "light/PointLight";
     import Graph2D from "mobjects/Graph2D";
@@ -1782,7 +1790,6 @@ declare module "mraph" {
     import LambertMaterial from "material/LambertMaterial";
     import Event from "animation/Event";
     import Timeline from "animation/Timeline";
-    import Subscriber from "animation/Subscriber";
     import OrbitControl from "extra/OrbitControl";
-    export { Color, Matrix, Vector, Quat, Geometry, Plane, Box, Segment, Sphere, DirectionalLight, PointLight, Graph2D, Point, Line, Arc, Arrow, Axis, Axes, VectorField2D, FunctionGraph2D, Layer, Camera, Texture, WebGLRenderer, WebGLProgram, CustomMaterial, BasicMaterial, DepthMaterial, LambertMaterial, Event, Timeline, Subscriber, OrbitControl };
+    export { Color, Matrix, Vector, Quat, Geometry, Plane, Box, Segment, Sphere, Cylinder, DirectionalLight, PointLight, Graph2D, Point, Line, Arc, Arrow, Axis, Axes, VectorField2D, FunctionGraph2D, Layer, Camera, Texture, WebGLRenderer, WebGLProgram, CustomMaterial, BasicMaterial, DepthMaterial, LambertMaterial, Event, Timeline, OrbitControl };
 }

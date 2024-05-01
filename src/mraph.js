@@ -4,7 +4,6 @@ import Texture from "./core/Texture.js";
 
 import Event from "./animation/Event.js";
 import Timeline from "./animation/Timeline.js";
-import Subscriber from "./animation/Subscriber.js";
 
 import OrbitControl from "./extra/OrbitControl.js";
 
@@ -27,6 +26,7 @@ import Plane from "./geometry/Plane.js";
 import Box from "./geometry/Box.js";
 import Segment from "./geometry/Segment.js";
 import Sphere from "./geometry/Sphere.js";
+import Cylinder from "./geometry/Cylinder.js";
 
 import DirectionalLight from "./light/DirectionalLight.js";
 import PointLight from "./light/PointLight.js";
@@ -62,6 +62,7 @@ export {
     Box,
     Segment,
     Sphere,
+    Cylinder,
 
     //Lights
     DirectionalLight,
@@ -94,6 +95,5 @@ export {
     // Animation
     Event,
     Timeline,
-    Subscriber,
     OrbitControl,
 };

@@ -2,7 +2,6 @@ import Timeline from "../animation/Timeline.js";
 import WebGLRenderer from "./WebGL/WebGLRenderer.js";
 import Camera from "./Camera.js";
 import OrbitControl from "../extra/OrbitControl.js";
-import Subscriber from "../animation/Subscriber.js";
 import * as COLORS from "../constants/colors.js";
 import BasicMaterial from "../material/BasicMaterial.js";
 import PointLight from "../light/PointLight.js";
@@ -97,6 +96,17 @@ export default class Layer {
     }
 
     /**
+     * Create a mobject or geometry and automatically add it to the layer
+     * @param {mobject | geometry} Mobject
+     * @param  {...any} params
+     */
+    create(Mobject, ...params) {
+        const mobject = new Mobject(...params);
+        this.add(mobject);
+        return mobject;
+    }
+
+    /**
      * delete mobjects or lgihts
      * @param  {...mobject | light} els
      */
@@ -118,28 +128,6 @@ export default class Layer {
         if (PointLight.isInstance(obj)) this.surroundings.pointLights.push(obj);
         if (DirectionalLight.isInstance(obj))
             this.surroundings.directionalLights.push(obj);
-    }
-
-    /**
-     * create a mobject
-     * @param {function} mobjClass constructor of this mobject
-     * @param {any} [...attrs]
-     * @returns {this}
-     */
-    create(mobjClass, ...attrs) {
-        const mobj = new mobjClass(...attrs);
-        this.add(mobj);
-        return Subscriber.watch(
-            mobj,
-            {
-                set: () => {
-                    mobj.needsUpdate = true;
-                },
-            },
-            {
-                whiteList: mobj.watchList ?? [],
-            }
-        );
     }
 
     /**

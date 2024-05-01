@@ -8,8 +8,6 @@ export default class Segment extends Geometry {
     strokeColor = new Color(1, 1, 1, 1);
     normal = VECTORS.OUT.clone();
     indices = { data: [0, 1, 3, 2, 0, 3] };
-    attributes = {};
-    watchList = ["start", "end", "strokeWidth", "strokeColor", "normal"];
 
     constructor(start = VECTORS.ORIGIN.clone(), end = VECTORS.RIGHT.clone()) {
         super();

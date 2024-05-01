@@ -3,16 +3,8 @@ import Geometry from "./Geometry.js";
 import * as VECTORS from "../constants/vectors.js";
 
 export default class Box extends Geometry {
-    watchList = ["width", "height", "depth", "color", "center"];
-
-    constructor({
-        center = VECTORS.ORIGIN.clone(),
-        width = 1,
-        height = 1,
-        depth = 1,
-    } = {}) {
+    constructor({ width = 1, height = 1, depth = 1 } = {}) {
         super();
-        this.center = center;
         this.width = width;
         this.height = height;
         this.depth = depth;
@@ -51,15 +43,14 @@ export default class Box extends Geometry {
 
         const vertices = this.getAttributeVal("position");
         const normal = [];
-        const c = this.center,
-            w = this.width,
+        const w = this.width,
             h = this.height,
             d = this.depth;
 
         buildPlane(
             vertices,
             normal,
-            c.add(new Vector(-w / 2, -h / 2, -d / 2)),
+            new Vector(-w / 2, -h / 2, -d / 2),
             w,
             h,
             VECTORS.OUT.clone()
@@ -67,7 +58,7 @@ export default class Box extends Geometry {
         buildPlane(
             vertices,
             normal,
-            c.add(new Vector(-w / 2, -h / 2, d / 2)),
+            new Vector(-w / 2, -h / 2, d / 2),
             w,
             h,
             VECTORS.OUT.clone()
@@ -75,7 +66,7 @@ export default class Box extends Geometry {
         buildPlane(
             vertices,
             normal,
-            c.add(new Vector(w / 2, -h / 2, -d / 2)),
+            new Vector(w / 2, -h / 2, -d / 2),
             h,
             d,
             VECTORS.RIGHT.clone()
@@ -83,7 +74,7 @@ export default class Box extends Geometry {
         buildPlane(
             vertices,
             normal,
-            c.add(new Vector(-w / 2, -h / 2, d / 2)),
+            new Vector(-w / 2, -h / 2, d / 2),
             h,
             d,
             VECTORS.LEFT.clone()
@@ -91,7 +82,7 @@ export default class Box extends Geometry {
         buildPlane(
             vertices,
             normal,
-            c.add(new Vector(-w / 2, h / 2, -d / 2)),
+            new Vector(-w / 2, h / 2, -d / 2),
             d,
             w,
             VECTORS.UP.clone()
@@ -99,7 +90,7 @@ export default class Box extends Geometry {
         buildPlane(
             vertices,
             normal,
-            c.add(new Vector(w / 2, -h / 2, -d / 2)),
+            new Vector(w / 2, -h / 2, -d / 2),
             d,
             w,
             VECTORS.DOWN.clone()
