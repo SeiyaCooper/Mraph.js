@@ -1289,6 +1289,27 @@ declare module "math/Quat" {
          */
         static fromScalar(num: number): Quat;
         /**
+         * Create a pure quaternion by a vector
+         * @param {Vector} vector
+         * @returns {Quat}
+         */
+        static fromVector(vector: Vector): Quat;
+        /**
+         * Returns a rotation vector
+         * @param {Vector} axis
+         * @param {number} angle
+         * @returns {Vector}
+         */
+        static rotateOn(axis: Vector, angle: number): Vector;
+        /**
+         * Rotate a vector by certain axis and angle
+         * @param {Vector} vector
+         * @param {Vector | string} axis The axis to spin around, could be specified by a vector or a string.
+         * @param {number} angle
+         * @returns {Vector}
+         */
+        static rotate(vector: Vector, axis: Vector | string, angle: number): Vector;
+        /**
          * @param {number} [x=0]
          * @param {number} [y=0]
          * @param {number} [z=0]
@@ -1369,14 +1390,17 @@ declare module "math/Quat" {
          * @returns {number}
          */
         get norm(): number;
-        0: number;
         1: number;
         2: number;
         3: number;
+        0: number;
         /**
-         * Conjugate quternion
+         * Conjugate quaternion
          */
         get C(): Quat;
+        /**
+         * Inverse quaternion
+         */
         get I(): Quat;
         /**
          * returns scalar part of this quternion

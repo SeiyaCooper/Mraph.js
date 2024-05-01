@@ -8,7 +8,7 @@ export default class Quat extends Array {
      * @param {number} [w=0]
      */
     constructor(x = 0, y = 0, z = 0, w = 0) {
-        super(x, y, z, w);
+        super(w, x, y, z);
     }
 
     /**
@@ -17,10 +17,10 @@ export default class Quat extends Array {
      */
     add(quat) {
         return new Quat(
+            this.w + quat.w,
             this.x + quat.x,
             this.y + quat.y,
-            this.z + quat.z,
-            this.w + quat.w
+            this.z + quat.z
         );
     }
 
@@ -30,10 +30,10 @@ export default class Quat extends Array {
      */
     minus(quat) {
         return new Quat(
+            this.w - quat.w,
             this.x - quat.x,
             this.y - quat.y,
-            this.z - quat.z,
-            this.w - quat.w
+            this.z - quat.z
         );
     }
 
@@ -46,20 +46,20 @@ export default class Quat extends Array {
 
         const ans = Quat.zeros();
 
-        const x1 = this.x;
-        const y1 = this.y;
-        const z1 = this.z;
-        const w1 = this.w;
+        const x1 = this[0];
+        const y1 = this[1];
+        const z1 = this[2];
+        const w1 = this[3];
 
-        const x2 = quat.x;
-        const y2 = quat.y;
-        const z2 = quat.z;
-        const w2 = quat.w;
+        const x2 = quat[0];
+        const y2 = quat[1];
+        const z2 = quat[2];
+        const w2 = quat[3];
 
-        ans.x = x1 * x2 - y1 * y2 - z1 * z2 - w1 * w2;
-        ans.y = y1 * x2 + x1 * y2 - w1 * z2 + z1 * w2;
-        ans.z = z1 * x2 + w1 * y2 + x1 * z2 - y1 * w2;
-        ans.w = w1 * x2 - z1 * y2 + y1 * z2 + x1 * w2;
+        ans[0] = x1 * x2 - y1 * y2 - z1 * z2 - w1 * w2;
+        ans[1] = y1 * x2 + x1 * y2 - w1 * z2 + z1 * w2;
+        ans[2] = z1 * x2 + w1 * y2 + x1 * z2 - y1 * w2;
+        ans[3] = w1 * x2 - z1 * y2 + y1 * z2 + x1 * w2;
 
         return ans;
     }
@@ -70,9 +70,9 @@ export default class Quat extends Array {
      */
     multNum(num) {
         const ans = Quat.zeros();
-        for (let i in this) {
-            ans[i] = num * this[i];
-        }
+        this.forEach((val, i) => {
+            ans[i] = num * val;
+        });
         return ans;
     }
 
@@ -82,9 +82,9 @@ export default class Quat extends Array {
      */
     dot(quat) {
         let ans = 0;
-        for (let i in this) {
-            ans += this[i] * quat[i];
-        }
+        this.forEach((val, i) => {
+            ans += val * quat[i];
+        });
         return ans;
     }
 
@@ -108,10 +108,10 @@ export default class Quat extends Array {
      * @returns {this}
      */
     copy(arraylike) {
-        this.x = arraylike[0];
-        this.y = arraylike[1];
-        this.z = arraylike[2];
-        this.w = arraylike[3];
+        this.x = arraylike[1];
+        this.y = arraylike[2];
+        this.z = arraylike[3];
+        this.w = arraylike[0];
         return this;
     }
 
@@ -133,6 +133,64 @@ export default class Quat extends Array {
     }
 
     /**
+     * Create a pure quaternion by a vector
+     * @param {Vector} vector
+     * @returns {Quat}
+     */
+    static fromVector(vector) {
+        return new Quat(0, ...vector);
+    }
+
+    /**
+     * Returns a rotation vector
+     * @param {Vector} axis
+     * @param {number} angle
+     * @returns {Vector}
+     */
+    static rotateOn(axis, angle) {
+        const halfAng = angle / 2;
+        return new Quat(
+            Math.cos(halfAng),
+            ...axis.normal().mult(Math.sin(halfAng))
+        );
+    }
+
+    /**
+     * Rotate a vector by certain axis and angle
+     * @param {Vector} vector
+     * @param {Vector | string} axis The axis to spin around, could be specified by a vector or a string.
+     * @param {number} angle
+     * @returns {Vector}
+     */
+    static rotate(vector, axis, angle) {
+        let axisVec;
+
+        if (Vector.isInstance(axis)) axisVec = axis;
+        else {
+            switch (axis) {
+                case "x":
+                    axisVec = new Vector(1, 0, 0);
+                    break;
+                case "y":
+                    axisVec = new Vector(0, 1, 0);
+                    break;
+                case "z":
+                    axisVec = new Vector(0, 0, 1);
+                    break;
+                default:
+                    console.error(
+                        "Mraph Error: The provided axis is not a valid value, only 'x', 'y' and 'z' is allowed."
+                    );
+                    return;
+            }
+        }
+
+        const q = Quat.rotateOn(axisVec, angle);
+        const v = Quat.fromVector(vector);
+        return q.mult(v).mult(q.C).vector;
+    }
+
+    /**
      * @param {number} val
      */
     set norm(val) {
@@ -150,65 +208,68 @@ export default class Quat extends Array {
      * @param {number} val
      */
     set x(val) {
-        this[0] = val;
-    }
-
-    /**
-     * @returns {number}
-     */
-    get x() {
-        return this[0];
-    }
-
-    /**
-     * @param {number} val
-     */
-    set y(val) {
         this[1] = val;
     }
 
     /**
      * @returns {number}
      */
-    get y() {
+    get x() {
         return this[1];
     }
 
     /**
      * @param {number} val
      */
-    set z(val) {
+    set y(val) {
         this[2] = val;
     }
 
     /**
      * @returns {number}
      */
-    get z() {
+    get y() {
         return this[2];
     }
 
     /**
      * @param {number} val
      */
-    set w(val) {
+    set z(val) {
         this[3] = val;
     }
 
     /**
      * @returns {number}
      */
-    get w() {
+    get z() {
         return this[3];
     }
 
     /**
-     * Conjugate quternion
+     * @param {number} val
      */
-    get C() {
-        return new Quat(this.x, -this.y, -this.z, -this.w);
+    set w(val) {
+        this[0] = val;
     }
 
+    /**
+     * @returns {number}
+     */
+    get w() {
+        return this[0];
+    }
+
+    /**
+     * Conjugate quaternion
+     */
+    get C() {
+        return new Quat(this.w, -this.x, -this.y, -this.z);
+    }
+
+    /**
+     * Inverse quaternion
+     */
     get I() {
         return this.C.multNum(1 / this.dot(this));
     }
@@ -217,13 +278,13 @@ export default class Quat extends Array {
      * returns scalar part of this quternion
      */
     get scalar() {
-        return this[0];
+        return this.w;
     }
 
     /**
      * returns vector part of this quternion
      */
     get vector() {
-        return new Vector(this[1], this[2], this[3]);
+        return new Vector(this.x, this.y, this.z);
     }
 }
