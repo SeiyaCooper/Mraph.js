@@ -2,7 +2,7 @@ import GetColorComponent from "./components/GetColorComponent.js";
 import * as COLORS from "../constants/colors.js";
 
 export default class Material {
-    depthTest = true;
+    _depthTest = true;
     colorMode = "single";
     color = COLORS.WHITE;
     vertexShader = "";
@@ -31,5 +31,13 @@ export default class Material {
 
     passComponentVariables() {
         for (let component of this.components) component.passVariables(this);
+    }
+
+    set depthTest(val) {
+        this._depthTest = val;
+    }
+
+    get depthTest() {
+        return this._depthTest;
     }
 }

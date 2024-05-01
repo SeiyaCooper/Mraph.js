@@ -24,6 +24,6 @@ export default class BasicMaterial extends Material {
     }
 
     get depthTest() {
-        return this.color.a === 1 ? false : true;
+        return this.color.a === 1;
     }
 }

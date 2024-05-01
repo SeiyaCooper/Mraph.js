@@ -52,7 +52,7 @@ export default class Axes extends Graph2D {
         const last = this.graphs[this.graphs.length - 1];
         const z = autoStack && last ? last.z + 0.001 : 0.01;
 
-        const graph = new FunctionGraph2D(func, { xRange: range, z: z });
+        const graph = new FunctionGraph2D({ func, xRange: range, z: z });
         graph.update();
 
         this.add(graph);

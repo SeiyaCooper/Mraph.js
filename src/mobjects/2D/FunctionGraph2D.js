@@ -1,7 +1,7 @@
 import Graph2D from "./Graph2D.js";
 
 export default class FunctionGraph2D extends Graph2D {
-    constructor(func = (x) => x, { xRange = [-8, 8, 0.1], z = 0 } = {}) {
+    constructor({ func = (x) => x, xRange = [-8, 8, 0.1], z = 0 } = {}) {
         super();
         this.xRange = xRange;
         this.func = func;

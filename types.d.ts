@@ -1059,7 +1059,7 @@ declare module "material/components/GetColorComponent" {
 }
 declare module "material/Material" {
     export default class Material {
-        depthTest: boolean;
+        _depthTest: boolean;
         colorMode: string;
         color: import("mraph").Color;
         vertexShader: string;
@@ -1068,6 +1068,8 @@ declare module "material/Material" {
         attachComponent(component: any): void;
         compileComponents(): any;
         passComponentVariables(): void;
+        set depthTest(val: boolean);
+        get depthTest(): boolean;
     }
 }
 declare module "material/BasicMaterial" {
@@ -1800,7 +1802,8 @@ declare module "mobjects/2D/Axis" {
 }
 declare module "mobjects/2D/FunctionGraph2D" {
     export default class FunctionGraph2D extends Graph2D {
-        constructor(func?: (x: any) => any, { xRange, z }?: {
+        constructor({ func, xRange, z }?: {
+            func?: (x: any) => any;
             xRange?: number[];
             z?: number;
         });
@@ -1862,6 +1865,19 @@ declare module "mobjects/2D/VectorField2D" {
     import Color from "math/Color";
     import Vector from "math/Vector";
 }
+declare module "mobjects/3D/FunctionGraph3D" {
+    export default class FunctionGraph3D extends Geometry {
+        constructor({ xRange, yRange, func, }?: {
+            xRange?: number[];
+            yRange?: number[];
+            func?: (x: any, y: any) => number;
+        });
+        xRange: number[];
+        yRange: number[];
+        func: (x: any, y: any) => number;
+    }
+    import Geometry from "geometry/Geometry";
+}
 declare module "extra/OBJLoader" {
     export function parseToGeometry(src: any): Promise<Geometry>;
     export function parseToObject(src: any): Promise<{
@@ -1900,6 +1916,7 @@ declare module "mraph" {
     import Axes from "mobjects/2D/Axes";
     import VectorField2D from "mobjects/2D/VectorField2D";
     import FunctionGraph2D from "mobjects/2D/FunctionGraph2D";
+    import FunctionGraph3D from "mobjects/3D/FunctionGraph3D";
     import Layer from "core/Layer";
     import Camera from "core/Camera";
     import Texture from "core/Texture";
@@ -1912,5 +1929,5 @@ declare module "mraph" {
     import Event from "animation/Event";
     import Timeline from "animation/Timeline";
     import OrbitControl from "extra/OrbitControl";
-    export { Color, Matrix, Vector, Quat, Geometry, Plane, Box, Segment, Sphere, Cylinder, DirectionalLight, PointLight, Graph2D, Point, Tail, Line, Arc, Arrow, Axis, Axes, VectorField2D, FunctionGraph2D, Layer, Camera, Texture, WebGLRenderer, WebGLProgram, CustomMaterial, BasicMaterial, DepthMaterial, LambertMaterial, Event, Timeline, OrbitControl };
+    export { Color, Matrix, Vector, Quat, Geometry, Plane, Box, Segment, Sphere, Cylinder, DirectionalLight, PointLight, Graph2D, Point, Tail, Line, Arc, Arrow, Axis, Axes, VectorField2D, FunctionGraph2D, FunctionGraph3D, Layer, Camera, Texture, WebGLRenderer, WebGLProgram, CustomMaterial, BasicMaterial, DepthMaterial, LambertMaterial, Event, Timeline, OrbitControl };
 }
