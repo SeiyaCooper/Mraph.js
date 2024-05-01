@@ -1526,11 +1526,15 @@ declare module "geometry/Cylinder" {
          * * phiEnds {number | number[]} sets end angle of azimuth. The usage is just like "heigjtSegments".
          * * phiSegments {number | number[]} sets segmentation along the azimuth. The usage is just like "heigjtSegments".
          * * heights {number | number[]} sets the height for each section. The usage is just like "heigjtSegments".
+         * * topCap {boolean} wheather to generate the top cap of this cylinder, default true
+         * * bottomCap {boolean} wheather to generate the bottom cap of this cylinder, default true
          */
-        constructor({ radii, heightSegments, phiStarts, phiEnds, phiSegments, heights, }?: object);
+        constructor({ radii, heightSegments, phiStarts, phiEnds, phiSegments, heights, topCap, bottomCap, }?: object);
         radii: any;
         heightSegments: any;
         heights: any;
+        topCap: any;
+        bottomCap: any;
         /** azimuth */
         phiStarts: any;
         phiEnds: any;

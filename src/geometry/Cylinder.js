@@ -1,3 +1,4 @@
+import Vector from "../math/Vector.js";
 import * as GLENUM from "../constants/glenum.js";
 import Geometry from "./Geometry.js";
 
@@ -13,6 +14,8 @@ export default class Cylinder extends Geometry {
      * * phiEnds {number | number[]} sets end angle of azimuth. The usage is just like "heigjtSegments".
      * * phiSegments {number | number[]} sets segmentation along the azimuth. The usage is just like "heigjtSegments".
      * * heights {number | number[]} sets the height for each section. The usage is just like "heigjtSegments".
+     * * topCap {boolean} wheather to generate the top cap of this cylinder, default true
+     * * bottomCap {boolean} wheather to generate the bottom cap of this cylinder, default true
      */
     constructor({
         radii = [1, 1],
@@ -21,11 +24,15 @@ export default class Cylinder extends Geometry {
         phiEnds = Math.PI * 2,
         phiSegments = 32,
         heights = 1,
+        topCap = true,
+        bottomCap = true,
     } = {}) {
         super();
         this.radii = radii;
         this.heightSegments = heightSegments;
         this.heights = heights;
+        this.topCap = topCap;
+        this.bottomCap = bottomCap;
 
         /** azimuth */
         this.phiStarts = phiStarts;
@@ -40,6 +47,7 @@ export default class Cylinder extends Geometry {
     update() {
         const vertices = [];
         const indices = [];
+        const normals = [];
         const mode = this.glMode;
 
         function addPlane(a, b, c, d) {
@@ -68,6 +76,7 @@ export default class Cylinder extends Geometry {
             const radiusUnit = (bottomRadius - topRadius) / heightSegments;
             const heightUnit = (heightEnd - heightStart) / heightSegments;
             const baseOffset = vertices.length / 3;
+            const slope = -radiusUnit / phiUnit;
 
             // get vertices
             for (let j = 0; j <= heightSegments; j++) {
@@ -75,8 +84,11 @@ export default class Cylinder extends Geometry {
                     const phi = phiStart + i * phiUnit;
                     const r = topRadius + j * radiusUnit;
                     const h = heightStart + j * heightUnit;
+                    const cosPhi = Math.cos(phi);
+                    const sinPhi = Math.sin(phi);
 
-                    vertices.push(Math.cos(phi) * r, h, Math.sin(phi) * r);
+                    vertices.push(cosPhi * r, h, sinPhi * r);
+                    normals.push(...new Vector(cosPhi, slope, sinPhi).normal());
                 }
             }
 
@@ -120,7 +132,64 @@ export default class Cylinder extends Geometry {
             );
         }
 
+        // build caps
+        let phiSegments = this.phiSegments[0] ?? this.phiSegments;
+        let phiStart = this.phiStarts[0] ?? this.phiStarts;
+        let phiEnd = this.phiEnds[0] ?? this.phiEnds;
+        if (this.bottomCap) {
+            vertices.push(0, 0, 0);
+            normals.push(0, -1, 0);
+            const centerIndex = vertices.length / 3 - 1;
+
+            for (let j = 0; j < phiSegments; j++) {
+                const n = j + 1 === phiSegments ? 0 : j + 1;
+
+                if ((phiStart > 0 || phiEnd < Math.PI * 2) && n === 0) continue;
+
+                indices.push(centerIndex);
+                indices.push(j);
+                indices.push(n);
+
+                if (mode === GLENUM.LINES) {
+                    indices.push(j);
+                    indices.push(n);
+                }
+            }
+        }
+
+        const last = this.radii.length - 2;
+        phiSegments = this.phiSegments[last] ?? this.phiSegments;
+        phiStart = this.phiStarts[last] ?? this.phiStarts;
+        phiEnd = this.phiEnds[last] ?? this.phiEnds;
+        if (this.topCap) {
+            let h = 0;
+
+            if (Array.isArray(this.heights)) {
+                for (let subH of this.heights) {
+                    h += subH;
+                }
+            } else {
+                h = (last + 1) * this.heights;
+            }
+
+            vertices.push(0, h, 0);
+            normals.push(0, 1, 0);
+            const centerIndex = vertices.length / 3 - 1;
+            const baseIndex = centerIndex - +this.bottomCap - phiSegments;
+
+            for (let j = 0; j < phiSegments; j++) {
+                const n = j + 1 === phiSegments ? 0 : j + 1;
+
+                if ((phiStart > 0 || phiEnd < Math.PI * 2) && n === 0) continue;
+
+                indices.push(centerIndex);
+                indices.push(baseIndex + j);
+                indices.push(baseIndex + n);
+            }
+        }
+
         this.setAttribute("position", vertices, 3);
+        this.setAttribute("normal", normals, 3);
         this.setIndex(indices);
     }
 }
