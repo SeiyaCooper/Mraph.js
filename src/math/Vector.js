@@ -16,7 +16,7 @@ export default class Vector extends Array {
      * @returns {Vector}
      */
     mult(num) {
-        const ans = Matrix.from(this.row, 1, 1).toVector();
+        const ans = Vector.fromRow(this.row, 1);
         for (let i = 0; i < this.row; i++) {
             ans[i] = num * this[i];
         }
@@ -71,7 +71,7 @@ export default class Vector extends Array {
      * @returns {Vector}
      */
     elMult(vec) {
-        const ans = Matrix.zeros(this.row, 1).toVector();
+        const ans = Vector.fromRow(this.row, 1);
 
         for (let j = 0; j < this.row; j++) {
             ans[j] = this[j] * vec[j];
@@ -85,7 +85,7 @@ export default class Vector extends Array {
      * @param {number} num
      */
     divide(num) {
-        const ans = Matrix.from(this.row, 1, 1).toVector();
+        const ans = Vector.fromRow(this.row, 1);
         for (let i = 0; i < this.row; i++) {
             ans[i] = num / this[i];
         }
