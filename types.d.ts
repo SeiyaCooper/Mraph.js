@@ -1385,14 +1385,14 @@ declare module "math/Quat" {
 declare module "core/Object3D" {
     export default class Object3D {
         /**
-         * @type {Geometry | undefined}
+         * @type {Object3D | undefined}
          */
-        parent: Geometry | undefined;
+        parent: Object3D | undefined;
         /**
          * A set of children
-         * @type {Geometry[]}
+         * @type {Object3D[]}
          */
-        children: Geometry[];
+        children: Object3D[];
         /**
          * local matrix
          * @type {Matrix}
@@ -1416,13 +1416,13 @@ declare module "core/Object3D" {
          */
         scale: Vector;
         /**
-         * @param  {...Geometry} objs
+         * @param  {...Object3D} objs
          */
-        add(...objs: Geometry[]): void;
+        add(...objs: Object3D[]): void;
         /**
-         * @param  {...Geometry} objs
+         * @param  {...Object3D} objs
          */
-        delete(...objs: Geometry[]): void;
+        delete(...objs: Object3D[]): void;
         /**
          * delete all children
          */

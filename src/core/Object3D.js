@@ -4,13 +4,13 @@ import Vector from "../math/Vector.js";
 
 export default class Object3D {
     /**
-     * @type {Geometry | undefined}
+     * @type {Object3D | undefined}
      */
     parent = undefined;
 
     /**
      * A set of children
-     * @type {Geometry[]}
+     * @type {Object3D[]}
      */
     children = [];
 
@@ -42,7 +42,7 @@ export default class Object3D {
     scale = Vector.fromRow(3, 1);
 
     /**
-     * @param  {...Geometry} objs
+     * @param  {...Object3D} objs
      */
     add(...objs) {
         this.children.push(...objs);
@@ -52,7 +52,7 @@ export default class Object3D {
     }
 
     /**
-     * @param  {...Geometry} objs
+     * @param  {...Object3D} objs
      */
     delete(...objs) {
         objs.forEach((obj) => {

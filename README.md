@@ -11,19 +11,21 @@ Mraph.js is my personal rendering engine for drawing geometric shapes in a brows
 
 # Usage
 
-#### Install with npm:
+### Install with npm:
 
 ```shell
 npm install --save mraph
 ```
 
-#### or use yarn:
+### or use yarn:
 
 ```shell
 yarn add mraph
 ```
 
-#### A short example:
+### A short example:
+
+Once you installed, try this example below.
 
 ```js
 import { Layer, Point, Vector } from "mraph";
@@ -43,6 +45,9 @@ point.a = new Vector(0.5, 1, 0);
 // Start animation
 layer.play();
 ```
+
+Input this at any editor that you prefer,
+then you would see a small white ball moving with a certain acceleration!
 
 [See more](/Mraph.js/gallery)
 
