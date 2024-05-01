@@ -1,5 +1,5 @@
 import Graph2D from "./Graph2D.js";
-import Color from "../math/Color.js";
+import Color from "../../math/Color.js";
 
 export default class Arc extends Graph2D {
     strokeWidth = 0.05;

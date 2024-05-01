@@ -1,5 +1,5 @@
-import Vector from "../math/Vector.js";
-import Color from "../math/Color.js";
+import Vector from "../../math/Vector.js";
+import Color from "../../math/Color.js";
 import Arc from "./Arc.js";
 
 export default class Point extends Arc {

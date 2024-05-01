@@ -1,5 +1,5 @@
 import Graph2D from "./Graph2D.js";
-import Vector from "../math/Vector.js";
+import Vector from "../../math/Vector.js";
 import Axis from "./Axis.js";
 import Point from "./Point.js";
 import FunctionGraph2D from "./FunctionGraph2D.js";

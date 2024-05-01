@@ -1,11 +1,11 @@
-import Geometry from "../geometry/Geometry.js";
-import Color from "../math/Color.js";
-import * as Utils from "../utils/utils.js";
-import Segment from "../geometry/Segment.js";
-import Vector from "../math/Vector.js";
-import Matrix from "../math/Matrix.js";
-import * as VECTORS from "../constants/vectors.js";
-import * as MathFunc from "../math/math_func.js";
+import Geometry from "../../geometry/Geometry.js";
+import Color from "../../math/Color.js";
+import * as Utils from "../../utils/utils.js";
+import Segment from "../../geometry/Segment.js";
+import Vector from "../../math/Vector.js";
+import Matrix from "../../math/Matrix.js";
+import * as VECTORS from "../../constants/vectors.js";
+import * as MathFunc from "../../math/math_func.js";
 
 export default class Graph2D extends Geometry {
     points = [];

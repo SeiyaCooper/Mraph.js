@@ -1,7 +1,7 @@
 import Graph2D from "./Graph2D.js";
 import Point from "./Point.js";
-import Color from "../math/Color.js";
-import Matrix from "../math/Matrix.js";
+import Color from "../../math/Color.js";
+import Matrix from "../../math/Matrix.js";
 
 export default class Line extends Graph2D {
     strokeWidth = 0.05;

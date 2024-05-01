@@ -1,7 +1,7 @@
 import Line from "./Line.js";
 import Point from "./Point.js";
-import Vector from "../math/Vector.js";
-import Matrix from "../math/Matrix.js";
+import Vector from "../../math/Vector.js";
+import Matrix from "../../math/Matrix.js";
 
 export default class Axis extends Line {
     strokeWidth = 0.03;

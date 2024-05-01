@@ -1612,7 +1612,7 @@ declare module "geometry/Cylinder" {
     }
     import Geometry from "geometry/Geometry";
 }
-declare module "mobjects/Graph2D" {
+declare module "mobjects/2D/Graph2D" {
     export default class Graph2D extends Geometry {
         points: any[];
         polygons: any[];
@@ -1640,7 +1640,7 @@ declare module "mobjects/Graph2D" {
     import Vector from "math/Vector";
     import Color from "math/Color";
 }
-declare module "mobjects/Arc" {
+declare module "mobjects/2D/Arc" {
     export default class Arc extends Graph2D {
         constructor(startAng?: number, endAng?: number, radius?: number, center?: number[]);
         startAng: number;
@@ -1650,9 +1650,9 @@ declare module "mobjects/Arc" {
         update(): this;
         redraw(): this;
     }
-    import Graph2D from "mobjects/Graph2D";
+    import Graph2D from "mobjects/2D/Graph2D";
 }
-declare module "mobjects/Point" {
+declare module "mobjects/2D/Point" {
     export default class Point extends Arc {
         /**
          * @param  {Vector | number[] | ...number} position
@@ -1680,10 +1680,10 @@ declare module "mobjects/Point" {
         set z(val: any);
         get z(): any;
     }
-    import Arc from "mobjects/Arc";
+    import Arc from "mobjects/2D/Arc";
     import Vector from "math/Vector";
 }
-declare module "mobjects/Line" {
+declare module "mobjects/2D/Line" {
     export default class Line extends Graph2D {
         /**
          * @param {Point} start
@@ -1719,16 +1719,16 @@ declare module "mobjects/Line" {
         get length(): any;
         get slope(): number;
     }
-    import Graph2D from "mobjects/Graph2D";
-    import Point from "mobjects/Point";
+    import Graph2D from "mobjects/2D/Graph2D";
+    import Point from "mobjects/2D/Point";
 }
-declare module "mobjects/Arrow" {
+declare module "mobjects/2D/Arrow" {
     export default class Arrow extends Line {
         constructor(...param: any[]);
     }
-    import Line from "mobjects/Line";
+    import Line from "mobjects/2D/Line";
 }
-declare module "mobjects/Axis" {
+declare module "mobjects/2D/Axis" {
     export default class Axis extends Line {
         /**
          * Create an Axis from oringin point, direction vector and range
@@ -1747,11 +1747,11 @@ declare module "mobjects/Axis" {
         update(): this;
         redraw(): this;
     }
-    import Line from "mobjects/Line";
-    import Point from "mobjects/Point";
+    import Line from "mobjects/2D/Line";
+    import Point from "mobjects/2D/Point";
     import Vector from "math/Vector";
 }
-declare module "mobjects/FunctionGraph2D" {
+declare module "mobjects/2D/FunctionGraph2D" {
     export default class FunctionGraph2D extends Graph2D {
         constructor(func?: (x: any) => any, { xRange, z }?: {
             xRange?: number[];
@@ -1763,9 +1763,9 @@ declare module "mobjects/FunctionGraph2D" {
         update(): this;
         redraw(): this;
     }
-    import Graph2D from "mobjects/Graph2D";
+    import Graph2D from "mobjects/2D/Graph2D";
 }
-declare module "mobjects/Axes" {
+declare module "mobjects/2D/Axes" {
     export default class Axes extends Graph2D {
         constructor({ xRange, yRange, zRange, center, }?: {
             xRange?: number[];
@@ -1790,12 +1790,12 @@ declare module "mobjects/Axes" {
         set tickLength(val: number);
         get tickLength(): number;
     }
-    import Graph2D from "mobjects/Graph2D";
-    import Point from "mobjects/Point";
-    import Axis from "mobjects/Axis";
-    import FunctionGraph2D from "mobjects/FunctionGraph2D";
+    import Graph2D from "mobjects/2D/Graph2D";
+    import Point from "mobjects/2D/Point";
+    import Axis from "mobjects/2D/Axis";
+    import FunctionGraph2D from "mobjects/2D/FunctionGraph2D";
 }
-declare module "mobjects/VectorField2D" {
+declare module "mobjects/2D/VectorField2D" {
     export default class VectorField2D extends Geometry {
         constructor({ func, xRange, yRange, }?: {
             func?: (x: any, y: any) => any[];
@@ -1843,15 +1843,15 @@ declare module "mraph" {
     import Cylinder from "geometry/Cylinder";
     import DirectionalLight from "light/DirectionalLight";
     import PointLight from "light/PointLight";
-    import Graph2D from "mobjects/Graph2D";
-    import Point from "mobjects/Point";
-    import Line from "mobjects/Line";
-    import Arc from "mobjects/Arc";
-    import Arrow from "mobjects/Arrow";
-    import Axis from "mobjects/Axis";
-    import Axes from "mobjects/Axes";
-    import VectorField2D from "mobjects/VectorField2D";
-    import FunctionGraph2D from "mobjects/FunctionGraph2D";
+    import Graph2D from "mobjects/2D/Graph2D";
+    import Point from "mobjects/2D/Point";
+    import Line from "mobjects/2D/Line";
+    import Arc from "mobjects/2D/Arc";
+    import Arrow from "mobjects/2D/Arrow";
+    import Axis from "mobjects/2D/Axis";
+    import Axes from "mobjects/2D/Axes";
+    import VectorField2D from "mobjects/2D/VectorField2D";
+    import FunctionGraph2D from "mobjects/2D/FunctionGraph2D";
     import Layer from "core/Layer";
     import Camera from "core/Camera";
     import Texture from "core/Texture";

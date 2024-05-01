@@ -31,15 +31,15 @@ import Cylinder from "./geometry/Cylinder.js";
 import DirectionalLight from "./light/DirectionalLight.js";
 import PointLight from "./light/PointLight.js";
 
-import Graph2D from "./mobjects/Graph2D.js";
-import Point from "./mobjects/Point.js";
-import Line from "./mobjects/Line.js";
-import Arc from "./mobjects/Arc.js";
-import Arrow from "./mobjects/Arrow.js";
-import Axis from "./mobjects/Axis.js";
-import Axes from "./mobjects/Axes.js";
-import VectorField2D from "./mobjects/VectorField2D.js";
-import FunctionGraph2D from "./mobjects/FunctionGraph2D.js";
+import Graph2D from "./mobjects/2D/Graph2D.js";
+import Point from "./mobjects/2D/Point.js";
+import Line from "./mobjects/2D/Line.js";
+import Arc from "./mobjects/2D/Arc.js";
+import Arrow from "./mobjects/2D/Arrow.js";
+import Axis from "./mobjects/2D/Axis.js";
+import Axes from "./mobjects/2D/Axes.js";
+import VectorField2D from "./mobjects/2D/VectorField2D.js";
+import FunctionGraph2D from "./mobjects/2D/FunctionGraph2D.js";
 
 export * as MathFunc from "./math/math_func.js";
 

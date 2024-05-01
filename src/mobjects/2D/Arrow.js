@@ -1,4 +1,4 @@
-import Vector from "../math/Vector.js";
+import Vector from "../../math/Vector.js";
 import Point from "./Point.js";
 import Line from "./Line.js";
 
