@@ -74,7 +74,7 @@ export default class Geometry extends Object3D {
         this.setAttribute("color", colors, 4);
         this.setAttribute("normal", normal, 3);
         this.setIndex(vertices.length / 3);
-        this.clearChildren();
+        this.clear();
     }
 
     /**

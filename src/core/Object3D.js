@@ -1,4 +1,6 @@
 import Matrix from "../math/Matrix.js";
+import * as VECTORS from "../constants/vectors.js";
+import Vector from "../math/Vector.js";
 
 export default class Object3D {
     /**
@@ -7,19 +9,42 @@ export default class Object3D {
     parent = undefined;
 
     /**
+     * A set of children
      * @type {Geometry[]}
      */
     children = [];
 
     /**
+     * local matrix
      * @type {Matrix}
      */
-    _matrix = Matrix.identity(4);
+    localMatrix = Matrix.identity(4);
+
+    /**
+     * global matrix
+     * @type {Matrix}
+     */
+    matrix = Matrix.identity(4);
+
+    /**
+     * @type {Vector}
+     */
+    position = VECTORS.ORIGIN.clone();
+
+    /**
+     * @type {Vector}
+     */
+    rotation = VECTORS.ORIGIN.clone();
+
+    /**
+     * @type {Vector}
+     */
+    scale = Vector.fromRow(3, 1);
 
     /**
      * @param  {...Geometry} objs
      */
-    addChild(...objs) {
+    add(...objs) {
         this.children.push(...objs);
         objs.forEach((obj) => {
             obj.parent = this;
@@ -29,7 +54,7 @@ export default class Object3D {
     /**
      * @param  {...Geometry} objs
      */
-    deleteChild(...objs) {
+    delete(...objs) {
         objs.forEach((obj) => {
             obj.parent = undefined;
             this.children.splice(this.children.indexOf(obj), 1);
@@ -39,8 +64,8 @@ export default class Object3D {
     /**
      * delete all children
      */
-    clearChildren() {
-        this.deleteChild(...this.children);
+    clear() {
+        this.delete(...this.children);
     }
 
     /**
@@ -56,15 +81,44 @@ export default class Object3D {
         }
     }
 
-    set matrix(val) {
-        this._matrix = val;
+    /**
+     * update local matrix
+     * @returns {this}
+     */
+    updateLocalMatrix() {
+        const rotation = this.rotation;
+        this.localMatrix = Matrix.scale(...this.scale)
+            .trans(Matrix.rotateX(rotation[0]))
+            .trans(Matrix.rotateY(rotation[1]))
+            .trans(Matrix.rotateZ(rotation[2]))
+            .trans(Matrix.translate(...this.position));
+        return this;
     }
 
-    get matrix() {
+    /**
+     * update global matrix
+     * @returns {this}
+     */
+    updateWorldMatrix() {
         if (this.parent) {
-            return this.parent.matrix.mult(this._matrix);
+            this.matrix = this.localMatrix.trans(this.parent.matrix);
         } else {
-            return this._matrix;
+            this.matrix = this.localMatrix;
         }
+        return this;
+    }
+
+    /**
+     * update local matrix, global matrix and children's matrices
+     * @returns {this}
+     */
+    updateMatrix() {
+        this.updateLocalMatrix();
+        this.updateWorldMatrix();
+
+        for (let child of this.children) {
+            child.updateMatrix();
+        }
+        return this;
     }
 }

@@ -27,9 +27,9 @@ export default class Axes extends Graph2D {
 
         this.graphs = [];
 
-        this.addChild(this.xAxis);
-        this.addChild(this.yAxis);
-        this.addChild(this.zAxis);
+        this.add(this.xAxis);
+        this.add(this.yAxis);
+        this.add(this.zAxis);
 
         for (let axis of this.children) {
             axis.update();
@@ -55,7 +55,7 @@ export default class Axes extends Graph2D {
         const graph = new FunctionGraph2D(func, { xRange: range, z: z });
         graph.update();
 
-        this.addChild(graph);
+        this.add(graph);
         this.graphs.push(graph);
         return graph;
     }

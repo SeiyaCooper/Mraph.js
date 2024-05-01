@@ -240,7 +240,7 @@ export default class Matrix extends Array {
     }
 
     /**
-     * return a rotation matrix
+     * returns a rotation matrix
      * @param {number} ang
      * the rotate angle
      * @param {number} [n = 4]
@@ -266,7 +266,7 @@ export default class Matrix extends Array {
     }
 
     /**
-     * return a rotation matrix
+     * returns a rotation matrix
      * @param {number} ang
      * the rotate angle
      * @param {number} [n = 4]
@@ -292,7 +292,7 @@ export default class Matrix extends Array {
     }
 
     /**
-     * return a rotation matrix
+     * returns a rotation matrix
      * @param {number} ang
      * the rotate angle
      * @param {number} [n = 4]
@@ -345,6 +345,28 @@ export default class Matrix extends Array {
             ans = ans.resize(4, 4);
             ans[3][3] = 1;
             return ans;
+        }
+    }
+
+    /**
+     * returns a scale matrix
+     * @param {number} x scale ratio at x direction
+     * @param {number} y scale ratio at y direction
+     * @param {number} z scale ratio at z direction
+     * @param {number} [n=4] Specifies the number of rows and columns of the return matrix.
+     *                       Available numbers are 3 or 4.
+     * @returns
+     */
+    static scale(x, y, z, n = 4) {
+        if (n === 3) {
+            return new Matrix([x, 0, 0], [0, y, 0], [0, 0, z]);
+        } else {
+            return new Matrix(
+                [x, 0, 0, 0],
+                [0, y, 0, 0],
+                [0, 0, z, 0],
+                [0, 0, 0, 1]
+            );
         }
     }
 

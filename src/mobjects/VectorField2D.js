@@ -28,7 +28,7 @@ export default class VectorField2D extends Geometry {
     update() {
         this.setAttribute("position", [], 3);
         this.setAttribute("color", [], 4);
-        this.clearChildren();
+        this.clear();
 
         const func = this.func;
         const xRange = this.xRange;
@@ -43,7 +43,7 @@ export default class VectorField2D extends Geometry {
                 arrow.length = length;
                 arrow.setColor(this.colorFunc(x, y, length));
                 arrow.update();
-                this.addChild(arrow);
+                this.add(arrow);
             }
         }
 

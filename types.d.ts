@@ -326,6 +326,33 @@ declare module "math/Vector" {
          */
         toMatrix(): Matrix;
         /**
+         * @type {number}
+         */
+        set x(val: number);
+        /**
+         * @type {number}
+         */
+        get x(): number;
+        0: number;
+        /**
+         * @type {number}
+         */
+        set y(val: number);
+        /**
+         * @type {number}
+         */
+        get y(): number;
+        1: number;
+        /**
+         * @type {number}
+         */
+        set z(val: number);
+        /**
+         * @type {number}
+         */
+        get z(): number;
+        2: number;
+        /**
          * @param {number} val
          */
         set norm(val: number);
@@ -388,7 +415,7 @@ declare module "math/Matrix" {
          */
         static from(row: number, column: number, n: number): Matrix;
         /**
-         * return a rotation matrix
+         * returns a rotation matrix
          * @param {number} ang
          * the rotate angle
          * @param {number} [n = 4]
@@ -398,7 +425,7 @@ declare module "math/Matrix" {
          */
         static rotateX(ang: number, n?: number): Matrix;
         /**
-         * return a rotation matrix
+         * returns a rotation matrix
          * @param {number} ang
          * the rotate angle
          * @param {number} [n = 4]
@@ -408,7 +435,7 @@ declare module "math/Matrix" {
          */
         static rotateY(ang: number, n?: number): Matrix;
         /**
-         * return a rotation matrix
+         * returns a rotation matrix
          * @param {number} ang
          * the rotate angle
          * @param {number} [n = 4]
@@ -426,6 +453,16 @@ declare module "math/Matrix" {
          * @param {number} n
          */
         static rotateOn(axis: Vector, angle: number, n?: number): Matrix;
+        /**
+         * returns a scale matrix
+         * @param {number} x scale ratio at x direction
+         * @param {number} y scale ratio at y direction
+         * @param {number} z scale ratio at z direction
+         * @param {number} [n=4] Specifies the number of rows and columns of the return matrix.
+         *                       Available numbers are 3 or 4.
+         * @returns
+         */
+        static scale(x: number, y: number, z: number, n?: number): Matrix;
         /**
          * return a 4*4 translation Matrix
          * @param {number} x
@@ -1352,35 +1389,68 @@ declare module "core/Object3D" {
          */
         parent: Geometry | undefined;
         /**
+         * A set of children
          * @type {Geometry[]}
          */
         children: Geometry[];
         /**
+         * local matrix
          * @type {Matrix}
          */
-        _matrix: Matrix;
+        localMatrix: Matrix;
+        /**
+         * global matrix
+         * @type {Matrix}
+         */
+        matrix: Matrix;
+        /**
+         * @type {Vector}
+         */
+        position: Vector;
+        /**
+         * @type {Vector}
+         */
+        rotation: Vector;
+        /**
+         * @type {Vector}
+         */
+        scale: Vector;
         /**
          * @param  {...Geometry} objs
          */
-        addChild(...objs: Geometry[]): void;
+        add(...objs: Geometry[]): void;
         /**
          * @param  {...Geometry} objs
          */
-        deleteChild(...objs: Geometry[]): void;
+        delete(...objs: Geometry[]): void;
         /**
          * delete all children
          */
-        clearChildren(): void;
+        clear(): void;
         /**
          * Set attributes for all children
          * @param {string} key
          * @param {any} value
          */
         set(key: string, value: any): void;
-        set matrix(val: any);
-        get matrix(): any;
+        /**
+         * update local matrix
+         * @returns {this}
+         */
+        updateLocalMatrix(): this;
+        /**
+         * update global matrix
+         * @returns {this}
+         */
+        updateWorldMatrix(): this;
+        /**
+         * update local matrix, global matrix and children's matrices
+         * @returns {this}
+         */
+        updateMatrix(): this;
     }
     import Matrix from "math/Matrix";
+    import Vector from "math/Vector";
 }
 declare module "geometry/Geometry" {
     export default class Geometry extends Object3D {
@@ -1558,7 +1628,6 @@ declare module "mobjects/Graph2D" {
         stroke(): void;
         modifyLineJoin2Miter(target: any): void;
         redraw(): void;
-        clear(): void;
         clearPath(): void;
         clearBuffer(): void;
         finish(): void;

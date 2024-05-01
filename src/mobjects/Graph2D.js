@@ -88,7 +88,7 @@ export default class Graph2D extends Geometry {
                 seg.strokeColor = this.strokeColor;
                 seg.normal = this.normal;
                 seg.update();
-                this.addChild(seg);
+                this.add(seg);
                 target.push(seg);
             }
 

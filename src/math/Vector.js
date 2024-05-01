@@ -231,6 +231,48 @@ export default class Vector extends Array {
     }
 
     /**
+     * @type {number}
+     */
+    set x(val) {
+        this[0] = val;
+    }
+
+    /**
+     * @type {number}
+     */
+    get x() {
+        return this[0];
+    }
+
+    /**
+     * @type {number}
+     */
+    set y(val) {
+        this[1] = val;
+    }
+
+    /**
+     * @type {number}
+     */
+    get y() {
+        return this[1];
+    }
+
+    /**
+     * @type {number}
+     */
+    set z(val) {
+        this[2] = val;
+    }
+
+    /**
+     * @type {number}
+     */
+    get z() {
+        return this[2];
+    }
+
+    /**
      * @param {number} val
      */
     set norm(val) {
