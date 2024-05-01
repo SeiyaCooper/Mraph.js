@@ -28,7 +28,7 @@ export default class VectorField2D extends Geometry {
     update() {
         this.setAttribute("position", [], 3);
         this.setAttribute("color", [], 4);
-        this.clear();
+        this.clearGraph();
 
         const func = this.func;
         const xRange = this.xRange;

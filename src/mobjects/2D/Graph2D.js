@@ -130,7 +130,7 @@ export default class Graph2D extends Geometry {
 
     redraw() {}
 
-    clear() {
+    clearGraph() {
         this.clearPath();
         this.clearBuffer();
     }

@@ -4,6 +4,7 @@ import Example from "../../layouts/Example.astro";
 
 <Example title="Magnetic Focus">
     <script>
+        import { toCodes } from "astro:i18n";
         import * as mp from "../../../src/mraph.js";
 
         const layer = new mp.Layer().appendTo(document.body);
@@ -22,7 +23,7 @@ import Example from "../../layouts/Example.astro";
             }
 
             update() {
-                this.clear();
+                this.clearGraph();
                 this.move(this.center);
                 this.arc(
                     this.radius,
@@ -43,6 +44,17 @@ import Example from "../../layouts/Example.astro";
                 super([x, y, 0]);
                 this.charge = charge;
                 this.setColor(charge > 0 ? mp.COLORS.RED : mp.COLORS.BLUE);
+
+                const tail = new mp.Tail(this);
+                tail.strokeWidth = 0.02;
+                tail.setColor(mp.COLORS.GRAY);
+                this.add(tail);
+            }
+
+            update(): this {
+                super.update();
+                this.children[0].update();
+                return this;
             }
         }
 
@@ -73,6 +85,7 @@ import Example from "../../layouts/Example.astro";
          */
         const animator = new mp.Timeline();
         animator.fps = 60;
+        layer.timeline.fps = 60;
         animator.addInfinity(() => {
             for (let charge of charges) {
                 if (charge.center.norm > 1) continue;

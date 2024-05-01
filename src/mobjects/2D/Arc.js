@@ -20,7 +20,7 @@ export default class Arc extends Graph2D {
     }
 
     update() {
-        this.clear();
+        this.clearGraph();
         this.move(this.center);
         this.arc(
             this.radius,

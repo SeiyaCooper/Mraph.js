@@ -14,7 +14,7 @@ export default class FunctionGraph2D extends Graph2D {
         const step = this.xRange[2];
         const func = this.func;
 
-        this.clear();
+        this.clearGraph();
         this.move([from, func(from), this.z]);
         for (let i = from + step; i <= to; i += step) {
             this.line([i, func(i), this.z]);

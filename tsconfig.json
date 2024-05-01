@@ -5,6 +5,8 @@
         "declaration": true,
         "emitDeclarationOnly": true,
         "outFile": "types.d.ts",
-        "baseUrl": "./src/"
+        "baseUrl": "./src/",
+        "target": "ES6",
+        "moduleResolution": "Node"
     }
 }

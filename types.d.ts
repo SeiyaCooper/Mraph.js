@@ -367,6 +367,35 @@ declare module "math/Vector" {
     }
     import Matrix from "math/Matrix";
 }
+declare module "math/Color" {
+    export default class Color extends Vector {
+        static fromHex(hex: any): Color;
+        static fromHexStr(str: any): Color;
+        static lerpRGBA(from: any, to: any, p: any): number[];
+        static isInstance(obj: any): boolean;
+        /**
+         * @param {number} [r=0]
+         * @param {number} [g=0]
+         * @param {number} [b=0]
+         * @param {number} [a=1]
+         */
+        constructor(r?: number, g?: number, b?: number, a?: number);
+        toArray(): this[number][];
+        toIntRGBA(): Color;
+        toRGBAStr(): string;
+        toIntRGBAStr(): string;
+        set r(val: number);
+        get r(): number;
+        set g(val: number);
+        get g(): number;
+        set b(val: number);
+        get b(): number;
+        set a(val: any);
+        get a(): any;
+        3: any;
+    }
+    import Vector from "math/Vector";
+}
 declare module "utils/utils" {
     /**
      * @param {Object} obj
@@ -947,28 +976,6 @@ declare module "extra/OrbitControl" {
         handleWheel(e: any): void;
     }
     import Vector from "math/Vector";
-}
-declare module "math/Color" {
-    export default class Color extends Array<any> {
-        static fromHex(hex: any): Color;
-        static fromHexStr(str: any): Color;
-        static lerpRGBA(from: any, to: any, p: any): number[];
-        /**
-         * @param {number} [r=0]
-         * @param {number} [g=0]
-         * @param {number} [b=0]
-         * @param {number} [a=1]
-         */
-        constructor(r?: number, g?: number, b?: number, a?: number);
-        r: number;
-        g: number;
-        b: number;
-        a: number;
-        toArray(): number[];
-        toIntRGBA(): Color;
-        toRGBAStr(): string;
-        toIntRGBAStr(): string;
-    }
 }
 declare module "constants/colors" {
     export const WHITE: Color;
@@ -1628,6 +1635,7 @@ declare module "mobjects/2D/Graph2D" {
         stroke(): void;
         modifyLineJoin2Miter(target: any): void;
         redraw(): void;
+        clearGraph(): void;
         clearPath(): void;
         clearBuffer(): void;
         finish(): void;
@@ -1682,6 +1690,21 @@ declare module "mobjects/2D/Point" {
     }
     import Arc from "mobjects/2D/Arc";
     import Vector from "math/Vector";
+}
+declare module "mobjects/2D/Tail" {
+    export default class Tail extends Graph2D {
+        constructor(target: any, { maxLength, maxSteps }?: {
+            maxLength?: number;
+            maxSteps?: number;
+        });
+        step: number;
+        target: any;
+        trail: any[];
+        maxLength: number;
+        maxSteps: number;
+        update(): this;
+    }
+    import Graph2D from "mobjects/2D/Graph2D";
 }
 declare module "mobjects/2D/Line" {
     export default class Line extends Graph2D {
@@ -1845,6 +1868,7 @@ declare module "mraph" {
     import PointLight from "light/PointLight";
     import Graph2D from "mobjects/2D/Graph2D";
     import Point from "mobjects/2D/Point";
+    import Tail from "mobjects/2D/Tail";
     import Line from "mobjects/2D/Line";
     import Arc from "mobjects/2D/Arc";
     import Arrow from "mobjects/2D/Arrow";
@@ -1864,5 +1888,5 @@ declare module "mraph" {
     import Event from "animation/Event";
     import Timeline from "animation/Timeline";
     import OrbitControl from "extra/OrbitControl";
-    export { Color, Matrix, Vector, Quat, Geometry, Plane, Box, Segment, Sphere, Cylinder, DirectionalLight, PointLight, Graph2D, Point, Line, Arc, Arrow, Axis, Axes, VectorField2D, FunctionGraph2D, Layer, Camera, Texture, WebGLRenderer, WebGLProgram, CustomMaterial, BasicMaterial, DepthMaterial, LambertMaterial, Event, Timeline, OrbitControl };
+    export { Color, Matrix, Vector, Quat, Geometry, Plane, Box, Segment, Sphere, Cylinder, DirectionalLight, PointLight, Graph2D, Point, Tail, Line, Arc, Arrow, Axis, Axes, VectorField2D, FunctionGraph2D, Layer, Camera, Texture, WebGLRenderer, WebGLProgram, CustomMaterial, BasicMaterial, DepthMaterial, LambertMaterial, Event, Timeline, OrbitControl };
 }

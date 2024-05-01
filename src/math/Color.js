@@ -1,6 +1,7 @@
 import * as MathFunc from "./math_func.js";
+import Vector from "./Vector.js";
 
-export default class Color extends Array {
+export default class Color extends Vector {
     /**
      * @param {number} [r=0]
      * @param {number} [g=0]
@@ -9,14 +10,10 @@ export default class Color extends Array {
      */
     constructor(r = 0, g = 0, b = 0, a = 1) {
         super(r, g, b, a);
-        this.r = r;
-        this.g = g;
-        this.b = b;
-        this.a = a;
     }
 
     toArray() {
-        return [this.r, this.g, this.b, this.a];
+        return [...this];
     }
 
     toIntRGBA() {
@@ -59,5 +56,41 @@ export default class Color extends Array {
 
     static lerpRGBA(from, to, p) {
         return MathFunc.lerpArray(from, to, p);
+    }
+
+    static isInstance(obj) {
+        return obj instanceof Color;
+    }
+
+    set r(val) {
+        this[0] = val;
+    }
+
+    get r() {
+        return this[0];
+    }
+
+    set g(val) {
+        this[1] = val;
+    }
+
+    get g() {
+        return this[1];
+    }
+
+    set b(val) {
+        this[2] = val;
+    }
+
+    get b() {
+        return this[2];
+    }
+
+    set a(val) {
+        this[3] = val;
+    }
+
+    get a() {
+        return this[3];
     }
 }

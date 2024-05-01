@@ -23,7 +23,7 @@ export default class Line extends Graph2D {
     }
 
     update() {
-        this.clear();
+        this.clearGraph();
         this.move(this.start.center);
         this.line(this.end.center);
         this.stroke();

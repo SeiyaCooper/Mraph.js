@@ -1,4 +1,5 @@
 import Vector from "../math/Vector.js";
+import Color from "../math/Color.js";
 
 /**
  * @param {Object} obj
@@ -18,6 +19,8 @@ export function deepCopy(obj) {
 
     if (Vector.isInstance(obj)) {
         out = new Vector();
+    } else if (Color.isInstance(obj)) {
+        out = new Color();
     } else if (Array.isArray(obj)) {
         out = [];
     } else {

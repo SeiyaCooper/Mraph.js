@@ -24,7 +24,7 @@ export default class Point extends Arc {
     }
 
     update() {
-        this.clear();
+        this.clearGraph();
         this.move(this.center);
         this.arc(this.radius, 0, Math.PI * 2, false);
         this.fill();

@@ -33,6 +33,7 @@ import PointLight from "./light/PointLight.js";
 
 import Graph2D from "./mobjects/2D/Graph2D.js";
 import Point from "./mobjects/2D/Point.js";
+import Tail from "./mobjects/2D/Tail.js";
 import Line from "./mobjects/2D/Line.js";
 import Arc from "./mobjects/2D/Arc.js";
 import Arrow from "./mobjects/2D/Arrow.js";
@@ -71,6 +72,7 @@ export {
     // Mobjects
     Graph2D,
     Point,
+    Tail,
     Line,
     Arc,
     Arrow,
