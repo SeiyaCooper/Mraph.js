@@ -62,7 +62,12 @@ export default class WebGLRenderer {
         }
 
         for (let child of mesh.children ?? []) {
-            this.render(child, camera, material, surroundings);
+            this.render(
+                child,
+                camera,
+                child.material ?? material,
+                surroundings
+            );
         }
 
         if (!material.depthTest) gl.enable(gl.DEPTH_TEST);

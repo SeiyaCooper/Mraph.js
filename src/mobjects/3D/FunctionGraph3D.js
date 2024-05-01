@@ -1,11 +1,14 @@
 import Geometry from "../../geometry/Geometry";
 import * as GLENUM from "../../constants/glenum.js";
+import BasicMaterial from "../../material/BasicMaterial.js";
 
 export default class FunctionGraph3D extends Geometry {
+    material = new BasicMaterial();
+
     constructor({
-        xRange = [-3, 3, 0.1],
-        yRange = [-3, 3, 0.1],
-        func = (x, y) => x * y * y,
+        xRange = [-8, 8, 0.5],
+        yRange = [-8, 8, 0.5],
+        func = (x, y) => x + y,
     } = {}) {
         super();
         this.xRange = xRange;

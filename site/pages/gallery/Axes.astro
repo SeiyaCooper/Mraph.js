@@ -23,6 +23,9 @@ import Example from "../../layouts/Example.astro";
         const figure2 = axes.drawFunction2D((x) => Math.sin(x));
         figure2.set("strokeColor", mp.COLORS.SEIYA_PINK);
         figure2.update();
+        const figure3D = axes.drawFunction3D((x, y) => x);
+        figure3D.material.color = mp.COLORS.GREEN_E.clone();
+        figure3D.material.color[3] = 0.2;
 
         // Render
         layer.add(axes);

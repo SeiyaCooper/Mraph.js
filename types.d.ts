@@ -1815,6 +1815,21 @@ declare module "mobjects/2D/FunctionGraph2D" {
     }
     import Graph2D from "mobjects/2D/Graph2D";
 }
+declare module "mobjects/3D/FunctionGraph3D" {
+    export default class FunctionGraph3D extends Geometry {
+        constructor({ xRange, yRange, func, }?: {
+            xRange?: number[];
+            yRange?: number[];
+            func?: (x: any, y: any) => any;
+        });
+        material: BasicMaterial;
+        xRange: number[];
+        yRange: number[];
+        func: (x: any, y: any) => any;
+    }
+    import Geometry from "geometry/Geometry";
+    import BasicMaterial from "material/BasicMaterial";
+}
 declare module "mobjects/2D/Axes" {
     export default class Axes extends Graph2D {
         constructor({ xRange, yRange, zRange, center, }?: {
@@ -1837,6 +1852,9 @@ declare module "mobjects/2D/Axes" {
             step?: number;
             autoStack?: boolean;
         }): FunctionGraph2D;
+        drawFunction3D(func: any, { step }?: {
+            step?: number;
+        }): FunctinoGraph3D;
         set tickLength(val: number);
         get tickLength(): number;
     }
@@ -1844,6 +1862,7 @@ declare module "mobjects/2D/Axes" {
     import Point from "mobjects/2D/Point";
     import Axis from "mobjects/2D/Axis";
     import FunctionGraph2D from "mobjects/2D/FunctionGraph2D";
+    import FunctinoGraph3D from "mobjects/3D/FunctionGraph3D";
 }
 declare module "mobjects/2D/VectorField2D" {
     export default class VectorField2D extends Geometry {
@@ -1864,19 +1883,6 @@ declare module "mobjects/2D/VectorField2D" {
     import Geometry from "geometry/Geometry";
     import Color from "math/Color";
     import Vector from "math/Vector";
-}
-declare module "mobjects/3D/FunctionGraph3D" {
-    export default class FunctionGraph3D extends Geometry {
-        constructor({ xRange, yRange, func, }?: {
-            xRange?: number[];
-            yRange?: number[];
-            func?: (x: any, y: any) => number;
-        });
-        xRange: number[];
-        yRange: number[];
-        func: (x: any, y: any) => number;
-    }
-    import Geometry from "geometry/Geometry";
 }
 declare module "extra/OBJLoader" {
     export function parseToGeometry(src: any): Promise<Geometry>;

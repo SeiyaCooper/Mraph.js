@@ -3,6 +3,7 @@ import Vector from "../../math/Vector.js";
 import Axis from "./Axis.js";
 import Point from "./Point.js";
 import FunctionGraph2D from "./FunctionGraph2D.js";
+import FunctinoGraph3D from "../3D/FunctionGraph3D.js";
 
 export default class Axes extends Graph2D {
     _tickLength = 0.08;
@@ -52,7 +53,22 @@ export default class Axes extends Graph2D {
         const last = this.graphs[this.graphs.length - 1];
         const z = autoStack && last ? last.z + 0.001 : 0.01;
 
-        const graph = new FunctionGraph2D({ func, xRange: range, z: z });
+        const graph = new FunctionGraph2D({ func, xRange: range, z });
+        graph.update();
+
+        this.add(graph);
+        this.graphs.push(graph);
+        return graph;
+    }
+
+    drawFunction3D(func, { step = 0.5 } = {}) {
+        const xRange = this.xRange;
+        const yRange = this.yRange;
+
+        xRange[2] = step;
+        yRange[2] = step;
+
+        const graph = new FunctinoGraph3D({ func, xRange, yRange });
         graph.update();
 
         this.add(graph);
