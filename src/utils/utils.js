@@ -17,10 +17,10 @@ export function mergeObject(obj, ...source) {
 export function deepCopy(obj) {
     let out;
 
-    if (Vector.isInstance(obj)) {
-        out = new Vector();
-    } else if (Color.isInstance(obj)) {
+    if (Color.isInstance(obj)) {
         out = new Color();
+    } else if (Vector.isInstance(obj)) {
+        out = new Vector();
     } else if (Array.isArray(obj)) {
         out = [];
     } else {
