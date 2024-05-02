@@ -1719,15 +1719,17 @@ declare module "mobjects/2D/Point" {
 }
 declare module "mobjects/2D/Tail" {
     export default class Tail extends Graph2D {
-        constructor(target: any, { maxLength, maxSteps }?: {
+        constructor(target: any, { maxLength, maxSteps, modifyLine }?: {
             maxLength?: number;
             maxSteps?: number;
+            modifyLine?: (line: any, i: any, all: any) => void;
         });
         step: number;
         target: any;
         trail: any[];
         maxLength: number;
         maxSteps: number;
+        modifyLine: (line: any, i: any, all: any) => void;
         update(): this;
     }
     import Graph2D from "mobjects/2D/Graph2D";

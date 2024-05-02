@@ -2,16 +2,24 @@ import Graph2D from "./Graph2D.js";
 import Vector from "../../math/Vector.js";
 import Segment from "../../geometry/Segment.js";
 
+const defaultModifyLine = (line, i, all) => {
+    line.strokeColor.a *= i / all;
+};
+
 export default class Tail extends Graph2D {
     step = 0;
 
-    constructor(target, { maxLength = 20, maxSteps = 3 } = {}) {
+    constructor(
+        target,
+        { maxLength = 20, maxSteps = 3, modifyLine = defaultModifyLine } = {}
+    ) {
         super();
         this.target = target;
         this.trail = [target.center];
         this.strokeWidth = 0.03;
         this.maxLength = maxLength;
         this.maxSteps = maxSteps;
+        this.modifyLine = modifyLine;
     }
 
     update() {
@@ -48,9 +56,10 @@ export default class Tail extends Graph2D {
                     Vector.fromArray(next)
                 );
 
-                seg.strokeWidth = (this.strokeWidth * i) / polygon.length;
+                seg.strokeWidth = this.strokeWidth;
                 seg.strokeColor = this.strokeColor.clone();
                 seg.normal = this.normal;
+                this.modifyLine(seg, i, polygon.length);
                 seg.update();
                 this.add(seg);
                 target.push(seg);
