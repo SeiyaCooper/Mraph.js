@@ -3,8 +3,9 @@ import { defineConfig } from "vite";
 export default defineConfig({
     build: {
         lib: {
+            name: "mraph",
             entry: "src/mraph.js",
-            formats: ["es"],
+            fileName: (format) => `mraph.${format}.js`,
         },
     },
 });
