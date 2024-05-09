@@ -25,7 +25,6 @@ export default class Point extends Arc {
 
     update() {
         this.clearGraph();
-        this.move(this.center);
         this.arc(this.radius, 0, Math.PI * 2, false);
         this.fill();
         return this;
@@ -49,7 +48,7 @@ export default class Point extends Arc {
             },
             update: (p) => {
                 this.center = start.lerp(pos, p);
-                this.update();
+                this.updateMatrix();
             },
         });
     }
@@ -65,7 +64,7 @@ export default class Point extends Arc {
                     this.center = this.center.add(
                         this._v.mult(elapsedTime - lastTime)
                     );
-                    this.update();
+                    this.updateMatrix();
                     lastTime = elapsedTime;
                 },
             },

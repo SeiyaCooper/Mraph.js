@@ -138,6 +138,7 @@ export default class Layer {
         for (let el of this.elements) {
             if (el.needsUpdate) {
                 el.update?.();
+                el.updateMatrix?.();
                 el.needsUpdate = false;
             }
 

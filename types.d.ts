@@ -142,16 +142,16 @@ declare module "animation/Timeline" {
         addFollow(hold: number, handler: any, config: any): this;
         /**
          * add global event
-         * @param {Object} handler
+         * @param {Function} handler
          * @returns {this}
          */
-        addGlobal(handler: any): this;
+        addGlobal(handler: Function): this;
         /**
          * add infinity event
-         * @param {Object} handler
+         * @param {Function} handler
          * @returns {this}
          */
-        addInfinity(handler: any): this;
+        addInfinity(handler: Function): this;
         /**
          * delete an event from this timeline
          * @param {object | number} target
@@ -910,7 +910,7 @@ declare module "core/WebGL/WebGLRenderer" {
 }
 declare module "core/Camera" {
     export default class Camera {
-        position: Vector;
+        center: Vector;
         rotation: Vector;
         up: Vector;
         projectionMat: Matrix;
@@ -1097,12 +1097,12 @@ declare module "constants/vectors" {
 declare module "light/PointLight" {
     export default class PointLight {
         static isInstance(obj: any): boolean;
-        constructor({ position, color, intensity, }?: {
-            position?: import("mraph").Vector;
+        constructor({ center, color, intensity, }?: {
+            center?: import("mraph").Vector;
             color?: import("mraph").Color;
             intensity?: number;
         });
-        position: import("mraph").Vector;
+        center: import("mraph").Vector;
         color: import("mraph").Color;
         intensity: number;
     }
@@ -1439,7 +1439,7 @@ declare module "core/Object3D" {
         /**
          * @type {Vector}
          */
-        position: Vector;
+        center: Vector;
         /**
          * @type {Vector}
          */
@@ -1879,8 +1879,6 @@ declare module "mobjects/2D/VectorField2D" {
         xRange: number[];
         yRange: number[];
         func: (x: any, y: any) => any[];
-        set center(center: Vector);
-        get center(): Vector;
     }
     import Geometry from "geometry/Geometry";
     import Color from "math/Color";

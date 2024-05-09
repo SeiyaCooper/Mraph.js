@@ -2,7 +2,7 @@ import Matrix from "../math/Matrix.js";
 import Vector from "../math/Vector.js";
 
 export default class Camera {
-    position = new Vector(0, 0, -10);
+    center = new Vector(0, 0, -10);
     rotation = new Vector(0, 0, 0);
     up = new Vector(0, 1, 0);
     projectionMat = Matrix.identity(4);
@@ -23,16 +23,16 @@ export default class Camera {
             },
         };
 
-        const posProxy = new Proxy(this.position, handler);
+        const posProxy = new Proxy(this.center, handler);
         const rotProxy = new Proxy(this.rotation, handler);
-        this.position = posProxy;
+        this.center = posProxy;
         this.rotation = rotProxy;
     }
 
     update() {
-        const position = this.position;
+        const center = this.center;
         const rotation = this.rotation;
-        this.viewMat = Matrix.translate(...position)
+        this.viewMat = Matrix.translate(...center)
             .trans(Matrix.rotateX(-rotation[0]))
             .trans(Matrix.rotateY(-rotation[1]))
             .trans(Matrix.rotateZ(-rotation[2]));
@@ -83,7 +83,7 @@ export default class Camera {
     lookAt(target) {
         target = Vector.fromArray(target);
 
-        const p = this.position.mult(-1);
+        const p = this.center.mult(-1);
         const k = target.add(p).normal();
         const i = k.cross(this.up).normal();
         const j = i.cross(k);

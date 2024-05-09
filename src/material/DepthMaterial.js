@@ -21,7 +21,7 @@ export default class DepthMaterial extends Material {
     }
 
     beforeRender({ camera }) {
-        this.program.setUniform("cameraPos", camera.position);
+        this.program.setUniform("cameraPos", camera.center);
         this.program.setUniform("near", camera.near);
         this.program.setUniform("far", camera.far);
     }

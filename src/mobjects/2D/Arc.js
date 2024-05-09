@@ -21,7 +21,6 @@ export default class Arc extends Graph2D {
 
     update() {
         this.clearGraph();
-        this.move(this.center);
         this.arc(
             this.radius,
             this.startAng,

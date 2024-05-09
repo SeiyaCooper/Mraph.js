@@ -23,7 +23,6 @@ import Example from "../../layouts/Example.astro";
 
             update() {
                 this.clearGraph();
-                this.move(this.center);
                 this.arc(
                     this.radius,
                     this.startAng,
@@ -47,13 +46,7 @@ import Example from "../../layouts/Example.astro";
                 const tail = new mp.Tail(this, { maxSteps: 5, maxLength: 15 });
                 tail.strokeWidth = 0.02;
                 tail.setColor(mp.COLORS.SEIYA_PINK);
-                this.add(tail);
-            }
-
-            update(): this {
-                super.update();
-                this.children[0].update();
-                return this;
+                this.tail = tail;
             }
         }
 
@@ -70,6 +63,7 @@ import Example from "../../layouts/Example.astro";
         ];
         for (let charge of charges) {
             layer.add(charge);
+            layer.add(charge.tail);
             charge.v = new mp.Vector(1, 0, 0);
         }
 
@@ -85,8 +79,9 @@ import Example from "../../layouts/Example.astro";
         const animator = new mp.Timeline();
         animator.fps = 60;
         layer.timeline.fps = 60;
-        animator.addInfinity(() => {
+        layer.timeline.addInfinity(() => {
             for (let charge of charges) {
+                charge.tail.update();
                 if (charge.center.norm > 1) continue;
                 charge.a = charge._v.mult(charge.charge).cross(field.strength);
             }
@@ -97,7 +92,7 @@ import Example from "../../layouts/Example.astro";
         });
 
         /// Render part
-        layer.camera.position[2] = 5;
+        layer.camera.center[2] = 5;
         layer.enableOrbitControl().enableRotate = false;
         layer.play();
         animator.play();

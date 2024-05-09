@@ -36,7 +36,7 @@ export default class OrbitControl {
     constructor(camera, { element = document } = {}) {
         this.camera = camera;
         this.element = element;
-        this.radius = camera.position.norm;
+        this.radius = camera.center.norm;
     }
 
     update() {
@@ -57,7 +57,7 @@ export default class OrbitControl {
         const center = this.center;
         center.copy(center.lerp(targetCenter, this.moveEase));
 
-        this.camera.position.copy(
+        this.camera.center.copy(
             new Vector(0, 0, this.radius * this.scale)
                 .trans(Matrix.rotateX(this.phi, 3))
                 .trans(Matrix.rotateY(-this.theta, 3))
@@ -77,7 +77,7 @@ export default class OrbitControl {
 
     move(deltaX, deltaY) {
         const camera = this.camera;
-        const zAxis = this.center.minus(camera.position);
+        const zAxis = this.center.minus(camera.center);
         const xAxis = zAxis.cross(camera.up);
         const yAxis = xAxis.cross(zAxis);
 

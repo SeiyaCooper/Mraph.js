@@ -23,12 +23,12 @@ import Example from "../../layouts/Example.astro";
         layer.add(mesh);
 
         const pointLight = new mp.PointLight({
-            position: new mp.Vector(1, 3, 7),
+            center: new mp.Vector(1, 3, 7),
             intensity: 30,
         });
         layer.add(pointLight);
 
-        layer.camera.position[2] = 3;
+        layer.camera.center[2] = 3;
         layer.enableOrbitControl();
         layer.play();
     </script>

@@ -3,11 +3,11 @@ import * as COLORS from "../constants/colors.js";
 
 export default class PointLight {
     constructor({
-        position = VECTORS.UP,
+        center = VECTORS.UP,
         color = COLORS.WHITE,
         intensity = 1.5,
     } = {}) {
-        this.position = position;
+        this.center = center;
         this.color = color;
         this.intensity = intensity;
     }

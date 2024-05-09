@@ -104,7 +104,7 @@ export default class Timeline {
 
     /**
      * add global event
-     * @param {Object} handler
+     * @param {Function} handler
      * @returns {this}
      */
     addGlobal(handler) {
@@ -116,7 +116,7 @@ export default class Timeline {
 
     /**
      * add infinity event
-     * @param {Object} handler
+     * @param {Function} handler
      * @returns {this}
      */
     addInfinity(handler) {

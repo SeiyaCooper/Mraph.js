@@ -36,7 +36,7 @@ export default class LambertMaterial extends Material {
             const pointLightsColor = [];
             const pointLightsIntensity = [];
             for (let light of pointLights) {
-                pointLightsPosition.push(...light.position);
+                pointLightsPosition.push(...light.center);
                 pointLightsColor.push(...light.color);
                 pointLightsIntensity.push(light.intensity);
             }

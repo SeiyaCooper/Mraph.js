@@ -64,7 +64,7 @@ import Example from "../../layouts/Example.astro";
         layer.add(electricField);
 
         // Use orbit control and start animation
-        layer.camera.position[2] = 15;
+        layer.camera.center[2] = 15;
         layer.enableOrbitControl().enableRotate = false;
         layer.play();
     </script>
