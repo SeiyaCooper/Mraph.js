@@ -40,6 +40,13 @@ export default class Event {
     id = 0;
 
     /**
+     * Animation curve
+     * @param {number} t
+     * @returns {number}
+     */
+    curve = (t) => t;
+
+    /**
      * @constructor
      * @param {object} config
      * @return {Action}
@@ -47,13 +54,15 @@ export default class Event {
     constructor(
         startTime = 0,
         stopTime = 1,
-        { start = () => {}, stop = () => {}, update = () => {} } = {}
+        { start = () => {}, stop = () => {}, update = () => {} } = {},
+        { curve = (t) => t }
     ) {
         this.start = start;
         this.stop = stop;
         this.update = update;
         this.startTime = startTime;
         this.stopTime = stopTime;
+        this.curve = curve;
     }
 
     /**
@@ -72,7 +81,10 @@ export default class Event {
                 this.stop(stop);
                 this.isStopped = true;
             } else {
-                this.update((now - start) / (stop - start), now - start);
+                this.update(
+                    this.curve((now - start) / (stop - start)),
+                    now - start
+                );
             }
         } else if (now > start) {
             this.start(start);

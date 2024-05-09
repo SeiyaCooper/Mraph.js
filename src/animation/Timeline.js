@@ -69,8 +69,17 @@ export default class Timeline {
      * @param {Object} config
      * @return {Event}
      */
-    add(start, stop, handle, { updateMax = true, updateMin = true } = {}) {
-        const event = new Event(start, stop, handle);
+    add(
+        start,
+        stop,
+        handle,
+        {
+            updateMax = true,
+            updateMin = true,
+            curve = Timeline.easeInOutSine,
+        } = {}
+    ) {
+        const event = new Event(start, stop, handle, { curve });
         event.id = eventId;
         eventId++;
 
@@ -215,6 +224,56 @@ export default class Timeline {
     pause() {
         if (this.clock) this.state = STATE.PAUSED;
     }
+
+    /**
+     * Linear function
+     * @param {number} t - process, 0 to 1
+     * @returns {number}
+     */
+    static linear = (t) => t;
+
+    /**
+     * Quadratic ease in function
+     * @param {number} t - process, 0 to 1
+     * @returns {number}
+     */
+    static easeInQuad = (t) => t * t;
+
+    /**
+     * Quadratic ease out function
+     * @param {number} t - process, 0 to 1
+     * @returns {number}
+     */
+    static easeOutQuad = (t) => 1 - (1 - t) * (1 - t);
+
+    /**
+     * Quadratic ease in out function
+     * @param {number} t - process, 0 to 1
+     * @returns {number}
+     */
+    static easeInOutQuad = (t) =>
+        t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+
+    /**
+     * Sine ease in function
+     * @param {number} t - process, 0 to 1
+     * @returns {number}
+     */
+    static easeInSine = (t) => 1 - Math.cos((t * Math.PI) / 2);
+
+    /**
+     * Sine ease out function
+     * @param {number} t - process, 0 to 1
+     * @returns {number}
+     */
+    static easeOutSine = (t) => Math.sin((t * Math.PI) / 2);
+
+    /**
+     * Sine ease in out function
+     * @param {number} t - process, 0 to 1
+     * @returns {number}
+     */
+    static easeInOutSine = (t) => -(Math.cos(Math.PI * t) - 1) / 2;
 
     set maxTime(val) {
         this._maxTime = val * 1000;

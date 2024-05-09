@@ -5,10 +5,12 @@ declare module "animation/Event" {
          * @param {object} config
          * @return {Action}
          */
-        constructor(startTime?: number, stopTime?: number, { start, stop, update }?: {
+        constructor(startTime: number, stopTime: number, { start, stop, update }: {
             start?: () => void;
             stop?: () => void;
             update?: () => void;
+        }, { curve }: {
+            curve?: (t: any) => any;
         });
         /**
          * @type {number}
@@ -43,6 +45,12 @@ declare module "animation/Event" {
          */
         id: number;
         /**
+         * Animation curve
+         * @param {number} t
+         * @returns {number}
+         */
+        curve: (t: number) => number;
+        /**
          * trigger this event by current time
          * @param {number} now - the current time
          * @return {void}
@@ -75,6 +83,48 @@ declare module "animation/SpecialEvent" {
 }
 declare module "animation/Timeline" {
     export default class Timeline {
+        /**
+         * Linear function
+         * @param {number} t - process, 0 to 1
+         * @returns {number}
+         */
+        static linear: (t: number) => number;
+        /**
+         * Quadratic ease in function
+         * @param {number} t - process, 0 to 1
+         * @returns {number}
+         */
+        static easeInQuad: (t: number) => number;
+        /**
+         * Quadratic ease out function
+         * @param {number} t - process, 0 to 1
+         * @returns {number}
+         */
+        static easeOutQuad: (t: number) => number;
+        /**
+         * Quadratic ease in out function
+         * @param {number} t - process, 0 to 1
+         * @returns {number}
+         */
+        static easeInOutQuad: (t: number) => number;
+        /**
+         * Sine ease in function
+         * @param {number} t - process, 0 to 1
+         * @returns {number}
+         */
+        static easeInSine: (t: number) => number;
+        /**
+         * Sine ease out function
+         * @param {number} t - process, 0 to 1
+         * @returns {number}
+         */
+        static easeOutSine: (t: number) => number;
+        /**
+         * Sine ease in out function
+         * @param {number} t - process, 0 to 1
+         * @returns {number}
+         */
+        static easeInOutSine: (t: number) => number;
         /**
          * A short string to describe state
          * @type {string}
@@ -125,7 +175,7 @@ declare module "animation/Timeline" {
          * @param {Object} config
          * @return {Event}
          */
-        add(start: number, stop: number, handle: any, { updateMax, updateMin }?: any): Event;
+        add(start: number, stop: number, handle: any, { updateMax, updateMin, curve, }?: any): Event;
         /**
          * add a one-time-only event
          * @param {number} at
