@@ -1,4 +1,5 @@
 import Vector from "./Vector.js";
+import MraphError from "../utils/MraphError.js";
 
 export default class Quat extends Array {
     /**
@@ -178,8 +179,8 @@ export default class Quat extends Array {
                     axisVec = new Vector(0, 0, 1);
                     break;
                 default:
-                    console.error(
-                        "Mraph Error: The provided axis is not a valid value, only 'x', 'y' and 'z' is allowed."
+                    MraphError.error(
+                        "The provided axis is not a valid value, only 'x', 'y' and 'z' is allowed."
                     );
                     return;
             }

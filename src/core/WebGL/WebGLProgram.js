@@ -1,4 +1,5 @@
 import { mergeObject } from "../../utils/utils.js";
+import MraphError from "../../utils/MraphError.js";
 
 export default class Program {
     locations = new Map();
@@ -122,7 +123,7 @@ function createShader(gl, type, source) {
     gl.compileShader(shader);
 
     if (gl.getShaderInfoLog(shader) !== "") {
-        console.warn(gl.getShaderInfoLog(shader));
+        MraphError.warn(gl.getShaderInfoLog(shader));
         gl.deleteShader(shader);
     }
 
@@ -137,7 +138,7 @@ function createProgram(gl, vertexShader, fragmentShader) {
     gl.useProgram(program);
 
     if (gl.getProgramInfoLog(program) !== "") {
-        console.warn(gl.getProgramInfoLog(program));
+        MraphError.warn(gl.getProgramInfoLog(program));
     }
 
     return program;

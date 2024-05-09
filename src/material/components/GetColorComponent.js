@@ -1,4 +1,5 @@
 import * as SlotParser from "../SlotParser.js";
+import MraphError from "../../utils/MraphError.js";
 
 const vsVertex = `
 attribute vec4 color;
@@ -41,7 +42,7 @@ export default class GetColorComponent {
                 fs = SlotParser.replace(fs, "get_color::main", fsMainTexture);
                 break;
             default:
-                console.log(`Invalid color mode: ${colorMode}`);
+                MraphError.error(`Invalid color mode: ${colorMode}`);
         }
 
         return { vs, fs };

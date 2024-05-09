@@ -1014,6 +1014,12 @@ declare module "constants/colors" {
     export const SEIYA_PINK: Color;
     import Color from "math/Color";
 }
+declare module "utils/MraphError" {
+    export default class MraphError {
+        static error(msg: any): void;
+        static warn(msg: any): void;
+    }
+}
 declare module "core/WebGL/WebGLProgram" {
     export default class Program {
         constructor(gl: any, { vs, fs, attributes, uniforms, textures }?: {
