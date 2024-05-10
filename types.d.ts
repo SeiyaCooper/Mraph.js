@@ -5,11 +5,10 @@ declare module "animation/Event" {
          * @param {object} config
          * @return {Action}
          */
-        constructor(startTime: number, stopTime: number, { start, stop, update }: {
+        constructor(startTime?: number, stopTime?: number, { start, stop, update, curve, }?: {
             start?: () => void;
             stop?: () => void;
             update?: () => void;
-        }, { curve }: {
             curve?: (t: any) => any;
         });
         /**
@@ -108,6 +107,24 @@ declare module "animation/Timeline" {
          */
         static easeInOutQuad: (t: number) => number;
         /**
+         * Cubic ease in function
+         * @param {number} t - process, 0 to 1
+         * @returns {number}
+         */
+        static easeInCubic: (t: number) => number;
+        /**
+         * Cubic ease out function
+         * @param {number} t - process, 0 to 1
+         * @returns {number}
+         */
+        static easeOutCubic: (t: number) => number;
+        /**
+         * Cubic ease in out function
+         * @param {number} t - process, 0 to 1
+         * @returns {number}
+         */
+        static easeInOutCubic: (t: number) => number;
+        /**
          * Sine ease in function
          * @param {number} t - process, 0 to 1
          * @returns {number}
@@ -125,6 +142,24 @@ declare module "animation/Timeline" {
          * @returns {number}
          */
         static easeInOutSine: (t: number) => number;
+        /**
+         * Bounce ease in function
+         * @param {number} t - process, 0 to 1
+         * @returns {number}
+         */
+        static easeInBounce: (t: number) => number;
+        /**
+         * Bounce ease out function
+         * @param {number} t - process, 0 to 1
+         * @returns {number}
+         */
+        static easeOutBounce: (t: number) => number;
+        /**
+         * Bounce ease in out function
+         * @param {number} t - process, 0 to 1
+         * @returns {number}
+         */
+        static easeInOutBounce: (t: number) => number;
         /**
          * A short string to describe state
          * @type {string}
@@ -1758,7 +1793,7 @@ declare module "mobjects/2D/Point" {
          * @param {Vector} pos
          * @param {Object} config
          */
-        moveTo(pos: Vector, { runTime }?: any): void;
+        moveTo(pos: Vector, { runTime, curve }?: any): void;
         set v(val: Vector);
         get v(): Vector;
         set a(val: Vector);

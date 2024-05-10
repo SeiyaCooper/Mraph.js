@@ -40,9 +40,9 @@ export default class Point extends Arc {
      * @param {Vector} pos
      * @param {Object} config
      */
-    moveTo(pos, { runTime = 1 } = {}) {
+    moveTo(pos, { runTime = 1, curve } = {}) {
         let start;
-        this.layer.timeline.addFollow(runTime, {
+        const handler = {
             start: () => {
                 start = this.center;
             },
@@ -50,6 +50,10 @@ export default class Point extends Arc {
                 this.center = start.lerp(pos, p);
                 this.updateMatrix();
             },
+        };
+
+        this.layer.timeline.addFollow(runTime, handler, {
+            curve,
         });
     }
 

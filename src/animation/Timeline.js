@@ -76,10 +76,10 @@ export default class Timeline {
         {
             updateMax = true,
             updateMin = true,
-            curve = Timeline.easeInOutSine,
+            curve = Timeline.easeInOutCubic,
         } = {}
     ) {
-        const event = new Event(start, stop, handle, { curve });
+        const event = new Event(start, stop, { ...handle, curve });
         event.id = eventId;
         eventId++;
 
@@ -255,6 +255,28 @@ export default class Timeline {
         t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
 
     /**
+     * Cubic ease in function
+     * @param {number} t - process, 0 to 1
+     * @returns {number}
+     */
+    static easeInCubic = (t) => t * t * t;
+
+    /**
+     * Cubic ease out function
+     * @param {number} t - process, 0 to 1
+     * @returns {number}
+     */
+    static easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
+
+    /**
+     * Cubic ease in out function
+     * @param {number} t - process, 0 to 1
+     * @returns {number}
+     */
+    static easeInOutCubic = (t) =>
+        t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+    /**
      * Sine ease in function
      * @param {number} t - process, 0 to 1
      * @returns {number}
@@ -274,6 +296,43 @@ export default class Timeline {
      * @returns {number}
      */
     static easeInOutSine = (t) => -(Math.cos(Math.PI * t) - 1) / 2;
+
+    /**
+     * Bounce ease in function
+     * @param {number} t - process, 0 to 1
+     * @returns {number}
+     */
+    static easeInBounce = (t) => 1 - Timeline.easeOutBounce(1 - t);
+
+    /**
+     * Bounce ease out function
+     * @param {number} t - process, 0 to 1
+     * @returns {number}
+     */
+    static easeOutBounce = (t) => {
+        const n1 = 7.5625;
+        const d1 = 2.75;
+
+        if (t < 1 / d1) {
+            return n1 * t * t;
+        } else if (t < 2 / d1) {
+            return n1 * (t -= 1.5 / d1) * t + 0.75;
+        } else if (t < 2.5 / d1) {
+            return n1 * (t -= 2.25 / d1) * t + 0.9375;
+        } else {
+            return n1 * (t -= 2.625 / d1) * t + 0.984375;
+        }
+    };
+
+    /**
+     * Bounce ease in out function
+     * @param {number} t - process, 0 to 1
+     * @returns {number}
+     */
+    static easeInOutBounce = (t) =>
+        t < 0.5
+            ? (1 - Timeline.easeOutBounce(1 - 2 * t)) / 2
+            : (1 + Timeline.easeOutBounce(2 * t - 1)) / 2;
 
     set maxTime(val) {
         this._maxTime = val * 1000;
