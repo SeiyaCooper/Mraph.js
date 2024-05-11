@@ -23,7 +23,7 @@ export default class Timeline {
     events = [];
 
     /**
-     * list for events which would be called during active
+     * list for evnets which would be called whenever timeline is active
      * @type {SpecialEvent[]}
      */
     globalEvents = [];
@@ -36,7 +36,7 @@ export default class Timeline {
     infinityEvents = [];
 
     /**
-     * return value of requsetAnimationFrame()
+     * Returns value of requsetAnimationFrame()
      * @type {number | null}
      */
     clock = null;
@@ -62,11 +62,11 @@ export default class Timeline {
     fps = 0;
 
     /**
-     * add an event to this timeline
+     * Add an event to this timeline.
      * @param {Number} start
      * @param {Number} stop
-     * @param {Object} handle
-     * @param {Object} config
+     * @param {object} handle
+     * @param {object} config
      * @return {Event}
      */
     add(
@@ -92,7 +92,7 @@ export default class Timeline {
     }
 
     /**
-     * add a one-time-only event
+     * Add a one-time-only event.
      * @param {number} at
      * @param {Function} handler
      */
@@ -101,10 +101,10 @@ export default class Timeline {
     }
 
     /**
-     * add an event to event list following last event
+     * Add an event to event list following last event.
      * @param {Number} hold
-     * @param {Object} handler
-     * @param {Object} config
+     * @param {object} handler
+     * @param {object} config
      * @return {this}
      */
     addFollow(hold, handler, config) {
@@ -112,7 +112,18 @@ export default class Timeline {
     }
 
     /**
-     * add global event
+     * Add an event beginning at the earliest time and concluding at the latest time.
+     * @param {object} handler
+     * @param {object} config
+     * @returns {this}
+     */
+    addWhole(handler, config) {
+        return this.add(this.minTime, this.maxTime, handler, config);
+    }
+
+    /**
+     * Add a global event, this event will be called whenever timeline is active。
+     * If there is an infinity event attached to this timeline, it would behaved like infinity events, otherwise it would behaved like whole events.
      * @param {Function} handler
      * @returns {this}
      */
@@ -124,7 +135,7 @@ export default class Timeline {
     }
 
     /**
-     * add infinity event
+     * Add an infinity event
      * @param {Function} handler
      * @returns {this}
      */
@@ -136,7 +147,7 @@ export default class Timeline {
     }
 
     /**
-     * delete an event from this timeline
+     * Delete an event from this timeline
      * @param {object | number} target
      */
     delete(target) {
@@ -145,7 +156,7 @@ export default class Timeline {
     }
 
     /**
-     * delete an event accroding to its id
+     * Delete an event accroding to its id
      * @param {number} id
      */
     deleteById(id) {

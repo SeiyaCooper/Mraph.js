@@ -6,6 +6,7 @@ import Event from "./animation/Event.js";
 import Timeline from "./animation/Timeline.js";
 
 import OrbitControl from "./extra/OrbitControl.js";
+import Recorder from "./extra/Recorder.js";
 
 import WebGLRenderer from "./core/WebGL/WebGLRenderer.js";
 import WebGLProgram from "./core/WebGL/WebGLProgram.js";
@@ -99,5 +100,8 @@ export {
     // Animation
     Event,
     Timeline,
+
+    // Extra
     OrbitControl,
+    Recorder,
 };

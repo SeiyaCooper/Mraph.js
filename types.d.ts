@@ -171,7 +171,7 @@ declare module "animation/Timeline" {
          */
         events: Event[];
         /**
-         * list for events which would be called during active
+         * list for evnets which would be called whenever timeline is active
          * @type {SpecialEvent[]}
          */
         globalEvents: SpecialEvent[];
@@ -182,7 +182,7 @@ declare module "animation/Timeline" {
          */
         infinityEvents: SpecialEvent[];
         /**
-         * return value of requsetAnimationFrame()
+         * Returns value of requsetAnimationFrame()
          * @type {number | null}
          */
         clock: number | null;
@@ -203,47 +203,55 @@ declare module "animation/Timeline" {
          */
         fps: number;
         /**
-         * add an event to this timeline
+         * Add an event to this timeline.
          * @param {Number} start
          * @param {Number} stop
-         * @param {Object} handle
-         * @param {Object} config
+         * @param {object} handle
+         * @param {object} config
          * @return {Event}
          */
-        add(start: number, stop: number, handle: any, { updateMax, updateMin, curve, }?: any): Event;
+        add(start: number, stop: number, handle: object, { updateMax, updateMin, curve, }?: object): Event;
         /**
-         * add a one-time-only event
+         * Add a one-time-only event.
          * @param {number} at
          * @param {Function} handler
          */
         once(at: number, handler: Function): Event;
         /**
-         * add an event to event list following last event
+         * Add an event to event list following last event.
          * @param {Number} hold
-         * @param {Object} handler
-         * @param {Object} config
+         * @param {object} handler
+         * @param {object} config
          * @return {this}
          */
-        addFollow(hold: number, handler: any, config: any): this;
+        addFollow(hold: number, handler: object, config: object): this;
         /**
-         * add global event
+         * Add an event beginning at the earliest time and concluding at the latest time.
+         * @param {object} handler
+         * @param {object} config
+         * @returns {this}
+         */
+        addWhole(handler: object, config: object): this;
+        /**
+         * Add a global event, this event will be called whenever timeline is active。
+         * If there is an infinity event attached to this timeline, it would behaved like infinity events, otherwise it would behaved like whole events.
          * @param {Function} handler
          * @returns {this}
          */
         addGlobal(handler: Function): this;
         /**
-         * add infinity event
+         * Add an infinity event
          * @param {Function} handler
          * @returns {this}
          */
         addInfinity(handler: Function): this;
         /**
-         * delete an event from this timeline
+         * Delete an event from this timeline
          * @param {object | number} target
          */
         delete(target: object | number): void;
         /**
-         * delete an event accroding to its id
+         * Delete an event accroding to its id
          * @param {number} id
          */
         deleteById(id: number): void;
@@ -1328,6 +1336,54 @@ declare module "core/Texture" {
         __magFilter: any;
     }
 }
+declare module "extra/Recorder" {
+    export default class Recorder {
+        /**
+         * A simple recorder helps you to recorde videos
+         * @param {HTMLCanvasElement} target
+         * @param {object} options An object used to define following parameters, optional
+         * * mimeType {string} sets mime type of video recorded, optional.
+         * * fps {number} sets fps of video recorded, optional.
+         * * audioBitsPerSecond {number} The chosen bitrate for the audio component of the media, optional.
+         * * videoBitsPerSecond {number} The chosen bitrate for the video component of the media, optional.
+         * * bitsPerSecond {number} The chosen bitrate for the audio and video components of the media.
+         * *                        This can be specified instead of the above two properties.
+         * *                        If this is specified along with one or the other of the above properties, this will be used for the one that isn't specified.
+         */
+        constructor(target: HTMLCanvasElement, { mimeType, fps, audioBitsPerSecond, videoBitsPerSecond, bitsPerSecond, }?: object);
+        /**
+         * Data of video recorded, undefined by default.
+         */
+        data: any;
+        /**
+         * Callback function, will be called if data is available.
+         */
+        onAvailable: () => void;
+        target: HTMLCanvasElement;
+        recorder: MediaRecorder;
+        /**
+         * Start recording
+         * @returns {this}
+         */
+        start(): this;
+        /**
+         * Pause recording
+         * @returns {this}
+         */
+        pause(): this;
+        /**
+         * Stop recording
+         * @returns {this}
+         */
+        stop(): this;
+        /**
+         * Download a video if data is available
+         * @param {string} name
+         * @returns {this}
+         */
+        download(name?: string): this;
+    }
+}
 declare module "material/CustomMaterial" {
     export default class CustomMaterial extends Material {
         constructor({ vertexShader, fragmentShader }?: {
@@ -2026,5 +2082,6 @@ declare module "mraph" {
     import Event from "animation/Event";
     import Timeline from "animation/Timeline";
     import OrbitControl from "extra/OrbitControl";
-    export { Color, Matrix, Vector, Quat, Geometry, Plane, Box, Segment, Sphere, Cylinder, DirectionalLight, PointLight, Graph2D, Point, Tail, Line, Arc, Arrow, Axis, Axes, VectorField2D, FunctionGraph2D, FunctionGraph3D, Layer, Camera, Texture, WebGLRenderer, WebGLProgram, CustomMaterial, BasicMaterial, DepthMaterial, LambertMaterial, Event, Timeline, OrbitControl };
+    import Recorder from "extra/Recorder";
+    export { Color, Matrix, Vector, Quat, Geometry, Plane, Box, Segment, Sphere, Cylinder, DirectionalLight, PointLight, Graph2D, Point, Tail, Line, Arc, Arrow, Axis, Axes, VectorField2D, FunctionGraph2D, FunctionGraph3D, Layer, Camera, Texture, WebGLRenderer, WebGLProgram, CustomMaterial, BasicMaterial, DepthMaterial, LambertMaterial, Event, Timeline, OrbitControl, Recorder };
 }

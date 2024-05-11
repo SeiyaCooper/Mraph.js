@@ -81,7 +81,6 @@ export default class Event {
         if (this.isStopped) return;
         if (this.isStarted && !this.isStopped) {
             if (now > stop) {
-                this.update(1, stop - start);
                 this.stop(stop);
                 this.isStopped = true;
             } else {
@@ -92,9 +91,7 @@ export default class Event {
             }
         } else if (now > start) {
             this.start(start);
-            this.update(0, 0);
             this.isStarted = true;
-            this.execute(start, stop, now);
         }
     }
 }
