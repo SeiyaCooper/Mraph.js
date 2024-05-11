@@ -88,6 +88,11 @@ import Example from "../../layouts/Example.astro";
         });
         layer.timeline.once(10, () => {
             animator.pause();
+
+            for (let charge of charges) {
+                layer.delete(charge.tail);
+            }
+
             layer.delete(...charges);
         });
 

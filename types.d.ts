@@ -1925,14 +1925,14 @@ declare module "mobjects/3D/FunctionGraph3D" {
 }
 declare module "mobjects/2D/Axes" {
     export default class Axes extends Graph2D {
-        constructor({ xRange, yRange, zRange, center, }?: {
+        constructor({ xRange, yRange, zRange, origin, }?: {
             xRange?: number[];
             yRange?: number[];
             zRange?: number[];
-            center?: Point;
+            origin?: Point;
         });
         _tickLength: number;
-        center: Point;
+        origin: Point;
         xAxis: Axis;
         yAxis: Axis;
         zAxis: Axis;
