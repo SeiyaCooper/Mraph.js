@@ -1818,7 +1818,7 @@ declare module "mobjects/2D/Graph2D" {
         fill(): void;
         stroke(): void;
         modifyLineJoin2Miter(target: any): void;
-        redraw(): void;
+        draw(): void;
         clearGraph(): void;
         clearPath(): void;
         clearBuffer(): void;
@@ -1827,6 +1827,7 @@ declare module "mobjects/2D/Graph2D" {
         applyPointwiseTransform(trans: any, { runTime }?: {
             runTime?: number;
         }): void;
+        instantPointwiseTransform(trans: any): void;
     }
     import Graph from "mobjects/Graph";
     import Vector from "math/Vector";
@@ -1840,7 +1841,7 @@ declare module "mobjects/2D/Arc" {
         radius: number;
         center: number[];
         update(): this;
-        redraw(): this;
+        draw(): this;
     }
     import Graph2D from "mobjects/2D/Graph2D";
 }
@@ -1854,7 +1855,7 @@ declare module "mobjects/2D/Point" {
         _a: Vector;
         center: any;
         update(): this;
-        redraw(): this;
+        draw(): this;
         set v(val: Vector);
         get v(): Vector;
         set a(val: Vector);
@@ -1883,6 +1884,7 @@ declare module "mobjects/2D/Tail" {
         maxSteps: number;
         modifyLine: (line: any, i: any, all: any) => void;
         update(): this;
+        draw(): this;
     }
     import Graph2D from "mobjects/2D/Graph2D";
 }
@@ -1903,7 +1905,7 @@ declare module "mobjects/2D/Line" {
         end: Point;
         update(): this;
         drawTips(): this;
-        redraw(): this;
+        draw(): this;
         /**
          * return a position where corresponds a precent
          * @param {number} precent
@@ -1948,7 +1950,7 @@ declare module "mobjects/2D/Axis" {
         tickLength: number;
         unit: number;
         update(): this;
-        redraw(): this;
+        draw(): this;
     }
     import Line from "mobjects/2D/Line";
     import Point from "mobjects/2D/Point";
@@ -1965,7 +1967,7 @@ declare module "mobjects/2D/FunctionGraph2D" {
         func: (x: any) => any;
         z: number;
         update(): this;
-        redraw(): this;
+        draw(): this;
     }
     import Graph2D from "mobjects/2D/Graph2D";
 }

@@ -26,13 +26,13 @@ export default class Axis extends Line {
             this.move(at.minus(tick));
             this.line(at.add(tick));
         }
-        this.stroke();
+        this.draw();
 
         return this;
     }
 
-    redraw() {
-        super.redraw();
+    draw() {
+        super.draw();
         this.stroke();
         return this;
     }

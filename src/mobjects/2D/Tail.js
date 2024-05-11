@@ -37,8 +37,13 @@ export default class Tail extends Graph2D {
             this.line(step);
         }
         this.line(this.target.center);
-        this.stroke();
 
+        this.draw();
+        return this;
+    }
+
+    draw() {
+        this.stroke();
         return this;
     }
 

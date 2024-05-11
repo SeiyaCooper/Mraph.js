@@ -26,10 +26,8 @@ export default class Line extends Graph2D {
         this.clearGraph();
         this.move(this.start.center);
         this.line(this.end.center);
-        this.stroke();
 
-        // draw tips
-        this.drawTips();
+        this.draw();
         return this;
     }
 
@@ -69,7 +67,7 @@ export default class Line extends Graph2D {
         return this;
     }
 
-    redraw() {
+    draw() {
         this.stroke();
         this.drawTips();
         return this;

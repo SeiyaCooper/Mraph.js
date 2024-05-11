@@ -27,11 +27,11 @@ export default class Arc extends Graph2D {
             this.endAng,
             this.startAng > this.endAng
         );
-        this.stroke();
+        this.draw();
         return this;
     }
 
-    redraw() {
+    draw() {
         this.stroke();
         return this;
     }

@@ -128,7 +128,7 @@ export default class Graph2D extends Graph {
         }
     }
 
-    redraw() {}
+    draw() {}
 
     clearGraph() {
         this.clearPath();
@@ -163,7 +163,7 @@ export default class Graph2D extends Graph {
                 from = Utils.deepCopy(this.polygons);
                 for (let polygon of this.polygons) {
                     for (let i = 0; i < polygon.length; i++) {
-                        polygon[i] = trans(polygon[i]);
+                        polygon[i] = trans(Vector.fromArray(polygon[i]));
                     }
                 }
                 to = Utils.deepCopy(this.polygons);
@@ -180,8 +180,18 @@ export default class Graph2D extends Graph {
                     polygon[i] = MathFunc.lerpArray(from[j][i], to[j][i], p);
                 }
             }
-            this.redraw();
+            this.draw();
         }
+    }
+
+    instantPointwiseTransform(trans) {
+        for (let polygon of this.polygons) {
+            for (let i = 0; i < polygon.length; i++) {
+                polygon[i] = trans(Vector.fromArray(polygon[i]));
+            }
+        }
+        this.clearBuffer();
+        this.draw();
     }
 }
 

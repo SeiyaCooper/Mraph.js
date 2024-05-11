@@ -26,11 +26,11 @@ export default class Point extends Arc {
     update() {
         this.clearGraph();
         this.arc(this.radius, 0, Math.PI * 2, false);
-        this.fill();
+        this.draw();
         return this;
     }
 
-    redraw() {
+    draw() {
         this.fill();
         return this;
     }

@@ -19,11 +19,11 @@ export default class FunctionGraph2D extends Graph2D {
         for (let i = from + step; i <= to; i += step) {
             this.line([i, func(i), this.z]);
         }
-        this.stroke();
+        this.draw();
         return this;
     }
 
-    redraw() {
+    draw() {
         this.stroke();
         return this;
     }
