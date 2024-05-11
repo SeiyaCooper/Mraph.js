@@ -20,8 +20,8 @@ export default class Recorder {
      * * audioBitsPerSecond {number} The chosen bitrate for the audio component of the media, optional.
      * * videoBitsPerSecond {number} The chosen bitrate for the video component of the media, optional.
      * * bitsPerSecond {number} The chosen bitrate for the audio and video components of the media.
-     * *                        This can be specified instead of the above two properties.
-     * *                        If this is specified along with one or the other of the above properties, this will be used for the one that isn't specified.
+     *                          This can be specified instead of the above two properties.
+     *                          If this is specified along with one or the other of the above properties, this will be used for the one that isn't specified.
      */
     constructor(
         target,

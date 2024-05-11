@@ -1,8 +1,8 @@
-import Geometry from "../../geometry/Geometry";
+import Graph from "../Graph.js";
 import * as GLENUM from "../../constants/glenum.js";
 import BasicMaterial from "../../material/BasicMaterial.js";
 
-export default class FunctionGraph3D extends Geometry {
+export default class FunctionGraph3D extends Graph {
     material = new BasicMaterial();
 
     constructor({

@@ -1347,8 +1347,8 @@ declare module "extra/Recorder" {
          * * audioBitsPerSecond {number} The chosen bitrate for the audio component of the media, optional.
          * * videoBitsPerSecond {number} The chosen bitrate for the video component of the media, optional.
          * * bitsPerSecond {number} The chosen bitrate for the audio and video components of the media.
-         * *                        This can be specified instead of the above two properties.
-         * *                        If this is specified along with one or the other of the above properties, this will be used for the one that isn't specified.
+         *                          This can be specified instead of the above two properties.
+         *                          If this is specified along with one or the other of the above properties, this will be used for the one that isn't specified.
          */
         constructor(target: HTMLCanvasElement, { mimeType, fps, audioBitsPerSecond, videoBitsPerSecond, bitsPerSecond, }?: object);
         /**
@@ -1792,8 +1792,19 @@ declare module "geometry/Cylinder" {
     }
     import Geometry from "geometry/Geometry";
 }
+declare module "mobjects/Graph" {
+    export default class Graph extends Geometry {
+        /**
+         * shift this mobject to a new place
+         * @param {Vector} pos
+         * @param {Object} config
+         */
+        moveTo(pos: Vector, { runTime, curve }?: any): void;
+    }
+    import Geometry from "geometry/Geometry";
+}
 declare module "mobjects/2D/Graph2D" {
-    export default class Graph2D extends Geometry {
+    export default class Graph2D extends Graph {
         points: any[];
         polygons: any[];
         normal: Vector;
@@ -1817,7 +1828,7 @@ declare module "mobjects/2D/Graph2D" {
             runTime?: number;
         }): void;
     }
-    import Geometry from "geometry/Geometry";
+    import Graph from "mobjects/Graph";
     import Vector from "math/Vector";
     import Color from "math/Color";
 }
@@ -1844,12 +1855,6 @@ declare module "mobjects/2D/Point" {
         center: any;
         update(): this;
         redraw(): this;
-        /**
-         * shift this point to a new place
-         * @param {Vector} pos
-         * @param {Object} config
-         */
-        moveTo(pos: Vector, { runTime, curve }?: any): void;
         set v(val: Vector);
         get v(): Vector;
         set a(val: Vector);
@@ -1965,7 +1970,7 @@ declare module "mobjects/2D/FunctionGraph2D" {
     import Graph2D from "mobjects/2D/Graph2D";
 }
 declare module "mobjects/3D/FunctionGraph3D" {
-    export default class FunctionGraph3D extends Geometry {
+    export default class FunctionGraph3D extends Graph {
         constructor({ xRange, yRange, func, }?: {
             xRange?: number[];
             yRange?: number[];
@@ -1976,7 +1981,7 @@ declare module "mobjects/3D/FunctionGraph3D" {
         yRange: number[];
         func: (x: any, y: any) => any;
     }
-    import Geometry from "geometry/Geometry";
+    import Graph from "mobjects/Graph";
     import BasicMaterial from "material/BasicMaterial";
 }
 declare module "mobjects/2D/Axes" {
@@ -2014,7 +2019,7 @@ declare module "mobjects/2D/Axes" {
     import FunctinoGraph3D from "mobjects/3D/FunctionGraph3D";
 }
 declare module "mobjects/2D/VectorField2D" {
-    export default class VectorField2D extends Geometry {
+    export default class VectorField2D extends Graph {
         constructor({ func, xRange, yRange, }?: {
             func?: (x: any, y: any) => any[];
             xRange?: number[];
@@ -2027,7 +2032,7 @@ declare module "mobjects/2D/VectorField2D" {
         yRange: number[];
         func: (x: any, y: any) => any[];
     }
-    import Geometry from "geometry/Geometry";
+    import Graph from "mobjects/Graph";
     import Color from "math/Color";
     import Vector from "math/Vector";
 }
