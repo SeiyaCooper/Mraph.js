@@ -30,6 +30,11 @@ import Example from "../../layouts/Example.astro";
                     this.startAng > this.endAng,
                     50
                 );
+                this.draw();
+                return this;
+            }
+
+            draw(): this {
                 this.stroke();
                 this.fill();
                 return this;

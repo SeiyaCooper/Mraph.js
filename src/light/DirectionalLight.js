@@ -5,7 +5,7 @@ export default class DirectionalLight {
     constructor({
         direction = VECTORS.DOWN,
         color = COLORS.WHITE,
-        intensity = 0.5,
+        intensity = 1,
     } = {}) {
         this.direction = direction;
         this.color = color;

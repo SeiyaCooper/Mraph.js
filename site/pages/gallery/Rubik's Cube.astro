@@ -23,10 +23,15 @@ import Example from "../../layouts/Example.astro";
         layer.add(mesh);
 
         const pointLight = new mp.PointLight({
-            center: new mp.Vector(1, 3, 7),
-            intensity: 30,
+            center: new mp.Vector(2, 2, 2),
+            intensity: 15,
         });
         layer.add(pointLight);
+
+        const dirLight = new mp.DirectionalLight({
+            direction: new mp.Vector(1, 1, 1),
+        });
+        layer.add(dirLight);
 
         layer.camera.center[2] = 3;
         layer.enableOrbitControl();
