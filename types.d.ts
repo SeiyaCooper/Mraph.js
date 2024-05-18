@@ -1328,10 +1328,12 @@ declare module "core/Layer" {
         add(...els: (mobject | light)[]): this;
         /**
          * Create a mobject or geometry and automatically add it to the layer
-         * @param {mobject | geometry} Mobject
+         * @template Mobject
+         * @param {Function} Mobject constructor of the mobject you want to create
          * @param  {...any} params
+         * @returns {Mobject}
          */
-        create(Mobject: any, ...params: any[]): any;
+        create<Mobject>(Mobject: Function, ...params: any[]): Mobject;
         /**
          * delete mobjects or lgihts
          * @param  {...mobject | light} els
@@ -2060,6 +2062,32 @@ declare module "mobjects/2D/VectorField2D" {
     import Color from "math/Color";
     import Vector from "math/Vector";
 }
+declare module "mobjects/3D/Point3D" {
+    export default class Point3D extends Graph {
+        /**
+         * @param  {Vector | number[] | ...number} position
+         */
+        constructor(...args: any[]);
+        radius: number;
+        _v: Vector;
+        _a: Vector;
+        center: any;
+        set color(color: import("mraph").Color);
+        get color(): import("mraph").Color;
+        set v(val: Vector);
+        get v(): Vector;
+        set a(val: Vector);
+        get a(): Vector;
+        set x(val: any);
+        get x(): any;
+        set y(val: any);
+        get y(): any;
+        set z(val: any);
+        get z(): any;
+    }
+    import Graph from "mobjects/Graph";
+    import Vector from "math/Vector";
+}
 declare module "extra/OBJLoader" {
     export function parseToGeometry(src: any): Promise<Geometry>;
     export function parseToObject(src: any): Promise<{
@@ -2099,6 +2127,7 @@ declare module "mraph" {
     import VectorField2D from "mobjects/2D/VectorField2D";
     import FunctionGraph2D from "mobjects/2D/FunctionGraph2D";
     import FunctionGraph3D from "mobjects/3D/FunctionGraph3D";
+    import Point3D from "mobjects/3D/Point3D";
     import Layer from "core/Layer";
     import Camera from "core/Camera";
     import Texture from "core/Texture";
@@ -2112,5 +2141,5 @@ declare module "mraph" {
     import Timeline from "animation/Timeline";
     import OrbitControl from "extra/OrbitControl";
     import Recorder from "extra/Recorder";
-    export { Color, Matrix, Vector, Quat, Geometry, Plane, Box, Segment, Sphere, Cylinder, DirectionalLight, PointLight, Graph2D, Point, Tail, Line, Arc, Arrow, Axis, Axes, VectorField2D, FunctionGraph2D, FunctionGraph3D, Layer, Camera, Texture, WebGLRenderer, WebGLProgram, CustomMaterial, BasicMaterial, DepthMaterial, LambertMaterial, Event, Timeline, OrbitControl, Recorder };
+    export { Color, Matrix, Vector, Quat, Geometry, Plane, Box, Segment, Sphere, Cylinder, DirectionalLight, PointLight, Graph2D, Point, Tail, Line, Arc, Arrow, Axis, Axes, VectorField2D, FunctionGraph2D, FunctionGraph3D, Point3D, Layer, Camera, Texture, WebGLRenderer, WebGLProgram, CustomMaterial, BasicMaterial, DepthMaterial, LambertMaterial, Event, Timeline, OrbitControl, Recorder };
 }

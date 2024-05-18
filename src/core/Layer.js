@@ -100,8 +100,10 @@ export default class Layer extends Node {
 
     /**
      * Create a mobject or geometry and automatically add it to the layer
-     * @param {mobject | geometry} Mobject
+     * @template Mobject
+     * @param {Function} Mobject constructor of the mobject you want to create
      * @param  {...any} params
+     * @returns {Mobject}
      */
     create(Mobject, ...params) {
         const mobject = new Mobject(...params);

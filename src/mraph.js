@@ -42,7 +42,9 @@ import Axis from "./mobjects/2D/Axis.js";
 import Axes from "./mobjects/2D/Axes.js";
 import VectorField2D from "./mobjects/2D/VectorField2D.js";
 import FunctionGraph2D from "./mobjects/2D/FunctionGraph2D.js";
+
 import FunctionGraph3D from "./mobjects/3D/FunctionGraph3D.js";
+import Point3D from "./mobjects/3D/Point3D.js";
 
 export * as MathFunc from "./math/math_func.js";
 
@@ -83,6 +85,7 @@ export {
     VectorField2D,
     FunctionGraph2D,
     FunctionGraph3D,
+    Point3D,
 
     // Core
     Layer,
