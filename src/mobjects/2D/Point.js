@@ -38,20 +38,16 @@ export default class Point extends Arc {
     set v(val) {
         this._v = val;
         let lastTime = 0;
-        this.layer.timeline.add(
-            this.layer.timeline.current,
-            Infinity,
-            {
-                update: (_, elapsedTime) => {
-                    this.center = this.center.add(
-                        this._v.mult(elapsedTime - lastTime)
-                    );
-                    this.updateMatrix();
-                    lastTime = elapsedTime;
-                },
+        this.layer.timeline.add(this.layer.timeline.current, Infinity, {
+            update: (_, elapsedTime) => {
+                this.center = this.center.add(
+                    this._v.mult(elapsedTime - lastTime)
+                );
+                this.updateMatrix();
+                lastTime = elapsedTime;
             },
-            { updateMax: false }
-        );
+            updateMax: false,
+        });
 
         // Do not add event to timeline again
         Object.defineProperty(this, "v", {
@@ -72,17 +68,13 @@ export default class Point extends Arc {
         this._a = val;
 
         let lastTime = 0;
-        this.layer.timeline.add(
-            this.layer.timeline.current,
-            Infinity,
-            {
-                update: (_, elapsedTime) => {
-                    this.v = this._v.add(this._a.mult(elapsedTime - lastTime));
-                    lastTime = elapsedTime;
-                },
+        this.layer.timeline.add(this.layer.timeline.current, Infinity, {
+            update: (_, elapsedTime) => {
+                this.v = this._v.add(this._a.mult(elapsedTime - lastTime));
+                lastTime = elapsedTime;
             },
-            { updateMax: false }
-        );
+            updateMax: false,
+        });
 
         // Do not add event to timeline again
         Object.defineProperty(this, "a", {

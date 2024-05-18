@@ -1,7 +1,7 @@
-import Object3D from "../core/Object3D.js";
+import Node from "../core/Node.js";
 import * as GLENUM from "../constants/glenum.js";
 
-export default class Geometry extends Object3D {
+export default class Geometry extends Node {
     /**
      * attribute variables
      * @type {Object}

@@ -210,7 +210,7 @@ declare module "animation/Timeline" {
          * @param {object} config
          * @return {Event}
          */
-        add(start: number, stop: number, handle: object, { updateMax, updateMin, curve, }?: object): Event;
+        add(startTime: any, stopTime: any, { update, start, stop, updateMax, updateMin, curve, }?: object): Event;
         /**
          * Add a one-time-only event.
          * @param {number} at
@@ -220,18 +220,16 @@ declare module "animation/Timeline" {
         /**
          * Add an event to event list following last event.
          * @param {Number} hold
-         * @param {object} handler
          * @param {object} config
          * @return {this}
          */
-        addFollow(hold: number, handler: object, config: object): this;
+        addFollow(hold: number, config: object): this;
         /**
          * Add an event beginning at the earliest time and concluding at the latest time.
-         * @param {object} handler
          * @param {object} config
          * @returns {this}
          */
-        addWhole(handler: object, config: object): this;
+        addWhole(handler: any, config: object): this;
         /**
          * Add a global event, this event will be called whenever timeline is active。
          * If there is an infinity event attached to this timeline, it would behaved like infinity events, otherwise it would behaved like whole events.
@@ -1219,15 +1217,84 @@ declare module "light/DirectionalLight" {
         intensity: number;
     }
 }
+declare module "core/Node" {
+    export default class Node {
+        /**
+         * @type {Node | undefined}
+         */
+        parent: Node | undefined;
+        /**
+         * A set of children
+         * @type {Node[]}
+         */
+        children: Node[];
+        /**
+         * local matrix
+         * @type {Matrix}
+         */
+        localMatrix: Matrix;
+        /**
+         * global matrix
+         * @type {Matrix}
+         */
+        matrix: Matrix;
+        /**
+         * @type {Vector}
+         */
+        center: Vector;
+        /**
+         * @type {Vector}
+         */
+        rotation: Vector;
+        /**
+         * @type {Vector}
+         */
+        scale: Vector;
+        /**
+         * @param  {...Node} objs
+         */
+        add(...objs: Node[]): void;
+        /**
+         * @param  {...Node} objs
+         */
+        delete(...objs: Node[]): void;
+        /**
+         * delete all children
+         */
+        clear(): void;
+        /**
+         * Set attributes for all children
+         * @param {string} key
+         * @param {any} value
+         */
+        set(key: string, value: any): void;
+        /**
+         * update local matrix
+         * @returns {this}
+         */
+        updateLocalMatrix(): this;
+        /**
+         * update global matrix
+         * @returns {this}
+         */
+        updateWorldMatrix(): this;
+        /**
+         * update local matrix, global matrix and children's matrices
+         * @returns {this}
+         */
+        updateMatrix(): this;
+    }
+    import Matrix from "math/Matrix";
+    import Vector from "math/Vector";
+}
 declare module "core/Layer" {
-    export default class Layer {
+    export default class Layer extends Node {
         constructor({ fullScreen, appendTo, rendererClass, contextConfig, }?: {
             fullScreen?: boolean;
             appendTo?: any;
             rendererClass?: typeof WebGLRenderer;
             contextConfig?: {};
         });
-        elements: any[];
         camera: Camera;
         timeline: Timeline;
         defaultMaterial: BasicMaterial;
@@ -1302,6 +1369,7 @@ declare module "core/Layer" {
          */
         enableOrbitControl(): OrbitControl;
     }
+    import Node from "core/Node";
     import Camera from "core/Camera";
     import Timeline from "animation/Timeline";
     import BasicMaterial from "material/BasicMaterial";
@@ -1562,78 +1630,8 @@ declare module "math/Quat" {
     }
     import Vector from "math/Vector";
 }
-declare module "core/Object3D" {
-    export default class Object3D {
-        /**
-         * @type {Object3D | undefined}
-         */
-        parent: Object3D | undefined;
-        /**
-         * A set of children
-         * @type {Object3D[]}
-         */
-        children: Object3D[];
-        /**
-         * local matrix
-         * @type {Matrix}
-         */
-        localMatrix: Matrix;
-        /**
-         * global matrix
-         * @type {Matrix}
-         */
-        matrix: Matrix;
-        /**
-         * @type {Vector}
-         */
-        center: Vector;
-        /**
-         * @type {Vector}
-         */
-        rotation: Vector;
-        /**
-         * @type {Vector}
-         */
-        scale: Vector;
-        /**
-         * @param  {...Object3D} objs
-         */
-        add(...objs: Object3D[]): void;
-        /**
-         * @param  {...Object3D} objs
-         */
-        delete(...objs: Object3D[]): void;
-        /**
-         * delete all children
-         */
-        clear(): void;
-        /**
-         * Set attributes for all children
-         * @param {string} key
-         * @param {any} value
-         */
-        set(key: string, value: any): void;
-        /**
-         * update local matrix
-         * @returns {this}
-         */
-        updateLocalMatrix(): this;
-        /**
-         * update global matrix
-         * @returns {this}
-         */
-        updateWorldMatrix(): this;
-        /**
-         * update local matrix, global matrix and children's matrices
-         * @returns {this}
-         */
-        updateMatrix(): this;
-    }
-    import Matrix from "math/Matrix";
-    import Vector from "math/Vector";
-}
 declare module "geometry/Geometry" {
-    export default class Geometry extends Object3D {
+    export default class Geometry extends Node {
         /**
          * attribute variables
          * @type {Object}
@@ -1687,7 +1685,7 @@ declare module "geometry/Geometry" {
          */
         setIndex(data: number | number[]): void;
     }
-    import Object3D from "core/Object3D";
+    import Node from "core/Node";
 }
 declare module "geometry/Plane" {
     export default class Plane extends Geometry {
@@ -1794,6 +1792,7 @@ declare module "geometry/Cylinder" {
 }
 declare module "mobjects/Graph" {
     export default class Graph extends Geometry {
+        material: BasicMaterial;
         /**
          * shift this mobject to a new place
          * @param {Vector} pos
@@ -1802,6 +1801,7 @@ declare module "mobjects/Graph" {
         moveTo(pos: Vector, { runTime, curve }?: any): void;
     }
     import Geometry from "geometry/Geometry";
+    import BasicMaterial from "material/BasicMaterial";
 }
 declare module "mobjects/2D/Graph2D" {
     export default class Graph2D extends Graph {
@@ -1978,13 +1978,11 @@ declare module "mobjects/3D/FunctionGraph3D" {
             yRange?: number[];
             func?: (x: any, y: any) => any;
         });
-        material: BasicMaterial;
         xRange: number[];
         yRange: number[];
         func: (x: any, y: any) => any;
     }
     import Graph from "mobjects/Graph";
-    import BasicMaterial from "material/BasicMaterial";
 }
 declare module "mobjects/2D/Axes" {
     export default class Axes extends Graph2D {

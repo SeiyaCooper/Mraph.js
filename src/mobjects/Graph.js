@@ -1,6 +1,17 @@
 import Geometry from "../geometry/Geometry.js";
+import BasicMaterial from "../material/BasicMaterial.js";
 
 export default class Graph extends Geometry {
+    material = new BasicMaterial();
+
+    /**
+     * @returns {Graph}
+     */
+    constructor() {
+        super();
+        this.material.colorMode = "vertex";
+    }
+
     /**
      * shift this mobject to a new place
      * @param {Vector} pos
@@ -8,7 +19,7 @@ export default class Graph extends Geometry {
      */
     moveTo(pos, { runTime = 1, curve } = {}) {
         let start;
-        const handler = {
+        const config = {
             start: () => {
                 start = this.center;
             },
@@ -16,10 +27,9 @@ export default class Graph extends Geometry {
                 this.center = start.lerp(pos, p);
                 this.updateMatrix();
             },
+            curve,
         };
 
-        this.layer.timeline.addFollow(runTime, handler, {
-            curve,
-        });
+        this.layer.timeline.addFollow(runTime, config);
     }
 }

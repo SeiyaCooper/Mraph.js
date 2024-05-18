@@ -2,15 +2,15 @@ import Matrix from "../math/Matrix.js";
 import * as VECTORS from "../constants/vectors.js";
 import Vector from "../math/Vector.js";
 
-export default class Object3D {
+export default class Node {
     /**
-     * @type {Object3D | undefined}
+     * @type {Node | undefined}
      */
     parent = undefined;
 
     /**
      * A set of children
-     * @type {Object3D[]}
+     * @type {Node[]}
      */
     children = [];
 
@@ -42,7 +42,7 @@ export default class Object3D {
     scale = Vector.fromRow(3, 1);
 
     /**
-     * @param  {...Object3D} objs
+     * @param  {...Node} objs
      */
     add(...objs) {
         this.children.push(...objs);
@@ -52,7 +52,7 @@ export default class Object3D {
     }
 
     /**
-     * @param  {...Object3D} objs
+     * @param  {...Node} objs
      */
     delete(...objs) {
         objs.forEach((obj) => {

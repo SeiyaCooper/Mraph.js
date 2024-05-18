@@ -6,9 +6,9 @@ import * as COLORS from "../constants/colors.js";
 import BasicMaterial from "../material/BasicMaterial.js";
 import PointLight from "../light/PointLight.js";
 import DirectionalLight from "../light/DirectionalLight.js";
+import Node from "./Node.js";
 
-export default class Layer {
-    elements = [];
+export default class Layer extends Node {
     camera = new Camera();
     timeline = new Timeline();
     defaultMaterial = new BasicMaterial();
@@ -23,6 +23,8 @@ export default class Layer {
         rendererClass = WebGLRenderer,
         contextConfig = {},
     } = {}) {
+        super();
+
         this.canvas = document.createElement("canvas");
 
         if (fullScreen) {
@@ -86,7 +88,8 @@ export default class Layer {
 
                 el.set("layer", this);
                 el.set("gl", this.renderer.gl);
-                this.elements.push(el);
+                el.set("parent", this);
+                this.children.push(el);
             } else {
                 this.addSurrounding(el);
             }
@@ -111,12 +114,23 @@ export default class Layer {
      * @param  {...mobject | light} els
      */
     delete(...els) {
-        const elements = this.elements;
+        const children = this.children;
         const surroundings = this.surroundings;
         for (let el of els) {
             if (typeof el.attributes === "object")
-                elements.splice(elements.indexOf(el), 1);
+                children.splice(children.indexOf(el), 1);
             else surroundings.splice(surroundings.indexOf(el), 1);
+        }
+    }
+
+    /**
+     * Set attributes for all children
+     * @param {string} key
+     * @param {any} value
+     */
+    set(key, value) {
+        for (let child of this.children) {
+            child.set(key, value);
         }
     }
 
@@ -135,7 +149,7 @@ export default class Layer {
      * @returns {this}
      */
     render() {
-        for (let el of this.elements) {
+        for (let el of this.children) {
             if (el.needsUpdate) {
                 el.update?.();
                 el.updateMatrix?.();

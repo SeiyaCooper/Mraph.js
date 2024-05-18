@@ -70,23 +70,31 @@ export default class Timeline {
      * @return {Event}
      */
     add(
-        start,
-        stop,
-        handle,
+        startTime,
+        stopTime,
         {
+            update,
+            start,
+            stop,
             updateMax = true,
             updateMin = true,
             curve = Timeline.easeInOutCubic,
         } = {}
     ) {
-        const event = new Event(start, stop, { ...handle, curve });
+        const event = new Event(startTime, stopTime, {
+            update,
+            start,
+            stop,
+            curve,
+        });
         event.id = eventId;
         eventId++;
 
         this.events.push(event);
 
-        if (updateMax) this._maxTime = Math.max(stop * 1000, this._maxTime);
-        if (updateMin) this._minTime = Math.min(start * 1000, this._minTime);
+        if (updateMax) this._maxTime = Math.max(stopTime * 1000, this._maxTime);
+        if (updateMin)
+            this._minTime = Math.min(startTime * 1000, this._minTime);
 
         return event;
     }
@@ -103,22 +111,20 @@ export default class Timeline {
     /**
      * Add an event to event list following last event.
      * @param {Number} hold
-     * @param {object} handler
      * @param {object} config
      * @return {this}
      */
-    addFollow(hold, handler, config) {
-        return this.add(this.maxTime, this.maxTime + hold, handler, config);
+    addFollow(hold, config) {
+        return this.add(this.maxTime, this.maxTime + hold, config);
     }
 
     /**
      * Add an event beginning at the earliest time and concluding at the latest time.
-     * @param {object} handler
      * @param {object} config
      * @returns {this}
      */
     addWhole(handler, config) {
-        return this.add(this.minTime, this.maxTime, handler, config);
+        return this.add(this.minTime, this.maxTime, config);
     }
 
     /**
