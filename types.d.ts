@@ -1793,12 +1793,38 @@ declare module "geometry/Cylinder" {
 declare module "mobjects/Graph" {
     export default class Graph extends Geometry {
         material: BasicMaterial;
-        /**
-         * shift this mobject to a new place
-         * @param {Vector} pos
-         * @param {Object} config
-         */
-        moveTo(pos: Vector, { runTime, curve }?: any): void;
+        animate: {
+            /**
+             * Shifts this mobject to a new place
+             * @param {Vector | number[]} pos
+             * @param {Object} config
+             */
+            moveTo: any;
+            /**
+             * Scales this mobject by a factor
+             * @param {Vector | number[]} factor
+             * @param {Object} config
+             */
+            scaleTo: any;
+            /**
+             * Rotates this mobject around x axis
+             * @param {Vector | number[]} factor
+             * @param {Object} config
+             */
+            rotateX: any;
+            /**
+             * Rotates this mobject around y axis
+             * @param {Vector | number[]} factor
+             * @param {Object} config
+             */
+            rotateY: any;
+            /**
+             * Rotates this mobject around z axis
+             * @param {Vector | number[]} factor
+             * @param {Object} config
+             */
+            rotateZ: any;
+        };
     }
     import Geometry from "geometry/Geometry";
     import BasicMaterial from "material/BasicMaterial";
@@ -1824,10 +1850,8 @@ declare module "mobjects/2D/Graph2D" {
         clearBuffer(): void;
         finish(): void;
         setColor(color: any): void;
-        applyPointwiseTransform(trans: any, { runTime }?: {
-            runTime?: number;
-        }): void;
-        instantPointwiseTransform(trans: any): void;
+        animate: any;
+        pointwiseTransform(trans: any): void;
     }
     import Graph from "mobjects/Graph";
     import Vector from "math/Vector";

@@ -1,10 +1,7 @@
 import Graph from "../Graph.js";
 import * as GLENUM from "../../constants/glenum.js";
-import BasicMaterial from "../../material/BasicMaterial.js";
 
 export default class FunctionGraph3D extends Graph {
-    material = new BasicMaterial();
-
     constructor({
         xRange = [-8, 8, 0.5],
         yRange = [-8, 8, 0.5],

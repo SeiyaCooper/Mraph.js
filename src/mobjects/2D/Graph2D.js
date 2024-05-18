@@ -155,36 +155,48 @@ export default class Graph2D extends Graph {
         this.fillColor = color;
     }
 
-    applyPointwiseTransform(trans, { runTime = 1 } = {}) {
-        let from, to, polygons;
+    animate = {
+        ...this.animate,
 
-        this.layer.timeline.addFollow(runTime, {
-            start: () => {
-                from = Utils.deepCopy(this.polygons);
-                for (let polygon of this.polygons) {
+        /**
+         * Applies a non-linear transform
+         * @param {Vector | number[]} pos
+         * @param {Object} config
+         */
+        pointwiseTransform: ((trans, { runTime = 1, curve } = {}) => {
+            let from, to, polygons;
+
+            this.layer.timeline.addFollow(runTime, {
+                start: () => {
+                    from = Utils.deepCopy(this.polygons);
+                    for (let polygon of this.polygons) {
+                        for (let i = 0; i < polygon.length; i++) {
+                            polygon[i] = trans(Vector.fromArray(polygon[i]));
+                        }
+                    }
+                    to = Utils.deepCopy(this.polygons);
+                    polygons = this.polygons;
+                },
+                update: handler.bind(this),
+                curve,
+            });
+
+            function handler(p) {
+                this.clearBuffer();
+                for (let j = 0; j < polygons.length; j++) {
+                    const polygon = polygons[j];
                     for (let i = 0; i < polygon.length; i++) {
-                        polygon[i] = trans(Vector.fromArray(polygon[i]));
+                        const lerpFrom = from[j][i];
+                        const lerpTo = to[j][i];
+                        polygon[i] = MathFunc.lerpArray(lerpFrom, lerpTo, p);
                     }
                 }
-                to = Utils.deepCopy(this.polygons);
-                polygons = this.polygons;
-            },
-            update: handler.bind(this),
-        });
-
-        function handler(p) {
-            this.clearBuffer();
-            for (let j = 0; j < polygons.length; j++) {
-                const polygon = polygons[j];
-                for (let i = 0; i < polygon.length; i++) {
-                    polygon[i] = MathFunc.lerpArray(from[j][i], to[j][i], p);
-                }
+                this.draw();
             }
-            this.draw();
-        }
-    }
+        }).bind(this),
+    };
 
-    instantPointwiseTransform(trans) {
+    pointwiseTransform(trans) {
         for (let polygon of this.polygons) {
             for (let i = 0; i < polygon.length; i++) {
                 polygon[i] = trans(Vector.fromArray(polygon[i]));
