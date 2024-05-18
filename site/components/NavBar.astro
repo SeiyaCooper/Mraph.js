@@ -15,7 +15,11 @@ const { list = [""], focus = "" } = Astro.props;
     <p>Examples</p>
     {
         list.map((title) => (
-            <Link title={title} src={`/Mraph.js/gallery/${title}`} />
+            <Link
+                title={title}
+                src={`/Mraph.js/gallery/${title}`}
+                isFocusing={title === focus}
+            />
         ))
     }
 </ul>

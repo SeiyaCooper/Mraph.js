@@ -24,6 +24,7 @@ import Example from "../../layouts/Example.astro";
         figure2.set("strokeColor", mp.COLORS.SEIYA_PINK);
         figure2.update();
         const figure3D = axes.drawFunction3D((x, y) => x);
+        figure3D.material.colorMode = "single";
         figure3D.material.color = mp.COLORS.GREEN_E.clone();
         figure3D.material.color.a = 0.2;
 

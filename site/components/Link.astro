@@ -2,35 +2,45 @@
 interface Props {
     title?: string;
     src?: string;
+    isFocusing?: Boolean;
 }
 
-const { title = "", src = "" } = Astro.props;
+const { title = "", src = "", isFocusing = false } = Astro.props;
 ---
 
-<li>
+<li class={isFocusing ? "focusing" : ""}>
     <a href={src}>{title}</a>
 </li>
 
 <style>
     li {
-        height: 25px;
+        height: 3px;
         min-width: 100px;
-        background-color: rgba(10, 10, 15, 0.3);
         padding: 10px;
         margin: 3px;
-        border: 1px solid rgba(220, 220, 255, 0.3);
         display: flex;
         align-items: center;
         transition: all 0.2s;
-        border-radius: 3px;
     }
 
-    li:hover {
-        background-color: rgba(215, 215, 240, 0.7);
+    li.focusing {
+        height: 10px;
+        transform: translateX(5px);
+        border: 1px solid rgba(225, 225, 225, 0.3);
+        border-radius: 5px;
+    }
+    li.focusing a {
+        color: #fe63a1;
+        font-weight: bolder;
+    }
+    li.focusing:hover a {
+        color: #fe63a1;
+        transform: translateX(0px);
     }
 
     li:hover a {
-        color: dodgerblue;
+        color: rgb(77, 166, 255);
+        transform: translateX(5px);
     }
 
     a {

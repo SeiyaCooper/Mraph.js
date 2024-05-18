@@ -1,0 +1,39 @@
+---
+import Example from "../../layouts/Example.astro";
+---
+
+<Example title="Orbit Animation">
+    <script>
+        import * as mp from "../../../src/mraph.js";
+
+        const layer = new mp.Layer().appendTo(document.body);
+
+        const sun = new mp.Sphere({ radius: 1 });
+        layer.add(sun);
+        sun.material = new mp.BasicMaterial();
+        sun.material.colorMode = "single";
+        sun.material.color = mp.COLORS.YELLOW_D;
+
+        const earth = new mp.Point3D(2.5, 0);
+        earth.radius = 0.3;
+        earth.update();
+        earth.color = mp.COLORS.BLUE_E;
+        sun.add(earth);
+
+        const moon = new mp.Point3D(0.7, 0);
+        moon.radius = 0.15;
+        moon.color = mp.COLORS.GRAY;
+        moon.update();
+        earth.add(moon);
+
+        layer.timeline.addInfinity(() => {
+            sun.rotation.y += 0.02;
+            earth.rotation.y += 0.03;
+            earth.rotation.z += 0.01;
+            sun.updateMatrix();
+        });
+
+        layer.enableOrbitControl();
+        layer.play();
+    </script>
+</Example>
