@@ -44,6 +44,6 @@ void main() {
 
     !slot::get_color::main
 
-    gl_FragColor.rgb = color.rgb * shade.rgb;
+    gl_FragColor.rgb = color.rgb * shade.rgb + vec3(0.1);
     gl_FragColor.a = color.a;
 }
