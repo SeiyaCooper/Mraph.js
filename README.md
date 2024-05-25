@@ -1,5 +1,5 @@
 <div align="center">
-    <image src='/logo.png' width="400px" alt='logo'></image>
+    <image src='https://seiyacooper.github.io/Mraph.js/logo.png' width="400px" alt='logo'></image>
 </div>
 
 [![npm](https://img.shields.io/npm/v/mraph)](https://www.npmjs.com/package/mraph)
@@ -9,7 +9,7 @@
 Mraph.js is my personal rendering engine for drawing geometric shapes in a browser, inspired by Manim  
 [Github](https://github.com/SeiyaCooper/Mraph.js) |
 [NPM](https://www.npmjs.com/package/mraph) |
-[Examples](/Mraph.js/gallery)
+[Examples](https://seiyacooper.github.io/Mraph.js/gallery)
 
 # Usage
 
