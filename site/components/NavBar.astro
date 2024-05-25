@@ -12,7 +12,10 @@ const { list = [""], focus = "" } = Astro.props;
 <button></button>
 <ul>
     <a href="https://github.com/SeiyaCooper/Mraph.js">Mraph.js</a>
-    <p>Examples</p>
+    <a href="https://seiyacooper.github.io/Mraph.js/" class="nav-link"
+        >HomePage</a
+    >
+    <a href="/Mraph.js/gallery" class="nav-link">Examples</a>
     {
         list.map((title) => (
             <Link
@@ -68,11 +71,13 @@ const { list = [""], focus = "" } = Astro.props;
         padding-left: 10px;
         padding-top: 10px;
         padding-right: 10px;
+        border-right: 1px solid rgba(220, 220, 255, 0.3);
         top: calc(max(35px, 7vh) + 1px);
         left: -100%;
         list-style: none;
         transition: left ease-in-out 0.3s;
-        background-color: rgba(15, 15, 25, 0.5);
+        backdrop-filter: blur(6px);
+        background-color: #191920;
     }
 
     @media (max-width: 767px) {
@@ -82,18 +87,31 @@ const { list = [""], focus = "" } = Astro.props;
     }
 
     ul a {
+        display: block;
         position: relative;
         left: 0;
         color: aliceblue;
         font-family: var(--font-family);
         font-weight: bold;
         font-size: large;
+        text-decoration: none;
     }
 
-    ul p {
+    ul a.nav-link {
+        height: 40px;
+        width: 96%;
+        line-height: 40px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        margin-right: 10px;
+        padding-left: 7px;
+        border-bottom: 1px solid rgba(220, 220, 255, 0.3);
         color: aliceblue;
-        padding: 0;
         font-family: var(--font-family);
         font-size: small;
+    }
+
+    ul a.nav-link:hover {
+        color: #f34e35;
     }
 </style>
