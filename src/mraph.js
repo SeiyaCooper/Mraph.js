@@ -32,7 +32,7 @@ import Cylinder from "./geometry/Cylinder.js";
 import DirectionalLight from "./light/DirectionalLight.js";
 import PointLight from "./light/PointLight.js";
 
-import Graph2D from "./mobjects/2D/Graph2D.js";
+import Mobject2D from "./mobjects/2D/Mobject2D.js";
 import Point from "./mobjects/2D/Point.js";
 import Tail from "./mobjects/2D/Tail.js";
 import Line from "./mobjects/2D/Line.js";
@@ -74,7 +74,7 @@ export {
     PointLight,
 
     // Mobjects
-    Graph2D,
+    Mobject2D,
     Point,
     Tail,
     Line,

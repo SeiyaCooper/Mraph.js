@@ -1792,8 +1792,8 @@ declare module "geometry/Cylinder" {
     }
     import Geometry from "geometry/Geometry";
 }
-declare module "mobjects/Graph" {
-    export default class Graph extends Geometry {
+declare module "mobjects/Mobject" {
+    export default class Mobject extends Geometry {
         material: BasicMaterial;
         animate: {
             /**
@@ -1831,8 +1831,8 @@ declare module "mobjects/Graph" {
     import Geometry from "geometry/Geometry";
     import BasicMaterial from "material/BasicMaterial";
 }
-declare module "mobjects/2D/Graph2D" {
-    export default class Graph2D extends Graph {
+declare module "mobjects/2D/Mobject2D" {
+    export default class Mobject2D extends Mobject {
         points: any[];
         polygons: any[];
         normal: Vector;
@@ -1855,12 +1855,12 @@ declare module "mobjects/2D/Graph2D" {
         animate: any;
         pointwiseTransform(trans: any): void;
     }
-    import Graph from "mobjects/Graph";
+    import Mobject from "mobjects/Mobject";
     import Vector from "math/Vector";
     import Color from "math/Color";
 }
 declare module "mobjects/2D/Arc" {
-    export default class Arc extends Graph2D {
+    export default class Arc extends Mobject2D {
         constructor(startAng?: number, endAng?: number, radius?: number, center?: number[]);
         startAng: number;
         endAng: number;
@@ -1869,7 +1869,7 @@ declare module "mobjects/2D/Arc" {
         update(): this;
         draw(): this;
     }
-    import Graph2D from "mobjects/2D/Graph2D";
+    import Mobject2D from "mobjects/2D/Mobject2D";
 }
 declare module "mobjects/2D/Point" {
     export default class Point extends Arc {
@@ -1897,7 +1897,7 @@ declare module "mobjects/2D/Point" {
     import Vector from "math/Vector";
 }
 declare module "mobjects/2D/Tail" {
-    export default class Tail extends Graph2D {
+    export default class Tail extends Mobject2D {
         constructor(target: any, { maxLength, maxSteps, modifyLine }?: {
             maxLength?: number;
             maxSteps?: number;
@@ -1912,10 +1912,10 @@ declare module "mobjects/2D/Tail" {
         update(): this;
         draw(): this;
     }
-    import Graph2D from "mobjects/2D/Graph2D";
+    import Mobject2D from "mobjects/2D/Mobject2D";
 }
 declare module "mobjects/2D/Line" {
-    export default class Line extends Graph2D {
+    export default class Line extends Mobject2D {
         /**
          * @param {Point} start
          * @param {Point} end
@@ -1950,7 +1950,7 @@ declare module "mobjects/2D/Line" {
         get length(): any;
         get slope(): number;
     }
-    import Graph2D from "mobjects/2D/Graph2D";
+    import Mobject2D from "mobjects/2D/Mobject2D";
     import Point from "mobjects/2D/Point";
 }
 declare module "mobjects/2D/Arrow" {
@@ -1983,7 +1983,7 @@ declare module "mobjects/2D/Axis" {
     import Vector from "math/Vector";
 }
 declare module "mobjects/2D/FunctionGraph2D" {
-    export default class FunctionGraph2D extends Graph2D {
+    export default class FunctionGraph2D extends Mobject2D {
         constructor({ func, xRange, z }?: {
             func?: (x: any) => any;
             xRange?: number[];
@@ -1995,10 +1995,10 @@ declare module "mobjects/2D/FunctionGraph2D" {
         update(): this;
         draw(): this;
     }
-    import Graph2D from "mobjects/2D/Graph2D";
+    import Mobject2D from "mobjects/2D/Mobject2D";
 }
 declare module "mobjects/3D/FunctionGraph3D" {
-    export default class FunctionGraph3D extends Graph {
+    export default class FunctionGraph3D extends Mobject {
         constructor({ xRange, yRange, func, }?: {
             xRange?: number[];
             yRange?: number[];
@@ -2008,10 +2008,10 @@ declare module "mobjects/3D/FunctionGraph3D" {
         yRange: number[];
         func: (x: any, y: any) => any;
     }
-    import Graph from "mobjects/Graph";
+    import Mobject from "mobjects/Mobject";
 }
 declare module "mobjects/2D/Axes" {
-    export default class Axes extends Graph2D {
+    export default class Axes extends Mobject2D {
         constructor({ xRange, yRange, zRange, origin, }?: {
             xRange?: number[];
             yRange?: number[];
@@ -2038,14 +2038,14 @@ declare module "mobjects/2D/Axes" {
         set tickLength(val: number);
         get tickLength(): number;
     }
-    import Graph2D from "mobjects/2D/Graph2D";
+    import Mobject2D from "mobjects/2D/Mobject2D";
     import Point from "mobjects/2D/Point";
     import Axis from "mobjects/2D/Axis";
     import FunctionGraph2D from "mobjects/2D/FunctionGraph2D";
     import FunctinoGraph3D from "mobjects/3D/FunctionGraph3D";
 }
 declare module "mobjects/2D/VectorField2D" {
-    export default class VectorField2D extends Graph {
+    export default class VectorField2D extends Mobject {
         constructor({ func, xRange, yRange, }?: {
             func?: (x: any, y: any) => any[];
             xRange?: number[];
@@ -2058,12 +2058,12 @@ declare module "mobjects/2D/VectorField2D" {
         yRange: number[];
         func: (x: any, y: any) => any[];
     }
-    import Graph from "mobjects/Graph";
+    import Mobject from "mobjects/Mobject";
     import Color from "math/Color";
     import Vector from "math/Vector";
 }
 declare module "mobjects/3D/Point3D" {
-    export default class Point3D extends Graph {
+    export default class Point3D extends Mobject {
         /**
          * @param  {Vector | number[] | ...number} position
          */
@@ -2085,7 +2085,7 @@ declare module "mobjects/3D/Point3D" {
         set z(val: any);
         get z(): any;
     }
-    import Graph from "mobjects/Graph";
+    import Mobject from "mobjects/Mobject";
     import Vector from "math/Vector";
 }
 declare module "extra/OBJLoader" {
@@ -2116,7 +2116,7 @@ declare module "mraph" {
     import Cylinder from "geometry/Cylinder";
     import DirectionalLight from "light/DirectionalLight";
     import PointLight from "light/PointLight";
-    import Graph2D from "mobjects/2D/Graph2D";
+    import Mobject2D from "mobjects/2D/Mobject2D";
     import Point from "mobjects/2D/Point";
     import Tail from "mobjects/2D/Tail";
     import Line from "mobjects/2D/Line";
@@ -2141,5 +2141,5 @@ declare module "mraph" {
     import Timeline from "animation/Timeline";
     import OrbitControl from "extra/OrbitControl";
     import Recorder from "extra/Recorder";
-    export { Color, Matrix, Vector, Quat, Geometry, Plane, Box, Segment, Sphere, Cylinder, DirectionalLight, PointLight, Graph2D, Point, Tail, Line, Arc, Arrow, Axis, Axes, VectorField2D, FunctionGraph2D, FunctionGraph3D, Point3D, Layer, Camera, Texture, WebGLRenderer, WebGLProgram, CustomMaterial, BasicMaterial, DepthMaterial, LambertMaterial, Event, Timeline, OrbitControl, Recorder };
+    export { Color, Matrix, Vector, Quat, Geometry, Plane, Box, Segment, Sphere, Cylinder, DirectionalLight, PointLight, Mobject2D, Point, Tail, Line, Arc, Arrow, Axis, Axes, VectorField2D, FunctionGraph2D, FunctionGraph3D, Point3D, Layer, Camera, Texture, WebGLRenderer, WebGLProgram, CustomMaterial, BasicMaterial, DepthMaterial, LambertMaterial, Event, Timeline, OrbitControl, Recorder };
 }

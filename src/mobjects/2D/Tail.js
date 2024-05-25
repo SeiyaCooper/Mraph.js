@@ -1,4 +1,4 @@
-import Graph2D from "./Graph2D.js";
+import Mobject2D from "./Mobject2D.js";
 import Vector from "../../math/Vector.js";
 import Segment from "../../geometry/Segment.js";
 
@@ -6,7 +6,7 @@ const defaultModifyLine = (line, i, all) => {
     line.strokeColor.a *= i / all;
 };
 
-export default class Tail extends Graph2D {
+export default class Tail extends Mobject2D {
     step = 0;
 
     constructor(

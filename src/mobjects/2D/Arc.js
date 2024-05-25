@@ -1,7 +1,7 @@
-import Graph2D from "./Graph2D.js";
+import Mobject2D from "./Mobject2D.js";
 import Color from "../../math/Color.js";
 
-export default class Arc extends Graph2D {
+export default class Arc extends Mobject2D {
     strokeWidth = 0.05;
     strokeColor = new Color(1, 1, 1, 1);
     fillColor = new Color(0, 0, 0, 0);

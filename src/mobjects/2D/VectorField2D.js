@@ -3,9 +3,9 @@ import Point from "./Point.js";
 import Vector from "../../math/Vector.js";
 import * as MathFunc from "../../math/math_func.js";
 import Color from "../../math/Color.js";
-import Graph from "../Graph.js";
+import Mobject from "../Mobject.js";
 
-export default class VectorField2D extends Graph {
+export default class VectorField2D extends Mobject {
     lengthFunc = (length) => {
         return MathFunc.sigmoid(length / 50);
     };

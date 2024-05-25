@@ -1,4 +1,4 @@
-import Graph from "../Graph.js";
+import Mobject from "../Mobject.js";
 import Color from "../../math/Color.js";
 import * as Utils from "../../utils/utils.js";
 import Segment from "../../geometry/Segment.js";
@@ -7,7 +7,7 @@ import Matrix from "../../math/Matrix.js";
 import * as VECTORS from "../../constants/vectors.js";
 import * as MathFunc from "../../math/math_func.js";
 
-export default class Graph2D extends Graph {
+export default class Mobject2D extends Mobject {
     points = [];
     polygons = [];
     normal = VECTORS.OUT.clone();

@@ -111,6 +111,15 @@ export default class Cylinder extends Geometry {
             }
         }
 
+        // Build bottom cap
+        if (this.bottomCap) {
+            const start = this.phiStarts[0] ?? this.phiStarts;
+            const end = this.phiEnds[0] ?? this.phiEnds;
+            const segment = this.phiSegments[0] ?? this.phiSegments;
+
+            buildSingle(0, this.radii[0], start, end, segment, 0, 0, 1);
+        }
+
         let baseHeight = 0;
         for (let i = 0; i < this.radii.length - 1; i++) {
             const phiStart = this.phiStarts[i] ?? this.phiStarts;
@@ -132,60 +141,15 @@ export default class Cylinder extends Geometry {
             );
         }
 
-        // build caps
-        let phiSegments = this.phiSegments[0] ?? this.phiSegments;
-        let phiStart = this.phiStarts[0] ?? this.phiStarts;
-        let phiEnd = this.phiEnds[0] ?? this.phiEnds;
-        if (this.bottomCap) {
-            vertices.push(0, 0, 0);
-            normals.push(0, -1, 0);
-            const centerIndex = vertices.length / 3 - 1;
-
-            for (let j = 0; j < phiSegments; j++) {
-                const n = j + 1 === phiSegments ? 0 : j + 1;
-
-                if ((phiStart > 0 || phiEnd < Math.PI * 2) && n === 0) continue;
-
-                indices.push(centerIndex);
-                indices.push(j);
-                indices.push(n);
-
-                if (mode === GLENUM.LINES) {
-                    indices.push(j);
-                    indices.push(n);
-                }
-            }
-        }
-
-        const last = this.radii.length - 2;
-        phiSegments = this.phiSegments[last] ?? this.phiSegments;
-        phiStart = this.phiStarts[last] ?? this.phiStarts;
-        phiEnd = this.phiEnds[last] ?? this.phiEnds;
+        // Build top cap
         if (this.topCap) {
-            let h = 0;
+            const last = this.radii.length - 1;
+            const start = this.phiStarts[last] ?? this.phiStarts;
+            const end = this.phiEnds[last] ?? this.phiEnds;
+            const segment = this.phiSegments[last] ?? this.phiSegments;
+            const r = this.radii[last];
 
-            if (Array.isArray(this.heights)) {
-                for (let subH of this.heights) {
-                    h += subH;
-                }
-            } else {
-                h = (last + 1) * this.heights;
-            }
-
-            vertices.push(0, h, 0);
-            normals.push(0, 1, 0);
-            const centerIndex = vertices.length / 3 - 1;
-            const baseIndex = centerIndex - +this.bottomCap - phiSegments;
-
-            for (let j = 0; j < phiSegments; j++) {
-                const n = j + 1 === phiSegments ? 0 : j + 1;
-
-                if ((phiStart > 0 || phiEnd < Math.PI * 2) && n === 0) continue;
-
-                indices.push(centerIndex);
-                indices.push(baseIndex + j);
-                indices.push(baseIndex + n);
-            }
+            buildSingle(r, 0, start, end, segment, baseHeight, baseHeight, 1);
         }
 
         this.setAttribute("position", vertices, 3);

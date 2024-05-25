@@ -1,11 +1,11 @@
-import Graph2D from "./Graph2D.js";
+import Mobject2D from "./Mobject2D.js";
 import Vector from "../../math/Vector.js";
 import Axis from "./Axis.js";
 import Point from "./Point.js";
 import FunctionGraph2D from "./FunctionGraph2D.js";
 import FunctinoGraph3D from "../3D/FunctionGraph3D.js";
 
-export default class Axes extends Graph2D {
+export default class Axes extends Mobject2D {
     _tickLength = 0.08;
 
     constructor({

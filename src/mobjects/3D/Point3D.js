@@ -1,9 +1,9 @@
 import Vector from "../../math/Vector.js";
-import Graph from "../Graph.js";
+import Mobject from "../Mobject.js";
 import Sphere from "../../geometry/Sphere.js";
 import * as COLORS from "../../constants/colors.js";
 
-export default class Point3D extends Graph {
+export default class Point3D extends Mobject {
     radius = 0.06;
     _v = new Vector(0, 0, 0);
     _a = new Vector(0, 0, 0);

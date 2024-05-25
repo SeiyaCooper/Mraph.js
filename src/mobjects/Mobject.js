@@ -1,11 +1,11 @@
 import Geometry from "../geometry/Geometry.js";
 import BasicMaterial from "../material/BasicMaterial.js";
 
-export default class Graph extends Geometry {
+export default class Mobject extends Geometry {
     material = new BasicMaterial();
 
     /**
-     * @returns {Graph}
+     * @returns {Mobject}
      */
     constructor() {
         super();

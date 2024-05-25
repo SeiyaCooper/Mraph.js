@@ -1,9 +1,9 @@
-import Graph2D from "./Graph2D.js";
+import Mobject2D from "./Mobject2D.js";
 import Point from "./Point.js";
 import Color from "../../math/Color.js";
 import Matrix from "../../math/Matrix.js";
 
-export default class Line extends Graph2D {
+export default class Line extends Mobject2D {
     strokeWidth = 0.05;
     strokeColor = new Color(1, 1, 1, 1);
     indices = { data: [0, 1, 3, 2, 0, 3] };
