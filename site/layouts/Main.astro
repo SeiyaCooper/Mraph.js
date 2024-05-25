@@ -1,6 +1,7 @@
 ---
 import TopBar from "../components/TopBar.astro";
 import "github-markdown-css";
+import "@fontsource/poppins";
 
 interface Props {
     title?: string;
@@ -18,7 +19,6 @@ const { title = "" } = Astro.props;
     </head>
     <body>
         <TopBar title={title} />
-
         <div class="markdown-body">
             <slot />
         </div>
@@ -41,5 +41,9 @@ const { title = "" } = Astro.props;
         .markdown-body {
             padding: 15px;
         }
+    }
+
+    :root {
+        --font-family: "poppins";
     }
 </style>
