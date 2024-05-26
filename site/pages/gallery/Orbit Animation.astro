@@ -8,10 +8,8 @@ import Example from "../../layouts/Example.astro";
 
         const layer = new mp.Layer().appendTo(document.body);
 
-        const sun = new mp.Sphere({ radius: 1 });
+        const sun = new mp.Point3D(0, 0);
         layer.add(sun);
-        sun.material = new mp.BasicMaterial();
-        sun.material.colorMode = "single";
         sun.material.color = mp.COLORS.YELLOW_D;
 
         const earth = new mp.Point3D(2.5, 0);

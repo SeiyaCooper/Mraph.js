@@ -38,7 +38,7 @@ export default class Geometry extends Node {
 
     /**
      * Merge all children into this geometry.
-     * This method assuming all children have and only have three variables, normal, position and color.
+     * This method assumes all children have and only have three variables, normal, position and color.
      */
     combineChildren() {
         const vertices = this.getAttributeVal("position");
@@ -75,6 +75,97 @@ export default class Geometry extends Node {
         this.setAttribute("normal", normal, 3);
         this.setIndex(vertices.length / 3);
         this.clear();
+        return this;
+    }
+
+    /**
+     * Merge from another geometry.
+     * @param {Geometry} geometry
+     * @param {object} config
+     * An object used to define following parameters, optional
+     * * mergeVertices {boolean} wheather to merge vertices array.
+     * * mergeNormals {boolean} wheather to merge normals array.
+     * * mergeColors{boolean} wheather to merge colors array.
+     * @returns
+     */
+    merge(
+        geometry,
+        { mergeVertices = true, mergeNormals = true, mergeColors = true } = {}
+    ) {
+        if (mergeVertices) this.mergeVertices(geometry);
+        if (mergeNormals) this.mergeNormals(geometry);
+        if (mergeColors) this.mergeColors(geometry);
+        return geometry;
+    }
+
+    /**
+     * Merge vertices array into this geometry from another.
+     * @param {Geometry} geometry
+     * @returns {this}
+     */
+    mergeVertices(geometry) {
+        const vertices = this.getAttributeVal("position");
+        const source = geometry.getAttributeVal("position");
+
+        if (typeof geometry.indices !== "number") {
+            for (let i of geometry.indices.data) {
+                vertices.push(source[i * 3]);
+                vertices.push(source[i * 3 + 1]);
+                vertices.push(source[i * 3 + 2]);
+            }
+        } else {
+            vertices.push(...source);
+        }
+
+        this.setAttribute("position", vertices, 3);
+        return this;
+    }
+
+    /**
+     * Merge colors array into this geometry from another.
+     * @param {Geometry} geometry
+     * @returns {this}
+     */
+    mergeColors(geometry) {
+        const target = this.getAttributeVal("color");
+        const source = geometry.getAttributeVal("color");
+
+        if (typeof geometry.indices !== "number") {
+            for (let i of geometry.indices.data) {
+                target.push(source[i * 4]);
+                target.push(source[i * 4 + 1]);
+                target.push(source[i * 4 + 2]);
+                target.push(source[i * 4 + 3]);
+            }
+        } else {
+            target.push(...source);
+        }
+
+        this.setAttribute("color", target, 4);
+        return this;
+    }
+
+    /**
+     * Merge normals array into this geometry from another.
+     * @param {Geometry} geometry
+     * @returns {this}
+     */
+    mergeNormals(geometry) {
+        const target = this.getAttributeVal("normal");
+        const source = geometry.getAttributeVal("normal");
+
+        if (typeof geometry.indices !== "number") {
+            for (let i of geometry.indices.data) {
+                target.push(source[i * 3]);
+                target.push(source[i * 3 + 1]);
+                target.push(source[i * 3 + 2]);
+            }
+        } else {
+            target.push(...source);
+        }
+
+        this.setAttribute("normal", target, 3);
+        return this;
     }
 
     /**

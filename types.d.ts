@@ -1664,9 +1664,38 @@ declare module "geometry/Geometry" {
         update(): void;
         /**
          * Merge all children into this geometry.
-         * This method assuming all children have and only have three variables, normal, position and color.
+         * This method assumes all children have and only have three variables, normal, position and color.
          */
-        combineChildren(): void;
+        combineChildren(): this;
+        /**
+         * Merge from another geometry.
+         * @param {Geometry} geometry
+         * @param {object} config
+         * An object used to define following parameters, optional
+         * * mergeVertices {boolean} wheather to merge vertices array.
+         * * mergeNormals {boolean} wheather to merge normals array.
+         * * mergeColors{boolean} wheather to merge colors array.
+         * @returns
+         */
+        merge(geometry: Geometry, { mergeVertices, mergeNormals, mergeColors }?: object): Geometry;
+        /**
+         * Merge vertices array into this geometry from another.
+         * @param {Geometry} geometry
+         * @returns {this}
+         */
+        mergeVertices(geometry: Geometry): this;
+        /**
+         * Merge colors array into this geometry from another.
+         * @param {Geometry} geometry
+         * @returns {this}
+         */
+        mergeColors(geometry: Geometry): this;
+        /**
+         * Merge normals array into this geometry from another.
+         * @param {Geometry} geometry
+         * @returns {this}
+         */
+        mergeNormals(geometry: Geometry): this;
         /**
          * Set value of a single attribute variable
          * @param {string} name

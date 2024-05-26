@@ -34,8 +34,9 @@ export default class Point3D extends Mobject {
             phiSegments: 16,
         });
         sphere.update();
-        this.add(sphere);
-        this.combineChildren();
+
+        this.merge(sphere);
+        this.setIndex(this.getAttributeVal("position").length / 3);
     }
 
     set color(color) {
