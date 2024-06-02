@@ -18,6 +18,9 @@ export default class Program {
         mergeObject(this, this.getExtension("OES_vertex_array_object"));
     }
 
+    /**
+     * Uses this program for rendering
+     */
     use() {
         this.gl.useProgram(this.program);
     }
@@ -101,6 +104,7 @@ export default class Program {
     }
 }
 
+// utils
 function createShader(gl, type, source) {
     const shader = gl.createShader(type);
     gl.shaderSource(shader, source);

@@ -1171,6 +1171,9 @@ declare module "core/WebGL/WebGLProgram" {
         vs: any;
         fs: any;
         program: any;
+        /**
+         * Uses this program for rendering
+         */
         use(): void;
         /**
          * Sets a uniform variable
