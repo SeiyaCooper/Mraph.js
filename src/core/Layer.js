@@ -8,7 +8,7 @@ import PointLight from "../light/PointLight.js";
 import DirectionalLight from "../light/DirectionalLight.js";
 import Node from "./Node.js";
 
-export default class Layer extends Node {
+export default class Layer {
     camera = new Camera();
     timeline = new Timeline();
     defaultMaterial = new BasicMaterial();
@@ -16,6 +16,7 @@ export default class Layer extends Node {
         pointLights: [],
         directionalLights: [],
     };
+    scene = new Node();
 
     constructor({
         fullScreen = true,
@@ -23,8 +24,6 @@ export default class Layer extends Node {
         rendererClass = WebGLRenderer,
         contextConfig = {},
     } = {}) {
-        super();
-
         this.canvas = document.createElement("canvas");
 
         if (fullScreen) {
@@ -77,19 +76,16 @@ export default class Layer extends Node {
     }
 
     /**
-     * add mobjects, lights to scene
-     * @param  {...mobject | light} els
+     * Adds mobjects, lights to scene
+     * @param  {...Mobject | Light} els
      * @returns {this}
      */
     add(...els) {
         for (let el of els) {
             if (typeof el.attributes === "object") {
                 // if adding a drawable object
-
                 el.set("layer", this);
-                el.set("gl", this.renderer.gl);
-                el.set("parent", this);
-                this.children.push(el);
+                this.scene.add(el);
             } else {
                 this.addSurrounding(el);
             }
@@ -99,7 +95,7 @@ export default class Layer extends Node {
     }
 
     /**
-     * Create a mobject or geometry and automatically add it to the layer
+     * Creates a mobject or geometry and automatically add it to the layer
      * @template Mobject
      * @param {Function} Mobject constructor of the mobject you want to create
      * @param  {...any} params
@@ -112,33 +108,42 @@ export default class Layer extends Node {
     }
 
     /**
-     * delete mobjects or lgihts
-     * @param  {...mobject | light} els
+     * Deletes mobjects or lgihts
+     * @param  {...Mobject | Light} els
      */
     delete(...els) {
-        const children = this.children;
+        const scene = this.scene;
         const surroundings = this.surroundings;
         for (let el of els) {
             if (typeof el.attributes === "object")
-                children.splice(children.indexOf(el), 1);
+                scene.splice(scene.indexOf(el), 1);
             else surroundings.splice(surroundings.indexOf(el), 1);
         }
     }
 
     /**
-     * Set attributes for all children
+     * Clears all mobjects and lights
+     */
+    clear() {
+        this.scene.clear();
+        this.surroundings.pointLights = [];
+        this.surroundings.directionalLights = [];
+    }
+
+    /**
+     * Sets attributes for all nodes
      * @param {string} key
      * @param {any} value
      */
     set(key, value) {
-        for (let child of this.children) {
-            child.set(key, value);
+        for (let node of this.scene) {
+            node.set(key, value);
         }
     }
 
     /**
-     * add something to surroundings
-     * @param {light} obj
+     * Adds something to surroundings, e.g. Lights
+     * @param {Light} obj
      */
     addSurrounding(obj) {
         if (PointLight.isInstance(obj)) this.surroundings.pointLights.push(obj);
@@ -147,25 +152,23 @@ export default class Layer extends Node {
     }
 
     /**
-     * render mobjects
+     * Renders scene
      * @returns {this}
      */
     render() {
-        for (let el of this.children) {
+        for (let el of this.scene) {
             if (el.needsUpdate) {
                 el.update?.();
                 el.updateMatrix?.();
                 el.needsUpdate = false;
             }
-
-            const material = el.material ?? this.defaultMaterial;
-            this.renderer.render(el, this.camera, material, this.surroundings);
+            this.renderer.render(el, this.camera, this.surroundings);
         }
         return this;
     }
 
     /**
-     * clear canvas by a color
+     * Clears canvas by a color
      * @param {number[] | Color} [color = COLORS.GRAY_E]
      * @returns {this}
      */
@@ -199,6 +202,7 @@ export default class Layer extends Node {
     }
 
     /**
+     * Enables orbit control
      * @returns Control
      */
     enableOrbitControl() {

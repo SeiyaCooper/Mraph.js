@@ -17,12 +17,12 @@ export default class LambertMaterial extends Material {
         fs = SlotParser.replace(
             fs,
             "point_light_num",
-            surroundings.pointLights.length
+            surroundings.pointLights?.length ?? 0
         );
         fs = SlotParser.replace(
             fs,
             "directional_light_num",
-            surroundings.directionalLights.length
+            surroundings.directionalLights?.length ?? 0
         );
         this.program = new WebGLProgram(gl, { vs, fs });
     }
@@ -31,7 +31,7 @@ export default class LambertMaterial extends Material {
         const program = this.program;
 
         const pointLights = surroundings.pointLights;
-        if (pointLights.length > 0) {
+        if (pointLights && pointLights.length > 0) {
             const pointLightsPosition = [];
             const pointLightsColor = [];
             const pointLightsIntensity = [];
@@ -50,7 +50,7 @@ export default class LambertMaterial extends Material {
         }
 
         const directionalLights = surroundings.directionalLights;
-        if (directionalLights.length > 0) {
+        if (directionalLights && directionalLights.length > 0) {
             const directionalLightsDirection = [];
             const directionalLightsColor = [];
             const directionalLightsIntensity = [];

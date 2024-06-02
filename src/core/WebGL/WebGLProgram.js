@@ -2,19 +2,17 @@ import { mergeObject } from "../../utils/utils.js";
 import MraphError from "../../utils/MraphError.js";
 
 export default class Program {
+    /**
+     * A set of variable locations
+     * @type {Map}
+     */
     locations = new Map();
 
-    constructor(
-        gl,
-        { vs = "", fs = "", attributes = {}, uniforms = {}, textures = [] } = {}
-    ) {
+    constructor(gl, { vs = "", fs = "" } = {}) {
         this.gl = gl;
         this.vs = createShader(gl, gl.VERTEX_SHADER, vs);
         this.fs = createShader(gl, gl.FRAGMENT_SHADER, fs);
         this.program = createProgram(gl, this.vs, this.fs);
-        this.attributes = attributes;
-        this.uniforms = uniforms;
-        this.textures = textures;
 
         // TODO
         mergeObject(this, this.getExtension("OES_vertex_array_object"));
@@ -24,9 +22,23 @@ export default class Program {
         this.gl.useProgram(this.program);
     }
 
+    /**
+     * Sets a uniform variable
+     * @param {string} name
+     * @param {Matrix | Vector | number[]} data
+     * @param {number} [n]
+     */
     setUniform(name, data, n) {
         const gl = this.gl;
-        const location = this.gl.getUniformLocation(this.program, name);
+
+        // Get location
+        let location;
+        if (this.locations.has(name)) {
+            location = this.locations.get(name);
+        } else {
+            location = gl.getUniformLocation(this.program, name);
+            this.locations.set(name, location);
+        }
 
         this.use();
 
@@ -45,9 +57,24 @@ export default class Program {
         }
     }
 
+    /**
+     * Sets attribute variable
+     * @param {string} name
+     * @param {object} value
+     * @param {number} n
+     * @param {number} usage
+     * @returns
+     */
     setAttriBuffer(name, value, n, usage) {
         const gl = this.gl;
+
         let location;
+        if (this.locations.has(name)) {
+            location = this.locations.get(name);
+        } else {
+            location = gl.getAttribLocation(this.program, name);
+            this.locations.set(name, location);
+        }
 
         if (!value.buffer) {
             value.buffer = gl.createBuffer();
@@ -55,12 +82,6 @@ export default class Program {
         }
         const buffer = value.buffer;
         gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-
-        if (this.locations.has(name)) {
-            location = this.locations.get(name);
-        } else {
-            location = gl.getAttribLocation(this.program, name);
-        }
 
         if (value.needsUpdate ?? true) {
             gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(value.data), usage);
@@ -77,43 +98,6 @@ export default class Program {
     getExtension(name) {
         const ext = this.gl.getExtension(name);
         return ext;
-    }
-
-    set attributes(val) {
-        this._attributes = val;
-        for (let name of Object.keys(val)) {
-            this.locations.set(
-                name,
-                this.gl.getAttribLocation(this.program, name)
-            );
-        }
-    }
-
-    get attributes() {
-        return this._attributes;
-    }
-
-    set uniforms(val) {
-        this._uniforms = val;
-
-        for (let [name, data] of Object.entries(val)) {
-            this.setUniform(name, data);
-        }
-    }
-
-    get uniforms() {
-        return this._uniforms;
-    }
-
-    set textures(val) {
-        this._textures = val;
-        for (let texture of val) {
-            texture.upload();
-        }
-    }
-
-    get textures() {
-        return this._textures;
     }
 }
 

@@ -989,13 +989,58 @@ declare module "core/WebGL/ProgramManager" {
 declare module "core/WebGL/WebGLRenderer" {
     export default class WebGLRenderer {
         constructor(canvas: any, contextConfig?: {});
-        canvas: any;
+        /**
+         * HTML canvas eLement
+         * @type {HTMLCanvasElement}
+         */
+        canvas: HTMLCanvasElement;
+        /**
+         * @type {ProgramManager}
+         */
         programManager: ProgramManager;
-        gl: any;
-        usage: any;
-        render(mesh: any, camera: any, material: any, surroundings: any): void;
-        clear(r: any, g: any, b: any, a: any): void;
-        resize(width: any, height: any): void;
+        /**
+         * rendering context
+         * @type {WebGLRenderingContext | WebGL2RenderingContext}
+         */
+        gl: WebGLRenderingContext | WebGL2RenderingContext;
+        /**
+         * usage of this renderer, default to be gl.STATIC_DRAW
+         * @type {number}
+         */
+        usage: number;
+        /**
+         * whether to use depthTest, default to be true
+         */
+        _depthTest: boolean;
+        /**
+         * whether to use depthMask, default to be true
+         */
+        _depthMask: boolean;
+        set depthTest(bool: boolean);
+        get depthTest(): boolean;
+        set depthMask(bool: boolean);
+        get depthMask(): boolean;
+        /**
+         * Renders the scene
+         * @param {Geometry} mesh
+         * @param {Camera} camera
+         * @param {Object} surroundings
+         */
+        render(mesh: Geometry, camera: Camera, surroundings?: any): void;
+        /**
+         * Clears the canvas with a certain colour
+         * @param {number} r
+         * @param {number} g
+         * @param {number} b
+         * @param {number} a
+         */
+        clear(r: number, g: number, b: number, a: number): void;
+        /**
+         * Resize the canvas
+         * @param {number} width
+         * @param {number} height
+         */
+        resize(width: number, height: number): void;
     }
     import ProgramManager from "core/WebGL/ProgramManager";
 }
@@ -1113,31 +1158,37 @@ declare module "utils/MraphError" {
 }
 declare module "core/WebGL/WebGLProgram" {
     export default class Program {
-        constructor(gl: any, { vs, fs, attributes, uniforms, textures }?: {
+        constructor(gl: any, { vs, fs }?: {
             vs?: string;
             fs?: string;
-            attributes?: {};
-            uniforms?: {};
-            textures?: any[];
         });
+        /**
+         * A set of variable locations
+         * @type {Map}
+         */
         locations: Map<any, any>;
         gl: any;
         vs: any;
         fs: any;
         program: any;
-        set attributes(val: any);
-        get attributes(): any;
-        set uniforms(val: any);
-        get uniforms(): any;
-        set textures(val: any);
-        get textures(): any;
         use(): void;
-        setUniform(name: any, data: any, n: any): void;
-        setAttriBuffer(name: any, value: any, n: any, usage: any): void;
+        /**
+         * Sets a uniform variable
+         * @param {string} name
+         * @param {Matrix | Vector | number[]} data
+         * @param {number} [n]
+         */
+        setUniform(name: string, data: Matrix | Vector | number[], n?: number): void;
+        /**
+         * Sets attribute variable
+         * @param {string} name
+         * @param {object} value
+         * @param {number} n
+         * @param {number} usage
+         * @returns
+         */
+        setAttriBuffer(name: string, value: object, n: number, usage: number): void;
         getExtension(name: any): any;
-        _attributes: any;
-        _uniforms: any;
-        _textures: any;
     }
 }
 declare module "material/SlotParser" {
@@ -1162,6 +1213,7 @@ declare module "material/Material" {
         vertexShader: string;
         fragmentShader: string;
         components: any[];
+        beforeRender(): void;
         attachComponent(component: any): void;
         compileComponents(): any;
         passComponentVariables(): void;
@@ -1175,7 +1227,6 @@ declare module "material/BasicMaterial" {
         fragmentShader: any;
         initProgram(gl: any): void;
         program: WebGLProgram;
-        beforeRender(): void;
         get depthTest(): boolean;
     }
     import Material from "material/Material";
@@ -1288,7 +1339,7 @@ declare module "core/Node" {
     import Vector from "math/Vector";
 }
 declare module "core/Layer" {
-    export default class Layer extends Node {
+    export default class Layer {
         constructor({ fullScreen, appendTo, rendererClass, contextConfig, }?: {
             fullScreen?: boolean;
             appendTo?: any;
@@ -1302,6 +1353,7 @@ declare module "core/Layer" {
             pointLights: any[];
             directionalLights: any[];
         };
+        scene: Node;
         canvas: HTMLCanvasElement;
         renderer: WebGLRenderer;
         /**
@@ -1321,13 +1373,13 @@ declare module "core/Layer" {
          */
         appendTo(el: HTMLElement): this;
         /**
-         * add mobjects, lights to scene
-         * @param  {...mobject | light} els
+         * Adds mobjects, lights to scene
+         * @param  {...Mobject | Light} els
          * @returns {this}
          */
-        add(...els: (mobject | light)[]): this;
+        add(...els: (Mobject | Light)[]): this;
         /**
-         * Create a mobject or geometry and automatically add it to the layer
+         * Creates a mobject or geometry and automatically add it to the layer
          * @template Mobject
          * @param {Function} Mobject constructor of the mobject you want to create
          * @param  {...any} params
@@ -1335,22 +1387,32 @@ declare module "core/Layer" {
          */
         create<Mobject>(Mobject: Function, ...params: any[]): Mobject;
         /**
-         * delete mobjects or lgihts
-         * @param  {...mobject | light} els
+         * Deletes mobjects or lgihts
+         * @param  {...Mobject | Light} els
          */
-        delete(...els: (mobject | light)[]): void;
+        delete(...els: (Mobject | Light)[]): void;
         /**
-         * add something to surroundings
-         * @param {light} obj
+         * Clears all mobjects and lights
          */
-        addSurrounding(obj: light): void;
+        clear(): void;
         /**
-         * render mobjects
+         * Sets attributes for all nodes
+         * @param {string} key
+         * @param {any} value
+         */
+        set(key: string, value: any): void;
+        /**
+         * Adds something to surroundings, e.g. Lights
+         * @param {Light} obj
+         */
+        addSurrounding(obj: Light): void;
+        /**
+         * Renders scene
          * @returns {this}
          */
         render(): this;
         /**
-         * clear canvas by a color
+         * Clears canvas by a color
          * @param {number[] | Color} [color = COLORS.GRAY_E]
          * @returns {this}
          */
@@ -1367,14 +1429,15 @@ declare module "core/Layer" {
          */
         wait(time?: number): this;
         /**
+         * Enables orbit control
          * @returns Control
          */
         enableOrbitControl(): OrbitControl;
     }
-    import Node from "core/Node";
     import Camera from "core/Camera";
     import Timeline from "animation/Timeline";
     import BasicMaterial from "material/BasicMaterial";
+    import Node from "core/Node";
     import WebGLRenderer from "core/WebGL/WebGLRenderer";
     import OrbitControl from "extra/OrbitControl";
 }

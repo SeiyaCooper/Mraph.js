@@ -13,6 +13,8 @@ export default class Material {
         this.attachComponent(new GetColorComponent());
     }
 
+    beforeRender() {}
+
     attachComponent(component) {
         this.components.push(component);
     }

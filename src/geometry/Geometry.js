@@ -198,10 +198,6 @@ export default class Geometry extends Node {
      * @param {number | number[]} data
      */
     setIndex(data) {
-        if (typeof data === "number") {
-            this.indices = data;
-        } else {
-            this.indices = { data: data };
-        }
+        this.indices = data;
     }
 }
