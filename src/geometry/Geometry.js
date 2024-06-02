@@ -50,8 +50,8 @@ export default class Geometry extends Node {
             const oriColors = child.getAttributeVal("color");
             const oriNormal = child.getAttributeVal("normal");
 
-            if (typeof child.indices !== "number") {
-                for (let i of child.indices.data) {
+            if (Array.isArray(child.indices)) {
+                for (let i of child.indices) {
                     vertices.push(position[i * 3]);
                     vertices.push(position[i * 3 + 1]);
                     vertices.push(position[i * 3 + 2]);
@@ -107,8 +107,8 @@ export default class Geometry extends Node {
         const vertices = this.getAttributeVal("position");
         const source = geometry.getAttributeVal("position");
 
-        if (typeof geometry.indices !== "number") {
-            for (let i of geometry.indices.data) {
+        if (Array.isArray(geometry.indices)) {
+            for (let i of geometry.indices) {
                 vertices.push(source[i * 3]);
                 vertices.push(source[i * 3 + 1]);
                 vertices.push(source[i * 3 + 2]);
@@ -130,8 +130,8 @@ export default class Geometry extends Node {
         const target = this.getAttributeVal("color");
         const source = geometry.getAttributeVal("color");
 
-        if (typeof geometry.indices !== "number") {
-            for (let i of geometry.indices.data) {
+        if (Array.isArray(geometry.indices)) {
+            for (let i of geometry.indices) {
                 target.push(source[i * 4]);
                 target.push(source[i * 4 + 1]);
                 target.push(source[i * 4 + 2]);
@@ -154,8 +154,8 @@ export default class Geometry extends Node {
         const target = this.getAttributeVal("normal");
         const source = geometry.getAttributeVal("normal");
 
-        if (typeof geometry.indices !== "number") {
-            for (let i of geometry.indices.data) {
+        if (Array.isArray(geometry.indices)) {
+            for (let i of geometry.indices) {
                 target.push(source[i * 3]);
                 target.push(source[i * 3 + 1]);
                 target.push(source[i * 3 + 2]);

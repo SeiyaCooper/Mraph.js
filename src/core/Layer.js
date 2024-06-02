@@ -156,7 +156,7 @@ export default class Layer {
      * @returns {this}
      */
     render() {
-        for (let el of this.scene) {
+        for (let el of this.scene.children) {
             if (el.needsUpdate) {
                 el.update?.();
                 el.updateMatrix?.();

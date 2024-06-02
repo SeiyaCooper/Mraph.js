@@ -1820,9 +1820,7 @@ declare module "geometry/Segment" {
         strokeWidth: number;
         strokeColor: Color;
         normal: import("mraph").Vector;
-        indices: {
-            data: number[];
-        };
+        indices: number[];
         start: import("mraph").Vector;
         end: import("mraph").Vector;
         get vector(): import("mraph").Vector;

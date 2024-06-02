@@ -35,7 +35,7 @@ export default class Point3D extends Mobject {
         });
         sphere.update();
 
-        this.merge(sphere);
+        this.merge(sphere, { mergeColors: false });
         this.setIndex(this.getAttributeVal("position").length / 3);
     }
 

@@ -10,19 +10,20 @@ import Example from "../../layouts/Example.astro";
 
         const sun = new mp.Point3D(0, 0);
         layer.add(sun);
+        sun.radius = 1;
         sun.material.color = mp.COLORS.YELLOW_D;
 
         const earth = new mp.Point3D(2.5, 0);
+        sun.add(earth);
         earth.radius = 0.3;
         earth.update();
         earth.color = mp.COLORS.BLUE_E;
-        sun.add(earth);
 
         const moon = new mp.Point3D(0.7, 0);
+        earth.add(moon);
         moon.radius = 0.15;
         moon.color = mp.COLORS.GRAY;
         moon.update();
-        earth.add(moon);
 
         layer.timeline.addInfinity(() => {
             sun.rotation.y += 0.02;
