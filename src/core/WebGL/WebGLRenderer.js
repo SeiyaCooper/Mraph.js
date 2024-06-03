@@ -21,6 +21,12 @@ export default class WebGLRenderer {
     gl = undefined;
 
     /**
+     * A set of vaos
+     * @type {WebGLVertexArrayObject[]}
+     */
+    VAOs = new Map();
+
+    /**
      * usage of this renderer, default to be gl.STATIC_DRAW
      * @type {number}
      */
@@ -38,8 +44,13 @@ export default class WebGLRenderer {
 
     constructor(canvas, contextConfig = {}) {
         this.canvas = canvas;
+
         this.gl = canvas.getContext("webgl2", contextConfig);
-        if (!this.gl) this.gl = canvas.getContext("webgl", contextConfig);
+        if (!this.gl) {
+            this.gl = canvas.getContext("webgl", contextConfig);
+            this.EXT_VAO = this._getExtension("OES_vertex_array_object");
+        }
+
         this.resize(canvas.width, canvas.height);
         this.depthTest = true;
         this.depthMask = true;
@@ -52,6 +63,8 @@ export default class WebGLRenderer {
      * @param {Object} surroundings
      */
     render(mesh, camera, surroundings = {}) {
+        if (!mesh.visible) return;
+
         const gl = this.gl;
         const scene = { mesh, camera, surroundings };
         const material = mesh.material;
@@ -67,12 +80,33 @@ export default class WebGLRenderer {
         program.setUniform("projectionMat", camera.projectionMat);
         program.setUniform("modelMat", mesh.matrix ?? Matrix.identity(4));
 
-        for (let [name, value] of Object.entries(mesh.attributes ?? {})) {
-            const n = value.n ?? program.attributes[name];
-            program.setAttriBuffer(name, value, n, this.usage);
+        for (let value of Object.values(mesh.attributes ?? {})) {
+            if (!value.buffer) {
+                value.buffer = gl.createBuffer();
+                value.needsUpdate = true;
+            }
+
+            if (!value.needsUpdate) continue;
+
+            gl.bindBuffer(gl.ARRAY_BUFFER, value.buffer);
+            gl.bufferData(
+                gl.ARRAY_BUFFER,
+                new Float32Array(value.data),
+                this.usage
+            );
+            value.needsUpdate = false;
         }
         for (let [name, data] of Object.entries(mesh.uniforms ?? {})) {
             program.setUniform(name, data);
+        }
+
+        if (this.VAOs.has(mesh)) {
+            this._bindVAO(this.VAOs.get(mesh));
+        } else {
+            const VAO = this._createVAO();
+            this.VAOs.set(mesh, VAO);
+            this._bindVAO(VAO);
+            program.initVAO(mesh);
         }
 
         const indices = mesh.indices;
@@ -116,6 +150,39 @@ export default class WebGLRenderer {
      */
     resize(width, height) {
         this.gl.viewport(0, 0, width, height);
+    }
+
+    /**
+     * Private method, creates a vertex array object
+     * @returns {WebGLVertexArrayObject}
+     */
+    _createVAO() {
+        if (this.EXT_VAO) {
+            return this.EXT_VAO.createVertexArrayOES();
+        } else {
+            return this.gl.createVertexArray();
+        }
+    }
+
+    /**
+     * Private method, binds a vertex array object
+     * @returns {WebGLVertexArrayObject}
+     */
+    _bindVAO(VAO) {
+        if (this.EXT_VAO) {
+            this.EXT_VAO.bindVertexArrayOES(VAO);
+        } else {
+            this.gl.bindVertexArray(VAO);
+        }
+    }
+
+    /**
+     * Private method, gets a webgl extension
+     * @returns {WebGLVertexArrayObject}
+     */
+    _getExtension(name) {
+        const ext = this.gl.getExtension(name);
+        return ext;
     }
 
     set depthTest(bool) {

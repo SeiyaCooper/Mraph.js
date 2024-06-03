@@ -1,4 +1,3 @@
-import { mergeObject } from "../../utils/utils.js";
 import MraphError from "../../utils/MraphError.js";
 
 export default class Program {
@@ -13,9 +12,6 @@ export default class Program {
         this.vs = createShader(gl, gl.VERTEX_SHADER, vs);
         this.fs = createShader(gl, gl.FRAGMENT_SHADER, fs);
         this.program = createProgram(gl, this.vs, this.fs);
-
-        // TODO
-        mergeObject(this, this.getExtension("OES_vertex_array_object"));
     }
 
     /**
@@ -61,46 +57,23 @@ export default class Program {
     }
 
     /**
-     * Sets attribute variable
-     * @param {string} name
-     * @param {object} value
-     * @param {number} n
-     * @param {number} usage
-     * @returns
+     * Initiates a vertex array object
+     * @param {Geometry} mesh
      */
-    setAttriBuffer(name, value, n, usage) {
+    initVAO(mesh) {
         const gl = this.gl;
 
-        let location;
-        if (this.locations.has(name)) {
-            location = this.locations.get(name);
-        } else {
-            location = gl.getAttribLocation(this.program, name);
-            this.locations.set(name, location);
+        for (let [name, value] of Object.entries(mesh.attributes ?? {})) {
+            const location = gl.getAttribLocation(this.program, name);
+
+            // Can not find this variable, then do nothing
+            if (location === -1) continue;
+
+            const buffer = value.buffer;
+            gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+            gl.enableVertexAttribArray(location);
+            gl.vertexAttribPointer(location, value.n, gl.FLOAT, false, 0, 0);
         }
-
-        if (!value.buffer) {
-            value.buffer = gl.createBuffer();
-            value.needsUpdate = true;
-        }
-        const buffer = value.buffer;
-        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-
-        if (value.needsUpdate ?? true) {
-            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(value.data), usage);
-            value.needsUpdate = false;
-        }
-
-        // Can not find this variable, then do nothing
-        if (location === -1) return;
-
-        gl.enableVertexAttribArray(location);
-        gl.vertexAttribPointer(location, n, gl.FLOAT, false, 0, 0);
-    }
-
-    getExtension(name) {
-        const ext = this.gl.getExtension(name);
-        return ext;
     }
 }
 

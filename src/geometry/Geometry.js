@@ -27,6 +27,11 @@ export default class Geometry extends Node {
     /**
      * @type {boolean}
      */
+    visible = true;
+
+    /**
+     * @type {boolean}
+     */
     needsUpdate = true;
 
     /**

@@ -1004,6 +1004,11 @@ declare module "core/WebGL/WebGLRenderer" {
          */
         gl: WebGLRenderingContext | WebGL2RenderingContext;
         /**
+         * A set of vaos
+         * @type {WebGLVertexArrayObject[]}
+         */
+        VAOs: WebGLVertexArrayObject[];
+        /**
          * usage of this renderer, default to be gl.STATIC_DRAW
          * @type {number}
          */
@@ -1016,6 +1021,7 @@ declare module "core/WebGL/WebGLRenderer" {
          * whether to use depthMask, default to be true
          */
         _depthMask: boolean;
+        EXT_VAO: WebGLVertexArrayObject;
         set depthTest(bool: boolean);
         get depthTest(): boolean;
         set depthMask(bool: boolean);
@@ -1041,6 +1047,21 @@ declare module "core/WebGL/WebGLRenderer" {
          * @param {number} height
          */
         resize(width: number, height: number): void;
+        /**
+         * Private method, creates a vertex array object
+         * @returns {WebGLVertexArrayObject}
+         */
+        _createVAO(): WebGLVertexArrayObject;
+        /**
+         * Private method, binds a vertex array object
+         * @returns {WebGLVertexArrayObject}
+         */
+        _bindVAO(VAO: any): WebGLVertexArrayObject;
+        /**
+         * Private method, gets a webgl extension
+         * @returns {WebGLVertexArrayObject}
+         */
+        _getExtension(name: any): WebGLVertexArrayObject;
     }
     import ProgramManager from "core/WebGL/ProgramManager";
 }
@@ -1183,15 +1204,10 @@ declare module "core/WebGL/WebGLProgram" {
          */
         setUniform(name: string, data: Matrix | Vector | number[], n?: number): void;
         /**
-         * Sets attribute variable
-         * @param {string} name
-         * @param {object} value
-         * @param {number} n
-         * @param {number} usage
-         * @returns
+         * Initiates a vertex array object
+         * @param {Geometry} mesh
          */
-        setAttriBuffer(name: string, value: object, n: number, usage: number): void;
-        getExtension(name: any): any;
+        initVAO(mesh: Geometry): void;
     }
 }
 declare module "material/SlotParser" {
@@ -1718,6 +1734,10 @@ declare module "geometry/Geometry" {
          * @type {number | Object}
          */
         indices: number | any;
+        /**
+         * @type {boolean}
+         */
+        visible: boolean;
         /**
          * @type {boolean}
          */
