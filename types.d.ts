@@ -2142,8 +2142,18 @@ declare module "mobjects/2D/FunctionGraph2D" {
     }
     import Mobject2D from "mobjects/2D/Mobject2D";
 }
+declare module "mobjects/3D/Mobject3D" {
+    export default class Mobject3D extends Mobject {
+        /**
+         * Sets the color of this mobject
+         * @param {Color} color
+         */
+        setColor(color: Color): void;
+    }
+    import Mobject from "mobjects/Mobject";
+}
 declare module "mobjects/3D/FunctionGraph3D" {
-    export default class FunctionGraph3D extends Mobject {
+    export default class FunctionGraph3D extends Mobject3D {
         constructor({ xRange, yRange, func, }?: {
             xRange?: number[];
             yRange?: number[];
@@ -2153,7 +2163,7 @@ declare module "mobjects/3D/FunctionGraph3D" {
         yRange: number[];
         func: (x: any, y: any) => any;
     }
-    import Mobject from "mobjects/Mobject";
+    import Mobject3D from "mobjects/3D/Mobject3D";
 }
 declare module "mobjects/2D/Axes" {
     export default class Axes extends Mobject2D {
@@ -2208,7 +2218,7 @@ declare module "mobjects/2D/VectorField2D" {
     import Vector from "math/Vector";
 }
 declare module "mobjects/3D/Point3D" {
-    export default class Point3D extends Mobject {
+    export default class Point3D extends Mobject3D {
         /**
          * @param  {Vector | number[] | ...number} position
          */
@@ -2217,8 +2227,7 @@ declare module "mobjects/3D/Point3D" {
         _v: Vector;
         _a: Vector;
         center: any;
-        set color(color: import("mraph").Color);
-        get color(): import("mraph").Color;
+        color: import("mraph").Color;
         set v(val: Vector);
         get v(): Vector;
         set a(val: Vector);
@@ -2230,7 +2239,7 @@ declare module "mobjects/3D/Point3D" {
         set z(val: any);
         get z(): any;
     }
-    import Mobject from "mobjects/Mobject";
+    import Mobject3D from "mobjects/3D/Mobject3D";
     import Vector from "math/Vector";
 }
 declare module "extra/OBJLoader" {

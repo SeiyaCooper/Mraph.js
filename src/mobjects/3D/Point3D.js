@@ -1,9 +1,9 @@
 import Vector from "../../math/Vector.js";
-import Mobject from "../Mobject.js";
+import Mobject3D from "./Mobject3D.js";
 import Sphere from "../../geometry/Sphere.js";
 import * as COLORS from "../../constants/colors.js";
 
-export default class Point3D extends Mobject {
+export default class Point3D extends Mobject3D {
     radius = 0.06;
     _v = new Vector(0, 0, 0);
     _a = new Vector(0, 0, 0);
@@ -37,14 +37,6 @@ export default class Point3D extends Mobject {
 
         this.merge(sphere, { mergeColors: false });
         this.setIndex(this.getAttributeVal("position").length / 3);
-    }
-
-    set color(color) {
-        this.material.color = color;
-    }
-
-    get color() {
-        return this.material.color;
     }
 
     set v(val) {

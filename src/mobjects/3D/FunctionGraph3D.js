@@ -1,7 +1,7 @@
-import Mobject from "../Mobject.js";
+import Mobject3D from "./Mobject3D.js";
 import * as GLENUM from "../../constants/glenum.js";
 
-export default class FunctionGraph3D extends Mobject {
+export default class FunctionGraph3D extends Mobject3D {
     constructor({
         xRange = [-8, 8, 0.5],
         yRange = [-8, 8, 0.5],

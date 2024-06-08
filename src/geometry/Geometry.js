@@ -210,7 +210,7 @@ export default class Geometry extends Node {
      * @param {number} n
      */
     getAttributeVal(name) {
-        return this.attributes.get(name).data;
+        return this.attributes.get(name)?.data ?? [];
     }
 
     /**
