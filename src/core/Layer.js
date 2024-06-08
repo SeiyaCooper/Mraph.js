@@ -112,7 +112,7 @@ export default class Layer {
      * @param  {...Mobject | Light} els
      */
     delete(...els) {
-        const scene = this.scene;
+        const scene = this.scene.children;
         const surroundings = this.surroundings;
         for (let el of els) {
             if (typeof el.attributes === "object")
