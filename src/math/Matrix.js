@@ -377,7 +377,7 @@ export default class Matrix extends Array {
      * @param {number} z
      * @returns {Matrix}
      */
-    static translate(x, y, z) {
+    static translation(x, y, z) {
         return new Matrix(
             [1, 0, 0, 0],
             [0, 1, 0, 0],

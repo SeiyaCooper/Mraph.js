@@ -32,7 +32,7 @@ export default class Camera {
     update() {
         const center = this.center;
         const rotation = this.rotation;
-        this.viewMat = Matrix.translate(...center)
+        this.viewMat = Matrix.translation(...center)
             .trans(Matrix.rotateX(-rotation[0]))
             .trans(Matrix.rotateY(-rotation[1]))
             .trans(Matrix.rotateZ(-rotation[2]));
@@ -64,7 +64,7 @@ export default class Camera {
         far = 1,
     } = {}) {
         const [l, r, b, t, n, f] = [left, right, bottom, top, near, far];
-        const mat = Matrix.translate(
+        const mat = Matrix.translation(
             (r + l) / (l - r),
             (t + b) / (b - t),
             (f + n) / (n - f)
@@ -88,7 +88,7 @@ export default class Camera {
         const i = k.cross(this.up).normal();
         const j = i.cross(k);
 
-        this.viewMat = Matrix.translate(...p).trans(
+        this.viewMat = Matrix.translation(...p).trans(
             new Matrix(
                 [i[0], j[0], -k[0], 0],
                 [i[1], j[1], -k[1], 0],

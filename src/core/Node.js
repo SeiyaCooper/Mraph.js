@@ -91,7 +91,7 @@ export default class Node {
             .trans(Matrix.rotateX(rotation[0]))
             .trans(Matrix.rotateY(rotation[1]))
             .trans(Matrix.rotateZ(rotation[2]))
-            .trans(Matrix.translate(...this.center));
+            .trans(Matrix.translation(...this.center));
         return this;
     }
 

@@ -590,7 +590,7 @@ declare module "math/Matrix" {
          * @param {number} z
          * @returns {Matrix}
          */
-        static translate(x: number, y: number, z: number): Matrix;
+        static translation(x: number, y: number, z: number): Matrix;
         /**
          * @param {...number[]} source
          * @return {Matrix}
