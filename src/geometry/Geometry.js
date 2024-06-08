@@ -1,23 +1,23 @@
 import Node from "../core/Node.js";
-import * as GLENUM from "../constants/glenum.js";
+import * as DrawModes from "../constants/draw_modes.js";
 
 export default class Geometry extends Node {
     /**
      * attribute variables
      * @type {Object}
      */
-    attributes = {};
+    attributes = new Map();
 
     /**
      * uniform variables
      * @type {Object}
      */
-    uniforms = {};
+    uniforms = new Map();
 
     /**
      * @type {number}
      */
-    glMode = GLENUM.TRIANGLES;
+    mode = DrawModes.TRIANGLES;
 
     /**
      * @type {number | Object}
@@ -174,28 +174,70 @@ export default class Geometry extends Node {
     }
 
     /**
-     * Set value of a single attribute variable
+     * Set value of an attribute variable
      * @param {string} name
      * @param {number[]} data
-     * @param {number} n
+     * @param {number} [size]
      */
-    setAttribute(name, data, n) {
-        const attr = this.attributes[name] ?? {};
-        attr.data = data;
-        attr.n = n ?? attr.n;
-        attr.needsUpdate = true;
+    setAttribute(name, data, size) {
+        const attrs = this.attributes;
 
-        if (!this.attributes[name]) this.attributes[name] = attr;
+        if (attrs.has(name)) {
+            const attr = attrs.get(name);
+            attr.data = data;
+            attr.size = size ?? attr.size;
+            attr.needsUpdate = true;
+        } else {
+            const attr = { data, size, needsUpdate: true };
+            attrs.set(name, attr);
+        }
     }
 
     /**
-     * Get value of a single attribute variable
+     * Delete an attribute
+     * @param {string} name
+     */
+    deleteAttribute(name) {
+        if (!this.attributes.has(name)) return;
+
+        this.attributes.delete(name);
+    }
+
+    /**
+     * Get value of an attribute variable
      * @param {string} name
      * @param {number[]} data
      * @param {number} n
      */
     getAttributeVal(name) {
-        return this.attributes[name]?.data ?? [];
+        return this.attributes.get(name).data;
+    }
+
+    /**
+     * Sets a uniform variable
+     * @param {string} name
+     * @param {number[] | number} data
+     * @param {number} size
+     */
+    setUniform(name, data, size) {
+        this.uniforms.set(name, { data, size });
+    }
+
+    /**
+     * Deletes a uniform variable
+     * @param {string} name
+     */
+    deleteUniform(name) {
+        this.uniforms.delete(name);
+    }
+
+    /**
+     * Gets value of a uniform variable
+     * @param {string} name
+     * @returns {number[] | number}
+     */
+    getUniformVal(name) {
+        return this.uniforms.get(name).data;
     }
 
     /**

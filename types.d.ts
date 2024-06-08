@@ -986,6 +986,12 @@ declare module "core/WebGL/ProgramManager" {
         getProgramKey(material: any): any;
     }
 }
+declare module "utils/MraphError" {
+    export default class MraphError {
+        static error(msg: any): void;
+        static warn(msg: any): void;
+    }
+}
 declare module "core/WebGL/WebGLRenderer" {
     export default class WebGLRenderer {
         constructor(canvas: any, contextConfig?: {});
@@ -1170,12 +1176,6 @@ declare module "constants/colors" {
     export const COOPER_ORANGE: Color;
     export const SEIYA_PINK: Color;
     import Color from "math/Color";
-}
-declare module "utils/MraphError" {
-    export default class MraphError {
-        static error(msg: any): void;
-        static warn(msg: any): void;
-    }
 }
 declare module "core/WebGL/WebGLProgram" {
     export default class Program {
@@ -1714,6 +1714,15 @@ declare module "math/Quat" {
     }
     import Vector from "math/Vector";
 }
+declare module "constants/draw_modes" {
+    export const POINTS: "POINTS";
+    export const LINES: "LINES";
+    export const LINE_LOOP: "LINE_LOOP";
+    export const LINE_STRIP: "LINE_STRIP";
+    export const TRIANGLES: "TRIANGLES";
+    export const TRIANGLE_STRIP: "TRIANGLE_STRI";
+    export const TRIANGLE_FAN: "TRIANGLE_FAN";
+}
 declare module "geometry/Geometry" {
     export default class Geometry extends Node {
         /**
@@ -1729,7 +1738,7 @@ declare module "geometry/Geometry" {
         /**
          * @type {number}
          */
-        glMode: number;
+        mode: number;
         /**
          * @type {number | Object}
          */
@@ -1783,19 +1792,42 @@ declare module "geometry/Geometry" {
          */
         mergeNormals(geometry: Geometry): this;
         /**
-         * Set value of a single attribute variable
+         * Set value of an attribute variable
          * @param {string} name
          * @param {number[]} data
-         * @param {number} n
+         * @param {number} [size]
          */
-        setAttribute(name: string, data: number[], n: number): void;
+        setAttribute(name: string, data: number[], size?: number): void;
         /**
-         * Get value of a single attribute variable
+         * Delete an attribute
+         * @param {string} name
+         */
+        deleteAttribute(name: string): void;
+        /**
+         * Get value of an attribute variable
          * @param {string} name
          * @param {number[]} data
          * @param {number} n
          */
         getAttributeVal(name: string): any;
+        /**
+         * Sets a uniform variable
+         * @param {string} name
+         * @param {number[] | number} data
+         * @param {number} size
+         */
+        setUniform(name: string, data: number[] | number, size: number): void;
+        /**
+         * Deletes a uniform variable
+         * @param {string} name
+         */
+        deleteUniform(name: string): void;
+        /**
+         * Gets value of a uniform variable
+         * @param {string} name
+         * @returns {number[] | number}
+         */
+        getUniformVal(name: string): number[] | number;
         /**
          * set index
          * @param {number | number[]} data

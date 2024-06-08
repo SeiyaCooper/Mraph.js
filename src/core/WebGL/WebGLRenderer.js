@@ -1,6 +1,7 @@
 import Matrix from "../../math/Matrix.js";
 import * as GLENUM from "../../constants/glenum.js";
 import ProgramManager from "./ProgramManager.js";
+import MraphError from "../../utils/MraphError.js";
 
 export default class WebGLRenderer {
     /**
@@ -65,6 +66,11 @@ export default class WebGLRenderer {
     render(mesh, camera, surroundings = {}) {
         if (!mesh.visible) return;
 
+        if (!mesh.material) {
+            MraphError.error("Each geometry should have a material.");
+            return;
+        }
+
         const gl = this.gl;
         const scene = { mesh, camera, surroundings };
         const material = mesh.material;
@@ -80,15 +86,15 @@ export default class WebGLRenderer {
         program.setUniform("projectionMat", camera.projectionMat);
         program.setUniform("modelMat", mesh.matrix ?? Matrix.identity(4));
 
-        for (let value of Object.values(mesh.attributes ?? {})) {
-            if (!value.buffer) {
-                value.buffer = gl.createBuffer();
+        for (let value of mesh.attributes.values()) {
+            if (!value.glBuffer) {
+                value.glBuffer = gl.createBuffer();
                 value.needsUpdate = true;
             }
 
             if (!value.needsUpdate) continue;
 
-            gl.bindBuffer(gl.ARRAY_BUFFER, value.buffer);
+            gl.bindBuffer(gl.ARRAY_BUFFER, value.glBuffer);
             gl.bufferData(
                 gl.ARRAY_BUFFER,
                 new Float32Array(value.data),
@@ -96,7 +102,7 @@ export default class WebGLRenderer {
             );
             value.needsUpdate = false;
         }
-        for (let [name, data] of Object.entries(mesh.uniforms ?? {})) {
+        for (let [name, data] of mesh.uniforms) {
             program.setUniform(name, data);
         }
 
@@ -110,7 +116,7 @@ export default class WebGLRenderer {
         }
 
         const indices = mesh.indices;
-        const mode = mesh.glMode ?? GLENUM.TRIANGLES;
+        const mode = GLENUM[mesh.mode] ?? GLENUM.TRIANGLES;
 
         if (Array.isArray(indices)) {
             const buffer = gl.createBuffer();

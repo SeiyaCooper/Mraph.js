@@ -63,16 +63,16 @@ export default class Program {
     initVAO(mesh) {
         const gl = this.gl;
 
-        for (let [name, value] of Object.entries(mesh.attributes ?? {})) {
+        for (let [name, value] of mesh.attributes) {
             const location = gl.getAttribLocation(this.program, name);
 
             // Can not find this variable, then do nothing
             if (location === -1) continue;
 
-            const buffer = value.buffer;
+            const buffer = value.glBuffer;
             gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
             gl.enableVertexAttribArray(location);
-            gl.vertexAttribPointer(location, value.n, gl.FLOAT, false, 0, 0);
+            gl.vertexAttribPointer(location, value.size, gl.FLOAT, false, 0, 0);
         }
     }
 }
