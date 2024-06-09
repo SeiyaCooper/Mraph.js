@@ -2214,7 +2214,6 @@ declare module "mobjects/3D/Point3D" {
         _v: Vector;
         _a: Vector;
         center: any;
-        color: import("mraph").Color;
         set v(val: Vector);
         get v(): Vector;
         set a(val: Vector);

@@ -24,12 +24,12 @@ export default class Mobject extends Geometry {
     mergeAttribute(source, name) {
         const from = source.getAttributeVal(name);
         const to = this.getAttributeVal(name) ?? [];
+        const size = source.attributes.get(name).size;
 
         if (!from) return this;
 
         if (Array.isArray(source.indices)) {
             for (let i of source.indices) {
-                const size = from.size;
                 for (let j = 0; j < size; j++) {
                     to.push(from[i * size + j]);
                 }
@@ -37,6 +37,8 @@ export default class Mobject extends Geometry {
         } else {
             to.push(...from);
         }
+
+        this.setAttribute(name, to, size);
 
         return this;
     }

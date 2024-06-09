@@ -24,7 +24,7 @@ export default class Point3D extends Mobject3D {
         this.center[2] = this.center[2] ?? 0;
 
         this.material.colorMode = "single";
-        this.color = COLORS.RED;
+        this.setColor(COLORS.RED);
     }
 
     update() {
