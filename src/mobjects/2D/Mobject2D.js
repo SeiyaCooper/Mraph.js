@@ -205,6 +205,10 @@ export default class Mobject2D extends Mobject {
         this.clearBuffer();
         this.draw();
     }
+
+    static isInstance(obj) {
+        return obj instanceof Mobject2D;
+    }
 }
 
 function generateArc(

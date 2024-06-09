@@ -1763,35 +1763,6 @@ declare module "geometry/Geometry" {
          */
         combineChildren(): this;
         /**
-         * Merge from another geometry.
-         * @param {Geometry} geometry
-         * @param {object} config
-         * An object used to define following parameters, optional
-         * * mergeVertices {boolean} wheather to merge vertices array.
-         * * mergeNormals {boolean} wheather to merge normals array.
-         * * mergeColors{boolean} wheather to merge colors array.
-         * @returns
-         */
-        merge(geometry: Geometry, { mergeVertices, mergeNormals, mergeColors }?: object): Geometry;
-        /**
-         * Merge vertices array into this geometry from another.
-         * @param {Geometry} geometry
-         * @returns {this}
-         */
-        mergeVertices(geometry: Geometry): this;
-        /**
-         * Merge colors array into this geometry from another.
-         * @param {Geometry} geometry
-         * @returns {this}
-         */
-        mergeColors(geometry: Geometry): this;
-        /**
-         * Merge normals array into this geometry from another.
-         * @param {Geometry} geometry
-         * @returns {this}
-         */
-        mergeNormals(geometry: Geometry): this;
-        /**
          * Set value of an attribute variable
          * @param {string} name
          * @param {number[]} data
@@ -1939,7 +1910,27 @@ declare module "geometry/Cylinder" {
 }
 declare module "mobjects/Mobject" {
     export default class Mobject extends Geometry {
+        /**
+         * Every mobject contains a default material.
+         */
         material: BasicMaterial;
+        /**
+         * Merges an attribute data from another geometry.
+         * @param {Geometry} source
+         * @param {string} name
+         * @returns {this}
+         */
+        mergeAttribute(source: Geometry, name: string): this;
+        /**
+         * Merges many attribute datas from another geometry.
+         * @param {Geometry} source
+         * @param  {...string} names
+         * @returns {this}
+         */
+        mergeAttributes(source: Geometry, ...names: string[]): this;
+        /**
+         * A collection of animation methods
+         */
         animate: {
             /**
              * Shifts this mobject to a new place
@@ -1978,6 +1969,7 @@ declare module "mobjects/Mobject" {
 }
 declare module "mobjects/2D/Mobject2D" {
     export default class Mobject2D extends Mobject {
+        static isInstance(obj: any): boolean;
         points: any[];
         polygons: any[];
         normal: Vector;
@@ -2142,6 +2134,53 @@ declare module "mobjects/2D/FunctionGraph2D" {
     }
     import Mobject2D from "mobjects/2D/Mobject2D";
 }
+declare module "mobjects/2D/Axes2D" {
+    export default class Axes2D extends Mobject2D {
+        constructor({ xRange, yRange, origin, drawGrid, }?: {
+            xRange?: number[];
+            yRange?: number[];
+            origin?: Point;
+            drawGrid?: boolean;
+        });
+        _tickLength: number;
+        origin: Point;
+        xAxis: Axis;
+        yAxis: Axis;
+        xRange: number[];
+        yRange: number[];
+        graphs: any[];
+        addTip(): void;
+        drawFunction2D(func: any, { step, autoStack }?: {
+            step?: number;
+            autoStack?: boolean;
+        }): FunctionGraph2D;
+        set tickLength(val: number);
+        get tickLength(): number;
+    }
+    import Mobject2D from "mobjects/2D/Mobject2D";
+    import Point from "mobjects/2D/Point";
+    import Axis from "mobjects/2D/Axis";
+    import FunctionGraph2D from "mobjects/2D/FunctionGraph2D";
+}
+declare module "mobjects/2D/VectorField2D" {
+    export default class VectorField2D extends Mobject {
+        constructor({ func, xRange, yRange, }?: {
+            func?: (x: any, y: any) => any[];
+            xRange?: number[];
+            yRange?: number[];
+        });
+        lengthFunc: (length: any) => number;
+        colorFunc: () => Color;
+        _center: Vector;
+        xRange: number[];
+        yRange: number[];
+        func: (x: any, y: any) => any[];
+        setColor(color: any): void;
+    }
+    import Mobject from "mobjects/Mobject";
+    import Color from "math/Color";
+    import Vector from "math/Vector";
+}
 declare module "mobjects/3D/Mobject3D" {
     export default class Mobject3D extends Mobject {
         /**
@@ -2164,58 +2203,6 @@ declare module "mobjects/3D/FunctionGraph3D" {
         func: (x: any, y: any) => any;
     }
     import Mobject3D from "mobjects/3D/Mobject3D";
-}
-declare module "mobjects/2D/Axes" {
-    export default class Axes extends Mobject2D {
-        constructor({ xRange, yRange, zRange, origin, }?: {
-            xRange?: number[];
-            yRange?: number[];
-            zRange?: number[];
-            origin?: Point;
-        });
-        _tickLength: number;
-        origin: Point;
-        xAxis: Axis;
-        yAxis: Axis;
-        zAxis: Axis;
-        xRange: number[];
-        yRange: number[];
-        zRange: number[];
-        graphs: any[];
-        addTip(): void;
-        drawFunction2D(func: any, { step, autoStack }?: {
-            step?: number;
-            autoStack?: boolean;
-        }): FunctionGraph2D;
-        drawFunction3D(func: any, { step }?: {
-            step?: number;
-        }): FunctinoGraph3D;
-        set tickLength(val: number);
-        get tickLength(): number;
-    }
-    import Mobject2D from "mobjects/2D/Mobject2D";
-    import Point from "mobjects/2D/Point";
-    import Axis from "mobjects/2D/Axis";
-    import FunctionGraph2D from "mobjects/2D/FunctionGraph2D";
-    import FunctinoGraph3D from "mobjects/3D/FunctionGraph3D";
-}
-declare module "mobjects/2D/VectorField2D" {
-    export default class VectorField2D extends Mobject {
-        constructor({ func, xRange, yRange, }?: {
-            func?: (x: any, y: any) => any[];
-            xRange?: number[];
-            yRange?: number[];
-        });
-        lengthFunc: (length: any) => number;
-        colorFunc: () => Color;
-        _center: Vector;
-        xRange: number[];
-        yRange: number[];
-        func: (x: any, y: any) => any[];
-    }
-    import Mobject from "mobjects/Mobject";
-    import Color from "math/Color";
-    import Vector from "math/Vector";
 }
 declare module "mobjects/3D/Point3D" {
     export default class Point3D extends Mobject3D {
@@ -2277,7 +2264,7 @@ declare module "mraph" {
     import Arc from "mobjects/2D/Arc";
     import Arrow from "mobjects/2D/Arrow";
     import Axis from "mobjects/2D/Axis";
-    import Axes from "mobjects/2D/Axes";
+    import Axes2D from "mobjects/2D/Axes2D";
     import VectorField2D from "mobjects/2D/VectorField2D";
     import FunctionGraph2D from "mobjects/2D/FunctionGraph2D";
     import FunctionGraph3D from "mobjects/3D/FunctionGraph3D";
@@ -2295,5 +2282,5 @@ declare module "mraph" {
     import Timeline from "animation/Timeline";
     import OrbitControl from "extra/OrbitControl";
     import Recorder from "extra/Recorder";
-    export { Color, Matrix, Vector, Quat, Geometry, Plane, Box, Segment, Sphere, Cylinder, DirectionalLight, PointLight, Mobject2D, Point, Tail, Line, Arc, Arrow, Axis, Axes, VectorField2D, FunctionGraph2D, FunctionGraph3D, Point3D, Layer, Camera, Texture, WebGLRenderer, WebGLProgram, CustomMaterial, BasicMaterial, DepthMaterial, LambertMaterial, Event, Timeline, OrbitControl, Recorder };
+    export { Color, Matrix, Vector, Quat, Geometry, Plane, Box, Segment, Sphere, Cylinder, DirectionalLight, PointLight, Mobject2D, Point, Tail, Line, Arc, Arrow, Axis, Axes2D, VectorField2D, FunctionGraph2D, FunctionGraph3D, Point3D, Layer, Camera, Texture, WebGLRenderer, WebGLProgram, CustomMaterial, BasicMaterial, DepthMaterial, LambertMaterial, Event, Timeline, OrbitControl, Recorder };
 }

@@ -2,6 +2,9 @@ import Geometry from "../geometry/Geometry.js";
 import BasicMaterial from "../material/BasicMaterial.js";
 
 export default class Mobject extends Geometry {
+    /**
+     * Every mobject contains a default material.
+     */
     material = new BasicMaterial();
 
     /**
@@ -12,6 +15,48 @@ export default class Mobject extends Geometry {
         this.material.colorMode = "vertex";
     }
 
+    /**
+     * Merges an attribute data from another geometry.
+     * @param {Geometry} source
+     * @param {string} name
+     * @returns {this}
+     */
+    mergeAttribute(source, name) {
+        const from = source.getAttributeVal(name);
+        const to = this.getAttributeVal(name) ?? [];
+
+        if (!from) return this;
+
+        if (Array.isArray(source.indices)) {
+            for (let i of source.indices) {
+                const size = from.size;
+                for (let j = 0; j < size; j++) {
+                    to.push(from[i * size + j]);
+                }
+            }
+        } else {
+            to.push(...from);
+        }
+
+        return this;
+    }
+
+    /**
+     * Merges many attribute datas from another geometry.
+     * @param {Geometry} source
+     * @param  {...string} names
+     * @returns {this}
+     */
+    mergeAttributes(source, ...names) {
+        for (let name of names) {
+            this.mergeAttribute(source, name);
+        }
+        return this;
+    }
+
+    /**
+     * A collection of animation methods
+     */
     animate = {
         /**
          * Shifts this mobject to a new place

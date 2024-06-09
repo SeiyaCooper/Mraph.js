@@ -44,11 +44,15 @@ export default class VectorField2D extends Mobject {
                 arrow.setColor(this.colorFunc(x, y, length));
                 arrow.update();
 
-                this.merge(arrow);
+                this.mergeAttributes(arrow, "position", "color", "normal");
             }
         }
 
         this.setIndex(this.getAttributeVal("position").length / 3);
+    }
+
+    setColor(color) {
+        this.colorFunc = () => color;
     }
 
     set center(center) {

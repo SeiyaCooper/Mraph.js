@@ -1,5 +1,6 @@
 import Mobject3D from "./Mobject3D.js";
 import * as GLENUM from "../../constants/glenum.js";
+import * as COLORS from "../../constants/colors.js";
 
 export default class FunctionGraph3D extends Mobject3D {
     constructor({
@@ -11,6 +12,11 @@ export default class FunctionGraph3D extends Mobject3D {
         this.xRange = xRange;
         this.yRange = yRange;
         this.func = func;
+        this.material.colorMode = "single";
+
+        const color = COLORS.BLUE.clone();
+        color.a = 0.3;
+        this.setColor(color);
     }
 
     update() {

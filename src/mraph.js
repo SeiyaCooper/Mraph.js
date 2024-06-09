@@ -39,7 +39,7 @@ import Line from "./mobjects/2D/Line.js";
 import Arc from "./mobjects/2D/Arc.js";
 import Arrow from "./mobjects/2D/Arrow.js";
 import Axis from "./mobjects/2D/Axis.js";
-import Axes from "./mobjects/2D/Axes.js";
+import Axes2D from "./mobjects/2D/Axes2D.js";
 import VectorField2D from "./mobjects/2D/VectorField2D.js";
 import FunctionGraph2D from "./mobjects/2D/FunctionGraph2D.js";
 
@@ -81,7 +81,7 @@ export {
     Arc,
     Arrow,
     Axis,
-    Axes,
+    Axes2D,
     VectorField2D,
     FunctionGraph2D,
     FunctionGraph3D,
