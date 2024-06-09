@@ -1230,7 +1230,12 @@ declare module "material/Material" {
          * Whether to use depth test, true by default.
          * @type {boolean}
          */
-        _depthTest: boolean;
+        depthTest: boolean;
+        /**
+         * Whether to use depth mask, true by default.
+         * @type {boolean}
+         */
+        depthMask: boolean;
         /**
          * Determines the mode of color, avaible options are 'single', 'texture' and 'vertex'.
          * @type {string}
@@ -1264,8 +1269,6 @@ declare module "material/Material" {
         attachComponent(component: any): void;
         compileComponents(): any;
         passComponentVariables(): void;
-        set depthTest(val: boolean);
-        get depthTest(): boolean;
     }
 }
 declare module "material/BasicMaterial" {
@@ -1274,7 +1277,6 @@ declare module "material/BasicMaterial" {
         fragmentShader: any;
         initProgram(gl: any): void;
         program: WebGLProgram;
-        get depthTest(): boolean;
     }
     import Material from "material/Material";
     import WebGLProgram from "core/WebGL/WebGLProgram";

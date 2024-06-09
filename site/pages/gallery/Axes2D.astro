@@ -25,6 +25,13 @@ import Example from "../../layouts/Example.astro";
         figure2.set("strokeColor", mp.COLORS.SEIYA_PINK);
         figure2.update();
 
+        //Draw Logo
+        const logo = new mp.ImageMobject("/Mraph.js/Mraph_logo.png", { maintainAspectRatio: true, width: 7 });
+        logo.center.z = -0.01;
+        logo.center.y = -5;
+        logo.center.x = 0.5;
+        layer.add(logo);
+
         // Render
         layer.add(axes);
         layer.enableOrbitControl();

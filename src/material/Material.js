@@ -6,7 +6,13 @@ export default class Material {
      * Whether to use depth test, true by default.
      * @type {boolean}
      */
-    _depthTest = true;
+    depthTest = true;
+
+    /**
+     * Whether to use depth mask, true by default.
+     * @type {boolean}
+     */
+    depthMask = true;
 
     /**
      * Determines the mode of color, avaible options are 'single', 'texture' and 'vertex'.
@@ -63,13 +69,5 @@ export default class Material {
 
     passComponentVariables() {
         for (let component of this.components) component.passVariables(this);
-    }
-
-    set depthTest(val) {
-        this._depthTest = val;
-    }
-
-    get depthTest() {
-        return this._depthTest;
     }
 }

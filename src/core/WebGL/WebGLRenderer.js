@@ -76,6 +76,7 @@ export default class WebGLRenderer {
         const material = mesh.material;
 
         this.depthTest = material.depthTest;
+        this.depthMask = material.depthMask;
 
         if (!material.program) this.programManager.setProgram(material, this.gl, scene);
         const program = material.program;

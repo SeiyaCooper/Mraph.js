@@ -22,8 +22,4 @@ export default class BasicMaterial extends Material {
     beforeRender() {
         this.passComponentVariables();
     }
-
-    get depthTest() {
-        return this.color.a === 1;
-    }
 }
