@@ -2251,6 +2251,26 @@ declare module "mobjects/3D/Point3D" {
     import Mobject3D from "mobjects/3D/Mobject3D";
     import Vector from "math/Vector";
 }
+declare module "mobjects/ImageMobject" {
+    export default class ImageMobject extends Mobject {
+        constructor(image: any, { width, height, maintainAspectRatio }?: {
+            width?: number;
+            height?: number;
+            maintainAspectRatio?: boolean;
+        });
+        _image: any;
+        texture: any;
+        width: number;
+        height: number;
+        maintainAspectRatio: boolean;
+        set image(image: any);
+        get image(): any;
+        set layer(layer: any);
+        get layer(): any;
+        _layer: any;
+    }
+    import Mobject from "mobjects/Mobject";
+}
 declare module "extra/OBJLoader" {
     export function parseToGeometry(src: any): Promise<Geometry>;
     export function parseToObject(src: any): Promise<{
@@ -2280,6 +2300,8 @@ declare module "mraph" {
     import Cylinder from "geometry/Cylinder";
     import DirectionalLight from "light/DirectionalLight";
     import PointLight from "light/PointLight";
+    import Mobject from "mobjects/Mobject";
+    import ImageMobject from "mobjects/ImageMobject";
     import Mobject2D from "mobjects/2D/Mobject2D";
     import Point from "mobjects/2D/Point";
     import Tail from "mobjects/2D/Tail";
@@ -2290,6 +2312,7 @@ declare module "mraph" {
     import Axes2D from "mobjects/2D/Axes2D";
     import VectorField2D from "mobjects/2D/VectorField2D";
     import FunctionGraph2D from "mobjects/2D/FunctionGraph2D";
+    import Mobject3D from "mobjects/3D/Mobject3D";
     import FunctionGraph3D from "mobjects/3D/FunctionGraph3D";
     import Point3D from "mobjects/3D/Point3D";
     import Layer from "core/Layer";
@@ -2305,5 +2328,5 @@ declare module "mraph" {
     import Timeline from "animation/Timeline";
     import OrbitControl from "extra/OrbitControl";
     import Recorder from "extra/Recorder";
-    export { Color, Matrix, Vector, Quat, Geometry, Plane, Box, Segment, Sphere, Cylinder, DirectionalLight, PointLight, Mobject2D, Point, Tail, Line, Arc, Arrow, Axis, Axes2D, VectorField2D, FunctionGraph2D, FunctionGraph3D, Point3D, Layer, Camera, Texture, WebGLRenderer, WebGLProgram, CustomMaterial, BasicMaterial, DepthMaterial, LambertMaterial, Event, Timeline, OrbitControl, Recorder };
+    export { Color, Matrix, Vector, Quat, Geometry, Plane, Box, Segment, Sphere, Cylinder, DirectionalLight, PointLight, Mobject, ImageMobject, Mobject2D, Point, Tail, Line, Arc, Arrow, Axis, Axes2D, VectorField2D, FunctionGraph2D, Mobject3D, FunctionGraph3D, Point3D, Layer, Camera, Texture, WebGLRenderer, WebGLProgram, CustomMaterial, BasicMaterial, DepthMaterial, LambertMaterial, Event, Timeline, OrbitControl, Recorder };
 }

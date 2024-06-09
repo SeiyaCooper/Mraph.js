@@ -9,7 +9,6 @@ export default class Texture {
         this.flipY = flipY;
         this.texture = gl.createTexture();
         this.unit = unit;
-        this.bind();
 
         this.bind();
         this.minFilter = minFilter;

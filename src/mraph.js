@@ -43,8 +43,12 @@ import Axes2D from "./mobjects/2D/Axes2D.js";
 import VectorField2D from "./mobjects/2D/VectorField2D.js";
 import FunctionGraph2D from "./mobjects/2D/FunctionGraph2D.js";
 
+import Mobject3D from "./mobjects/3D/Mobject3D.js";
 import FunctionGraph3D from "./mobjects/3D/FunctionGraph3D.js";
 import Point3D from "./mobjects/3D/Point3D.js";
+
+import Mobject from "./mobjects/Mobject.js";
+import ImageMobject from "./mobjects/ImageMobject.js";
 
 export * as MathFunc from "./math/math_func.js";
 
@@ -70,11 +74,15 @@ export {
     Sphere,
     Cylinder,
 
-    //Lights
+    // Lights
     DirectionalLight,
     PointLight,
 
     // Mobjects
+    Mobject,
+    ImageMobject,
+
+    // Mobjects - 2D
     Mobject2D,
     Point,
     Tail,
@@ -85,6 +93,9 @@ export {
     Axes2D,
     VectorField2D,
     FunctionGraph2D,
+
+    // Mobjects - 3D
+    Mobject3D,
     FunctionGraph3D,
     Point3D,
 
