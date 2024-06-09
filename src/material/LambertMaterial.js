@@ -14,16 +14,8 @@ export default class LambertMaterial extends Material {
 
     initProgram(gl, { surroundings }) {
         let { vs, fs } = super.compileComponents();
-        fs = SlotParser.replace(
-            fs,
-            "point_light_num",
-            surroundings.pointLights?.length ?? 0
-        );
-        fs = SlotParser.replace(
-            fs,
-            "directional_light_num",
-            surroundings.directionalLights?.length ?? 0
-        );
+        fs = SlotParser.replace(fs, "point_light_num", surroundings.pointLights?.length ?? 0);
+        fs = SlotParser.replace(fs, "directional_light_num", surroundings.directionalLights?.length ?? 0);
         this.program = new WebGLProgram(gl, { vs, fs });
     }
 
@@ -42,11 +34,7 @@ export default class LambertMaterial extends Material {
             }
             program.setUniform("point_light_position", pointLightsPosition, 3);
             program.setUniform("point_light_color", pointLightsColor, 4);
-            program.setUniform(
-                "point_light_intensity",
-                pointLightsIntensity,
-                1
-            );
+            program.setUniform("point_light_intensity", pointLightsIntensity, 1);
         }
 
         const directionalLights = surroundings.directionalLights;
@@ -59,21 +47,9 @@ export default class LambertMaterial extends Material {
                 directionalLightsColor.push(...light.color);
                 directionalLightsIntensity.push(light.intensity);
             }
-            program.setUniform(
-                "directional_light_direction",
-                directionalLightsDirection,
-                3
-            );
-            program.setUniform(
-                "directional_light_color",
-                directionalLightsColor,
-                4
-            );
-            program.setUniform(
-                "directional_light_intensity",
-                directionalLightsIntensity,
-                1
-            );
+            program.setUniform("directional_light_direction", directionalLightsDirection, 3);
+            program.setUniform("directional_light_color", directionalLightsColor, 4);
+            program.setUniform("directional_light_intensity", directionalLightsIntensity, 1);
         }
 
         this.passComponentVariables();

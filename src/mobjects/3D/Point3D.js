@@ -44,9 +44,7 @@ export default class Point3D extends Mobject3D {
         let lastTime = 0;
         this.layer.timeline.add(this.layer.timeline.current, Infinity, {
             update: (_, elapsedTime) => {
-                this.center = this.center.add(
-                    this._v.mult(elapsedTime - lastTime)
-                );
+                this.center = this.center.add(this._v.mult(elapsedTime - lastTime));
                 this.updateMatrix();
                 lastTime = elapsedTime;
             },

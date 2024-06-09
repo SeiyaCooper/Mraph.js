@@ -250,11 +250,7 @@ export default class Matrix extends Array {
      */
     static rotateX(ang, n = 4) {
         if (n === 3) {
-            return new Matrix(
-                [1, 0, 0],
-                [0, Math.cos(ang), -Math.sin(ang)],
-                [0, Math.sin(ang), Math.cos(ang)]
-            );
+            return new Matrix([1, 0, 0], [0, Math.cos(ang), -Math.sin(ang)], [0, Math.sin(ang), Math.cos(ang)]);
         } else {
             return new Matrix(
                 [1, 0, 0, 0],
@@ -276,11 +272,7 @@ export default class Matrix extends Array {
      */
     static rotateY(ang, n = 4) {
         if (n === 3) {
-            return new Matrix(
-                [Math.cos(ang), 0, -Math.sin(ang)],
-                [0, 1, 0],
-                [Math.sin(ang), 0, Math.cos(ang), 0]
-            );
+            return new Matrix([Math.cos(ang), 0, -Math.sin(ang)], [0, 1, 0], [Math.sin(ang), 0, Math.cos(ang), 0]);
         } else {
             return new Matrix(
                 [Math.cos(ang), 0, -Math.sin(ang), 0],
@@ -302,11 +294,7 @@ export default class Matrix extends Array {
      */
     static rotateZ(ang, n = 4) {
         if (n === 3) {
-            return new Matrix(
-                [Math.cos(ang), -Math.sin(ang), 0],
-                [Math.sin(ang), Math.cos(ang), 0],
-                [0, 0, 1]
-            );
+            return new Matrix([Math.cos(ang), -Math.sin(ang), 0], [Math.sin(ang), Math.cos(ang), 0], [0, 0, 1]);
         } else {
             return new Matrix(
                 [Math.cos(ang), -Math.sin(ang), 0, 0],
@@ -330,14 +318,8 @@ export default class Matrix extends Array {
 
         const I = Matrix.identity(3);
         const K = axis.normal();
-        const C = new Matrix(
-            [0, -K[2], K[1]],
-            [K[2], 0, -K[0]],
-            [-K[1], K[0], 0]
-        );
-        let ans = I.add(C.mult(C).mult(1 - Math.cos(angle))).add(
-            C.mult(Math.sin(angle))
-        );
+        const C = new Matrix([0, -K[2], K[1]], [K[2], 0, -K[0]], [-K[1], K[0], 0]);
+        let ans = I.add(C.mult(C).mult(1 - Math.cos(angle))).add(C.mult(Math.sin(angle)));
 
         if (n === 3) {
             return ans;
@@ -361,12 +343,7 @@ export default class Matrix extends Array {
         if (n === 3) {
             return new Matrix([x, 0, 0], [0, y, 0], [0, 0, z]);
         } else {
-            return new Matrix(
-                [x, 0, 0, 0],
-                [0, y, 0, 0],
-                [0, 0, z, 0],
-                [0, 0, 0, 1]
-            );
+            return new Matrix([x, 0, 0, 0], [0, y, 0, 0], [0, 0, z, 0], [0, 0, 0, 1]);
         }
     }
 
@@ -378,12 +355,7 @@ export default class Matrix extends Array {
      * @returns {Matrix}
      */
     static translation(x, y, z) {
-        return new Matrix(
-            [1, 0, 0, 0],
-            [0, 1, 0, 0],
-            [0, 0, 1, 0],
-            [x, y, z, 1]
-        );
+        return new Matrix([1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [x, y, z, 1]);
     }
 
     /**

@@ -72,14 +72,7 @@ export default class Timeline {
     add(
         startTime,
         stopTime,
-        {
-            update,
-            start,
-            stop,
-            updateMax = true,
-            updateMin = true,
-            curve = Timeline.easeInOutCubic,
-        } = {}
+        { update, start, stop, updateMax = true, updateMin = true, curve = Timeline.easeInOutCubic } = {}
     ) {
         const event = new Event(startTime, stopTime, {
             update,
@@ -93,8 +86,7 @@ export default class Timeline {
         this.events.push(event);
 
         if (updateMax) this._maxTime = Math.max(stopTime * 1000, this._maxTime);
-        if (updateMin)
-            this._minTime = Math.min(startTime * 1000, this._minTime);
+        if (updateMin) this._minTime = Math.min(startTime * 1000, this._minTime);
 
         return event;
     }
@@ -170,12 +162,10 @@ export default class Timeline {
             if (this.events[index].id === id) this.events.splice(index, 1);
         }
         for (let index in this.infinityEvents) {
-            if (this.infinityEvents[index].id === id)
-                this.infinityEvents.splice(index, 1);
+            if (this.infinityEvents[index].id === id) this.infinityEvents.splice(index, 1);
         }
         for (let index in this.globalEvents) {
-            if (this.globalEvents[index].id === id)
-                this.globalEvents.splice(index, 1);
+            if (this.globalEvents[index].id === id) this.globalEvents.splice(index, 1);
         }
     }
 
@@ -193,15 +183,9 @@ export default class Timeline {
             if (self.state !== STATE.PLAYING) return;
 
             frame++;
-            const now = self.fps
-                ? frame / self.fps
-                : (+new Date() - startTime) / 1000;
+            const now = self.fps ? frame / self.fps : (+new Date() - startTime) / 1000;
 
-            if (
-                now > self.maxTime &&
-                self.allStopped &&
-                self.infinityEvents.length === 0
-            ) {
+            if (now > self.maxTime && self.allStopped && self.infinityEvents.length === 0) {
                 self.state = STATE.STOPPED;
                 return;
             }
@@ -268,8 +252,7 @@ export default class Timeline {
      * @param {number} t - process, 0 to 1
      * @returns {number}
      */
-    static easeInOutQuad = (t) =>
-        t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+    static easeInOutQuad = (t) => (t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2);
 
     /**
      * Cubic ease in function
@@ -290,8 +273,7 @@ export default class Timeline {
      * @param {number} t - process, 0 to 1
      * @returns {number}
      */
-    static easeInOutCubic = (t) =>
-        t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+    static easeInOutCubic = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 
     /**
      * Sine ease in function
@@ -347,9 +329,7 @@ export default class Timeline {
      * @returns {number}
      */
     static easeInOutBounce = (t) =>
-        t < 0.5
-            ? (1 - Timeline.easeOutBounce(1 - 2 * t)) / 2
-            : (1 + Timeline.easeOutBounce(2 * t - 1)) / 2;
+        t < 0.5 ? (1 - Timeline.easeOutBounce(1 - 2 * t)) / 2 : (1 + Timeline.easeOutBounce(2 * t - 1)) / 2;
 
     set maxTime(val) {
         this._maxTime = val * 1000;

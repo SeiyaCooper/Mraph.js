@@ -2,11 +2,7 @@ import * as VECTORS from "../constants/vectors.js";
 import * as COLORS from "../constants/colors.js";
 
 export default class PointLight {
-    constructor({
-        center = VECTORS.UP,
-        color = COLORS.WHITE,
-        intensity = 20,
-    } = {}) {
+    constructor({ center = VECTORS.UP, color = COLORS.WHITE, intensity = 20 } = {}) {
         this.center = center;
         this.color = color;
         this.intensity = intensity;

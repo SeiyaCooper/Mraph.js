@@ -43,11 +43,7 @@ export default class Program {
 
         if (Array.isArray(data[0])) {
             const arr = new Float32Array(data.flat());
-            gl["uniformMatrix" + (n ?? data[0].length) + "fv"](
-                location,
-                false,
-                arr
-            );
+            gl["uniformMatrix" + (n ?? data[0].length) + "fv"](location, false, arr);
         } else if (Array.isArray(data)) {
             const arr = new Float32Array(data);
             gl["uniform" + (n ?? data.length) + "fv"](location, arr);

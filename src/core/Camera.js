@@ -55,20 +55,9 @@ export default class Camera {
         return this;
     }
 
-    ortho({
-        left = -1,
-        right = 1,
-        bottom = -1,
-        top = 1,
-        near = 0.1,
-        far = 1,
-    } = {}) {
+    ortho({ left = -1, right = 1, bottom = -1, top = 1, near = 0.1, far = 1 } = {}) {
         const [l, r, b, t, n, f] = [left, right, bottom, top, near, far];
-        const mat = Matrix.translation(
-            (r + l) / (l - r),
-            (t + b) / (b - t),
-            (f + n) / (n - f)
-        );
+        const mat = Matrix.translation((r + l) / (l - r), (t + b) / (b - t), (f + n) / (n - f));
         mat[0][0] = 2 / (r - l);
         mat[1][1] = 2 / (t - b);
         mat[2][2] = 2 / (n - f);
@@ -89,12 +78,7 @@ export default class Camera {
         const j = i.cross(k);
 
         this.viewMat = Matrix.translation(...p).trans(
-            new Matrix(
-                [i[0], j[0], -k[0], 0],
-                [i[1], j[1], -k[1], 0],
-                [i[2], j[2], -k[2], 0],
-                [0, 0, 0, 1]
-            )
+            new Matrix([i[0], j[0], -k[0], 0], [i[1], j[1], -k[1], 0], [i[2], j[2], -k[2], 0], [0, 0, 0, 1])
         );
         this.matrix = this.projectionMat.mult(this.viewMat);
 

@@ -34,17 +34,7 @@ export default class Mobject2D extends Mobject {
         let center;
         if (this.points.length === 0) center = [0, 0, 0];
         else center = this.points[this.points.length - 1];
-        this.polygons.push(
-            generateArc(
-                center,
-                radius,
-                startAngle,
-                endAngle,
-                clockwise,
-                segments,
-                this
-            )
-        );
+        this.polygons.push(generateArc(center, radius, startAngle, endAngle, clockwise, segments, this));
     }
 
     fill() {
@@ -80,10 +70,7 @@ export default class Mobject2D extends Mobject {
             for (let i = 0; i < polygon.length - 1; i++) {
                 const point = polygon[i];
                 const next = polygon[i + 1];
-                const seg = new Segment(
-                    Vector.fromArray(point),
-                    Vector.fromArray(next)
-                );
+                const seg = new Segment(Vector.fromArray(point), Vector.fromArray(next));
                 seg.strokeWidth = this.strokeWidth;
                 seg.strokeColor = this.strokeColor;
                 seg.normal = this.normal;
@@ -114,9 +101,7 @@ export default class Mobject2D extends Mobject {
             if (v0.cross(v1).norm === 0) continue;
 
             const tangent = v1.mult(-1).normal().add(v0.normal()).normal();
-            const tmp = v0
-                .trans(Matrix.rotateOn(this.normal, Math.PI / 2, 3))
-                .normal();
+            const tmp = v0.trans(Matrix.rotateOn(this.normal, Math.PI / 2, 3)).normal();
             const cosine = tmp.dot(tangent);
             const halfWidth = l0.strokeWidth / 2;
             const join = tangent.mult(halfWidth / cosine);
@@ -211,15 +196,7 @@ export default class Mobject2D extends Mobject {
     }
 }
 
-function generateArc(
-    center,
-    radius,
-    startAngle,
-    endAngle,
-    clockwise,
-    segments,
-    target
-) {
+function generateArc(center, radius, startAngle, endAngle, clockwise, segments, target) {
     const xAxis = new Vector(0, 1, 0).cross(target.normal);
     const yAxis = target.normal.cross(xAxis);
     const r = radius;

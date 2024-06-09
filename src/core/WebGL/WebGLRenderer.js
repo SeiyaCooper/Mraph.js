@@ -77,8 +77,7 @@ export default class WebGLRenderer {
 
         this.depthTest = material.depthTest;
 
-        if (!material.program)
-            this.programManager.setProgram(material, this.gl, scene);
+        if (!material.program) this.programManager.setProgram(material, this.gl, scene);
         const program = material.program;
 
         material.beforeRender(scene);
@@ -95,11 +94,7 @@ export default class WebGLRenderer {
             if (!value.needsUpdate) continue;
 
             gl.bindBuffer(gl.ARRAY_BUFFER, value.glBuffer);
-            gl.bufferData(
-                gl.ARRAY_BUFFER,
-                new Float32Array(value.data),
-                this.usage
-            );
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(value.data), this.usage);
             value.needsUpdate = false;
         }
         for (let [name, data] of mesh.uniforms) {
@@ -121,11 +116,7 @@ export default class WebGLRenderer {
         if (Array.isArray(indices)) {
             const buffer = gl.createBuffer();
             gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffer);
-            gl.bufferData(
-                gl.ELEMENT_ARRAY_BUFFER,
-                new Uint16Array(indices),
-                this.usage
-            );
+            gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), this.usage);
             gl.drawElements(mode, indices.length, gl.UNSIGNED_SHORT, 0);
         } else {
             gl.drawArrays(mode, 0, indices);

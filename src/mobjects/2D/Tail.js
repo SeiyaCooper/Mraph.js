@@ -9,10 +9,7 @@ const defaultModifyLine = (line, i, all) => {
 export default class Tail extends Mobject2D {
     step = 0;
 
-    constructor(
-        target,
-        { maxLength = 20, maxSteps = 3, modifyLine = defaultModifyLine } = {}
-    ) {
+    constructor(target, { maxLength = 20, maxSteps = 3, modifyLine = defaultModifyLine } = {}) {
         super();
         this.target = target;
         this.trail = [target.center];
@@ -56,10 +53,7 @@ export default class Tail extends Mobject2D {
             for (let i = 0; i < polygon.length - 1; i++) {
                 const point = polygon[i];
                 const next = polygon[i + 1];
-                const seg = new Segment(
-                    Vector.fromArray(point),
-                    Vector.fromArray(next)
-                );
+                const seg = new Segment(Vector.fromArray(point), Vector.fromArray(next));
 
                 seg.strokeWidth = this.strokeWidth;
                 seg.strokeColor = this.strokeColor.clone();

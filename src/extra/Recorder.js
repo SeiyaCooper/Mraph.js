@@ -23,16 +23,7 @@ export default class Recorder {
      *                          This can be specified instead of the above two properties.
      *                          If this is specified along with one or the other of the above properties, this will be used for the one that isn't specified.
      */
-    constructor(
-        target,
-        {
-            mimeType = "video/webm",
-            fps,
-            audioBitsPerSecond,
-            videoBitsPerSecond,
-            bitsPerSecond,
-        } = {}
-    ) {
+    constructor(target, { mimeType = "video/webm", fps, audioBitsPerSecond, videoBitsPerSecond, bitsPerSecond } = {}) {
         this.target = target;
         this.recorder = new MediaRecorder(target.captureStream(fps), {
             mimeType,
@@ -89,9 +80,7 @@ export default class Recorder {
      */
     download(name = "video") {
         if (!this.data) {
-            MraphError.error(
-                "Data is still not available, try calling this function in Recorder.onAvailable()"
-            );
+            MraphError.error("Data is still not available, try calling this function in Recorder.onAvailable()");
             return this;
         }
 

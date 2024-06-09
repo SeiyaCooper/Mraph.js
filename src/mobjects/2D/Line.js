@@ -35,9 +35,7 @@ export default class Line extends Mobject2D {
         if (!this.tips.length) return this;
         const start = this.start.center;
         for (let [at, reverse] of this.tips) {
-            const vec = start
-                .add(this.vector.mult(at))
-                .add(this.vector.normal().mult(0.05));
+            const vec = start.add(this.vector.mult(at)).add(this.vector.normal().mult(0.05));
 
             this.move(vec);
 
@@ -48,19 +46,11 @@ export default class Line extends Mobject2D {
             w.norm = this.tipWidth;
 
             if (reverse) {
-                this.line(
-                    vec.add(h).add(w.trans(Matrix.rotateZ(Math.PI / 2, 3)))
-                );
-                this.line(
-                    vec.add(h).add(w.trans(Matrix.rotateZ(-Math.PI / 2, 3)))
-                );
+                this.line(vec.add(h).add(w.trans(Matrix.rotateZ(Math.PI / 2, 3))));
+                this.line(vec.add(h).add(w.trans(Matrix.rotateZ(-Math.PI / 2, 3))));
             } else {
-                this.line(
-                    vec.minus(h).add(w.trans(Matrix.rotateZ(Math.PI / 2, 3)))
-                );
-                this.line(
-                    vec.minus(h).add(w.trans(Matrix.rotateZ(-Math.PI / 2, 3)))
-                );
+                this.line(vec.minus(h).add(w.trans(Matrix.rotateZ(Math.PI / 2, 3))));
+                this.line(vec.minus(h).add(w.trans(Matrix.rotateZ(-Math.PI / 2, 3))));
             }
         }
         this.fill();

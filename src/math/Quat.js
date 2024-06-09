@@ -17,12 +17,7 @@ export default class Quat extends Array {
      * @returns {Quat}
      */
     add(quat) {
-        return new Quat(
-            this.w + quat.w,
-            this.x + quat.x,
-            this.y + quat.y,
-            this.z + quat.z
-        );
+        return new Quat(this.w + quat.w, this.x + quat.x, this.y + quat.y, this.z + quat.z);
     }
 
     /**
@@ -30,12 +25,7 @@ export default class Quat extends Array {
      * @returns {Quat}
      */
     minus(quat) {
-        return new Quat(
-            this.w - quat.w,
-            this.x - quat.x,
-            this.y - quat.y,
-            this.z - quat.z
-        );
+        return new Quat(this.w - quat.w, this.x - quat.x, this.y - quat.y, this.z - quat.z);
     }
 
     /**
@@ -150,10 +140,7 @@ export default class Quat extends Array {
      */
     static rotateOn(axis, angle) {
         const halfAng = angle / 2;
-        return new Quat(
-            Math.cos(halfAng),
-            ...axis.normal().mult(Math.sin(halfAng))
-        );
+        return new Quat(Math.cos(halfAng), ...axis.normal().mult(Math.sin(halfAng)));
     }
 
     /**
@@ -179,9 +166,7 @@ export default class Quat extends Array {
                     axisVec = new Vector(0, 0, 1);
                     break;
                 default:
-                    MraphError.error(
-                        "The provided axis is not a valid value, only 'x', 'y' and 'z' is allowed."
-                    );
+                    MraphError.error("The provided axis is not a valid value, only 'x', 'y' and 'z' is allowed.");
                     return;
             }
         }

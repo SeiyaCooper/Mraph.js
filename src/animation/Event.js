@@ -54,12 +54,7 @@ export default class Event {
     constructor(
         startTime = 0,
         stopTime = 1,
-        {
-            start = () => {},
-            stop = () => {},
-            update = () => {},
-            curve = (t) => t,
-        } = {}
+        { start = () => {}, stop = () => {}, update = () => {}, curve = (t) => t } = {}
     ) {
         this.start = start;
         this.stop = stop;
@@ -84,10 +79,7 @@ export default class Event {
                 this.stop(stop);
                 this.isStopped = true;
             } else {
-                this.update(
-                    this.curve((now - start) / (stop - start)),
-                    now - start
-                );
+                this.update(this.curve((now - start) / (stop - start)), now - start);
             }
         } else if (now > start) {
             this.start(start);

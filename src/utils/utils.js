@@ -28,8 +28,7 @@ export function deepCopy(obj) {
     }
 
     for (let attr in obj) {
-        out[attr] =
-            typeof obj[attr] === "object" ? deepCopy(obj[attr]) : obj[attr];
+        out[attr] = typeof obj[attr] === "object" ? deepCopy(obj[attr]) : obj[attr];
     }
     return out;
 }

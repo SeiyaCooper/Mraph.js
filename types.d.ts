@@ -5,7 +5,7 @@ declare module "animation/Event" {
          * @param {object} config
          * @return {Action}
          */
-        constructor(startTime?: number, stopTime?: number, { start, stop, update, curve, }?: {
+        constructor(startTime?: number, stopTime?: number, { start, stop, update, curve }?: {
             start?: () => void;
             stop?: () => void;
             update?: () => void;
@@ -210,7 +210,7 @@ declare module "animation/Timeline" {
          * @param {object} config
          * @return {Event}
          */
-        add(startTime: any, stopTime: any, { update, start, stop, updateMax, updateMin, curve, }?: object): Event;
+        add(startTime: any, stopTime: any, { update, start, stop, updateMax, updateMin, curve }?: object): Event;
         /**
          * Add a one-time-only event.
          * @param {number} at
@@ -1087,7 +1087,7 @@ declare module "core/Camera" {
         }): this;
         near: number;
         far: number;
-        ortho({ left, right, bottom, top, near, far, }?: {
+        ortho({ left, right, bottom, top, near, far }?: {
             left?: number;
             right?: number;
             bottom?: number;
@@ -1226,12 +1226,40 @@ declare module "material/components/GetColorComponent" {
 }
 declare module "material/Material" {
     export default class Material {
+        /**
+         * Whether to use depth test, true by default.
+         * @type {boolean}
+         */
         _depthTest: boolean;
+        /**
+         * Determines the mode of color, avaible options are 'single', 'texture' and 'vertex'.
+         * @type {string}
+         */
         colorMode: string;
-        color: import("mraph").Color;
+        /**
+         * Used when color mode is 'single'.
+         * @type {Color}
+         */
+        color: Color;
+        /**
+         * Used when color mode is 'texture'.
+         */
+        diffuseTexture: any;
+        /**
+         * The code of vertex shader.
+         * @type {string}
+         */
         vertexShader: string;
+        /**
+         * The code of fragment shader.
+         * @type {string}
+         */
         fragmentShader: string;
-        components: any[];
+        /**
+         * Components that attatched to this material.s
+         * @type {Component}
+         */
+        components: Component;
         beforeRender(): void;
         attachComponent(component: any): void;
         compileComponents(): any;
@@ -1264,7 +1292,7 @@ declare module "constants/vectors" {
 declare module "light/PointLight" {
     export default class PointLight {
         static isInstance(obj: any): boolean;
-        constructor({ center, color, intensity, }?: {
+        constructor({ center, color, intensity }?: {
             center?: import("mraph").Vector;
             color?: import("mraph").Color;
             intensity?: number;
@@ -1277,7 +1305,7 @@ declare module "light/PointLight" {
 declare module "light/DirectionalLight" {
     export default class DirectionalLight {
         static isInstance(obj: any): boolean;
-        constructor({ direction, color, intensity, }?: {
+        constructor({ direction, color, intensity }?: {
             direction?: import("mraph").Vector;
             color?: import("mraph").Color;
             intensity?: number;
@@ -1359,7 +1387,7 @@ declare module "core/Node" {
 }
 declare module "core/Layer" {
     export default class Layer {
-        constructor({ fullScreen, appendTo, rendererClass, contextConfig, }?: {
+        constructor({ fullScreen, appendTo, rendererClass, contextConfig }?: {
             fullScreen?: boolean;
             appendTo?: any;
             rendererClass?: typeof WebGLRenderer;
@@ -1462,8 +1490,8 @@ declare module "core/Layer" {
 }
 declare module "core/Texture" {
     export default class Texture {
-        static loadFile(gl: any, src: any): Texture;
-        constructor(gl: any, { image, target, flipY, minFilter, magFilter, unit, }?: {
+        static loadFile(gl: any, src: any, callback?: () => void): Texture;
+        constructor(gl: any, { image, target, flipY, minFilter, magFilter, unit }?: {
             image: any;
             target?: any;
             flipY?: boolean;
@@ -1502,7 +1530,7 @@ declare module "extra/Recorder" {
          *                          This can be specified instead of the above two properties.
          *                          If this is specified along with one or the other of the above properties, this will be used for the one that isn't specified.
          */
-        constructor(target: HTMLCanvasElement, { mimeType, fps, audioBitsPerSecond, videoBitsPerSecond, bitsPerSecond, }?: object);
+        constructor(target: HTMLCanvasElement, { mimeType, fps, audioBitsPerSecond, videoBitsPerSecond, bitsPerSecond }?: object);
         /**
          * Data of video recorded, undefined by default.
          */
@@ -1809,20 +1837,15 @@ declare module "geometry/Geometry" {
 }
 declare module "geometry/Plane" {
     export default class Plane extends Geometry {
-        constructor({ width, height, normal }?: {
+        constructor({ width, height }?: {
             width?: number;
             height?: number;
-            normal?: Vector;
         });
-        indices: {
-            data: number[];
-        };
+        indices: number[];
         width: number;
         height: number;
-        normal: Vector;
     }
     import Geometry from "geometry/Geometry";
-    import Vector from "math/Vector";
 }
 declare module "geometry/Box" {
     export default class Box extends Geometry {
@@ -2193,7 +2216,7 @@ declare module "mobjects/3D/Mobject3D" {
 }
 declare module "mobjects/3D/FunctionGraph3D" {
     export default class FunctionGraph3D extends Mobject3D {
-        constructor({ xRange, yRange, func, }?: {
+        constructor({ xRange, yRange, func }?: {
             xRange?: number[];
             yRange?: number[];
             func?: (x: any, y: any) => any;
@@ -2244,6 +2267,7 @@ declare module "mraph" {
     export * as COLORS from "constants/colors";
     export * as VECTORS from "constants/vectors";
     export * as GLENUM from "constants/glenum";
+    export * as DrawModes from "constants/draw_modes";
     import Color from "math/Color";
     import Matrix from "math/Matrix";
     import Vector from "math/Vector";

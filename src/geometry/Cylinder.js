@@ -97,8 +97,7 @@ export default class Cylinder extends Geometry {
                 for (let j = 0; j < phiSegments; j++) {
                     const n = j + 1 === phiSegments ? 0 : j + 1;
 
-                    if ((phiStart > 0 || phiEnd < Math.PI * 2) && n === 0)
-                        continue;
+                    if ((phiStart > 0 || phiEnd < Math.PI * 2) && n === 0) continue;
 
                     const offset = baseOffset + i * phiSegments;
                     const a = offset + j;
@@ -126,8 +125,7 @@ export default class Cylinder extends Geometry {
             const phiEnd = this.phiEnds[i] ?? this.phiEnds;
             const phiSegments = this.phiSegments[i] ?? this.phiSegments;
             const height = this.heights[i] ?? this.heights;
-            const heightSegments =
-                this.heightSegments[i] ?? this.heightSegments;
+            const heightSegments = this.heightSegments[i] ?? this.heightSegments;
 
             buildSingle(
                 this.radii[i],

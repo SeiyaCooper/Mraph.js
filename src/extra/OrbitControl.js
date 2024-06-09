@@ -40,18 +40,9 @@ export default class OrbitControl {
     }
 
     update() {
-        const deltaPhi = Math.min(
-            this.deltaAngleMax,
-            (targetPhi - this.phi) * this.rotateEase
-        );
-        const deltaTheta = Math.min(
-            this.deltaAngleMax,
-            (targetTheta - this.theta) * this.rotateEase
-        );
-        this.phi = Math.max(
-            Math.min(this.phiMax, this.phi + deltaPhi),
-            this.phiMin
-        );
+        const deltaPhi = Math.min(this.deltaAngleMax, (targetPhi - this.phi) * this.rotateEase);
+        const deltaTheta = Math.min(this.deltaAngleMax, (targetTheta - this.theta) * this.rotateEase);
+        this.phi = Math.max(Math.min(this.phiMax, this.phi + deltaPhi), this.phiMin);
         this.theta += deltaTheta;
 
         const center = this.center;
@@ -107,16 +98,12 @@ export default class OrbitControl {
             const touchStart1 = findPosById(touch1.id, startedPos);
 
             if (this.enableZoom) {
-                this.zoom(
-                    getLen(touchStart0, touchStart1) / getLen(touch0, touch1)
-                );
+                this.zoom(getLen(touchStart0, touchStart1) / getLen(touch0, touch1));
                 state = STATE.ZOOM;
             }
             if (this.enableMove) {
-                const deltaX =
-                    (touch0.x + touch1.x - touchStart0.x - touchStart1.x) / -2;
-                const deltaY =
-                    (touch0.y + touch1.y - touchStart0.y - touchStart1.y) / 2;
+                const deltaX = (touch0.x + touch1.x - touchStart0.x - touchStart1.x) / -2;
+                const deltaY = (touch0.y + touch1.y - touchStart0.y - touchStart1.y) / 2;
                 this.move(deltaX * this.moveSpeed, deltaY * this.moveSpeed);
             }
         } else if (this.enableRotate) {

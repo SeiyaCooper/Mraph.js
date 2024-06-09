@@ -55,11 +55,11 @@ export default class GetColorComponent {
         }
 
         if (target.colorMode === "texture") {
-            const map = target.map;
+            const map = target.diffuseTexture;
 
             if (!map) return;
             map.bind();
-            if (map.isImgReady) map.upload();
+
             return;
         }
     }

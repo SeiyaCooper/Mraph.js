@@ -18,29 +18,12 @@ export default class Segment extends Geometry {
     update() {
         const start = this.start;
         const end = this.end;
-        const vec = this.vector.trans(
-            Matrix.rotateOn(this.normal, Math.PI / 2, 3)
-        );
+        const vec = this.vector.trans(Matrix.rotateOn(this.normal, Math.PI / 2, 3));
         vec.norm = this.strokeWidth / 2;
 
-        const vertices = [
-            start.add(vec),
-            start.minus(vec),
-            end.add(vec),
-            end.minus(vec),
-        ].flat(2);
-        const colors = [
-            ...this.strokeColor,
-            ...this.strokeColor,
-            ...this.strokeColor,
-            ...this.strokeColor,
-        ];
-        const normal = [
-            ...this.normal,
-            ...this.normal,
-            ...this.normal,
-            ...this.normal,
-        ];
+        const vertices = [start.add(vec), start.minus(vec), end.add(vec), end.minus(vec)].flat(2);
+        const colors = [...this.strokeColor, ...this.strokeColor, ...this.strokeColor, ...this.strokeColor];
+        const normal = [...this.normal, ...this.normal, ...this.normal, ...this.normal];
         this.setAttribute("position", vertices, 3);
         this.setAttribute("color", colors, 4);
         this.setAttribute("normal", normal, 3);

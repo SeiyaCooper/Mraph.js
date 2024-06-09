@@ -88,8 +88,7 @@ export default class Sphere extends Geometry {
             for (let j = 0; j < phiSegments; j++) {
                 const n = j + 1 === phiSegments ? 0 : j + 1;
 
-                if ((phiStart > 0 || this.phiEnd < Math.PI * 2) && n === 0)
-                    continue;
+                if ((phiStart > 0 || this.phiEnd < Math.PI * 2) && n === 0) continue;
 
                 const offset = i * phiSegments;
                 const a = offset + j;

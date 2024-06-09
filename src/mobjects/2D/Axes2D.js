@@ -112,9 +112,7 @@ export default class Axes2D extends Mobject2D {
                         from = Utils.deepCopy(child.polygons);
                         for (let polygon of child.polygons) {
                             for (let i = 0; i < polygon.length; i++) {
-                                polygon[i] = trans(
-                                    Vector.fromArray(polygon[i])
-                                );
+                                polygon[i] = trans(Vector.fromArray(polygon[i]));
                             }
                         }
                         to = Utils.deepCopy(child.polygons);

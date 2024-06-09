@@ -18,12 +18,7 @@ export default class Layer {
     };
     scene = new Node();
 
-    constructor({
-        fullScreen = true,
-        appendTo = undefined,
-        rendererClass = WebGLRenderer,
-        contextConfig = {},
-    } = {}) {
+    constructor({ fullScreen = true, appendTo = undefined, rendererClass = WebGLRenderer, contextConfig = {} } = {}) {
         this.canvas = document.createElement("canvas");
 
         if (fullScreen) {
@@ -115,8 +110,7 @@ export default class Layer {
         const scene = this.scene.children;
         const surroundings = this.surroundings;
         for (let el of els) {
-            if (typeof el.attributes === "object")
-                scene.splice(scene.indexOf(el), 1);
+            if (typeof el.attributes === "object") scene.splice(scene.indexOf(el), 1);
             else surroundings.splice(surroundings.indexOf(el), 1);
         }
     }
@@ -147,8 +141,7 @@ export default class Layer {
      */
     addSurrounding(obj) {
         if (PointLight.isInstance(obj)) this.surroundings.pointLights.push(obj);
-        if (DirectionalLight.isInstance(obj))
-            this.surroundings.directionalLights.push(obj);
+        if (DirectionalLight.isInstance(obj)) this.surroundings.directionalLights.push(obj);
     }
 
     /**

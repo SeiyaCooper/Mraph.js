@@ -3,11 +3,7 @@ import * as GLENUM from "../../constants/glenum.js";
 import * as COLORS from "../../constants/colors.js";
 
 export default class FunctionGraph3D extends Mobject3D {
-    constructor({
-        xRange = [-8, 8, 0.5],
-        yRange = [-8, 8, 0.5],
-        func = (x, y) => x + y,
-    } = {}) {
+    constructor({ xRange = [-8, 8, 0.5], yRange = [-8, 8, 0.5], func = (x, y) => x + y } = {}) {
         super();
         this.xRange = xRange;
         this.yRange = yRange;

@@ -6,12 +6,7 @@ export default class Arc extends Mobject2D {
     strokeColor = new Color(1, 1, 1, 1);
     fillColor = new Color(0, 0, 0, 0);
 
-    constructor(
-        startAng = 0,
-        endAng = Math.PI,
-        radius = 1,
-        center = [0, 0, 0]
-    ) {
+    constructor(startAng = 0, endAng = Math.PI, radius = 1, center = [0, 0, 0]) {
         super();
         this.startAng = startAng;
         this.endAng = endAng;
@@ -21,12 +16,7 @@ export default class Arc extends Mobject2D {
 
     update() {
         this.clearGraph();
-        this.arc(
-            this.radius,
-            this.startAng,
-            this.endAng,
-            this.startAng > this.endAng
-        );
+        this.arc(this.radius, this.startAng, this.endAng, this.startAng > this.endAng);
         this.draw();
         return this;
     }
