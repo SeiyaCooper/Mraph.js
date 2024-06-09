@@ -1,5 +1,5 @@
 <div align="center">
-    <image src='https://seiyacooper.github.io/Mraph.js/logo.png' width="600px" alt='logo'></image>
+    <image src='https://seiyacooper.github.io/Mraph.js/Mraph_logo.png' width="600px" alt='logo'></image>
 </div>
 
 [![npm](https://img.shields.io/npm/v/mraph)](https://www.npmjs.com/package/mraph)
