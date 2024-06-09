@@ -62,7 +62,7 @@ jobs:
               working-directory: ${{ env.BUILD_PATH }}
             - name: Upload custom files
               run: | 
-                  cp ${{ env.BUILD_PATH }}/logo.png ${{ env.BUILD_PATH }}/dist/
+                  cp ${{ env.BUILD_PATH }}/Mraph_logo.png ${{ env.BUILD_PATH }}/dist/
             - name: Upload artifact
               uses: actions/upload-pages-artifact@v3
               with:
