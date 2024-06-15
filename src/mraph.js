@@ -21,6 +21,7 @@ import Color from "./math/Color.js";
 import Matrix from "./math/Matrix.js";
 import Vector from "./math/Vector.js";
 import Quat from "./math/Quat.js";
+import Complex from "./math/Complex.js";
 
 import Geometry from "./geometry/Geometry.js";
 import Plane from "./geometry/Plane.js";
@@ -65,6 +66,7 @@ export {
     Matrix,
     Vector,
     Quat,
+    Complex,
 
     // Geometries
     Geometry,

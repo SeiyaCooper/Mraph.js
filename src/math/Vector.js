@@ -218,16 +218,12 @@ export default class Vector extends Array {
     }
 
     /**
-     * Creates a Vector from an array-like object
+     * Creates a vector from an array-like object
      * @param {Array | Vector} arr
      * @returns {Vector}
      */
     static fromArray(arr) {
-        if (Vector.isInstance()) {
-            return arr.clone();
-        } else {
-            return new Vector(...arr);
-        }
+        return new Vector(...arr);
     }
 
     /**

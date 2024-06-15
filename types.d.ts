@@ -328,7 +328,7 @@ declare module "math/Vector" {
          */
         static fromRow(row: number, n?: number): Vector;
         /**
-         * Creates a Vector from an array-like object
+         * Creates a vector from an array-like object
          * @param {Array | Vector} arr
          * @returns {Vector}
          */
@@ -1744,6 +1744,68 @@ declare module "math/Quat" {
     }
     import Vector from "math/Vector";
 }
+declare module "math/Complex" {
+    export default class Complex extends Array<any> {
+        /**
+         * Creates a complex number from an array-like object
+         * @param {ArrayLike} arr
+         */
+        static fromArray(arr: ArrayLike<any>): Complex;
+        /**
+         * @param {number} [i=0]
+         * @param {number} [j=0]
+         */
+        constructor(i?: number, j?: number);
+        /**
+         * Adds a complex number
+         * @param {Complex} comp
+         * @returns {Complex}
+         */
+        add(comp: Complex): Complex;
+        /**
+         * Minuses a complex number
+         * @param {Complex} comp
+         * @returns {Complex}
+         */
+        minus(comp: Complex): Complex;
+        /**
+         * Mults a complex number or a real number
+         * @param {Complex | number} comp
+         * @returns {Complex}
+         */
+        mult(comp: Complex | number): Complex;
+        /**
+         * Mults a real number
+         * @param {*} num
+         * @returns {Complex}
+         */
+        multNum(num: any): Complex;
+        /**
+         * Returns a element-by-element product of this complex number and another
+         * @param {Complex} comp
+         * @returns {Complex}
+         */
+        elMult(comp: Complex): Complex;
+        /**
+         * @param {number} val
+         */
+        set x(val: number);
+        /**
+         * @returns {number}
+         */
+        get x(): number;
+        0: number;
+        /**
+         * @param {number} val
+         */
+        set y(val: number);
+        /**
+         * @returns {number}
+         */
+        get y(): number;
+        1: number;
+    }
+}
 declare module "constants/draw_modes" {
     export const POINTS: "POINTS";
     export const LINES: "LINES";
@@ -2294,6 +2356,7 @@ declare module "mraph" {
     import Matrix from "math/Matrix";
     import Vector from "math/Vector";
     import Quat from "math/Quat";
+    import Complex from "math/Complex";
     import Geometry from "geometry/Geometry";
     import Plane from "geometry/Plane";
     import Box from "geometry/Box";
@@ -2330,5 +2393,5 @@ declare module "mraph" {
     import Timeline from "animation/Timeline";
     import OrbitControl from "extra/OrbitControl";
     import Recorder from "extra/Recorder";
-    export { Color, Matrix, Vector, Quat, Geometry, Plane, Box, Segment, Sphere, Cylinder, DirectionalLight, PointLight, Mobject, ImageMobject, Mobject2D, Point, Tail, Line, Arc, Arrow, Axis, Axes2D, VectorField2D, FunctionGraph2D, Mobject3D, FunctionGraph3D, Point3D, Layer, Camera, Texture, WebGLRenderer, WebGLProgram, CustomMaterial, BasicMaterial, DepthMaterial, LambertMaterial, Event, Timeline, OrbitControl, Recorder };
+    export { Color, Matrix, Vector, Quat, Complex, Geometry, Plane, Box, Segment, Sphere, Cylinder, DirectionalLight, PointLight, Mobject, ImageMobject, Mobject2D, Point, Tail, Line, Arc, Arrow, Axis, Axes2D, VectorField2D, FunctionGraph2D, Mobject3D, FunctionGraph3D, Point3D, Layer, Camera, Texture, WebGLRenderer, WebGLProgram, CustomMaterial, BasicMaterial, DepthMaterial, LambertMaterial, Event, Timeline, OrbitControl, Recorder };
 }

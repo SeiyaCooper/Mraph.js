@@ -18,7 +18,7 @@ export default class Axes2D extends Mobject2D {
         yRange = [-5, 5, 1],
         origin = new Point(0, 0),
 
-        drawGrid = false,
+        drawGrid = true,
     } = {}) {
         super();
 

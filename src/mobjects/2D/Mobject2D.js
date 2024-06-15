@@ -3,6 +3,7 @@ import Color from "../../math/Color.js";
 import * as Utils from "../../utils/utils.js";
 import Segment from "../../geometry/Segment.js";
 import Vector from "../../math/Vector.js";
+import Complex from "../../math/Complex.js";
 import Matrix from "../../math/Matrix.js";
 import * as VECTORS from "../../constants/vectors.js";
 import * as MathFunc from "../../math/math_func.js";
@@ -178,6 +179,18 @@ export default class Mobject2D extends Mobject {
                 }
                 this.draw();
             }
+        }).bind(this),
+
+        /**
+         * Applies a complex function
+         * @param {Vector | number[]} pos
+         * @param {Object} config
+         */
+        complexFuncTransform: ((trans, { runTime = 1, curve } = {}) => {
+            const handler = (pos) => {
+                return [...trans(Complex.fromArray(pos)), 0];
+            };
+            this.animate.pointwiseTransform(handler, { runTime, curve });
         }).bind(this),
     };
 
