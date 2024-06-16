@@ -47,8 +47,8 @@ export default class Texture {
         img.src = src;
         img.onload = () => {
             texture.image = img;
-            texture.upload();
             callback(texture);
+            texture.upload();
         };
 
         return texture;

@@ -1818,12 +1818,16 @@ declare module "constants/draw_modes" {
 declare module "geometry/Geometry" {
     export default class Geometry extends Node {
         /**
-         * attribute variables
+         * Name of this geometry, optional.
+         */
+        name: string;
+        /**
+         * A set of attribute variables
          * @type {Object}
          */
         attributes: any;
         /**
-         * uniform variables
+         * Uniform variables
          * @type {Object}
          */
         uniforms: any;
@@ -2336,12 +2340,9 @@ declare module "mobjects/ImageMobject" {
     import Mobject from "mobjects/Mobject";
 }
 declare module "extra/OBJLoader" {
-    export function parseToGeometry(src: any): Promise<Geometry>;
-    export function parseToObject(src: any): Promise<{
-        position: any[];
-        normal: any[];
-        uv: any[];
-    }>;
+    export function parseToGeometry(src: any, { parseGroup }?: {
+        parseGroup?: boolean;
+    }): Promise<Geometry>;
     import Geometry from "geometry/Geometry";
 }
 declare module "mraph" {

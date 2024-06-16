@@ -3,13 +3,18 @@ import * as DrawModes from "../constants/draw_modes.js";
 
 export default class Geometry extends Node {
     /**
-     * attribute variables
+     * Name of this geometry, optional.
+     */
+    name = "";
+
+    /**
+     * A set of attribute variables
      * @type {Object}
      */
     attributes = new Map();
 
     /**
-     * uniform variables
+     * Uniform variables
      * @type {Object}
      */
     uniforms = new Map();

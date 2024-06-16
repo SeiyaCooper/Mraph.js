@@ -1,22 +1,28 @@
 import Geometry from "../geometry/Geometry.js";
 
-let oriData, parsedData;
+let sourceData, parsedData;
+
+let configs = {
+    parseGroup: true,
+};
+
+let parsingGroup = false;
 
 function addVertex(data, i) {
-    parsedData.position.push(...oriData.position[data[i][0]]);
-    parsedData.uv.push(...oriData.uv[data[i][1]]);
-    parsedData.normal.push(...oriData.normal[data[i][2]]);
+    parsedData.position.push(...sourceData.position[data[i][0]]);
+    parsedData.uv.push(...sourceData.uv[data[i][1]]);
+    parsedData.normal.push(...sourceData.normal[data[i][2]]);
 }
 
 const commands = {
     v: (data) => {
-        oriData.position.push(data.map(parseFloat));
+        sourceData.position.push(data.map(parseFloat));
     },
     vt: (data) => {
-        oriData.uv.push(data.map(parseFloat));
+        sourceData.uv.push(data.map(parseFloat));
     },
     vn: (data) => {
-        oriData.normal.push(data.map(parseFloat));
+        sourceData.normal.push(data.map(parseFloat));
     },
     f: (data) => {
         data = data.map((index) => index.split("/").map((val) => +val));
@@ -27,25 +33,35 @@ const commands = {
             addVertex(data, i);
         }
     },
+    g: (name, geometry) => {
+        if (!configs.parseGroup) return;
+
+        if (parsingGroup) {
+            const group = new Geometry();
+            group.setAttribute("position", parsedData.position, 3);
+            group.setAttribute("normal", parsedData.normal, 3);
+            group.setAttribute("uv", parsedData.uv, 2);
+            group.setIndex(parsedData.position.length / 3);
+            group.name = parsedData.name;
+
+            parsedData = { position: [], normal: [], uv: [], name: "" };
+            geometry.add(group);
+        } else {
+            parsingGroup = true;
+        }
+
+        parsedData.name = name;
+    },
 };
 
-export async function parseToGeometry(src) {
-    const data = await parseToObject(src);
-    const out = new Geometry();
-
-    out.setAttribute("position", data.position, 3);
-    out.setAttribute("normal", data.normal, 3);
-    out.setAttribute("uv", data.uv, 2);
-    out.setIndex(data.position.length / 3);
-
-    return out;
-}
-
-export async function parseToObject(src) {
+export async function parseToGeometry(src, { parseGroup = true } = {}) {
+    const geometry = new Geometry();
     const text = await readFile(src);
     const reg = /(\w*)(?: )*(.*)/;
-    oriData = { normal: [[]], uv: [[]], position: [[]] };
-    parsedData = { position: [], normal: [], uv: [] };
+
+    sourceData = { normal: [[]], uv: [[]], position: [[]] };
+    parsedData = { position: [], normal: [], uv: [], name: "" };
+    configs.parseGroup = parseGroup;
 
     for (let line of text.split("\n")) {
         if (line.startsWith("#") || line === "") continue;
@@ -55,10 +71,29 @@ export async function parseToObject(src) {
 
         if (!handler) continue;
 
-        handler(data.split(" "));
+        if (command === "g") {
+            handler(data.split(" ")[0], geometry);
+        } else {
+            handler(data.split(" "));
+        }
     }
 
-    return parsedData;
+    if (!configs.parseGroup || !parsingGroup) {
+        geometry.setAttribute("position", parsedData.position, 3);
+        geometry.setAttribute("normal", parsedData.normal, 3);
+        geometry.setAttribute("uv", parsedData.uv, 2);
+        geometry.setIndex(parsedData.position.length / 3);
+    } else {
+        const group = new Geometry();
+        group.setAttribute("position", parsedData.position, 3);
+        group.setAttribute("normal", parsedData.normal, 3);
+        group.setAttribute("uv", parsedData.uv, 2);
+        group.setIndex(parsedData.position.length / 3);
+        group.name = parsedData.name;
+        geometry.add(group);
+    }
+
+    return geometry;
 }
 
 async function readFile(src) {
