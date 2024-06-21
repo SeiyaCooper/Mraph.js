@@ -71,6 +71,53 @@ export default class Program {
             gl.vertexAttribPointer(location, value.size, gl.FLOAT, false, 0, 0);
         }
     }
+
+    /**
+     * Sets up a texture
+     * @param {Texture} texture
+     */
+    setUpTexture(texture) {
+        const gl = this.gl;
+        const glTexture = gl.createTexture();
+        texture.texture = glTexture;
+    }
+
+    /**
+     * Binds a texture
+     * @param {Texure} texture
+     */
+    bindTexture(texture) {
+        const gl = this.gl;
+        gl.activeTexture(gl.TEXTURE0 + texture.unit);
+        gl.bindTexture(texture.target, texture.texture);
+    }
+
+    /**
+     * Uploads a texture to GPU
+     * @param {Texture} texture
+     */
+    uploadTexture(texture) {
+        const gl = this.gl;
+
+        if (texture.flipY) {
+            gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+        }
+
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+        gl.texImage2D(texture.target, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, texture.image);
+        gl.generateMipmap(texture.target);
+    }
+
+    /**
+     * Updates parameters of a texture
+     * @param {Texture} texture
+     */
+    updateTextureParams(texture) {
+        const gl = this.gl;
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, texture.minFilter);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, texture.magFilter);
+    }
 }
 
 // utils

@@ -40,7 +40,6 @@ export default class ImageMobject extends Mobject {
             img.src = image;
             img.onload = () => {
                 tex.image = img;
-                tex.upload();
             };
 
             this._image = img;

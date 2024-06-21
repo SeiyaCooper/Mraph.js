@@ -1,73 +1,69 @@
+import * as GLENUM from "../constants/glenum.js";
+
 export default class Texture {
-    constructor(
-        gl,
-        { image, target = gl.TEXTURE_2D, flipY = true, minFilter = gl.LINEAR, magFilter = gl.LINEAR, unit = 0 } = {}
-    ) {
-        this.gl = gl;
+    _dirty = false;
+
+    _needsUpload = false;
+
+    constructor({
+        image,
+        target = GLENUM.TEXTURE_2D,
+        flipY = true,
+        minFilter = GLENUM.LINEAR,
+        magFilter = GLENUM.LINEAR,
+        unit = 0,
+    } = {}) {
         this.image = image;
         this.target = target;
         this.flipY = flipY;
-        this.texture = gl.createTexture();
         this.unit = unit;
-
-        this.bind();
         this.minFilter = minFilter;
         this.magFilter = magFilter;
-    }
 
-    bind() {
-        const gl = this.gl;
-        gl.activeTexture(gl.TEXTURE0 + this.unit);
-        gl.bindTexture(this.target, this.texture);
-    }
-
-    upload() {
-        const gl = this.gl;
-
-        if (this.flipY) {
-            gl.pixelStorei(this.gl.UNPACK_FLIP_Y_WEBGL, true);
+        if (this.isImgReady) {
+            this._needsUpload = true;
         }
-
-        this.bind();
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-        gl.texImage2D(this.target, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, this.image);
-        gl.generateMipmap(this.target);
     }
 
-    get isImgReady() {
+    get isImageReady() {
         return Boolean(this.image);
     }
 
-    static loadFile(gl, src, callback = () => {}) {
-        const texture = new Texture(gl);
+    set minFilter(val) {
+        this._minFilter = val;
+        this._dirty = true;
+    }
+    get minFilter() {
+        return this._minFilter;
+    }
+
+    set magFilter(val) {
+        this._magFilter = val;
+        this._dirty = true;
+    }
+    get magFilter() {
+        return this._magFilter;
+    }
+
+    set image(val) {
+        this._image = val;
+        this.texture = null;
+        this._needsUpload = true;
+    }
+    get image() {
+        return this._image;
+    }
+
+    static loadFile(src, callback = () => {}) {
+        const texture = new Texture();
 
         const img = new Image();
         img.src = src;
         img.onload = () => {
             texture.image = img;
             callback(texture);
-            texture.upload();
         };
 
         return texture;
-    }
-
-    set minFilter(val) {
-        const gl = this.gl;
-        this.__minFilter = val;
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, val);
-    }
-    get minFilter() {
-        return this.__minFilter;
-    }
-    set magFilter(val) {
-        const gl = this.gl;
-        this.__magFilter = val;
-        this.gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, val);
-    }
-    get magFilter() {
-        return this.__magFilter;
     }
 }

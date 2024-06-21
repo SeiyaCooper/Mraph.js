@@ -58,7 +58,7 @@ export default class GetColorComponent {
             const map = target.diffuseTexture;
 
             if (!map) return;
-            map.bind();
+            target.program.bindTexture(map);
 
             return;
         }

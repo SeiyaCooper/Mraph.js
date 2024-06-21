@@ -81,6 +81,24 @@ export default class WebGLRenderer {
         if (!material.program) this.programManager.setProgram(material, this.gl, scene);
         const program = material.program;
 
+        const texture = material.diffuseTexture;
+        if (texture) {
+            if (!texture.texture) {
+                program.setUpTexture(texture);
+            }
+
+            program.bindTexture(texture);
+
+            if (texture?._dirty && texture.isImageReady) {
+                program.updateTextureParams(texture);
+                texture._dirty = false;
+            }
+            if (texture?._needsUpload && texture.isImageReady) {
+                program.uploadTexture(texture);
+                texture._needsUpload = false;
+            }
+        }
+
         material.beforeRender(scene);
         program.setUniform("viewMat", camera.viewMat);
         program.setUniform("projectionMat", camera.projectionMat);

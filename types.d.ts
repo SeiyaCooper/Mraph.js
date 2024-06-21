@@ -1208,6 +1208,26 @@ declare module "core/WebGL/WebGLProgram" {
          * @param {Geometry} mesh
          */
         initVAO(mesh: Geometry): void;
+        /**
+         * Sets up a texture
+         * @param {Texture} texture
+         */
+        setUpTexture(texture: Texture): void;
+        /**
+         * Binds a texture
+         * @param {Texure} texture
+         */
+        bindTexture(texture: Texure): void;
+        /**
+         * Uploads a texture to GPU
+         * @param {Texture} texture
+         */
+        uploadTexture(texture: Texture): void;
+        /**
+         * Updates parameters of a texture
+         * @param {Texture} texture
+         */
+        updateTextureParams(texture: Texture): void;
     }
 }
 declare module "material/SlotParser" {
@@ -1492,30 +1512,31 @@ declare module "core/Layer" {
 }
 declare module "core/Texture" {
     export default class Texture {
-        static loadFile(gl: any, src: any, callback?: () => void): Texture;
-        constructor(gl: any, { image, target, flipY, minFilter, magFilter, unit }?: {
+        static loadFile(src: any, callback?: () => void): Texture;
+        constructor({ image, target, flipY, minFilter, magFilter, unit, }?: {
             image: any;
-            target?: any;
+            target?: number;
             flipY?: boolean;
-            minFilter?: any;
-            magFilter?: any;
+            minFilter?: number;
+            magFilter?: number;
             unit?: number;
         });
-        gl: any;
-        image: any;
-        target: any;
+        _dirty: boolean;
+        _needsUpload: boolean;
+        set image(val: any);
+        get image(): any;
+        target: number;
         flipY: boolean;
-        texture: any;
         unit: number;
         set minFilter(val: any);
         get minFilter(): any;
         set magFilter(val: any);
         get magFilter(): any;
-        bind(): void;
-        upload(): void;
-        get isImgReady(): boolean;
-        __minFilter: any;
-        __magFilter: any;
+        get isImageReady(): boolean;
+        _minFilter: any;
+        _magFilter: any;
+        _image: any;
+        texture: any;
     }
 }
 declare module "extra/Recorder" {
