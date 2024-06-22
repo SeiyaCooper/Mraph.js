@@ -3,12 +3,11 @@ import Geometry from "./Geometry.js";
 import * as VECTORS from "../constants/vectors.js";
 
 export default class Plane extends Geometry {
-    indices = [0, 1, 3, 2, 0, 3];
-
     constructor({ width = 1, height = 1 } = {}) {
         super();
         this.width = width;
         this.height = height;
+        this.setIndex([0, 1, 3, 2, 0, 3]);
     }
 
     update() {

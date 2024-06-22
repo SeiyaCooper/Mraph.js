@@ -1230,20 +1230,6 @@ declare module "core/WebGL/WebGLProgram" {
         updateTextureParams(texture: Texture): void;
     }
 }
-declare module "material/SlotParser" {
-    export function replace(origin: any, name: any, value: any): any;
-}
-declare module "material/components/GetColorComponent" {
-    export default class GetColorComponent {
-        compile(vs: any, fs: any, { colorMode }: {
-            colorMode: any;
-        }): {
-            vs: any;
-            fs: any;
-        };
-        passVariables(target: any): void;
-    }
-}
 declare module "material/Material" {
     export default class Material {
         /**
@@ -1281,14 +1267,42 @@ declare module "material/Material" {
          */
         fragmentShader: string;
         /**
-         * Components that attatched to this material.s
+         * Components that attatched to this material.
          * @type {Component}
          */
         components: Component;
-        beforeRender(): void;
-        attachComponent(component: any): void;
-        compileComponents(): any;
+        /**
+         * Custom method to pass all variables, will be called before rendering.
+         */
+        passVariables(): void;
+        /**
+         * Attachs a component to this material.
+         * @param {Component} component
+         */
+        attachComponent(component: Component): void;
+        /**
+         * Compiles Shader code depends on all components attached.
+         * @returns {string}
+         */
+        compileComponents(): string;
+        /**
+         * Passes all components variables.
+         */
         passComponentVariables(): void;
+    }
+}
+declare module "material/SlotParser" {
+    export function replace(origin: any, name: any, value: any): any;
+}
+declare module "material/components/GetColorComponent" {
+    export default class GetColorComponent {
+        compile(vs: any, fs: any, { colorMode }: {
+            colorMode: any;
+        }): {
+            vs: any;
+            fs: any;
+        };
+        passVariables(target: any): void;
     }
 }
 declare module "material/BasicMaterial" {
@@ -1605,7 +1619,7 @@ declare module "material/DepthMaterial" {
         fragmentShader: any;
         initProgram(gl: any): void;
         program: WebGLProgram;
-        beforeRender({ camera }: {
+        passVariables({ camera }: {
             camera: any;
         }): void;
     }
@@ -1620,7 +1634,7 @@ declare module "material/LambertMaterial" {
             surroundings: any;
         }): void;
         program: WebGLProgram;
-        beforeRender({ surroundings }: {
+        passVariables({ surroundings }: {
             surroundings: any;
         }): void;
     }
@@ -1857,9 +1871,9 @@ declare module "geometry/Geometry" {
          */
         mode: number;
         /**
-         * @type {number | Object}
+         * @type {Object}
          */
-        indices: number | any;
+        indices: any;
         /**
          * @type {boolean}
          */
@@ -1930,7 +1944,6 @@ declare module "geometry/Plane" {
             width?: number;
             height?: number;
         });
-        indices: number[];
         width: number;
         height: number;
     }
@@ -1955,7 +1968,6 @@ declare module "geometry/Segment" {
         strokeWidth: number;
         strokeColor: Color;
         normal: import("mraph").Vector;
-        indices: number[];
         start: import("mraph").Vector;
         end: import("mraph").Vector;
         get vector(): import("mraph").Vector;

@@ -7,12 +7,12 @@ export default class Segment extends Geometry {
     strokeWidth = 0.1;
     strokeColor = new Color(1, 1, 1, 1);
     normal = VECTORS.OUT.clone();
-    indices = [0, 1, 3, 2, 0, 3];
 
     constructor(start = VECTORS.ORIGIN.clone(), end = VECTORS.RIGHT.clone()) {
         super();
         this.start = start;
         this.end = end;
+        this.setIndex([0, 1, 3, 2, 0, 3]);
     }
 
     update() {

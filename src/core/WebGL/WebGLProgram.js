@@ -39,8 +39,6 @@ export default class Program {
             this.locations.set(name, location);
         }
 
-        this.use();
-
         if (Array.isArray(data[0])) {
             const arr = new Float32Array(data.flat());
             gl["uniformMatrix" + (n ?? data[0].length) + "fv"](location, false, arr);

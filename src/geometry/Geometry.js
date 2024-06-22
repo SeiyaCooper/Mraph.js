@@ -25,9 +25,12 @@ export default class Geometry extends Node {
     mode = DrawModes.TRIANGLES;
 
     /**
-     * @type {number | Object}
+     * @type {Object}
      */
-    indices = 0;
+    indices = {
+        data: 0,
+        needsUpdate: false,
+    };
 
     /**
      * @type {boolean}
@@ -160,6 +163,7 @@ export default class Geometry extends Node {
      * @param {number | number[]} data
      */
     setIndex(data) {
-        this.indices = data;
+        this.indices.data = data;
+        this.indices.needsUpdate = true;
     }
 }

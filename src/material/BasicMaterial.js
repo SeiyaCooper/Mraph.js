@@ -1,5 +1,6 @@
 import WebGLProgram from "../core/WebGL/WebGLProgram.js";
 import Material from "./Material.js";
+import GetColorComponent from "./components/GetColorComponent.js";
 
 import vertexShader from "./shader/basic.vert?raw";
 import fragmentShader from "./shader/basic.frag?raw";
@@ -9,6 +10,7 @@ export default class BasicMaterial extends Material {
         super();
         this.vertexShader = vertexShader;
         this.fragmentShader = fragmentShader;
+        this.attachComponent(new GetColorComponent());
     }
 
     initProgram(gl) {
@@ -19,7 +21,7 @@ export default class BasicMaterial extends Material {
         });
     }
 
-    beforeRender() {
+    passVariables() {
         this.passComponentVariables();
     }
 }

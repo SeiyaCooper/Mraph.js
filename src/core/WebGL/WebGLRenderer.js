@@ -80,6 +80,7 @@ export default class WebGLRenderer {
 
         if (!material.program) this.programManager.setProgram(material, this.gl, scene);
         const program = material.program;
+        program.use();
 
         const texture = material.diffuseTexture;
         if (texture) {
@@ -99,7 +100,7 @@ export default class WebGLRenderer {
             }
         }
 
-        material.beforeRender(scene);
+        material.passVariables(scene);
         program.setUniform("viewMat", camera.viewMat);
         program.setUniform("projectionMat", camera.projectionMat);
         program.setUniform("modelMat", mesh.matrix ?? Matrix.identity(4));
@@ -132,13 +133,21 @@ export default class WebGLRenderer {
         const indices = mesh.indices;
         const mode = GLENUM[mesh.mode] ?? GLENUM.TRIANGLES;
 
-        if (Array.isArray(indices)) {
-            const buffer = gl.createBuffer();
-            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffer);
-            gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), this.usage);
-            gl.drawElements(mode, indices.length, gl.UNSIGNED_SHORT, 0);
+        if (Array.isArray(indices.data)) {
+            if (!indices.buffer) {
+                const buffer = gl.createBuffer();
+                indices.buffer = buffer;
+            }
+
+            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indices.buffer);
+
+            if (indices.needsUpdate) {
+                gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices.data), this.usage);
+            }
+
+            gl.drawElements(mode, indices.data.length, gl.UNSIGNED_SHORT, 0);
         } else {
-            gl.drawArrays(mode, 0, indices);
+            gl.drawArrays(mode, 0, indices.data);
         }
 
         for (let child of mesh.children ?? []) {
@@ -204,7 +213,7 @@ export default class WebGLRenderer {
     set depthTest(bool) {
         const gl = this.gl;
 
-        if (bool === this._depthTest) return;
+        if (!!bool === this._depthTest) return;
 
         if (bool) {
             gl.enable(gl.DEPTH_TEST);
@@ -213,6 +222,8 @@ export default class WebGLRenderer {
         } else {
             gl.disable(gl.DEPTH_TEST);
         }
+
+        this._depthTest = bool;
     }
 
     get depthTest() {
@@ -220,8 +231,9 @@ export default class WebGLRenderer {
     }
 
     set depthMask(bool) {
-        if (bool === this._depthMask) return;
+        if (!!bool === this._depthMask) return;
         this.gl.depthMask(bool);
+        this._depthMask = bool;
     }
 
     get depthMask() {

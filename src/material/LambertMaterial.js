@@ -1,6 +1,7 @@
 import WebGLProgram from "../core/WebGL/WebGLProgram.js";
 import Material from "./Material.js";
 import * as SlotParser from "./SlotParser.js";
+import GetColorComponent from "./components/GetColorComponent.js";
 
 import vertexShader from "./shader/lambert.vert?raw";
 import fragmentShader from "./shader/lambert.frag?raw";
@@ -10,6 +11,7 @@ export default class LambertMaterial extends Material {
         super();
         this.vertexShader = vertexShader;
         this.fragmentShader = fragmentShader;
+        this.attachComponent(new GetColorComponent());
     }
 
     initProgram(gl, { surroundings }) {
@@ -19,7 +21,7 @@ export default class LambertMaterial extends Material {
         this.program = new WebGLProgram(gl, { vs, fs });
     }
 
-    beforeRender({ surroundings }) {
+    passVariables({ surroundings }) {
         const program = this.program;
 
         const pointLights = surroundings.pointLights;

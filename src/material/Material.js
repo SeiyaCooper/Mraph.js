@@ -1,4 +1,3 @@
-import GetColorComponent from "./components/GetColorComponent.js";
 import * as COLORS from "../constants/colors.js";
 
 export default class Material {
@@ -44,21 +43,28 @@ export default class Material {
     fragmentShader = "";
 
     /**
-     * Components that attatched to this material.s
+     * Components that attatched to this material.
      * @type {Component}
      */
     components = [];
 
-    constructor() {
-        this.attachComponent(new GetColorComponent());
-    }
+    /**
+     * Custom method to pass all variables, will be called before rendering.
+     */
+    passVariables() {}
 
-    beforeRender() {}
-
+    /**
+     * Attachs a component to this material.
+     * @param {Component} component
+     */
     attachComponent(component) {
         this.components.push(component);
     }
 
+    /**
+     * Compiles Shader code depends on all components attached.
+     * @returns {string}
+     */
     compileComponents() {
         let code;
         for (let component of this.components) {
@@ -67,6 +73,9 @@ export default class Material {
         return code;
     }
 
+    /**
+     * Passes all components variables.
+     */
     passComponentVariables() {
         for (let component of this.components) component.passVariables(this);
     }
