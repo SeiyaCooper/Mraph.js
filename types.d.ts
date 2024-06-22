@@ -471,6 +471,12 @@ declare module "math/Color" {
          * @param {number} [a=1]
          */
         constructor(r?: number, g?: number, b?: number, a?: number);
+        withRGBA({ r, g, b, a }: {
+            r: any;
+            g: any;
+            b: any;
+            a: any;
+        }): Color;
         toArray(): this[number][];
         toIntRGBA(): Color;
         toRGBAStr(): string;
@@ -1931,10 +1937,15 @@ declare module "geometry/Geometry" {
          */
         getUniformVal(name: string): number[] | number;
         /**
-         * set index
+         * Sets index
          * @param {number | number[]} data
          */
         setIndex(data: number | number[]): void;
+        /**
+         * Gets index
+         * @param {number | number[]} data
+         */
+        getIndex(): any;
     }
     import Node from "core/Node";
 }
@@ -2034,6 +2045,7 @@ declare module "geometry/Cylinder" {
 }
 declare module "mobjects/Mobject" {
     export default class Mobject extends Geometry {
+        static fromGeometry(geometry: any): Mobject;
         /**
          * Every mobject contains a default material.
          */
@@ -2052,6 +2064,17 @@ declare module "mobjects/Mobject" {
          * @returns {this}
          */
         mergeAttributes(source: Geometry, ...names: string[]): this;
+        /**
+         * Returns an array of points where each point is represented as an array of its coordinates [x, y, z].
+         * @returns {number[][]}
+         */
+        getPoints(): number[][];
+        /**
+         * Replaces the geometry's vertex data with the provided points array.
+         * Each point in the array should be an array of [x, y, z] coordinates.
+         * @param {number[][]} points
+         */
+        fromPoints(points: number[][]): void;
         /**
          * A collection of animation methods
          */
@@ -2086,6 +2109,25 @@ declare module "mobjects/Mobject" {
              * @param {Object} config
              */
             rotateZ: any;
+            /**
+             * Applies a non-linear transform
+             * @param {Function} trans
+             * @param {Object} config
+             */
+            pointwiseTransfrom: any;
+            /**
+             * Transform to a given points array.
+             * Each point in the array should be an array of [x, y, z] coordinates.
+             * @param {number[][]} points
+             * @param {Object} config
+             */
+            fromPoints: any;
+            /**
+             * Tranform to a given mobject.
+             * @param {mobject} Mobject
+             * @param {Object} config
+             */
+            transformTo: any;
         };
     }
     import Geometry from "geometry/Geometry";

@@ -12,6 +12,10 @@ export default class Color extends Vector {
         super(r, g, b, a);
     }
 
+    withRGBA({ r, g, b, a }) {
+        return new Color(r ?? this.r, g ?? this.g, b ?? this.b, a ?? this.a);
+    }
+
     toArray() {
         return [...this];
     }

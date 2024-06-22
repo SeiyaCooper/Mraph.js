@@ -63,8 +63,8 @@ export default class Geometry extends Node {
             const oriColors = child.getAttributeVal("color");
             const oriNormal = child.getAttributeVal("normal");
 
-            if (Array.isArray(child.indices)) {
-                for (let i of child.indices) {
+            if (Array.isArray(child.indices.data)) {
+                for (let i of child.indices.data) {
                     vertices.push(position[i * 3]);
                     vertices.push(position[i * 3 + 1]);
                     vertices.push(position[i * 3 + 2]);
@@ -159,11 +159,19 @@ export default class Geometry extends Node {
     }
 
     /**
-     * set index
+     * Sets index
      * @param {number | number[]} data
      */
     setIndex(data) {
         this.indices.data = data;
         this.indices.needsUpdate = true;
+    }
+
+    /**
+     * Gets index
+     * @param {number | number[]} data
+     */
+    getIndex() {
+        return this.indices.data;
     }
 }

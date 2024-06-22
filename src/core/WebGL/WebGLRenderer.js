@@ -143,6 +143,7 @@ export default class WebGLRenderer {
 
             if (indices.needsUpdate) {
                 gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices.data), this.usage);
+                indices.needsUpdate = false;
             }
 
             gl.drawElements(mode, indices.data.length, gl.UNSIGNED_SHORT, 0);

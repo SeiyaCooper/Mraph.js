@@ -35,7 +35,7 @@ export function mean(...nums) {
  * @returns {number}
  */
 export function lerp(from, to, p) {
-    return from + p * (to - from);
+    return p * to + (1 - p) * from;
 }
 
 /**
@@ -48,7 +48,7 @@ export function lerp(from, to, p) {
 export function lerpArray(from, to, p) {
     const ans = [];
     for (let i = 0; i < from.length; i++) {
-        ans[i] = lerp(from[i], to[i], p);
+        ans[i] = p * to[i] + (1 - p) * from[i];
     }
     return ans;
 }

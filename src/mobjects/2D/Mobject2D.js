@@ -146,7 +146,7 @@ export default class Mobject2D extends Mobject {
 
         /**
          * Applies a non-linear transform
-         * @param {Vector | number[]} pos
+         * @param {Function} trans
          * @param {Object} config
          */
         pointwiseTransform: ((trans, { runTime = 1, curve } = {}) => {
@@ -183,7 +183,7 @@ export default class Mobject2D extends Mobject {
 
         /**
          * Applies a complex function
-         * @param {Vector | number[]} pos
+         * @param {Function} trans
          * @param {Object} config
          */
         complexFuncTransform: ((trans, { runTime = 1, curve } = {}) => {
