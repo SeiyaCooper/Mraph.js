@@ -47,6 +47,8 @@ import FunctionGraph2D from "./mobjects/2D/FunctionGraph2D.js";
 import Mobject3D from "./mobjects/3D/Mobject3D.js";
 import FunctionGraph3D from "./mobjects/3D/FunctionGraph3D.js";
 import Point3D from "./mobjects/3D/Point3D.js";
+import Arrow3D from "./mobjects/3D/Arrow3D.js";
+import VectorField3D from "./mobjects/3D/VectorField3D.js";
 
 import Mobject from "./mobjects/Mobject.js";
 import ImageMobject from "./mobjects/ImageMobject.js";
@@ -100,6 +102,8 @@ export {
     Mobject3D,
     FunctionGraph3D,
     Point3D,
+    Arrow3D,
+    VectorField3D,
 
     // Core
     Layer,

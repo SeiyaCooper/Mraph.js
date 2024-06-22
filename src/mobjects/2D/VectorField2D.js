@@ -35,10 +35,7 @@ export default class VectorField2D extends Mobject {
         const yRange = this.yRange;
         for (let x = xRange[0]; x <= xRange[1]; x += xRange[2]) {
             for (let y = yRange[0]; y <= yRange[1]; y += yRange[2]) {
-                const arrow = new Arrow(
-                    new Point(new Vector(x, y, 0).add(this.center)),
-                    new Vector(...func(x, y, this.center[2]))
-                );
+                const arrow = new Arrow(new Point(new Vector(x, y, 0)), new Vector(...func(x, y, this.center[2])));
                 const length = this.lengthFunc(arrow.length);
                 arrow.length = length;
                 arrow.setColor(this.colorFunc(x, y, length));
@@ -53,14 +50,5 @@ export default class VectorField2D extends Mobject {
 
     setColor(color) {
         this.colorFunc = () => color;
-    }
-
-    set center(center) {
-        this._center = center;
-        this.update();
-    }
-
-    get center() {
-        return this._center;
     }
 }

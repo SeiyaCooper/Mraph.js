@@ -1,7 +1,8 @@
 import Matrix from "../math/Matrix.js";
 import Vector from "../math/Vector.js";
+import Node from "./Node.js";
 
-export default class Camera {
+export default class Camera extends Node {
     center = new Vector(0, 0, -10);
     rotation = new Vector(0, 0, 0);
     up = new Vector(0, 1, 0);
@@ -9,6 +10,7 @@ export default class Camera {
     viewMat = Matrix.identity(4);
 
     constructor() {
+        super();
         const self = this;
         const handler = {
             get(obj, prop) {
@@ -17,7 +19,7 @@ export default class Camera {
             set(obj, prop, value) {
                 obj[prop] = value;
                 if (+prop <= 2) {
-                    self.update();
+                    self.updateMatrix();
                 }
                 return true;
             },
@@ -29,7 +31,7 @@ export default class Camera {
         this.rotation = rotProxy;
     }
 
-    update() {
+    updateMatrix() {
         const center = this.center;
         const rotation = this.rotation;
         this.viewMat = Matrix.translation(...center)
@@ -51,7 +53,7 @@ export default class Camera {
         );
         this.near = near;
         this.far = far;
-        this.update();
+        this.updateMatrix();
         return this;
     }
 
@@ -65,7 +67,7 @@ export default class Camera {
         this.projectionMat = mat;
         this.near = near;
         this.far = far;
-        this.update();
+        this.updateMatrix();
         return this;
     }
 

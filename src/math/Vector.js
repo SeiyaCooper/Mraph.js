@@ -121,7 +121,7 @@ export default class Vector extends Array {
     }
 
     /**
-     * Project to another vector
+     * Projects this vector to another vector
      * @param {Vector} vec
      * @returns {Vector}
      */
@@ -165,6 +165,21 @@ export default class Vector extends Array {
             this[i] = num;
         });
         return this;
+    }
+
+    /**
+     * resize this vector with a number to fill
+     * @param {number} row
+     * @param {number} [n=0]
+     */
+    resize(row, n = 0) {
+        const out = Vector.fromRow(row, n);
+
+        for (let j = 0; j < out.length; j++) {
+            out[j] = this[j] ?? n;
+        }
+
+        return out;
     }
 
     /**

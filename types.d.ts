@@ -382,7 +382,7 @@ declare module "math/Vector" {
          */
         minus(vec: Vector): Vector;
         /**
-         * Project to another vector
+         * Projects this vector to another vector
          * @param {Vector} vec
          * @returns {Vector}
          */
@@ -408,6 +408,12 @@ declare module "math/Vector" {
          * copy values from another vector
          */
         copy(vec: any): this;
+        /**
+         * resize this vector with a number to fill
+         * @param {number} row
+         * @param {number} [n=0]
+         */
+        resize(row: number, n?: number): Vector;
         /**
          * print this vertor on the console
          */
@@ -1077,14 +1083,127 @@ declare module "core/WebGL/WebGLRenderer" {
     }
     import ProgramManager from "core/WebGL/ProgramManager";
 }
-declare module "core/Camera" {
-    export default class Camera {
+declare module "constants/vectors" {
+    export const ORIGIN: Vector;
+    export const UP: Vector;
+    export const DOWN: Vector;
+    export const RIGHT: Vector;
+    export const LEFT: Vector;
+    export const IN: Vector;
+    export const OUT: Vector;
+    import Vector from "math/Vector";
+}
+declare module "core/Node" {
+    export default class Node {
+        /**
+         * @type {Node | undefined}
+         */
+        parent: Node | undefined;
+        /**
+         * A set of children
+         * @type {Node[]}
+         */
+        children: Node[];
+        /**
+         * local matrix
+         * @type {Matrix}
+         */
+        localMatrix: Matrix;
+        /**
+         * global matrix
+         * @type {Matrix}
+         */
+        matrix: Matrix;
+        /**
+         * @type {Vector}
+         */
         center: Vector;
+        /**
+         * @type {Vector}
+         */
         rotation: Vector;
+        /**
+         * @type {Vector}
+         */
+        scale: Vector;
+        /**
+         * @param  {...Node} objs
+         */
+        add(...objs: Node[]): void;
+        /**
+         * @param  {...Node} objs
+         */
+        delete(...objs: Node[]): void;
+        /**
+         * delete all children
+         */
+        clear(): void;
+        /**
+         * Set attributes for all children
+         * @param {string} key
+         * @param {any} value
+         */
+        set(key: string, value: any): void;
+        /**
+         * update local matrix
+         * @returns {this}
+         */
+        updateLocalMatrix(): this;
+        /**
+         * update global matrix
+         * @returns {this}
+         */
+        updateWorldMatrix(): this;
+        /**
+         * update local matrix, global matrix and children's matrices
+         * @returns {this}
+         */
+        updateMatrix(): this;
+        /**
+         * A collection of animation methods
+         */
+        animate: {
+            /**
+             * Shifts this mobject to a new place
+             * @param {Vector | number[]} pos
+             * @param {Object} config
+             */
+            moveTo: any;
+            /**
+             * Scales this mobject by a factor
+             * @param {Vector | number[]} factor
+             * @param {Object} config
+             */
+            scaleTo: any;
+            /**
+             * Rotates this mobject around x axis
+             * @param {Vector | number[]} factor
+             * @param {Object} config
+             */
+            rotateX: any;
+            /**
+             * Rotates this mobject around y axis
+             * @param {Vector | number[]} factor
+             * @param {Object} config
+             */
+            rotateY: any;
+            /**
+             * Rotates this mobject around z axis
+             * @param {Vector | number[]} factor
+             * @param {Object} config
+             */
+            rotateZ: any;
+        };
+    }
+    import Matrix from "math/Matrix";
+    import Vector from "math/Vector";
+}
+declare module "core/Camera" {
+    export default class Camera extends Node {
         up: Vector;
         projectionMat: Matrix;
         viewMat: Matrix;
-        update(): void;
+        updateMatrix(): void;
         perspective({ fov, near, far, aspect }?: {
             fov?: number;
             near?: number;
@@ -1102,8 +1221,8 @@ declare module "core/Camera" {
             far?: number;
         }): this;
         lookAt(target: any): this;
-        matrix: Matrix;
     }
+    import Node from "core/Node";
     import Vector from "math/Vector";
     import Matrix from "math/Matrix";
 }
@@ -1321,16 +1440,6 @@ declare module "material/BasicMaterial" {
     import Material from "material/Material";
     import WebGLProgram from "core/WebGL/WebGLProgram";
 }
-declare module "constants/vectors" {
-    export const ORIGIN: Vector;
-    export const UP: Vector;
-    export const DOWN: Vector;
-    export const RIGHT: Vector;
-    export const LEFT: Vector;
-    export const IN: Vector;
-    export const OUT: Vector;
-    import Vector from "math/Vector";
-}
 declare module "light/PointLight" {
     export default class PointLight {
         static isInstance(obj: any): boolean;
@@ -1356,76 +1465,6 @@ declare module "light/DirectionalLight" {
         color: import("mraph").Color;
         intensity: number;
     }
-}
-declare module "core/Node" {
-    export default class Node {
-        /**
-         * @type {Node | undefined}
-         */
-        parent: Node | undefined;
-        /**
-         * A set of children
-         * @type {Node[]}
-         */
-        children: Node[];
-        /**
-         * local matrix
-         * @type {Matrix}
-         */
-        localMatrix: Matrix;
-        /**
-         * global matrix
-         * @type {Matrix}
-         */
-        matrix: Matrix;
-        /**
-         * @type {Vector}
-         */
-        center: Vector;
-        /**
-         * @type {Vector}
-         */
-        rotation: Vector;
-        /**
-         * @type {Vector}
-         */
-        scale: Vector;
-        /**
-         * @param  {...Node} objs
-         */
-        add(...objs: Node[]): void;
-        /**
-         * @param  {...Node} objs
-         */
-        delete(...objs: Node[]): void;
-        /**
-         * delete all children
-         */
-        clear(): void;
-        /**
-         * Set attributes for all children
-         * @param {string} key
-         * @param {any} value
-         */
-        set(key: string, value: any): void;
-        /**
-         * update local matrix
-         * @returns {this}
-         */
-        updateLocalMatrix(): this;
-        /**
-         * update global matrix
-         * @returns {this}
-         */
-        updateWorldMatrix(): this;
-        /**
-         * update local matrix, global matrix and children's matrices
-         * @returns {this}
-         */
-        updateMatrix(): this;
-    }
-    import Matrix from "math/Matrix";
-    import Vector from "math/Vector";
 }
 declare module "core/Layer" {
     export default class Layer {
@@ -2076,59 +2115,15 @@ declare module "mobjects/Mobject" {
          */
         fromPoints(points: number[][]): void;
         /**
+         * Transforms this mobject by a matrix instantly.
+         * @param {Matrix} matrix
+         * @param {number} [n=3]
+         */
+        matrixTransform(matrix: Matrix, n?: number): void;
+        /**
          * A collection of animation methods
          */
-        animate: {
-            /**
-             * Shifts this mobject to a new place
-             * @param {Vector | number[]} pos
-             * @param {Object} config
-             */
-            moveTo: any;
-            /**
-             * Scales this mobject by a factor
-             * @param {Vector | number[]} factor
-             * @param {Object} config
-             */
-            scaleTo: any;
-            /**
-             * Rotates this mobject around x axis
-             * @param {Vector | number[]} factor
-             * @param {Object} config
-             */
-            rotateX: any;
-            /**
-             * Rotates this mobject around y axis
-             * @param {Vector | number[]} factor
-             * @param {Object} config
-             */
-            rotateY: any;
-            /**
-             * Rotates this mobject around z axis
-             * @param {Vector | number[]} factor
-             * @param {Object} config
-             */
-            rotateZ: any;
-            /**
-             * Applies a non-linear transform
-             * @param {Function} trans
-             * @param {Object} config
-             */
-            pointwiseTransfrom: any;
-            /**
-             * Transform to a given points array.
-             * Each point in the array should be an array of [x, y, z] coordinates.
-             * @param {number[][]} points
-             * @param {Object} config
-             */
-            fromPoints: any;
-            /**
-             * Tranform to a given mobject.
-             * @param {mobject} Mobject
-             * @param {Object} config
-             */
-            transformTo: any;
-        };
+        animate: any;
     }
     import Geometry from "geometry/Geometry";
     import BasicMaterial from "material/BasicMaterial";
@@ -2155,7 +2150,6 @@ declare module "mobjects/2D/Mobject2D" {
         clearBuffer(): void;
         finish(): void;
         setColor(color: any): void;
-        animate: any;
         pointwiseTransform(trans: any): void;
     }
     import Mobject from "mobjects/Mobject";
@@ -2224,9 +2218,6 @@ declare module "mobjects/2D/Line" {
          * @param {Point} end
          */
         constructor(start?: Point, end?: Point);
-        indices: {
-            data: number[];
-        };
         tips: any[];
         tipWidth: number;
         tipLength: number;
@@ -2394,6 +2385,41 @@ declare module "mobjects/3D/Point3D" {
     import Mobject3D from "mobjects/3D/Mobject3D";
     import Vector from "math/Vector";
 }
+declare module "mobjects/3D/Arrow3D" {
+    export default class Arrow3D extends Mobject3D {
+        constructor(start?: Point3D, end?: Point3D);
+        tipWidth: number;
+        tipLength: number;
+        strokeWidth: number;
+        start: Point3D;
+        end: Point3D;
+        set vector(vec: any);
+        get vector(): any;
+        set length(val: any);
+        get length(): any;
+    }
+    import Mobject3D from "mobjects/3D/Mobject3D";
+    import Point3D from "mobjects/3D/Point3D";
+}
+declare module "mobjects/3D/VectorField3D" {
+    export default class VectorField3D extends Mobject3D {
+        constructor({ func, xRange, yRange, zRange, }?: {
+            func?: (x: any, y: any, z: any) => any[];
+            xRange?: number[];
+            yRange?: number[];
+            zRange?: number[];
+        });
+        lengthFunc: (length: any) => number;
+        colorFunc: () => Color;
+        xRange: number[];
+        yRange: number[];
+        zRange: number[];
+        func: (x: any, y: any, z: any) => any[];
+        setColor(color: any): void;
+    }
+    import Mobject3D from "mobjects/3D/Mobject3D";
+    import Color from "math/Color";
+}
 declare module "mobjects/ImageMobject" {
     export default class ImageMobject extends Mobject {
         constructor(image: any, { width, height, maintainAspectRatio }?: {
@@ -2456,6 +2482,8 @@ declare module "mraph" {
     import Mobject3D from "mobjects/3D/Mobject3D";
     import FunctionGraph3D from "mobjects/3D/FunctionGraph3D";
     import Point3D from "mobjects/3D/Point3D";
+    import Arrow3D from "mobjects/3D/Arrow3D";
+    import VectorField3D from "mobjects/3D/VectorField3D";
     import Layer from "core/Layer";
     import Camera from "core/Camera";
     import Texture from "core/Texture";
@@ -2469,5 +2497,5 @@ declare module "mraph" {
     import Timeline from "animation/Timeline";
     import OrbitControl from "extra/OrbitControl";
     import Recorder from "extra/Recorder";
-    export { Color, Matrix, Vector, Quat, Complex, Geometry, Plane, Box, Segment, Sphere, Cylinder, DirectionalLight, PointLight, Mobject, ImageMobject, Mobject2D, Point, Tail, Line, Arc, Arrow, Axis, Axes2D, VectorField2D, FunctionGraph2D, Mobject3D, FunctionGraph3D, Point3D, Layer, Camera, Texture, WebGLRenderer, WebGLProgram, CustomMaterial, BasicMaterial, DepthMaterial, LambertMaterial, Event, Timeline, OrbitControl, Recorder };
+    export { Color, Matrix, Vector, Quat, Complex, Geometry, Plane, Box, Segment, Sphere, Cylinder, DirectionalLight, PointLight, Mobject, ImageMobject, Mobject2D, Point, Tail, Line, Arc, Arrow, Axis, Axes2D, VectorField2D, FunctionGraph2D, Mobject3D, FunctionGraph3D, Point3D, Arrow3D, VectorField3D, Layer, Camera, Texture, WebGLRenderer, WebGLProgram, CustomMaterial, BasicMaterial, DepthMaterial, LambertMaterial, Event, Timeline, OrbitControl, Recorder };
 }

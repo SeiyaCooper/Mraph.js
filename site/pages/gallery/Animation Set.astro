@@ -1,0 +1,31 @@
+---
+import Example from "../../layouts/Example.astro";
+---
+
+<Example title="Animation Set">
+    <script>
+        import * as MRAPH from "../../../src/mraph.js";
+
+        const layer = new MRAPH.Layer().appendTo(document.body);
+
+        const vf3d = new MRAPH.VectorField3D();
+        layer.add(vf3d);
+        vf3d.colorFunc = (x, y, z, length) => {
+            const hue = (length - 0.1) * 4 - 1.35;
+            return MRAPH.MathFunc.lerpArray(new MRAPH.Color(0, 0.9, 1), new MRAPH.Color(1, 0.1, 0.1), hue);
+        };
+
+        vf3d.animate.transformTo(new MRAPH.Point(0, 0), { runTime: 1.5 });
+        vf3d.animate.transformTo(new MRAPH.VectorField2D(), { runTime: 1.5 });
+        vf3d.animate.transformTo(new MRAPH.Axes2D(), { runTime: 1.5 });
+        vf3d.animate.rotateZ(Math.PI * 4, { runTime: 3 });
+        vf3d.animate.moveTo(MRAPH.VECTORS.UP);
+        vf3d.animate.moveTo(MRAPH.VECTORS.DOWN, { curve: MRAPH.Timeline.easeOutBounce });
+        vf3d.animate.moveTo(MRAPH.VECTORS.ORIGIN);
+        layer.scene.animate.rotateY(Math.PI / 3);
+        layer.scene.animate.rotateX(Math.PI / 3);
+        layer.camera.animate.moveTo(new MRAPH.Vector(0, 0, -5));
+
+        layer.play();
+    </script>
+</Example>

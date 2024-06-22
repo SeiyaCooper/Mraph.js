@@ -6,7 +6,6 @@ import Matrix from "../../math/Matrix.js";
 export default class Line extends Mobject2D {
     strokeWidth = 0.05;
     strokeColor = new Color(1, 1, 1, 1);
-    indices = { data: [0, 1, 3, 2, 0, 3] };
     tips = [];
     tipWidth = 0.06;
     tipLength = 0.12;
@@ -20,6 +19,7 @@ export default class Line extends Mobject2D {
         super();
         this.start = start;
         this.end = end;
+        this.setIndex([0, 1, 3, 2, 0, 3]);
     }
 
     update() {

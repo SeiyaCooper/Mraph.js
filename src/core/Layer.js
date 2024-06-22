@@ -34,6 +34,8 @@ export default class Layer {
         this.renderer = new rendererClass(this.canvas, contextConfig);
         this.clearCanvas(COLORS.GRAY_E);
         this.defaultMaterial.colorMode = "vertex";
+        this.scene.layer = this;
+        this.camera.layer = this;
     }
 
     /**
