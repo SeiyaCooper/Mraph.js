@@ -49,6 +49,6 @@ export default class Box extends Geometry {
 
         this.setAttribute("position", vertices, 3);
         this.setAttribute("normal", normal, 3);
-        this.indices = vertices.length / 3;
+        this.setIndex(vertices.length / 3);
     }
 }

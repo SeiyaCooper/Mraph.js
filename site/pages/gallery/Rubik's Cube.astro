@@ -26,7 +26,7 @@ import Example from "../../layouts/Example.astro";
         });
         layer.add(dirLight);
 
-        layer.camera.center[2] = 3;
+        layer.camera.center.z = 3;
         layer.enableOrbitControl();
         layer.play();
     </script>
