@@ -114,24 +114,19 @@ export default class Mobject extends Geometry {
          * @param {Function} trans
          * @param {Object} config
          */
-        pointwiseTransfrom: ((trans, { runTime = 1, curve } = {}) => {
+        pointwiseTransform: ((trans, { runTime = 1, curve } = {}) => {
             let from = [],
                 to = [];
             const config = {
                 start: () => {
                     from = this.getPoints();
                     for (let point of from) {
-                        to.push(trans(Vector.fromArray(point)));
+                        to.push(...trans(Vector.fromArray(point)));
                     }
+                    from = from.flat(1);
                 },
                 update: (p) => {
-                    const now = [];
-
-                    for (let i = 0; i < from.length; i++) {
-                        now.push(MathFunc.lerpArray(from[i], to[i], p));
-                    }
-
-                    this.fromPoints(now);
+                    this.setAttribute("position", MathFunc.lerpArray(from, to, p), 3);
                 },
                 curve,
             };
@@ -139,25 +134,21 @@ export default class Mobject extends Geometry {
         }).bind(this),
 
         /**
-         * Transform to a given points array.
+         * Transforms to a given points array.
          * Each point in the array should be an array of [x, y, z] coordinates.
          * @param {number[][]} points
          * @param {Object} config
          */
         fromPoints: ((points, { runTime = 1, curve } = {}) => {
-            let start = [];
+            let start = [],
+                end = [];
             const config = {
                 start: () => {
-                    start = this.getPoints();
+                    start = this.getPoints().flat(1);
+                    end = points.flat(1);
                 },
                 update: (p) => {
-                    const now = [];
-
-                    for (let i = 0; i < start.length; i++) {
-                        now.push(MathFunc.lerpArray(start[i], points[i], p));
-                    }
-
-                    this.fromPoints(now);
+                    this.setAttribute("position", MathFunc.lerpArray(start, end, p), 3);
                 },
                 curve,
             };
@@ -165,7 +156,7 @@ export default class Mobject extends Geometry {
         }).bind(this),
 
         /**
-         * Tranform to a given mobject.
+         * Tranforms to a given mobject.
          * @param {mobject} Mobject
          * @param {Object} config
          */
@@ -182,10 +173,9 @@ export default class Mobject extends Geometry {
                     to = mobject.getPoints();
                     from = this.getPoints();
 
-                    if (to.length === from.length) return;
                     if (to.length > from.length) {
                         from = expandPoints(from, to.length);
-                    } else {
+                    } else if (to.length < from.length) {
                         to = expandPoints(to, from.length);
                     }
 

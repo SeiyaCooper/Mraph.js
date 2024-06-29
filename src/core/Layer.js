@@ -173,17 +173,27 @@ export default class Layer {
     }
 
     /**
-     * play animation with a refresh color
-     * @param {Color} [color = COLORS.GRAY_E]
+     * Plays animation.
+     * @param {Object} config
      * @returns {this}
      */
-    play(color = COLORS.GRAY_E) {
+    play({ color = COLORS.GRAY_E, until = () => true } = {}) {
         const timeline = this.timeline;
         timeline.addGlobal(() => {
             this.clearCanvas(color);
             this.render();
         });
-        timeline.play();
+
+        let monitor = new Timeline();
+        monitor.addInfinity(() => {
+            if (!until()) return;
+
+            timeline.play();
+            monitor.dispose();
+            monitor = null;
+        });
+        monitor.play();
+
         return this;
     }
 

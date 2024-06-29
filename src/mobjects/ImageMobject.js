@@ -35,7 +35,7 @@ export default class ImageMobject extends Mobject {
     set image(image) {
         if (typeof image === "string") {
             const img = new Image();
-            const tex = new Texture(this.layer.renderer.gl);
+            const tex = new Texture();
 
             img.src = image;
             img.onload = () => {
@@ -46,9 +46,7 @@ export default class ImageMobject extends Mobject {
             this.texture = tex;
         } else {
             this._image = image;
-            this.texture = new Texture(this.layer.renderer.gl, {
-                image,
-            });
+            this.texture = new Texture({ image });
         }
         this.material.diffuseTexture = this.texture;
     }

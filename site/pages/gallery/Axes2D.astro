@@ -35,6 +35,6 @@ import Example from "../../layouts/Example.astro";
         // Render
         layer.add(axes);
         layer.enableOrbitControl();
-        layer.play();
+        layer.play({ until: () => logo.texture.isImageReady });
     </script>
 </Example>

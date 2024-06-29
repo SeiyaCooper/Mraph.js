@@ -20,7 +20,7 @@ export default class Texture {
         this.minFilter = minFilter;
         this.magFilter = magFilter;
 
-        if (this.isImgReady) {
+        if (this.isImageReady) {
             this._needsUpload = true;
         }
     }

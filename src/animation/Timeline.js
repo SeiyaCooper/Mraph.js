@@ -62,7 +62,7 @@ export default class Timeline {
     fps = 0;
 
     /**
-     * Add an event to this timeline.
+     * Adds an event to this timeline.
      * @param {Number} start
      * @param {Number} stop
      * @param {object} handle
@@ -92,7 +92,7 @@ export default class Timeline {
     }
 
     /**
-     * Add a one-time-only event.
+     * Adds a one-time-only event.
      * @param {number} at
      * @param {Function} handler
      */
@@ -101,7 +101,7 @@ export default class Timeline {
     }
 
     /**
-     * Add an event to event list following last event.
+     * Adds an event to event list following last event.
      * @param {Number} hold
      * @param {object} config
      * @return {this}
@@ -111,7 +111,7 @@ export default class Timeline {
     }
 
     /**
-     * Add an event beginning at the earliest time and concluding at the latest time.
+     * Adds an event beginning at the earliest time and concluding at the latest time.
      * @param {object} config
      * @returns {this}
      */
@@ -120,7 +120,7 @@ export default class Timeline {
     }
 
     /**
-     * Add a global event, this event will be called whenever timeline is active。
+     * Adds a global event, this event will be called whenever timeline is active。
      * If there is an infinity event attached to this timeline, it would behaved like infinity events, otherwise it would behaved like whole events.
      * @param {Function} handler
      * @returns {this}
@@ -133,7 +133,7 @@ export default class Timeline {
     }
 
     /**
-     * Add an infinity event
+     * Adds an infinity event
      * @param {Function} handler
      * @returns {this}
      */
@@ -145,7 +145,7 @@ export default class Timeline {
     }
 
     /**
-     * Delete an event from this timeline
+     * Deletes an event from this timeline
      * @param {object | number} target
      */
     delete(target) {
@@ -154,7 +154,7 @@ export default class Timeline {
     }
 
     /**
-     * Delete an event accroding to its id
+     * Deletes an event accroding to its id
      * @param {number} id
      */
     deleteById(id) {
@@ -170,7 +170,7 @@ export default class Timeline {
     }
 
     /**
-     * start palying animation
+     * Starts palying animation
      * @returns {void}
      */
     play() {
@@ -197,7 +197,7 @@ export default class Timeline {
     }
 
     /**
-     * trigger events by current time
+     * Triggers events by current time
      */
     process() {
         const events = this.events;
@@ -220,10 +220,21 @@ export default class Timeline {
     }
 
     /**
-     * Stop palying aniamtion
+     * Stops palying aniamtion
      */
     pause() {
         if (this.clock) this.state = STATE.PAUSED;
+    }
+
+    /**
+     * Disposes this timeline.
+     */
+    dispose() {
+        this.pause();
+
+        this.infinityEvents = [];
+        this.globalEvents = [];
+        this.events = [];
     }
 
     /**

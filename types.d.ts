@@ -203,7 +203,7 @@ declare module "animation/Timeline" {
          */
         fps: number;
         /**
-         * Add an event to this timeline.
+         * Adds an event to this timeline.
          * @param {Number} start
          * @param {Number} stop
          * @param {object} handle
@@ -212,60 +212,64 @@ declare module "animation/Timeline" {
          */
         add(startTime: any, stopTime: any, { update, start, stop, updateMax, updateMin, curve }?: object): Event;
         /**
-         * Add a one-time-only event.
+         * Adds a one-time-only event.
          * @param {number} at
          * @param {Function} handler
          */
         once(at: number, handler: Function): Event;
         /**
-         * Add an event to event list following last event.
+         * Adds an event to event list following last event.
          * @param {Number} hold
          * @param {object} config
          * @return {this}
          */
         addFollow(hold: number, config: object): this;
         /**
-         * Add an event beginning at the earliest time and concluding at the latest time.
+         * Adds an event beginning at the earliest time and concluding at the latest time.
          * @param {object} config
          * @returns {this}
          */
         addWhole(handler: any, config: object): this;
         /**
-         * Add a global event, this event will be called whenever timeline is active。
+         * Adds a global event, this event will be called whenever timeline is active。
          * If there is an infinity event attached to this timeline, it would behaved like infinity events, otherwise it would behaved like whole events.
          * @param {Function} handler
          * @returns {this}
          */
         addGlobal(handler: Function): this;
         /**
-         * Add an infinity event
+         * Adds an infinity event
          * @param {Function} handler
          * @returns {this}
          */
         addInfinity(handler: Function): this;
         /**
-         * Delete an event from this timeline
+         * Deletes an event from this timeline
          * @param {object | number} target
          */
         delete(target: object | number): void;
         /**
-         * Delete an event accroding to its id
+         * Deletes an event accroding to its id
          * @param {number} id
          */
         deleteById(id: number): void;
         /**
-         * start palying animation
+         * Starts palying animation
          * @returns {void}
          */
         play(): void;
         /**
-         * trigger events by current time
+         * Triggers events by current time
          */
         process(): void;
         /**
-         * Stop palying aniamtion
+         * Stops palying aniamtion
          */
         pause(): void;
+        /**
+         * Disposes this timeline.
+         */
+        dispose(): void;
         set maxTime(val: number);
         get maxTime(): number;
         set minTime(val: number);
@@ -1546,11 +1550,11 @@ declare module "core/Layer" {
          */
         clearCanvas([r, g, b, a]?: number[] | Color): this;
         /**
-         * play animation with a refresh color
-         * @param {Color} [color = COLORS.GRAY_E]
+         * Plays animation.
+         * @param {Object} config
          * @returns {this}
          */
-        play(color?: Color): this;
+        play({ color, until }?: any): this;
         /**
          * pause for a while between animations
          * @param {number} [time=1] in seconds
