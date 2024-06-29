@@ -203,6 +203,11 @@ declare module "animation/Timeline" {
          */
         fps: number;
         /**
+         * The duration between each frame when fps is setted.
+         * @type {number}
+         */
+        duration: number;
+        /**
          * Adds an event to this timeline.
          * @param {Number} start
          * @param {Number} stop
@@ -2141,6 +2146,7 @@ declare module "mobjects/2D/Mobject2D" {
         fillColor: Color;
         strokeColor: Color;
         strokeWidth: number;
+        closePath: boolean;
         lineJoin: string;
         move(point: any): void;
         line(point: any): void;
@@ -2250,6 +2256,20 @@ declare module "mobjects/2D/Line" {
     }
     import Mobject2D from "mobjects/2D/Mobject2D";
     import Point from "mobjects/2D/Point";
+}
+declare module "mobjects/2D/Polygon" {
+    export default class Polygon extends Mobject2D {
+        constructor(...points: any[]);
+        vertices: any[];
+    }
+    import Mobject2D from "mobjects/2D/Mobject2D";
+}
+declare module "mobjects/2D/RegularPolygon" {
+    export default class RegularPolygon extends Polygon {
+        constructor(n?: number);
+        vertexNum: number;
+    }
+    import Polygon from "mobjects/2D/Polygon";
 }
 declare module "mobjects/2D/Arrow" {
     export default class Arrow extends Line {
@@ -2477,6 +2497,8 @@ declare module "mraph" {
     import Point from "mobjects/2D/Point";
     import Tail from "mobjects/2D/Tail";
     import Line from "mobjects/2D/Line";
+    import Polygon from "mobjects/2D/Polygon";
+    import RegularPolygon from "mobjects/2D/RegularPolygon";
     import Arc from "mobjects/2D/Arc";
     import Arrow from "mobjects/2D/Arrow";
     import Axis from "mobjects/2D/Axis";
@@ -2501,5 +2523,5 @@ declare module "mraph" {
     import Timeline from "animation/Timeline";
     import OrbitControl from "extra/OrbitControl";
     import Recorder from "extra/Recorder";
-    export { Color, Matrix, Vector, Quat, Complex, Geometry, Plane, Box, Segment, Sphere, Cylinder, DirectionalLight, PointLight, Mobject, ImageMobject, Mobject2D, Point, Tail, Line, Arc, Arrow, Axis, Axes2D, VectorField2D, FunctionGraph2D, Mobject3D, FunctionGraph3D, Point3D, Arrow3D, VectorField3D, Layer, Camera, Texture, WebGLRenderer, WebGLProgram, CustomMaterial, BasicMaterial, DepthMaterial, LambertMaterial, Event, Timeline, OrbitControl, Recorder };
+    export { Color, Matrix, Vector, Quat, Complex, Geometry, Plane, Box, Segment, Sphere, Cylinder, DirectionalLight, PointLight, Mobject, ImageMobject, Mobject2D, Point, Tail, Line, Polygon, RegularPolygon, Arc, Arrow, Axis, Axes2D, VectorField2D, FunctionGraph2D, Mobject3D, FunctionGraph3D, Point3D, Arrow3D, VectorField3D, Layer, Camera, Texture, WebGLRenderer, WebGLProgram, CustomMaterial, BasicMaterial, DepthMaterial, LambertMaterial, Event, Timeline, OrbitControl, Recorder };
 }

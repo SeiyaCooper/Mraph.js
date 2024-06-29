@@ -207,7 +207,7 @@ export default class Mobject extends Geometry {
 
                 const rest = targetLength - repeatTimes * originLength;
                 for (let i = 0; i < rest; i++) {
-                    out.push(points[0]);
+                    out.push(points[i]);
                 }
 
                 return out;

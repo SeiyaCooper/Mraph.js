@@ -16,6 +16,7 @@ export default class Mobject2D extends Mobject {
     fillColor = new Color(1, 1, 1, 1);
     strokeColor = new Color(1, 1, 1, 1);
     strokeWidth = 0.05;
+    closePath = false;
 
     lineJoin = "miter";
 
@@ -94,15 +95,21 @@ export default class Mobject2D extends Mobject {
 
     modifyLineJoin2Miter(target) {
         for (let i = 0; i < target.length - 1; i++) {
-            const l0 = target[i];
-            const l1 = target[i + 1];
+            modifySingle(this, target, i, i + 1);
+        }
+
+        if (this.closePath) modifySingle(this, target, target.length - 1, 0);
+
+        function modifySingle(self, target, now, next) {
+            const l0 = target[now];
+            const l1 = target[next];
             const v0 = l0.vector;
             const v1 = l1.vector;
 
-            if (v0.cross(v1).norm === 0) continue;
+            if (v0.cross(v1).norm === 0) return;
 
             const tangent = v1.mult(-1).normal().add(v0.normal()).normal();
-            const tmp = v0.trans(Matrix.rotateOn(this.normal, Math.PI / 2, 3)).normal();
+            const tmp = v0.trans(Matrix.rotateOn(self.normal, Math.PI / 2, 3)).normal();
             const cosine = tmp.dot(tangent);
             const halfWidth = l0.strokeWidth / 2;
             const join = tangent.mult(halfWidth / cosine);

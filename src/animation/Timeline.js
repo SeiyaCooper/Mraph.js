@@ -62,6 +62,12 @@ export default class Timeline {
     fps = 0;
 
     /**
+     * The duration between each frame when fps is setted.
+     * @type {number}
+     */
+    duration = 0;
+
+    /**
      * Adds an event to this timeline.
      * @param {Number} start
      * @param {Number} stop
@@ -97,7 +103,7 @@ export default class Timeline {
      * @param {Function} handler
      */
     once(at, handler) {
-        return this.add(at, at, { start: handler });
+        return this.add(at, at, { stop: handler });
     }
 
     /**
@@ -176,14 +182,24 @@ export default class Timeline {
     play() {
         const self = this;
         const startTime = +new Date();
-        let frame = 0;
+        let frame = 0,
+            lastFrame;
 
         this.state = STATE.PLAYING;
         (function animate() {
             if (self.state !== STATE.PLAYING) return;
 
-            frame++;
-            const now = self.fps ? frame / self.fps : (+new Date() - startTime) / 1000;
+            let now;
+            if (self.fps) {
+                if (self.duration) {
+                    frame = Math.floor((+new Date() - startTime) / 1000 / self.duration);
+                } else {
+                    frame++;
+                }
+                now = frame / self.fps;
+            } else {
+                now = (+new Date() - startTime) / 1000;
+            }
 
             if (now > self.maxTime && self.allStopped && self.infinityEvents.length === 0) {
                 self.state = STATE.STOPPED;
@@ -191,8 +207,10 @@ export default class Timeline {
             }
 
             self.current = now;
-            self.process();
+            if (frame !== lastFrame) self.process();
             self.clock = requestAnimationFrame(animate);
+
+            if (self.fps && self.duration) lastFrame = frame;
         })();
     }
 

@@ -37,6 +37,8 @@ import Mobject2D from "./mobjects/2D/Mobject2D.js";
 import Point from "./mobjects/2D/Point.js";
 import Tail from "./mobjects/2D/Tail.js";
 import Line from "./mobjects/2D/Line.js";
+import Polygon from "./mobjects/2D/Polygon.js";
+import RegularPolygon from "./mobjects/2D/RegularPolygon.js";
 import Arc from "./mobjects/2D/Arc.js";
 import Arrow from "./mobjects/2D/Arrow.js";
 import Axis from "./mobjects/2D/Axis.js";
@@ -91,6 +93,8 @@ export {
     Point,
     Tail,
     Line,
+    Polygon,
+    RegularPolygon,
     Arc,
     Arrow,
     Axis,
