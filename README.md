@@ -6,7 +6,7 @@
 [![GitHub](https://img.shields.io/github/license/SeiyaCooper/Mraph.js)](https://github.com/SeiyaCooper/Mraph.js/blob/main/LICENSE)
 [![last commit](https://img.shields.io/github/last-commit/SeiyaCooper/Mraph.js)](https://github.com/SeiyaCooper/Mraph.js/commits/main)
 
-Mraph.js is my personal rendering engine for drawing geometric shapes in a browser, inspired by Manim  
+Mraph.js is my poor rendering engine for drawing geometric shapes in a browser, inspired by [manim](https://github.com/3b1b/manim)   
 [Github](https://github.com/SeiyaCooper/Mraph.js) |
 [NPM](https://www.npmjs.com/package/mraph) |
 [Examples](https://seiyacooper.github.io/Mraph.js/gallery)
@@ -30,28 +30,40 @@ yarn add mraph
 Once you installed, try this example below.
 
 ```js
-import { Layer, Point, Vector } from "mraph";
+import * as MRAPH from "mraph/src/mraph.js";
 
-// Create a new Layer
-const layer = new Layer().appendTo(document.body);
+// Creates a new layer
+const layer = new MRAPH.Layer().appendTo(document.body);
 
-// Create a new Point
-const point = new Point(0, 0);
+// Creates some points and sets their position
+const pointsNum = 50;
+const angleUnit = (Math.PI * 2) / pointsNum;
+for (let i = 1; i <= pointsNum; i++) {
+    const point = new MRAPH.Point(Math.cos(angleUnit * i) * 3, Math.sin(angleUnit * i) * 3);
+    layer.add(point);
+}
 
-// Add the point to layer
-layer.add(point);
+// Adds those points to the layer
+layer.scene.children.forEach((point) => {
+    layer.add(point);
+});
 
-// Set the acceleration of the point
-point.a = new Vector(0.5, 1, 0);
+// Sets an infinity event
+// This event will remain perpetually active
+layer.timeline.addInfinity(() => {
+    layer.scene.children.forEach((point, i, arr) => {
+        point.a = point.center.mult((-1 * i) / arr.length);
+    });
+});
 
-// Start animation
+// Starts playing animation
 layer.play();
 ```
 
-Input this at any editor that you prefer,
-then you would see a small white ball moving with a certain acceleration!
+Input this code in your preferred text editor.
+If all proceeds as it should, you will observe a series of dots engaged in a, hmm..., rather peculiar dance.
 
-[See more](/Mraph.js/gallery)
+[See more (not such dances)](/Mraph.js/gallery)
 
 # Contribution
 
