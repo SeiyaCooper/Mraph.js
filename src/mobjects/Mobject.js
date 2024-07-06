@@ -218,6 +218,10 @@ export default class Mobject extends Geometry {
     static fromGeometry(geometry) {
         const newMobject = new Mobject();
 
+        if (geometry.needsUpdate) {
+            geometry.update();
+        }
+
         for (let [key, value] of geometry.attributes) {
             newMobject.setAttribute(key, value.data, value.size);
         }

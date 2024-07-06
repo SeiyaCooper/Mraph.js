@@ -39,6 +39,7 @@ import Tail from "./mobjects/2D/Tail.js";
 import Line from "./mobjects/2D/Line.js";
 import Polygon from "./mobjects/2D/Polygon.js";
 import RegularPolygon from "./mobjects/2D/RegularPolygon.js";
+import Square from "./mobjects/2D/Square.js";
 import Arc from "./mobjects/2D/Arc.js";
 import Arrow from "./mobjects/2D/Arrow.js";
 import Axis from "./mobjects/2D/Axis.js";
@@ -54,6 +55,7 @@ import VectorField3D from "./mobjects/3D/VectorField3D.js";
 
 import Mobject from "./mobjects/Mobject.js";
 import ImageMobject from "./mobjects/ImageMobject.js";
+import CanvasText from "./mobjects/CanvasText.js";
 
 export * as MathFunc from "./math/math_func.js";
 
@@ -87,6 +89,7 @@ export {
     // Mobjects
     Mobject,
     ImageMobject,
+    CanvasText,
 
     // Mobjects - 2D
     Mobject2D,
@@ -95,6 +98,7 @@ export {
     Line,
     Polygon,
     RegularPolygon,
+    Square,
     Arc,
     Arrow,
     Axis,

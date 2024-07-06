@@ -6,17 +6,17 @@ export default class Arc extends Mobject2D {
     strokeColor = new Color(1, 1, 1, 1);
     fillColor = new Color(0, 0, 0, 0);
 
-    constructor(startAng = 0, endAng = Math.PI, radius = 1, center = [0, 0, 0]) {
+    constructor(startAngle = 0, endAngle = Math.PI, radius = 1, center = [0, 0, 0]) {
         super();
-        this.startAng = startAng;
-        this.endAng = endAng;
+        this.startAngle = startAngle;
+        this.endAngle = endAngle;
         this.radius = radius;
         this.center = center;
     }
 
     update() {
         this.clearGraph();
-        this.arc(this.radius, this.startAng, this.endAng, this.startAng > this.endAng);
+        this.arc(this.radius, this.startAngle, this.endAngle, this.startAngle > this.endAngle);
         this.draw();
         return this;
     }

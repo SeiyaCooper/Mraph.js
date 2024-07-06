@@ -2168,9 +2168,9 @@ declare module "mobjects/2D/Mobject2D" {
 }
 declare module "mobjects/2D/Arc" {
     export default class Arc extends Mobject2D {
-        constructor(startAng?: number, endAng?: number, radius?: number, center?: number[]);
-        startAng: number;
-        endAng: number;
+        constructor(startAngle?: number, endAngle?: number, radius?: number, center?: number[]);
+        startAngle: number;
+        endAngle: number;
         radius: number;
         center: number[];
         update(): this;
@@ -2266,10 +2266,26 @@ declare module "mobjects/2D/Polygon" {
 }
 declare module "mobjects/2D/RegularPolygon" {
     export default class RegularPolygon extends Polygon {
-        constructor(n?: number);
+        /**
+         * @param {number} n
+         * @param {Object} configs
+         */
+        constructor(n?: number, { sideLength, startAngle }?: any);
         vertexNum: number;
+        sideLength: any;
+        startAngle: any;
     }
     import Polygon from "mobjects/2D/Polygon";
+}
+declare module "mobjects/2D/Square" {
+    export default class Square extends RegularPolygon {
+        /**
+         * Creates a square.
+         * @param {Object} configs
+         */
+        constructor(configs: any);
+    }
+    import RegularPolygon from "mobjects/2D/RegularPolygon";
 }
 declare module "mobjects/2D/Arrow" {
     export default class Arrow extends Line {
@@ -2464,6 +2480,30 @@ declare module "mobjects/ImageMobject" {
     }
     import Mobject from "mobjects/Mobject";
 }
+declare module "mobjects/CanvasText" {
+    export default class CanvasText extends ImageMobject {
+        /**
+         * Creates a canvas text.
+         * @param {string} text
+         */
+        constructor(text: string);
+        canvas: HTMLCanvasElement;
+        canvasContext: CanvasRenderingContext2D;
+        _text: string;
+        fillColor: import("mraph").Color;
+        strokeColor: import("mraph").Color;
+        textFont: string;
+        textSize: number;
+        set text(text: string);
+        get text(): string;
+        /**
+         * Draws this text to inner canvas so it can be rendered to layer.
+         * Will be called automatically.
+         */
+        drawText2Canvas(): void;
+    }
+    import ImageMobject from "mobjects/ImageMobject";
+}
 declare module "extra/OBJLoader" {
     export function parseToGeometry(src: any, { parseGroup }?: {
         parseGroup?: boolean;
@@ -2493,12 +2533,14 @@ declare module "mraph" {
     import PointLight from "light/PointLight";
     import Mobject from "mobjects/Mobject";
     import ImageMobject from "mobjects/ImageMobject";
+    import CanvasText from "mobjects/CanvasText";
     import Mobject2D from "mobjects/2D/Mobject2D";
     import Point from "mobjects/2D/Point";
     import Tail from "mobjects/2D/Tail";
     import Line from "mobjects/2D/Line";
     import Polygon from "mobjects/2D/Polygon";
     import RegularPolygon from "mobjects/2D/RegularPolygon";
+    import Square from "mobjects/2D/Square";
     import Arc from "mobjects/2D/Arc";
     import Arrow from "mobjects/2D/Arrow";
     import Axis from "mobjects/2D/Axis";
@@ -2523,5 +2565,5 @@ declare module "mraph" {
     import Timeline from "animation/Timeline";
     import OrbitControl from "extra/OrbitControl";
     import Recorder from "extra/Recorder";
-    export { Color, Matrix, Vector, Quat, Complex, Geometry, Plane, Box, Segment, Sphere, Cylinder, DirectionalLight, PointLight, Mobject, ImageMobject, Mobject2D, Point, Tail, Line, Polygon, RegularPolygon, Arc, Arrow, Axis, Axes2D, VectorField2D, FunctionGraph2D, Mobject3D, FunctionGraph3D, Point3D, Arrow3D, VectorField3D, Layer, Camera, Texture, WebGLRenderer, WebGLProgram, CustomMaterial, BasicMaterial, DepthMaterial, LambertMaterial, Event, Timeline, OrbitControl, Recorder };
+    export { Color, Matrix, Vector, Quat, Complex, Geometry, Plane, Box, Segment, Sphere, Cylinder, DirectionalLight, PointLight, Mobject, ImageMobject, CanvasText, Mobject2D, Point, Tail, Line, Polygon, RegularPolygon, Square, Arc, Arrow, Axis, Axes2D, VectorField2D, FunctionGraph2D, Mobject3D, FunctionGraph3D, Point3D, Arrow3D, VectorField3D, Layer, Camera, Texture, WebGLRenderer, WebGLProgram, CustomMaterial, BasicMaterial, DepthMaterial, LambertMaterial, Event, Timeline, OrbitControl, Recorder };
 }

@@ -32,11 +32,11 @@ export default class Color extends Vector {
     }
 
     toRGBAStr() {
-        return `rgba(${this.toString()})`;
+        return `rgba(${this.join()})`;
     }
 
     toIntRGBAStr() {
-        return `rgba(${this.toIntRGBA().toString()})`;
+        return `rgba(${this.toIntRGBA().join()})`;
     }
 
     static fromHex(hex) {

@@ -2,17 +2,27 @@ import Polygon from "./Polygon.js";
 import Point from "./Point.js";
 
 export default class RegularPolygon extends Polygon {
-    constructor(n = 6) {
+    /**
+     * @param {number} n
+     * @param {Object} configs
+     */
+    constructor(n = 6, { sideLength = 1, startAngle = 0 } = {}) {
         super();
         this.vertexNum = n;
+        this.sideLength = sideLength;
+        this.startAngle = startAngle;
     }
 
     update() {
+        const angleUnit = (Math.PI * 2) / this.vertexNum;
+        const len = this.sideLength;
+
         this.vertices = [];
-        const angle = (Math.PI * 2) / this.vertexNum;
         for (let i = 0; i < this.vertexNum; i++) {
-            this.vertices.push(new Point(Math.cos(angle * i), Math.sin(angle * i)));
+            const angle = this.startAngle + i * angleUnit;
+            this.vertices.push(new Point(Math.cos(angle) * len, Math.sin(angle) * len));
         }
+
         super.update();
     }
 }
