@@ -77,7 +77,8 @@ export default class Layer {
     add(...els) {
         for (let el of els) {
             if (typeof el.attributes === "object" /* if adding a drawable object*/) {
-                el.update();
+                el.update?.();
+                el.updateMatrix?.();
                 el.needsUpdate = false;
                 el.set("layer", this);
                 this.scene.add(el);

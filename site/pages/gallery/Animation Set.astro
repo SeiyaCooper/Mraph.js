@@ -9,19 +9,29 @@ import Example from "../../layouts/Example.astro";
         const layer = new MRAPH.Layer().appendTo(document.body);
 
         const vf3d = new MRAPH.VectorField3D();
-        layer.add(vf3d);
         vf3d.colorFunc = (x, y, z, length) => {
             const hue = (length - 0.1) * 4 - 1.35;
             return MRAPH.MathFunc.lerpArray(new MRAPH.Color(0, 0.9, 1), new MRAPH.Color(1, 0.1, 0.1), hue);
         };
-
+        layer.add(vf3d);
         vf3d.animate.transformTo(new MRAPH.Point(0, 0), { runTime: 1.5 });
         vf3d.animate.transformTo(new MRAPH.VectorField2D(), { runTime: 1.5 });
-        vf3d.animate.transformTo(new MRAPH.Axes2D(), { runTime: 1.5 });
-        vf3d.animate.rotateZ(Math.PI * 4, { runTime: 3 });
-        vf3d.animate.moveTo(MRAPH.VECTORS.UP);
-        vf3d.animate.moveTo(MRAPH.VECTORS.DOWN, { curve: MRAPH.Timeline.easeOutBounce });
-        vf3d.animate.moveTo(MRAPH.VECTORS.ORIGIN);
+        vf3d.animate.scaleTo([0, 0, 0], { runTime: 1.5, updateMax: false });
+        layer.wait(0.5);
+
+        const axes = new MRAPH.Axes2D();
+        axes.scale = new MRAPH.Vector(0, 0, 0);
+        layer.add(axes);
+        axes.animate.scaleTo([1, 1, 1], { runTime: 1.5 });
+        axes.animate.rotateZ(Math.PI * 4, { runTime: 3 });
+        axes.animate.moveTo(MRAPH.VECTORS.UP);
+        axes.animate.moveTo(MRAPH.VECTORS.DOWN, { curve: MRAPH.Timeline.easeOutBounce });
+        axes.animate.moveTo(MRAPH.VECTORS.ORIGIN);
+        axes.prepare4NonlinearTransform(100);
+        axes.xAxis?.prepare4NonlinearTransform(10);
+        axes.yAxis?.prepare4NonlinearTransform(10);
+        axes.animate.complexFuncTransform((z) => z.mult(z), { runTime: 5 });
+
         layer.scene.animate.rotateY(Math.PI / 3);
         layer.scene.animate.rotateX(Math.PI / 3);
         layer.camera.animate.moveTo(new MRAPH.Vector(0, 0, -5));

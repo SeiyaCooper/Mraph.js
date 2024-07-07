@@ -127,7 +127,7 @@ export default class Node {
      */
     animate = {
         /**
-         * Shifts this mobject to a new place
+         * Shifts this node to a new place
          * @param {Vector | number[]} pos
          * @param {Object} config
          */
@@ -147,7 +147,7 @@ export default class Node {
         }).bind(this),
 
         /**
-         * Scales this mobject by a factor
+         * Resets the scale factor of this node
          * @param {Vector | number[]} factor
          * @param {Object} config
          */
@@ -156,7 +156,7 @@ export default class Node {
             const config = {
                 start: () => {
                     start = this.scale;
-                    to = start.elMult(factor);
+                    to = factor;
                 },
                 update: (p) => {
                     this.scale = start.lerp(to, p);
@@ -168,7 +168,28 @@ export default class Node {
         }).bind(this),
 
         /**
-         * Rotates this mobject around x axis
+         * Scales this node by a factor
+         * @param {Vector | number[]} factor
+         * @param {Object} config
+         */
+        scale: ((factor, { runTime = 1, ...configs } = {}) => {
+            let start, to;
+            const config = {
+                start: () => {
+                    start = this.scale;
+                    to = this.scale.elMult(factor);
+                },
+                update: (p) => {
+                    this.scale = start.lerp(to, p);
+                    this.updateMatrix();
+                },
+                ...configs,
+            };
+            this.layer.timeline.addFollow(runTime, config);
+        }).bind(this),
+
+        /**
+         * Rotates this node around x axis
          * @param {Vector | number[]} factor
          * @param {Object} config
          */
@@ -188,7 +209,7 @@ export default class Node {
         }).bind(this),
 
         /**
-         * Rotates this mobject around y axis
+         * Rotates this node around y axis
          * @param {Vector | number[]} factor
          * @param {Object} config
          */
@@ -208,7 +229,7 @@ export default class Node {
         }).bind(this),
 
         /**
-         * Rotates this mobject around z axis
+         * Rotates this node around z axis
          * @param {Vector | number[]} factor
          * @param {Object} config
          */

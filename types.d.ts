@@ -1173,31 +1173,37 @@ declare module "core/Node" {
          */
         animate: {
             /**
-             * Shifts this mobject to a new place
+             * Shifts this node to a new place
              * @param {Vector | number[]} pos
              * @param {Object} config
              */
             moveTo: any;
             /**
-             * Scales this mobject by a factor
+             * Resets the scale factor of this node
              * @param {Vector | number[]} factor
              * @param {Object} config
              */
             scaleTo: any;
             /**
-             * Rotates this mobject around x axis
+             * Scales this node by a factor
+             * @param {Vector | number[]} factor
+             * @param {Object} config
+             */
+            scale: any;
+            /**
+             * Rotates this node around x axis
              * @param {Vector | number[]} factor
              * @param {Object} config
              */
             rotateX: any;
             /**
-             * Rotates this mobject around y axis
+             * Rotates this node around y axis
              * @param {Vector | number[]} factor
              * @param {Object} config
              */
             rotateY: any;
             /**
-             * Rotates this mobject around z axis
+             * Rotates this node around z axis
              * @param {Vector | number[]} factor
              * @param {Object} config
              */

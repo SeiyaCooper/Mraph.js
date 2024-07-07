@@ -34,9 +34,11 @@ export default class Axes2D extends Mobject2D {
 
         pointwiseTransformBak = this.animate.pointwiseTransform;
         this.animate.pointwiseTransform = ((...args) => {
+            const configBak = args[1].updateMax;
             args[1].updateMax = false;
             pointwiseTransformBak(...args);
             this.xAxis.animate.pointwiseTransform2D(...args);
+            args[1].updateMax = configBak;
             this.yAxis.animate.pointwiseTransform2D(...args);
         }).bind(this);
     }
@@ -105,7 +107,7 @@ export default class Axes2D extends Mobject2D {
      * @returns {FunctionGraph2D}
      */
     drawFunction(func, { step = 0.1, autoStack = true } = {}) {
-        const range = this.xRange;
+        const range = [...this.xRange];
         range[2] = step;
         const last = this.graphs[this.graphs.length - 1];
         const z = autoStack && last ? last.z + 0.001 : 0.01;

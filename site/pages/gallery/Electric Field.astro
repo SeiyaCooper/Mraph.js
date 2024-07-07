@@ -55,11 +55,7 @@ import Example from "../../layouts/Example.astro";
         };
         electricField.colorFunc = (x, y, length) => {
             const hue = (length - 0.1) * 4 - 1.35;
-            return mp.MathFunc.lerpArray(
-                new mp.Color(0, 0.9, 1),
-                new mp.Color(1, 0.1, 0.1),
-                hue
-            );
+            return mp.MathFunc.lerpArray(new mp.Color(0, 0.9, 1), new mp.Color(1, 0.1, 0.1), hue);
         };
         layer.add(electricField);
 

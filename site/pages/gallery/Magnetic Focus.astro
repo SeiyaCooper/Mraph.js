@@ -5,6 +5,7 @@ import Example from "../../layouts/Example.astro";
 <Example title="Magnetic Focus">
     <script>
         import * as mp from "../../../src/mraph.js";
+        //import * as mp from "https://unpkg.com/mraph@0.0.1-dev.9/dist/mraph.es.js";
 
         const layer = new mp.Layer().appendTo(document.body);
 
@@ -23,21 +24,13 @@ import Example from "../../layouts/Example.astro";
 
             update() {
                 this.clearGraph();
-                this.arc(
-                    this.radius,
-                    this.startAng,
-                    this.endAng,
-                    this.startAng > this.endAng,
-                    50
-                );
+                this.arc(this.radius, 0, Math.PI * 2, false, 50);
                 this.draw();
-                return this;
             }
 
-            draw(): this {
+            draw() {
                 this.stroke();
                 this.fill();
-                return this;
             }
         }
         class Charge extends mp.Point {
@@ -78,13 +71,13 @@ import Example from "../../layouts/Example.astro";
 
         /// Animation part
         /*
-         * Lock FPS for more accurate output
-         * Note: If the fps are locked, the animation will not play in real-time. Try to change the fps to 120 or higher.
+         * Locks FPS for more accurate output
+         * Note: If the fps is locked, the animation will not play in real-time. Try to change the fps to 120 or higher.
          */
         const animator = new mp.Timeline();
         animator.fps = 60;
         layer.timeline.fps = 60;
-        layer.timeline.addInfinity(() => {
+        animator.addInfinity(() => {
             for (let charge of charges) {
                 charge.tail.update();
                 if (charge.center.norm > 1) continue;

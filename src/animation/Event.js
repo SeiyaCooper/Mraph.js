@@ -83,7 +83,7 @@ export default class Event {
             }
         } else if (now > start) {
             this.start(start);
-            this.update(0, now);
+            this.update(0, now - start);
             this.isStarted = true;
         }
     }

@@ -9,9 +9,9 @@ import Example from "../../layouts/Example.astro";
         const layer = new mp.Layer().appendTo(document.body);
 
         const sun = new mp.Point3D(0, 0);
-        layer.add(sun);
         sun.radius = 1;
         sun.setColor(mp.COLORS.YELLOW_D);
+        layer.add(sun);
 
         const earth = new mp.Point3D(2.5, 0);
         sun.add(earth);

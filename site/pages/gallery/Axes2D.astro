@@ -15,13 +15,13 @@ import Example from "../../layouts/Example.astro";
         });
 
         // Draw function figures
-        const figure0 = axes.drawFunction2D((x) => x);
+        const figure0 = axes.drawFunction((x) => x);
         figure0.set("strokeColor", mp.COLORS.GREEN);
         figure0.update();
-        const figure1 = axes.drawFunction2D((x) => x ** 2);
+        const figure1 = axes.drawFunction((x) => x ** 2);
         figure1.set("strokeColor", mp.COLORS.COOPER_ORANGE);
         figure1.update();
-        const figure2 = axes.drawFunction2D((x) => Math.sin(x));
+        const figure2 = axes.drawFunction((x) => Math.sin(x));
         figure2.set("strokeColor", mp.COLORS.SEIYA_PINK);
         figure2.update();
 
