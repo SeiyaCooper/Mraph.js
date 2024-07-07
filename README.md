@@ -30,17 +30,22 @@ yarn add mraph
 Once you installed, try this example below.
 
 ```js
-import * as MRAPH from "mraph/src/mraph.js";
+import * as MRAPH from "mraph";
 
 // Creates a new layer
 const layer = new MRAPH.Layer().appendTo(document.body);
 
 // Creates some points and sets their position
 const pointsNum = 50;
+const layersNum = 5;
 const angleUnit = (Math.PI * 2) / pointsNum;
-for (let i = 1; i <= pointsNum; i++) {
-    const point = new MRAPH.Point(Math.cos(angleUnit * i) * 3, Math.sin(angleUnit * i) * 3);
-    layer.add(point);
+for (let j = 0; j < layersNum; j++) {
+    for (let i = 1; i <= pointsNum; i++) {
+        const point = new MRAPH.Point(Math.cos(angleUnit * i) * (3 + j * 2), Math.sin(angleUnit * i) * (3 + j * 2));
+        layer.add(point);
+
+        point.setColor(new MRAPH.Color(Math.random(), Math.random(), Math.random()));
+    }
 }
 
 // Adds those points to the layer
@@ -57,6 +62,7 @@ layer.timeline.addInfinity(() => {
 });
 
 // Starts playing animation
+layer.enableOrbitControl().enableRotate = false;
 layer.play();
 ```
 
