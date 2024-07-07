@@ -3,7 +3,6 @@ import Color from "../../math/Color.js";
 import * as Utils from "../../utils/utils.js";
 import Segment from "../../geometry/Segment.js";
 import Vector from "../../math/Vector.js";
-import Complex from "../../math/Complex.js";
 import Matrix from "../../math/Matrix.js";
 import * as VECTORS from "../../constants/vectors.js";
 import * as MathFunc from "../../math/math_func.js";
@@ -20,11 +19,21 @@ export default class Mobject2D extends Mobject {
 
     lineJoin = "miter";
 
+    /**
+     * Moves your pen to another point.
+     * This method is used to draw a path.
+     * @param {Vector | number[]} point
+     */
     move(point) {
         if (this.points.length !== 0) this.finish();
         this.points.push(point);
     }
 
+    /**
+     * Drags your pen to another place and draws a line.
+     * This method is used to draw a path.
+     * @param {Vector | number[]} point
+     */
     line(point) {
         this.points.push(point);
     }
@@ -39,6 +48,9 @@ export default class Mobject2D extends Mobject {
         this.polygons.push(generateArc(center, radius, startAngle, endAngle, clockwise, segments, this));
     }
 
+    /**
+     * Fills the path you've drawn.
+     */
     fill() {
         if (this.points.length !== 0) this.finish();
 
@@ -77,7 +89,6 @@ export default class Mobject2D extends Mobject {
                 seg.strokeColor = this.strokeColor;
                 seg.normal = this.normal;
                 seg.update();
-                this.add(seg);
                 target.push(seg);
             }
 
@@ -89,8 +100,12 @@ export default class Mobject2D extends Mobject {
                     break;
             }
 
-            this.combineChildren();
+            target.forEach((seg) => {
+                this.mergeAttributes(seg, "position", "color", "normal");
+            });
         }
+
+        this.setIndex(this.getAttributeVal("position").length / 3);
     }
 
     modifyLineJoin2Miter(target) {
@@ -123,6 +138,28 @@ export default class Mobject2D extends Mobject {
 
     draw() {}
 
+    prepare4NonlinearTransform(segmentsNum = 30) {
+        const polygons = this.polygons;
+        for (let i = 0; i < polygons.length; i++) {
+            const polygon = polygons[i];
+            const replace = [];
+            for (let j = 0; j < polygon.length - 1; j++) {
+                const point = polygon[j];
+                const nextPoint = polygon[j + 1];
+
+                replace.push(point);
+                for (let k = 1; k < segmentsNum; k++) {
+                    replace.push(MathFunc.lerpArray(point, nextPoint, k / segmentsNum));
+                }
+                replace.push(nextPoint);
+            }
+
+            polygons[i] = replace;
+        }
+        this.clearBuffer();
+        this.draw();
+    }
+
     clearGraph() {
         this.clearPath();
         this.clearBuffer();
@@ -148,18 +185,28 @@ export default class Mobject2D extends Mobject {
         this.fillColor = color;
     }
 
+    pointwiseTransform(trans) {
+        for (let polygon of this.polygons) {
+            for (let i = 0; i < polygon.length; i++) {
+                polygon[i] = trans(Vector.fromArray(polygon[i]));
+            }
+        }
+        this.clearBuffer();
+        this.draw();
+    }
+
     animate = {
         ...this.animate,
 
         /**
-         * Applies a non-linear transform
+         * Applies a non-linear transform, the 2d version (slower)
          * @param {Function} trans
          * @param {Object} config
          */
-        pointwiseTransform: ((trans, { runTime = 1, curve } = {}) => {
+        pointwiseTransform2D: ((trans, { runTime = 1, ...configs } = {}) => {
             let from, to, polygons;
 
-            this.layer.timeline.addFollow(runTime, {
+            const event = this.layer.timeline.addFollow(runTime, {
                 start: () => {
                     from = Utils.deepCopy(this.polygons);
                     for (let polygon of this.polygons) {
@@ -171,7 +218,7 @@ export default class Mobject2D extends Mobject {
                     polygons = this.polygons;
                 },
                 update: handler.bind(this),
-                curve,
+                ...configs,
             });
 
             function handler(p) {
@@ -186,30 +233,10 @@ export default class Mobject2D extends Mobject {
                 }
                 this.draw();
             }
-        }).bind(this),
 
-        /**
-         * Applies a complex function
-         * @param {Function} trans
-         * @param {Object} config
-         */
-        complexFuncTransform: ((trans, { runTime = 1, curve } = {}) => {
-            const handler = (pos) => {
-                return [...trans(Complex.fromArray(pos)), 0];
-            };
-            this.animate.pointwiseTransform(handler, { runTime, curve });
+            return event;
         }).bind(this),
     };
-
-    pointwiseTransform(trans) {
-        for (let polygon of this.polygons) {
-            for (let i = 0; i < polygon.length; i++) {
-                polygon[i] = trans(Vector.fromArray(polygon[i]));
-            }
-        }
-        this.clearBuffer();
-        this.draw();
-    }
 
     static isInstance(obj) {
         return obj instanceof Mobject2D;

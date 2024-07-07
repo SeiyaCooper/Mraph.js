@@ -2,6 +2,7 @@ import Vector from "../math/Vector.js";
 import * as MathFunc from "../math/math_func.js";
 import Geometry from "../geometry/Geometry.js";
 import BasicMaterial from "../material/BasicMaterial.js";
+import Complex from "../math/Complex.js";
 
 export default class Mobject extends Geometry {
     /**
@@ -114,7 +115,7 @@ export default class Mobject extends Geometry {
          * @param {Function} trans
          * @param {Object} config
          */
-        pointwiseTransform: ((trans, { runTime = 1, curve } = {}) => {
+        pointwiseTransform: ((trans, { runTime = 1, ...configs } = {}) => {
             let from = [],
                 to = [];
             const config = {
@@ -128,9 +129,21 @@ export default class Mobject extends Geometry {
                 update: (p) => {
                     this.setAttribute("position", MathFunc.lerpArray(from, to, p), 3);
                 },
-                curve,
+                ...configs,
             };
             this.layer.timeline.addFollow(runTime, config);
+        }).bind(this),
+
+        /**
+         * Applies a complex function
+         * @param {Function} trans
+         * @param {Object} config
+         */
+        complexFuncTransform: ((trans, { runTime = 1, ...configs } = {}) => {
+            const handler = (pos) => {
+                return [...trans(Complex.fromArray(pos)), 0];
+            };
+            this.animate.pointwiseTransform(handler, { runTime, ...configs });
         }).bind(this),
 
         /**
@@ -139,7 +152,7 @@ export default class Mobject extends Geometry {
          * @param {number[][]} points
          * @param {Object} config
          */
-        fromPoints: ((points, { runTime = 1, curve } = {}) => {
+        fromPoints: ((points, { runTime = 1, ...configs } = {}) => {
             let start = [],
                 end = [];
             const config = {
@@ -150,7 +163,7 @@ export default class Mobject extends Geometry {
                 update: (p) => {
                     this.setAttribute("position", MathFunc.lerpArray(start, end, p), 3);
                 },
-                curve,
+                ...configs,
             };
             this.layer.timeline.addFollow(runTime, config);
         }).bind(this),
@@ -160,7 +173,7 @@ export default class Mobject extends Geometry {
          * @param {mobject} Mobject
          * @param {Object} config
          */
-        transformTo: ((mobject, { runTime = 1, curve } = {}) => {
+        transformTo: ((mobject, { runTime = 1, ...configs } = {}) => {
             let from, to;
             let fromArray, toArray;
             const config = {
@@ -190,7 +203,7 @@ export default class Mobject extends Geometry {
                 stop: () => {
                     this.fromPoints(mobject.getPoints());
                 },
-                curve,
+                ...configs,
             };
 
             this.layer.timeline.addFollow(runTime, config);

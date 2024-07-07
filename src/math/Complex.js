@@ -64,7 +64,7 @@ export default class Complex extends Array {
      * @param {ArrayLike} arr
      */
     static fromArray(arr) {
-        return new Complex(...arr);
+        return new Complex(arr[0], arr[1]);
     }
 
     /**

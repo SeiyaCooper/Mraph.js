@@ -3,7 +3,6 @@ import WebGLRenderer from "./WebGL/WebGLRenderer.js";
 import Camera from "./Camera.js";
 import OrbitControl from "../extra/OrbitControl.js";
 import * as COLORS from "../constants/colors.js";
-import BasicMaterial from "../material/BasicMaterial.js";
 import PointLight from "../light/PointLight.js";
 import DirectionalLight from "../light/DirectionalLight.js";
 import Node from "./Node.js";
@@ -11,7 +10,6 @@ import Node from "./Node.js";
 export default class Layer {
     camera = new Camera();
     timeline = new Timeline();
-    defaultMaterial = new BasicMaterial();
     surroundings = {
         pointLights: [],
         directionalLights: [],
@@ -33,7 +31,6 @@ export default class Layer {
         }
         this.renderer = new rendererClass(this.canvas, contextConfig);
         this.clearCanvas(COLORS.GRAY_E);
-        this.defaultMaterial.colorMode = "vertex";
         this.scene.layer = this;
         this.camera.layer = this;
     }
@@ -79,8 +76,9 @@ export default class Layer {
      */
     add(...els) {
         for (let el of els) {
-            if (typeof el.attributes === "object") {
-                // if adding a drawable object
+            if (typeof el.attributes === "object" /* if adding a drawable object*/) {
+                el.update();
+                el.needsUpdate = false;
                 el.set("layer", this);
                 this.scene.add(el);
             } else {

@@ -225,10 +225,10 @@ declare module "animation/Timeline" {
         /**
          * Adds an event to event list following last event.
          * @param {Number} hold
-         * @param {object} config
+         * @param {object} configs
          * @return {this}
          */
-        addFollow(hold: number, config: object): this;
+        addFollow(hold: number, configs: object): this;
         /**
          * Adds an event beginning at the earliest time and concluding at the latest time.
          * @param {object} config
@@ -1311,144 +1311,6 @@ declare module "constants/colors" {
     export const SEIYA_PINK: Color;
     import Color from "math/Color";
 }
-declare module "core/WebGL/WebGLProgram" {
-    export default class Program {
-        constructor(gl: any, { vs, fs }?: {
-            vs?: string;
-            fs?: string;
-        });
-        /**
-         * A set of variable locations
-         * @type {Map}
-         */
-        locations: Map<any, any>;
-        gl: any;
-        vs: any;
-        fs: any;
-        program: any;
-        /**
-         * Uses this program for rendering
-         */
-        use(): void;
-        /**
-         * Sets a uniform variable
-         * @param {string} name
-         * @param {Matrix | Vector | number[]} data
-         * @param {number} [n]
-         */
-        setUniform(name: string, data: Matrix | Vector | number[], n?: number): void;
-        /**
-         * Initiates a vertex array object
-         * @param {Geometry} mesh
-         */
-        initVAO(mesh: Geometry): void;
-        /**
-         * Sets up a texture
-         * @param {Texture} texture
-         */
-        setUpTexture(texture: Texture): void;
-        /**
-         * Binds a texture
-         * @param {Texure} texture
-         */
-        bindTexture(texture: Texure): void;
-        /**
-         * Uploads a texture to GPU
-         * @param {Texture} texture
-         */
-        uploadTexture(texture: Texture): void;
-        /**
-         * Updates parameters of a texture
-         * @param {Texture} texture
-         */
-        updateTextureParams(texture: Texture): void;
-    }
-}
-declare module "material/Material" {
-    export default class Material {
-        /**
-         * Whether to use depth test, true by default.
-         * @type {boolean}
-         */
-        depthTest: boolean;
-        /**
-         * Whether to use depth mask, true by default.
-         * @type {boolean}
-         */
-        depthMask: boolean;
-        /**
-         * Determines the mode of color, avaible options are 'single', 'texture' and 'vertex'.
-         * @type {string}
-         */
-        colorMode: string;
-        /**
-         * Used when color mode is 'single'.
-         * @type {Color}
-         */
-        color: Color;
-        /**
-         * Used when color mode is 'texture'.
-         */
-        diffuseTexture: any;
-        /**
-         * The code of vertex shader.
-         * @type {string}
-         */
-        vertexShader: string;
-        /**
-         * The code of fragment shader.
-         * @type {string}
-         */
-        fragmentShader: string;
-        /**
-         * Components that attatched to this material.
-         * @type {Component}
-         */
-        components: Component;
-        /**
-         * Custom method to pass all variables, will be called before rendering.
-         */
-        passVariables(): void;
-        /**
-         * Attachs a component to this material.
-         * @param {Component} component
-         */
-        attachComponent(component: Component): void;
-        /**
-         * Compiles Shader code depends on all components attached.
-         * @returns {string}
-         */
-        compileComponents(): string;
-        /**
-         * Passes all components variables.
-         */
-        passComponentVariables(): void;
-    }
-}
-declare module "material/SlotParser" {
-    export function replace(origin: any, name: any, value: any): any;
-}
-declare module "material/components/GetColorComponent" {
-    export default class GetColorComponent {
-        compile(vs: any, fs: any, { colorMode }: {
-            colorMode: any;
-        }): {
-            vs: any;
-            fs: any;
-        };
-        passVariables(target: any): void;
-    }
-}
-declare module "material/BasicMaterial" {
-    export default class BasicMaterial extends Material {
-        vertexShader: any;
-        fragmentShader: any;
-        initProgram(gl: any): void;
-        program: WebGLProgram;
-    }
-    import Material from "material/Material";
-    import WebGLProgram from "core/WebGL/WebGLProgram";
-}
 declare module "light/PointLight" {
     export default class PointLight {
         static isInstance(obj: any): boolean;
@@ -1485,7 +1347,6 @@ declare module "core/Layer" {
         });
         camera: Camera;
         timeline: Timeline;
-        defaultMaterial: BasicMaterial;
         surroundings: {
             pointLights: any[];
             directionalLights: any[];
@@ -1573,7 +1434,6 @@ declare module "core/Layer" {
     }
     import Camera from "core/Camera";
     import Timeline from "animation/Timeline";
-    import BasicMaterial from "material/BasicMaterial";
     import Node from "core/Node";
     import WebGLRenderer from "core/WebGL/WebGLRenderer";
     import OrbitControl from "extra/OrbitControl";
@@ -1655,12 +1515,150 @@ declare module "extra/Recorder" {
         download(name?: string): this;
     }
 }
+declare module "core/WebGL/WebGLProgram" {
+    export default class Program {
+        constructor(gl: any, { vs, fs }?: {
+            vs?: string;
+            fs?: string;
+        });
+        /**
+         * A set of variable locations
+         * @type {Map}
+         */
+        locations: Map<any, any>;
+        gl: any;
+        vs: any;
+        fs: any;
+        program: any;
+        /**
+         * Uses this program for rendering
+         */
+        use(): void;
+        /**
+         * Sets a uniform variable
+         * @param {string} name
+         * @param {Matrix | Vector | number[]} data
+         * @param {number} [n]
+         */
+        setUniform(name: string, data: Matrix | Vector | number[], n?: number): void;
+        /**
+         * Initiates a vertex array object
+         * @param {Geometry} mesh
+         */
+        initVAO(mesh: Geometry): void;
+        /**
+         * Sets up a texture
+         * @param {Texture} texture
+         */
+        setUpTexture(texture: Texture): void;
+        /**
+         * Binds a texture
+         * @param {Texure} texture
+         */
+        bindTexture(texture: Texure): void;
+        /**
+         * Uploads a texture to GPU
+         * @param {Texture} texture
+         */
+        uploadTexture(texture: Texture): void;
+        /**
+         * Updates parameters of a texture
+         * @param {Texture} texture
+         */
+        updateTextureParams(texture: Texture): void;
+    }
+}
+declare module "material/SlotParser" {
+    export function replace(origin: any, name: any, value: any): any;
+}
+declare module "material/Material" {
+    export default class Material {
+        /**
+         * Whether to use depth test, true by default.
+         * @type {boolean}
+         */
+        depthTest: boolean;
+        /**
+         * Whether to use depth mask, true by default.
+         * @type {boolean}
+         */
+        depthMask: boolean;
+        /**
+         * Determines the mode of color, avaible options are 'single', 'texture' and 'vertex'.
+         * @type {string}
+         */
+        colorMode: string;
+        /**
+         * Used when color mode is 'single'.
+         * @type {Color}
+         */
+        color: Color;
+        /**
+         * Used when color mode is 'texture'.
+         */
+        diffuseTexture: any;
+        /**
+         * The code of vertex shader.
+         * @type {string}
+         */
+        vertexShader: string;
+        /**
+         * The code of fragment shader.
+         * @type {string}
+         */
+        fragmentShader: string;
+        /**
+         * Components that attatched to this material.
+         * @type {Component}
+         */
+        components: Component;
+        /**
+         * Custom method to pass all variables, will be called before rendering.
+         */
+        passVariables(): void;
+        /**
+         * Attachs a component to this material.
+         * @param {Component} component
+         */
+        attachComponent(component: Component): void;
+        /**
+         * Compiles Shader code depends on all components attached.
+         * @returns {string}
+         */
+        compileComponents(): string;
+        /**
+         * Passes all components variables.
+         */
+        passComponentVariables(): void;
+    }
+}
 declare module "material/CustomMaterial" {
     export default class CustomMaterial extends Material {
         constructor({ vertexShader, fragmentShader }?: {
             vertexShader?: string;
             fragmentShader?: string;
         });
+        initProgram(gl: any): void;
+        program: WebGLProgram;
+    }
+    import Material from "material/Material";
+    import WebGLProgram from "core/WebGL/WebGLProgram";
+}
+declare module "material/components/GetColorComponent" {
+    export default class GetColorComponent {
+        compile(vs: any, fs: any, { colorMode }: {
+            colorMode: any;
+        }): {
+            vs: any;
+            fs: any;
+        };
+        passVariables(target: any): void;
+    }
+}
+declare module "material/BasicMaterial" {
+    export default class BasicMaterial extends Material {
+        vertexShader: any;
+        fragmentShader: any;
         initProgram(gl: any): void;
         program: WebGLProgram;
     }
@@ -2148,13 +2146,27 @@ declare module "mobjects/2D/Mobject2D" {
         strokeWidth: number;
         closePath: boolean;
         lineJoin: string;
-        move(point: any): void;
-        line(point: any): void;
+        /**
+         * Moves your pen to another point.
+         * This method is used to draw a path.
+         * @param {Vector | number[]} point
+         */
+        move(point: Vector | number[]): void;
+        /**
+         * Drags your pen to another place and draws a line.
+         * This method is used to draw a path.
+         * @param {Vector | number[]} point
+         */
+        line(point: Vector | number[]): void;
         arc(radius: any, startAngle: any, endAngle: any, clockwise?: boolean, segments?: number): void;
+        /**
+         * Fills the path you've drawn.
+         */
         fill(): void;
         stroke(): void;
         modifyLineJoin2Miter(target: any): void;
         draw(): void;
+        prepare4NonlinearTransform(segmentsNum?: number): void;
         clearGraph(): void;
         clearPath(): void;
         clearBuffer(): void;
@@ -2333,29 +2345,35 @@ declare module "mobjects/2D/FunctionGraph2D" {
 }
 declare module "mobjects/2D/Axes2D" {
     export default class Axes2D extends Mobject2D {
-        constructor({ xRange, yRange, origin, drawGrid, }?: {
-            xRange?: number[];
-            yRange?: number[];
-            origin?: Point;
-            drawGrid?: boolean;
-        });
+        /**
+         * Creates an axes2d mobject
+         * @param {Object} configs
+         */
+        constructor({ xRange, yRange, origin, drawGrid, }?: any);
         _tickLength: number;
-        origin: Point;
+        origin: any;
+        xRange: any;
+        yRange: any;
+        drawGrid: any;
+        graphs: any[];
         xAxis: Axis;
         yAxis: Axis;
-        xRange: number[];
-        yRange: number[];
-        graphs: any[];
-        addTip(): void;
-        drawFunction2D(func: any, { step, autoStack }?: {
-            step?: number;
-            autoStack?: boolean;
-        }): FunctionGraph2D;
+        /**
+         * Adda tip to x and y axes
+         * @param {number} [at=1]
+         */
+        addTip(at?: number): void;
+        /**
+         * Plots a function on this plane
+         * @param {*} func
+         * @param {*} configs
+         * @returns {FunctionGraph2D}
+         */
+        drawFunction(func: any, { step, autoStack }?: any): FunctionGraph2D;
         set tickLength(val: number);
         get tickLength(): number;
     }
     import Mobject2D from "mobjects/2D/Mobject2D";
-    import Point from "mobjects/2D/Point";
     import Axis from "mobjects/2D/Axis";
     import FunctionGraph2D from "mobjects/2D/FunctionGraph2D";
 }

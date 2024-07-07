@@ -4,15 +4,18 @@ import Matrix from "../../math/Matrix.js";
 import Axis from "./Axis.js";
 import Point from "./Point.js";
 import FunctionGraph2D from "./FunctionGraph2D.js";
-import * as Utils from "../../utils/utils.js";
-import * as MathFunc from "../../math/math_func.js";
 import * as COLORS from "../../constants/colors.js";
 
+let pointwiseTransformBak;
 export default class Axes2D extends Mobject2D {
     _tickLength = 0.08;
 
     strokeWidth = 0.01;
 
+    /**
+     * Creates an axes2d mobject
+     * @param {Object} configs
+     */
     constructor({
         xRange = [-8, 8, 1],
         yRange = [-5, 5, 1],
@@ -24,22 +27,29 @@ export default class Axes2D extends Mobject2D {
 
         this.setColor(COLORS.BLUE_E);
         this.origin = origin;
-        this.xAxis = Axis.fromRange(origin, new Vector(1, 0, 0), xRange);
-        this.yAxis = Axis.fromRange(origin, new Vector(0, 1, 0), yRange);
-
         this.xRange = xRange;
         this.yRange = yRange;
-
+        this.drawGrid = drawGrid;
         this.graphs = [];
 
+        pointwiseTransformBak = this.animate.pointwiseTransform;
+        this.animate.pointwiseTransform = ((...args) => {
+            args[1].updateMax = false;
+            pointwiseTransformBak(...args);
+            this.xAxis.animate.pointwiseTransform2D(...args);
+            this.yAxis.animate.pointwiseTransform2D(...args);
+        }).bind(this);
+    }
+
+    update() {
+        this.xAxis = Axis.fromRange(this.origin, new Vector(1, 0, 0), this.xRange);
+        this.yAxis = Axis.fromRange(this.origin, new Vector(0, 1, 0), this.yRange);
+        this.xAxis.update();
+        this.yAxis.update();
         this.add(this.xAxis);
         this.add(this.yAxis);
 
-        for (let axis of this.children) {
-            axis.update();
-        }
-
-        if (drawGrid) {
+        if (this.drawGrid) {
             const xLen = this.xRange[1] - this.xRange[0];
             const yLen = this.yRange[1] - this.yRange[0];
 
@@ -69,18 +79,32 @@ export default class Axes2D extends Mobject2D {
 
             this.stroke();
         }
+
+        this.draw();
     }
 
-    addTip() {
-        this.xAxis.addTip(1);
-        this.yAxis.addTip(1);
-
-        for (let axis of this.children) {
-            axis.update();
-        }
+    draw() {
+        this.stroke();
+        this.xAxis.draw();
+        this.yAxis.draw();
     }
 
-    drawFunction2D(func, { step = 0.1, autoStack = true } = {}) {
+    /**
+     * Adda tip to x and y axes
+     * @param {number} [at=1]
+     */
+    addTip(at = 1) {
+        this.xAxis.addTip(at);
+        this.yAxis.addTip(at);
+    }
+
+    /**
+     * Plots a function on this plane
+     * @param {*} func
+     * @param {*} configs
+     * @returns {FunctionGraph2D}
+     */
+    drawFunction(func, { step = 0.1, autoStack = true } = {}) {
         const range = this.xRange;
         range[2] = step;
         const last = this.graphs[this.graphs.length - 1];
@@ -94,62 +118,9 @@ export default class Axes2D extends Mobject2D {
         return graph;
     }
 
-    animate = {
-        ...this.animate,
-
-        /**
-         * Applies a non-linear transform.
-         * For axes, it applies this transform to every axis and graph on it.
-         * @param {Vector | number[]} pos
-         * @param {Object} config
-         */
-        pointwiseTransform: ((trans, { runTime = 1, curve } = {}) => {
-            let children = new Map();
-            this.layer.timeline.addFollow(runTime, {
-                start: () => {
-                    for (let child of this.children) {
-                        let from, to, polygons;
-                        from = Utils.deepCopy(child.polygons);
-                        for (let polygon of child.polygons) {
-                            for (let i = 0; i < polygon.length; i++) {
-                                polygon[i] = trans(Vector.fromArray(polygon[i]));
-                            }
-                        }
-                        to = Utils.deepCopy(child.polygons);
-                        polygons = child.polygons;
-                        children.set(child, { from, to, polygons });
-                    }
-                },
-                update: (p) => {
-                    for (let child of this.children) {
-                        handler(child, p);
-                    }
-                },
-                curve,
-            });
-
-            function handler(target, p) {
-                target.clearBuffer();
-                const { polygons, from, to } = children.get(target);
-
-                for (let j = 0; j < polygons.length; j++) {
-                    const polygon = polygons[j];
-                    for (let i = 0; i < polygon.length; i++) {
-                        const lerpFrom = from[j][i];
-                        const lerpTo = to[j][i];
-                        polygon[i] = MathFunc.lerpArray(lerpFrom, lerpTo, p);
-                    }
-                }
-                target.draw();
-            }
-        }).bind(this),
-    };
-
     set tickLength(val) {
-        for (let child of this.children) {
-            child.tickLength = val;
-            child.update();
-        }
+        this.xAxis.tickLength = val;
+        this.yAxis.tickLength = val;
         this._tickLength = val;
     }
 

@@ -109,11 +109,11 @@ export default class Timeline {
     /**
      * Adds an event to event list following last event.
      * @param {Number} hold
-     * @param {object} config
+     * @param {object} configs
      * @return {this}
      */
-    addFollow(hold, config) {
-        return this.add(this.maxTime, this.maxTime + hold, config);
+    addFollow(hold, configs) {
+        return this.add(this.maxTime, this.maxTime + hold, configs);
     }
 
     /**

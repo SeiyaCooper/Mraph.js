@@ -131,7 +131,7 @@ export default class Node {
          * @param {Vector | number[]} pos
          * @param {Object} config
          */
-        moveTo: ((pos, { runTime = 1, curve } = {}) => {
+        moveTo: ((pos, { runTime = 1, ...configs } = {}) => {
             let start;
             const config = {
                 start: () => {
@@ -141,7 +141,7 @@ export default class Node {
                     this.center = start.lerp(pos, p);
                     this.updateMatrix();
                 },
-                curve,
+                ...configs,
             };
             this.layer.timeline.addFollow(runTime, config);
         }).bind(this),
@@ -151,7 +151,7 @@ export default class Node {
          * @param {Vector | number[]} factor
          * @param {Object} config
          */
-        scaleTo: ((factor, { runTime = 1, curve } = {}) => {
+        scaleTo: ((factor, { runTime = 1, ...configs } = {}) => {
             let start, to;
             const config = {
                 start: () => {
@@ -162,7 +162,7 @@ export default class Node {
                     this.scale = start.lerp(to, p);
                     this.updateMatrix();
                 },
-                curve,
+                ...configs,
             };
             this.layer.timeline.addFollow(runTime, config);
         }).bind(this),
@@ -172,7 +172,7 @@ export default class Node {
          * @param {Vector | number[]} factor
          * @param {Object} config
          */
-        rotateX: ((angle, { runTime = 1, curve } = {}) => {
+        rotateX: ((angle, { runTime = 1, ...configs } = {}) => {
             let start;
             const config = {
                 start: () => {
@@ -182,7 +182,7 @@ export default class Node {
                     this.rotation.x = start + p * angle;
                     this.updateMatrix();
                 },
-                curve,
+                ...configs,
             };
             this.layer.timeline.addFollow(runTime, config);
         }).bind(this),
@@ -192,7 +192,7 @@ export default class Node {
          * @param {Vector | number[]} factor
          * @param {Object} config
          */
-        rotateY: ((angle, { runTime = 1, curve } = {}) => {
+        rotateY: ((angle, { runTime = 1, ...configs } = {}) => {
             let start;
             const config = {
                 start: () => {
@@ -202,7 +202,7 @@ export default class Node {
                     this.rotation.y = start + p * angle;
                     this.updateMatrix();
                 },
-                curve,
+                ...configs,
             };
             this.layer.timeline.addFollow(runTime, config);
         }).bind(this),
@@ -212,7 +212,7 @@ export default class Node {
          * @param {Vector | number[]} factor
          * @param {Object} config
          */
-        rotateZ: ((angle, { runTime = 1, curve } = {}) => {
+        rotateZ: ((angle, { runTime = 1, ...configs } = {}) => {
             let start;
             const config = {
                 start: () => {
@@ -222,7 +222,7 @@ export default class Node {
                     this.rotation.z = start + p * angle;
                     this.updateMatrix();
                 },
-                curve,
+                ...configs,
             };
             this.layer.timeline.addFollow(runTime, config);
         }).bind(this),
