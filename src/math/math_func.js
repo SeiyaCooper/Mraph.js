@@ -1,3 +1,6 @@
+import MraphError from "../utils/MraphError.js";
+import Complex from "./Complex.js";
+
 /**
  * sigmoid function
  * @param {number} x
@@ -13,6 +16,24 @@ export function sigmoid(x) {
  * @returns {number}
  */
 export const linear = (x) => x;
+
+/**
+ * Returns e (the base of natural logarithms) raised to a power.
+ * @param {number | Complex} x
+ */
+export const exp = (x) => {
+    if (typeof x === "number") {
+        return Math.exp(x);
+    } else if (Complex.isInstance(x)) {
+        const im = x.im;
+        const re = x.re;
+
+        return new Complex(Math.cos(im), Math.sin(im)).mult(Math.exp(re));
+    } else {
+        MraphError.error("Invalid value for the exp function");
+        return;
+    }
+};
 
 /**
  * get mean value from a set numbers
@@ -39,7 +60,7 @@ export function lerp(from, to, p) {
 }
 
 /**
- * Lerp between two arrays
+ * Lerps between two arrays
  * @param {number[]} from
  * @param {number[]} to
  * @param {number} p percent

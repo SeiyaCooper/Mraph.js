@@ -60,6 +60,14 @@ export default class Complex extends Array {
     }
 
     /**
+     * @param {*} obj
+     * @returns {boolean}
+     */
+    static isInstance(obj) {
+        return obj instanceof Complex;
+    }
+
+    /**
      * Creates a complex number from an array-like object
      * @param {ArrayLike} arr
      */
@@ -92,6 +100,38 @@ export default class Complex extends Array {
      * @returns {number}
      */
     get y() {
+        return this[1];
+    }
+
+    /**
+     * Sets value of the real part.
+     * @param {number} val
+     */
+    set re(val) {
+        this[0] = val;
+    }
+
+    /**
+     * Returns the real part.
+     * @returns {number}
+     */
+    get re() {
+        return this[0];
+    }
+
+    /**
+     * Sets value of the imaginary part.
+     * @param {number} val
+     */
+    set im(val) {
+        this[1] = val;
+    }
+
+    /**
+     * Returns the imaginary part.
+     * @returns {number}
+     */
+    get im() {
         return this[1];
     }
 }

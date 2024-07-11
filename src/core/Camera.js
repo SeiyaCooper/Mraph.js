@@ -40,7 +40,7 @@ export default class Camera extends Node {
             .trans(Matrix.rotateZ(-rotation[2]));
     }
 
-    perspective({ fov = 45, near = 0.01, far = 10000000, aspect = 1 } = {}) {
+    perspective({ fov = 45, near = 0.001, far = 10000000, aspect = 1 } = {}) {
         const f = far;
         const n = near;
         const a = aspect;

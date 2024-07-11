@@ -284,6 +284,99 @@ declare module "animation/Timeline" {
     import Event from "animation/Event";
     import SpecialEvent from "animation/SpecialEvent";
 }
+declare module "utils/MraphError" {
+    export default class MraphError {
+        static error(msg: any): void;
+        static warn(msg: any): void;
+    }
+}
+declare module "math/Complex" {
+    export default class Complex extends Array<any> {
+        /**
+         * @param {*} obj
+         * @returns {boolean}
+         */
+        static isInstance(obj: any): boolean;
+        /**
+         * Creates a complex number from an array-like object
+         * @param {ArrayLike} arr
+         */
+        static fromArray(arr: ArrayLike<any>): Complex;
+        /**
+         * @param {number} [i=0]
+         * @param {number} [j=0]
+         */
+        constructor(i?: number, j?: number);
+        /**
+         * Adds a complex number
+         * @param {Complex} comp
+         * @returns {Complex}
+         */
+        add(comp: Complex): Complex;
+        /**
+         * Minuses a complex number
+         * @param {Complex} comp
+         * @returns {Complex}
+         */
+        minus(comp: Complex): Complex;
+        /**
+         * Mults a complex number or a real number
+         * @param {Complex | number} comp
+         * @returns {Complex}
+         */
+        mult(comp: Complex | number): Complex;
+        /**
+         * Mults a real number
+         * @param {*} num
+         * @returns {Complex}
+         */
+        multNum(num: any): Complex;
+        /**
+         * Returns a element-by-element product of this complex number and another
+         * @param {Complex} comp
+         * @returns {Complex}
+         */
+        elMult(comp: Complex): Complex;
+        /**
+         * @param {number} val
+         */
+        set x(val: number);
+        /**
+         * @returns {number}
+         */
+        get x(): number;
+        0: number;
+        /**
+         * @param {number} val
+         */
+        set y(val: number);
+        /**
+         * @returns {number}
+         */
+        get y(): number;
+        1: number;
+        /**
+         * Sets value of the real part.
+         * @param {number} val
+         */
+        set re(val: number);
+        /**
+         * Returns the real part.
+         * @returns {number}
+         */
+        get re(): number;
+        /**
+         * Sets value of the imaginary part.
+         * @param {number} val
+         */
+        set im(val: number);
+        /**
+         * Returns the imaginary part.
+         * @returns {number}
+         */
+        get im(): number;
+    }
+}
 declare module "math/math_func" {
     /**
      * sigmoid function
@@ -306,7 +399,7 @@ declare module "math/math_func" {
      */
     export function lerp(from: number, to: number, p: number): number;
     /**
-     * Lerp between two arrays
+     * Lerps between two arrays
      * @param {number[]} from
      * @param {number[]} to
      * @param {number} p percent
@@ -314,6 +407,8 @@ declare module "math/math_func" {
      */
     export function lerpArray(from: number[], to: number[], p: number): number[];
     export function linear(x: number): number;
+    export function exp(x: number | Complex): number | Complex;
+    import Complex from "math/Complex";
 }
 declare module "math/Vector" {
     export default class Vector extends Array<any> {
@@ -1005,12 +1100,6 @@ declare module "core/WebGL/ProgramManager" {
         programPool: {};
         setProgram(material: any, gl: any, scene: any): void;
         getProgramKey(material: any): any;
-    }
-}
-declare module "utils/MraphError" {
-    export default class MraphError {
-        static error(msg: any): void;
-        static warn(msg: any): void;
     }
 }
 declare module "core/WebGL/WebGLRenderer" {
@@ -1836,68 +1925,6 @@ declare module "math/Quat" {
         get vector(): Vector;
     }
     import Vector from "math/Vector";
-}
-declare module "math/Complex" {
-    export default class Complex extends Array<any> {
-        /**
-         * Creates a complex number from an array-like object
-         * @param {ArrayLike} arr
-         */
-        static fromArray(arr: ArrayLike<any>): Complex;
-        /**
-         * @param {number} [i=0]
-         * @param {number} [j=0]
-         */
-        constructor(i?: number, j?: number);
-        /**
-         * Adds a complex number
-         * @param {Complex} comp
-         * @returns {Complex}
-         */
-        add(comp: Complex): Complex;
-        /**
-         * Minuses a complex number
-         * @param {Complex} comp
-         * @returns {Complex}
-         */
-        minus(comp: Complex): Complex;
-        /**
-         * Mults a complex number or a real number
-         * @param {Complex | number} comp
-         * @returns {Complex}
-         */
-        mult(comp: Complex | number): Complex;
-        /**
-         * Mults a real number
-         * @param {*} num
-         * @returns {Complex}
-         */
-        multNum(num: any): Complex;
-        /**
-         * Returns a element-by-element product of this complex number and another
-         * @param {Complex} comp
-         * @returns {Complex}
-         */
-        elMult(comp: Complex): Complex;
-        /**
-         * @param {number} val
-         */
-        set x(val: number);
-        /**
-         * @returns {number}
-         */
-        get x(): number;
-        0: number;
-        /**
-         * @param {number} val
-         */
-        set y(val: number);
-        /**
-         * @returns {number}
-         */
-        get y(): number;
-        1: number;
-    }
 }
 declare module "constants/draw_modes" {
     export const POINTS: "POINTS";
