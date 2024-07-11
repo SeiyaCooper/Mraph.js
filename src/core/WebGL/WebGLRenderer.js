@@ -118,7 +118,7 @@ export default class WebGLRenderer {
             value.needsUpdate = false;
         }
         for (let [name, data] of mesh.uniforms) {
-            program.setUniform(name, data);
+            program.setUniform(name, data.data, data.size);
         }
 
         if (this.VAOs.has(mesh)) {

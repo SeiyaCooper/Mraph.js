@@ -1304,25 +1304,70 @@ declare module "core/Node" {
 }
 declare module "core/Camera" {
     export default class Camera extends Node {
+        /**
+         * @type {Vector}
+         */
         up: Vector;
+        /**
+         * Projection matrix, generated automatically, indentity matrix by default.
+         * @type {Matrix}
+         */
         projectionMat: Matrix;
+        /**
+         * View matrix, generated automatically, indentity matrix by default.
+         * @type {Matrix}
+         */
         viewMat: Matrix;
-        updateMatrix(): void;
-        perspective({ fov, near, far, aspect }?: {
-            fov?: number;
-            near?: number;
-            far?: number;
-            aspect?: number;
-        }): this;
-        near: number;
+        /**
+         * @type {string}
+         */
+        mode: string;
+        /**
+         * @type {number}
+         */
         far: number;
+        /**
+         * @type {number}
+         */
+        near: number;
+        /**
+         * @type {number}
+         */
+        left: number;
+        /**
+         * @type {number}
+         */
+        right: number;
+        /**
+         * @type {number}
+         */
+        bottom: number;
+        /**
+         * @type {number}
+         */
+        top: number;
+        /**
+         * @type {number}
+         */
+        fov: number;
+        /**
+         * @type {number}
+         */
+        aspect: number;
+        updateViewMatrix(): void;
+        perspective({ fov, near, far, aspect }?: {
+            fov: any;
+            near: any;
+            far: any;
+            aspect: any;
+        }): this;
         ortho({ left, right, bottom, top, near, far }?: {
-            left?: number;
-            right?: number;
-            bottom?: number;
-            top?: number;
-            near?: number;
-            far?: number;
+            left: any;
+            right: any;
+            bottom: any;
+            top: any;
+            near: any;
+            far: any;
         }): this;
         lookAt(target: any): this;
     }
@@ -1788,6 +1833,19 @@ declare module "material/LambertMaterial" {
     import Material from "material/Material";
     import WebGLProgram from "core/WebGL/WebGLProgram";
 }
+declare module "material/Mobject2DMaterial" {
+    export default class Mobject2DMaterial extends Material {
+        vertexShader: any;
+        fragmentShader: any;
+        initProgram(gl: any): void;
+        program: WebGLProgram;
+        passVariables({ camera }: {
+            camera: any;
+        }): void;
+    }
+    import Material from "material/Material";
+    import WebGLProgram from "core/WebGL/WebGLProgram";
+}
 declare module "math/Quat" {
     export default class Quat extends Array<any> {
         /**
@@ -2001,9 +2059,9 @@ declare module "geometry/Geometry" {
          * Sets a uniform variable
          * @param {string} name
          * @param {number[] | number} data
-         * @param {number} size
+         * @param {number} [size]
          */
-        setUniform(name: string, data: number[] | number, size: number): void;
+        setUniform(name: string, data: number[] | number, size?: number): void;
         /**
          * Deletes a uniform variable
          * @param {string} name
@@ -2168,17 +2226,29 @@ declare module "mobjects/Mobject" {
     import Geometry from "geometry/Geometry";
     import BasicMaterial from "material/BasicMaterial";
 }
+declare module "mobjects/3D/Mobject3D" {
+    export default class Mobject3D extends Mobject {
+        /**
+         * Sets the color of this mobject
+         * @param {Color} color
+         */
+        setColor(color: Color): void;
+    }
+    import Mobject from "mobjects/Mobject";
+}
 declare module "mobjects/2D/Mobject2D" {
     export default class Mobject2D extends Mobject {
         static isInstance(obj: any): boolean;
         points: any[];
         polygons: any[];
-        normal: Vector;
         fillColor: Color;
         strokeColor: Color;
         strokeWidth: number;
         closePath: boolean;
+        normal: Vector;
         lineJoin: string;
+        material: Mobject2DMaterial;
+        fillZone: Mobject3D;
         /**
          * Moves your pen to another point.
          * This method is used to draw a path.
@@ -2191,13 +2261,25 @@ declare module "mobjects/2D/Mobject2D" {
          * @param {Vector | number[]} point
          */
         line(point: Vector | number[]): void;
-        arc(radius: any, startAngle: any, endAngle: any, clockwise?: boolean, segments?: number): void;
+        /**
+         * Draws an arc.
+         * This method is used to draw a path.
+         * @param {number} radius
+         * @param {number} startAngle
+         * @param {number} endAngle
+         * @param {boolean} clockwise
+         * @param {number} segments
+         * @returns
+         */
+        arc(radius: number, startAngle: number, endAngle: number, clockwise?: boolean, segments?: number): void;
         /**
          * Fills the path you've drawn.
          */
         fill(): void;
+        /**
+         * Strokes the path you've drawn.
+         */
         stroke(): void;
-        modifyLineJoin2Miter(target: any): void;
         draw(): void;
         prepare4NonlinearTransform(segmentsNum?: number): void;
         clearGraph(): void;
@@ -2208,8 +2290,10 @@ declare module "mobjects/2D/Mobject2D" {
         pointwiseTransform(trans: any): void;
     }
     import Mobject from "mobjects/Mobject";
-    import Vector from "math/Vector";
     import Color from "math/Color";
+    import Vector from "math/Vector";
+    import Mobject2DMaterial from "material/Mobject2DMaterial";
+    import Mobject3D from "mobjects/3D/Mobject3D";
 }
 declare module "mobjects/2D/Arc" {
     export default class Arc extends Mobject2D {
@@ -2250,17 +2334,15 @@ declare module "mobjects/2D/Point" {
 }
 declare module "mobjects/2D/Tail" {
     export default class Tail extends Mobject2D {
-        constructor(target: any, { maxLength, maxSteps, modifyLine }?: {
+        constructor(target: any, { maxLength, maxSteps }?: {
             maxLength?: number;
             maxSteps?: number;
-            modifyLine?: (line: any, i: any, all: any) => void;
         });
         step: number;
         target: any;
         trail: any[];
         maxLength: number;
         maxSteps: number;
-        modifyLine: (line: any, i: any, all: any) => void;
         update(): this;
         draw(): this;
     }
@@ -2411,7 +2493,7 @@ declare module "mobjects/2D/Axes2D" {
     import FunctionGraph2D from "mobjects/2D/FunctionGraph2D";
 }
 declare module "mobjects/2D/VectorField2D" {
-    export default class VectorField2D extends Mobject {
+    export default class VectorField2D extends Mobject2D {
         constructor({ func, xRange, yRange, }?: {
             func?: (x: any, y: any) => any[];
             xRange?: number[];
@@ -2423,21 +2505,10 @@ declare module "mobjects/2D/VectorField2D" {
         xRange: number[];
         yRange: number[];
         func: (x: any, y: any) => any[];
-        setColor(color: any): void;
     }
-    import Mobject from "mobjects/Mobject";
+    import Mobject2D from "mobjects/2D/Mobject2D";
     import Color from "math/Color";
     import Vector from "math/Vector";
-}
-declare module "mobjects/3D/Mobject3D" {
-    export default class Mobject3D extends Mobject {
-        /**
-         * Sets the color of this mobject
-         * @param {Color} color
-         */
-        setColor(color: Color): void;
-    }
-    import Mobject from "mobjects/Mobject";
 }
 declare module "mobjects/3D/FunctionGraph3D" {
     export default class FunctionGraph3D extends Mobject3D {
@@ -2612,9 +2683,10 @@ declare module "mraph" {
     import BasicMaterial from "material/BasicMaterial";
     import DepthMaterial from "material/DepthMaterial";
     import LambertMaterial from "material/LambertMaterial";
+    import Mobject2DMaterial from "material/Mobject2DMaterial";
     import Event from "animation/Event";
     import Timeline from "animation/Timeline";
     import OrbitControl from "extra/OrbitControl";
     import Recorder from "extra/Recorder";
-    export { Color, Matrix, Vector, Quat, Complex, Geometry, Plane, Box, Segment, Sphere, Cylinder, DirectionalLight, PointLight, Mobject, ImageMobject, CanvasText, Mobject2D, Point, Tail, Line, Polygon, RegularPolygon, Square, Arc, Arrow, Axis, Axes2D, VectorField2D, FunctionGraph2D, Mobject3D, FunctionGraph3D, Point3D, Arrow3D, VectorField3D, Layer, Camera, Texture, WebGLRenderer, WebGLProgram, CustomMaterial, BasicMaterial, DepthMaterial, LambertMaterial, Event, Timeline, OrbitControl, Recorder };
+    export { Color, Matrix, Vector, Quat, Complex, Geometry, Plane, Box, Segment, Sphere, Cylinder, DirectionalLight, PointLight, Mobject, ImageMobject, CanvasText, Mobject2D, Point, Tail, Line, Polygon, RegularPolygon, Square, Arc, Arrow, Axis, Axes2D, VectorField2D, FunctionGraph2D, Mobject3D, FunctionGraph3D, Point3D, Arrow3D, VectorField3D, Layer, Camera, Texture, WebGLRenderer, WebGLProgram, CustomMaterial, BasicMaterial, DepthMaterial, LambertMaterial, Mobject2DMaterial, Event, Timeline, OrbitControl, Recorder };
 }

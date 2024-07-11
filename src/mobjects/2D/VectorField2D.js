@@ -3,9 +3,9 @@ import Point from "./Point.js";
 import Vector from "../../math/Vector.js";
 import * as MathFunc from "../../math/math_func.js";
 import Color from "../../math/Color.js";
-import Mobject from "../Mobject.js";
+import Mobject2D from "./Mobject2D.js";
 
-export default class VectorField2D extends Mobject {
+export default class VectorField2D extends Mobject2D {
     lengthFunc = (length) => {
         return MathFunc.sigmoid(length / 50);
     };
@@ -26,10 +26,9 @@ export default class VectorField2D extends Mobject {
     }
 
     update() {
-        this.setAttribute("position", [], 3);
-        this.setAttribute("color", [], 4);
-        this.clear();
+        this.clearGraph();
 
+        const fillZone = this.fillZone;
         const func = this.func;
         const xRange = this.xRange;
         const yRange = this.yRange;
@@ -41,11 +40,14 @@ export default class VectorField2D extends Mobject {
                 arrow.setColor(this.colorFunc(x, y, length));
                 arrow.update();
 
-                this.mergeAttributes(arrow, "position", "color", "normal");
+                this.mergeAttributes(arrow, "position", "previous", "reverse", "color");
+                fillZone.mergeAttributes(arrow.fillZone, "position", "color");
             }
         }
 
+        this.setUniform("thickness", this.strokeWidth);
         this.setIndex(this.getAttributeVal("position").length / 3);
+        fillZone.setIndex(fillZone.getAttributeVal("position").length / 3);
     }
 
     setColor(color) {

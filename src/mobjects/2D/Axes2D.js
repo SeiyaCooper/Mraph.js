@@ -6,7 +6,6 @@ import Point from "./Point.js";
 import FunctionGraph2D from "./FunctionGraph2D.js";
 import * as COLORS from "../../constants/colors.js";
 
-let pointwiseTransformBak;
 export default class Axes2D extends Mobject2D {
     _tickLength = 0.08;
 
@@ -31,16 +30,10 @@ export default class Axes2D extends Mobject2D {
         this.yRange = yRange;
         this.drawGrid = drawGrid;
         this.graphs = [];
-
-        pointwiseTransformBak = this.animate.pointwiseTransform;
-        this.animate.pointwiseTransform = ((...args) => {
-            const configBak = args[1].updateMax;
-            args[1].updateMax = false;
-            pointwiseTransformBak(...args);
-            this.xAxis.animate.pointwiseTransform2D(...args);
-            args[1].updateMax = configBak;
-            this.yAxis.animate.pointwiseTransform2D(...args);
-        }).bind(this);
+        this.xAxis = Axis.fromRange(this.origin, new Vector(1, 0, 0), this.xRange);
+        this.yAxis = Axis.fromRange(this.origin, new Vector(0, 1, 0), this.yRange);
+        this.add(this.xAxis);
+        this.add(this.yAxis);
     }
 
     update() {

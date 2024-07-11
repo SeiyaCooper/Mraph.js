@@ -16,6 +16,7 @@ import CustomMaterial from "./material/CustomMaterial.js";
 import BasicMaterial from "./material/BasicMaterial.js";
 import DepthMaterial from "./material/DepthMaterial.js";
 import LambertMaterial from "./material/LambertMaterial.js";
+import Mobject2DMaterial from "./material/Mobject2DMaterial.js";
 
 import Color from "./math/Color.js";
 import Matrix from "./math/Matrix.js";
@@ -125,6 +126,7 @@ export {
     BasicMaterial,
     DepthMaterial,
     LambertMaterial,
+    Mobject2DMaterial,
 
     // Animation
     Event,

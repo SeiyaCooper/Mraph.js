@@ -1,23 +1,33 @@
+import Mobject3D from "../3D/Mobject3D.js";
 import Mobject from "../Mobject.js";
 import Color from "../../math/Color.js";
 import * as Utils from "../../utils/utils.js";
-import Segment from "../../geometry/Segment.js";
 import Vector from "../../math/Vector.js";
-import Matrix from "../../math/Matrix.js";
-import * as VECTORS from "../../constants/vectors.js";
 import * as MathFunc from "../../math/math_func.js";
+import Mobject2DMaterial from "../../material/Mobject2DMaterial.js";
+import * as VECTORS from "../../constants/vectors.js";
 
 export default class Mobject2D extends Mobject {
     points = [];
     polygons = [];
-    normal = VECTORS.OUT.clone();
 
     fillColor = new Color(1, 1, 1, 1);
     strokeColor = new Color(1, 1, 1, 1);
     strokeWidth = 0.05;
     closePath = false;
+    normal = VECTORS.OUT.clone();
 
     lineJoin = "miter";
+
+    material = new Mobject2DMaterial();
+    fillZone = new Mobject3D();
+
+    constructor() {
+        super();
+        this.add(this.fillZone);
+        this.material.colorMode = "vertex";
+        this.fillZone.material.colorMode = "vertex";
+    }
 
     /**
      * Moves your pen to another point.
@@ -38,6 +48,16 @@ export default class Mobject2D extends Mobject {
         this.points.push(point);
     }
 
+    /**
+     * Draws an arc.
+     * This method is used to draw a path.
+     * @param {number} radius
+     * @param {number} startAngle
+     * @param {number} endAngle
+     * @param {boolean} clockwise
+     * @param {number} segments
+     * @returns
+     */
     arc(radius, startAngle, endAngle, clockwise = true, segments = 25) {
         if (radius === 0) return;
         if (startAngle === endAngle) return;
@@ -54,8 +74,10 @@ export default class Mobject2D extends Mobject {
     fill() {
         if (this.points.length !== 0) this.finish();
 
-        const vertices = this.getAttributeVal("position");
-        const colors = this.getAttributeVal("color");
+        const fillZone = this.fillZone;
+        const vertices = fillZone.getAttributeVal("position") ?? [];
+        const colors = fillZone.getAttributeVal("color") ?? [];
+
         for (let polygon of this.polygons) {
             if (polygon.length < 3) continue;
 
@@ -70,70 +92,59 @@ export default class Mobject2D extends Mobject {
             }
         }
 
-        this.setAttribute("position", vertices, 3);
-        this.setAttribute("color", colors, 4);
-        this.setIndex(vertices.length / 3);
+        fillZone.setColor(this.fillColor);
+        fillZone.setAttribute("position", vertices, 3);
+        fillZone.setAttribute("color", colors, 4);
+        fillZone.setIndex(vertices.length / 3);
     }
 
+    /**
+     * Strokes the path you've drawn.
+     */
     stroke() {
         if (this.points.length !== 0) this.finish();
 
+        const reverse = this.getAttributeVal("reverse") ?? [];
+        const vertices = this.getAttributeVal("position") ?? [];
+        const previous = this.getAttributeVal("previous") ?? [];
+        const colors = this.getAttributeVal("color") ?? [];
+
         for (let polygon of this.polygons) {
-            const target = [];
+            for (let i = 1; i < polygon.length; i++) {
+                const start = polygon[i];
+                const end = polygon[i - 1];
 
-            for (let i = 0; i < polygon.length - 1; i++) {
-                const point = polygon[i];
-                const next = polygon[i + 1];
-                const seg = new Segment(Vector.fromArray(point), Vector.fromArray(next));
-                seg.strokeWidth = this.strokeWidth;
-                seg.strokeColor = this.strokeColor;
-                seg.normal = this.normal;
-                seg.update();
-                target.push(seg);
+                vertices.push(...start);
+                vertices.push(...start);
+                vertices.push(...end);
+                vertices.push(...start);
+                vertices.push(...end);
+                vertices.push(...end);
+
+                previous.push(...end);
+                previous.push(...end);
+                previous.push(...start);
+                previous.push(...end);
+                previous.push(...start);
+                previous.push(...start);
+
+                colors.push(...this.strokeColor);
+                colors.push(...this.strokeColor);
+                colors.push(...this.strokeColor);
+                colors.push(...this.strokeColor);
+                colors.push(...this.strokeColor);
+                colors.push(...this.strokeColor);
+
+                reverse.push(-1, 1, 1, 1, 1, -1);
             }
-
-            switch (this.lineJoin) {
-                case "miter":
-                    this.modifyLineJoin2Miter(target);
-                    break;
-                default:
-                    break;
-            }
-
-            target.forEach((seg) => {
-                this.mergeAttributes(seg, "position", "color", "normal");
-            });
         }
 
+        this.setAttribute("position", vertices, 3);
+        this.setAttribute("previous", previous, 3);
+        this.setAttribute("reverse", reverse, 1);
+        this.setAttribute("color", colors, 4);
+        this.setUniform("thickness", this.strokeWidth);
         this.setIndex(this.getAttributeVal("position").length / 3);
-    }
-
-    modifyLineJoin2Miter(target) {
-        for (let i = 0; i < target.length - 1; i++) {
-            modifySingle(this, target, i, i + 1);
-        }
-
-        if (this.closePath) modifySingle(this, target, target.length - 1, 0);
-
-        function modifySingle(self, target, now, next) {
-            const l0 = target[now];
-            const l1 = target[next];
-            const v0 = l0.vector;
-            const v1 = l1.vector;
-
-            if (v0.cross(v1).norm === 0) return;
-
-            const tangent = v1.mult(-1).normal().add(v0.normal()).normal();
-            const tmp = v0.trans(Matrix.rotateOn(self.normal, Math.PI / 2, 3)).normal();
-            const cosine = tmp.dot(tangent);
-            const halfWidth = l0.strokeWidth / 2;
-            const join = tangent.mult(halfWidth / cosine);
-
-            l0.getAttributeVal("position").splice(6, 3, ...l0.end.add(join));
-            l1.getAttributeVal("position").splice(0, 3, ...l0.end.add(join));
-            l0.getAttributeVal("position").splice(9, 3, ...l0.end.minus(join));
-            l1.getAttributeVal("position").splice(3, 3, ...l0.end.minus(join));
-        }
     }
 
     draw() {}
@@ -172,7 +183,9 @@ export default class Mobject2D extends Mobject {
 
     clearBuffer() {
         this.setAttribute("position", [], 3);
-        this.setAttribute("color", [], 4);
+        this.setAttribute("previous", [], 3);
+        this.setAttribute("reverse", [], 1);
+        this.setAttribute("color", [], 1);
     }
 
     finish() {
@@ -194,49 +207,6 @@ export default class Mobject2D extends Mobject {
         this.clearBuffer();
         this.draw();
     }
-
-    animate = {
-        ...this.animate,
-
-        /**
-         * Applies a non-linear transform, the 2d version (slower)
-         * @param {Function} trans
-         * @param {Object} config
-         */
-        pointwiseTransform2D: ((trans, { runTime = 1, ...configs } = {}) => {
-            let from, to, polygons;
-
-            const event = this.layer.timeline.addFollow(runTime, {
-                start: () => {
-                    from = Utils.deepCopy(this.polygons);
-                    for (let polygon of this.polygons) {
-                        for (let i = 0; i < polygon.length; i++) {
-                            polygon[i] = trans(Vector.fromArray(polygon[i]));
-                        }
-                    }
-                    to = Utils.deepCopy(this.polygons);
-                    polygons = this.polygons;
-                },
-                update: handler.bind(this),
-                ...configs,
-            });
-
-            function handler(p) {
-                this.clearBuffer();
-                for (let j = 0; j < polygons.length; j++) {
-                    const polygon = polygons[j];
-                    for (let i = 0; i < polygon.length; i++) {
-                        const lerpFrom = from[j][i];
-                        const lerpTo = to[j][i];
-                        polygon[i] = MathFunc.lerpArray(lerpFrom, lerpTo, p);
-                    }
-                }
-                this.draw();
-            }
-
-            return event;
-        }).bind(this),
-    };
 
     static isInstance(obj) {
         return obj instanceof Mobject2D;

@@ -41,7 +41,7 @@ import Example from "../../layouts/Example.astro";
                 this.charge = charge;
                 this.setColor(charge > 0 ? mp.COLORS.RED : mp.COLORS.BLUE);
 
-                const tail = new mp.Tail(this, { maxSteps: 5, maxLength: 15 });
+                const tail = new mp.Tail(this);
                 tail.strokeWidth = 0.02;
                 tail.setColor(mp.COLORS.SEIYA_PINK);
                 this.tail = tail;

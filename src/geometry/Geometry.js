@@ -135,7 +135,7 @@ export default class Geometry extends Node {
      * Sets a uniform variable
      * @param {string} name
      * @param {number[] | number} data
-     * @param {number} size
+     * @param {number} [size]
      */
     setUniform(name, data, size) {
         this.uniforms.set(name, { data, size });
