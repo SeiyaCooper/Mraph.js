@@ -1,10 +1,10 @@
 {
     "name": "mraph",
-    "version": "0.0.2-dev.1",
+    "version": "0.0.2-dev.2",
     "description": "",
     "type": "module",
     "types": "types.d.ts",
-    "main": "dist/mraph.js",
+    "main": "dist/mraph.umd.js",
     "scripts": {
         "prepare": "husky install && yarn build",
         "precommit": "yarn lint && yarn types && git add .",
