@@ -1278,7 +1278,7 @@ declare module "core/Node" {
              * @param {Vector | number[]} factor
              * @param {Object} config
              */
-            scale: any;
+            scaleBy: any;
             /**
              * Rotates this node around x axis
              * @param {Vector | number[]} factor

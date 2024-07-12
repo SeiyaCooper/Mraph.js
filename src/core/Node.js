@@ -172,7 +172,7 @@ export default class Node {
          * @param {Vector | number[]} factor
          * @param {Object} config
          */
-        scale: ((factor, { runTime = 1, ...configs } = {}) => {
+        scaleBy: ((factor, { runTime = 1, ...configs } = {}) => {
             let start, to;
             const config = {
                 start: () => {
