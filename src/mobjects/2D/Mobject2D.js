@@ -208,6 +208,43 @@ export default class Mobject2D extends Mobject {
         this.draw();
     }
 
+    animate = {
+        ...this.animate,
+
+        /**
+         * Applies a non-linear transform
+         * @param {Function} trans
+         * @param {Object} config
+         */
+        pointwiseTransform: ((trans, { runTime = 1, ...configs } = {}) => {
+            let fromPoints = [],
+                toPoints = [];
+            let fromPrevious = [],
+                toPrevious = [];
+            const config = {
+                start: () => {
+                    fromPoints = this.getPoints();
+                    for (let point of fromPoints) {
+                        toPoints.push(...trans(Vector.fromArray(point)));
+                    }
+                    fromPoints = fromPoints.flat(1);
+
+                    fromPrevious = this.attr2Array("previous");
+                    for (let point of fromPrevious) {
+                        toPrevious.push(...trans(Vector.fromArray(point)));
+                    }
+                    fromPrevious = fromPrevious.flat(1);
+                },
+                update: (p) => {
+                    this.setAttribute("position", MathFunc.lerpArray(fromPoints, toPoints, p), 3);
+                    this.setAttribute("previous", MathFunc.lerpArray(fromPrevious, toPrevious, p), 3);
+                },
+                ...configs,
+            };
+            this.layer.timeline.addFollow(runTime, config);
+        }).bind(this),
+    };
+
     static isInstance(obj) {
         return obj instanceof Mobject2D;
     }

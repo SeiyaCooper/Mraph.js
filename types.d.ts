@@ -2213,6 +2213,18 @@ declare module "mobjects/Mobject" {
          */
         fromPoints(points: number[][]): void;
         /**
+         * Converts a specific attribute into a 2D array representation.
+         * Each inner array represents the attribute values for a single vertex.
+         * @returns {number[][]}
+         */
+        attr2Array(name: any): number[][];
+        /**
+         * Converts a 2d array to an attribute.
+         * @param {string} name
+         * @param {number[][]} source
+         */
+        array2Attr(name: string, source: number[][]): void;
+        /**
          * Transforms this mobject by a matrix instantly.
          * @param {Matrix} matrix
          * @param {number} [n=3]

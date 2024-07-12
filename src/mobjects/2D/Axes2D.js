@@ -9,7 +9,7 @@ import * as COLORS from "../../constants/colors.js";
 export default class Axes2D extends Mobject2D {
     _tickLength = 0.08;
 
-    strokeWidth = 0.01;
+    strokeWidth = 0.03;
 
     /**
      * Creates an axes2d mobject
