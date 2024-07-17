@@ -9,6 +9,9 @@ const STATE = {
 
 let eventId = 0;
 
+let startTime;
+let frame, lastFrame;
+
 export default class Timeline {
     /**
      * A short string to describe state
@@ -118,11 +121,11 @@ export default class Timeline {
 
     /**
      * Adds an event beginning at the earliest time and concluding at the latest time.
-     * @param {object} config
+     * @param {object} configs
      * @returns {this}
      */
-    addWhole(handler, config) {
-        return this.add(this.minTime, this.maxTime, config);
+    addWhole(configs) {
+        return this.add(this.minTime, this.maxTime, configs);
     }
 
     /**
@@ -181,11 +184,19 @@ export default class Timeline {
      */
     play() {
         const self = this;
-        const startTime = +new Date();
-        let frame = 0,
-            lastFrame;
+
+        if (this.state === STATE.STOPPED) {
+            startTime = +new Date();
+            frame = 0;
+            lastFrame = -1;
+        }
+        if (this.state === STATE.PAUSED) {
+            startTime = +new Date() - this.current * 1000;
+        }
+        if (this.state === STATE.PLAYING) return;
 
         this.state = STATE.PLAYING;
+
         (function animate() {
             if (self.state !== STATE.PLAYING) return;
 
@@ -253,6 +264,8 @@ export default class Timeline {
         this.infinityEvents = [];
         this.globalEvents = [];
         this.events = [];
+
+        cancelAnimationFrame(this.clock);
     }
 
     /**

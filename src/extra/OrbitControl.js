@@ -8,6 +8,7 @@ let startedPos = [],
     targetPhi = 0,
     startCenter = new Vector(0, 0, 0),
     targetCenter = new Vector(0, 0, 0);
+
 const STATE = { WAIT: 0, ROTATE: 1, ZOOM: 2, MOVE: 3 };
 let state = STATE.WAIT;
 
@@ -32,6 +33,8 @@ export default class OrbitControl {
     enableMove = true;
     moveSpeed = 0.001;
     moveEase = 0.15;
+
+    isEventsAttached = false;
 
     constructor(camera, { element = document } = {}) {
         this.camera = camera;
@@ -78,7 +81,7 @@ export default class OrbitControl {
         targetCenter = startCenter.add(xAxis).add(yAxis);
     }
 
-    handleTouchStart(e) {
+    handleTouchStart = ((e) => {
         e.preventDefault();
 
         startedPos = [];
@@ -88,9 +91,9 @@ export default class OrbitControl {
         startPhi = this.phi;
         startTheta = this.theta;
         startCenter.copy(this.center);
-    }
+    }).bind(this);
 
-    handleTouchMove(e) {
+    handleTouchMove = ((e) => {
         if (e.touches.length > 1) {
             const touch0 = getPos(e.touches[0]);
             const touch1 = getPos(e.touches[1]);
@@ -121,17 +124,17 @@ export default class OrbitControl {
             const deltaY = (from.y - to.y) * 1.5;
             this.move(deltaX * this.moveSpeed, deltaY * this.moveSpeed);
         }
-    }
+    }).bind(this);
 
-    handleTouchEnd(e) {
+    handleTouchEnd = ((e) => {
         if (e.touches.length > 0) this.handleTouchStart(e);
 
         this.radius *= this.scale;
         this.scale = 1;
         state = STATE.WAIT;
-    }
+    }).bind(this);
 
-    handleMouseDown(e) {
+    handleMouseDown = ((e) => {
         e.preventDefault();
 
         startedPos = [getPos(e)];
@@ -143,9 +146,9 @@ export default class OrbitControl {
             startTheta = this.theta;
             state = STATE.ROTATE;
         }
-    }
+    }).bind(this);
 
-    handleMouseMove(e) {
+    handleMouseMove = ((e) => {
         const pos = getPos(e);
         const startPos = startedPos[0];
 
@@ -161,13 +164,13 @@ export default class OrbitControl {
             const deltaTheta = this.rotateSpeed * (pos.x - startPos.x);
             this.rotate(deltaPhi, deltaTheta);
         }
-    }
+    }).bind(this);
 
     handleMouseUp() {
         state = STATE.WAIT;
     }
 
-    handleWheel(e) {
+    handleWheel = ((e) => {
         if (!this.enableZoom) return;
 
         if (e.deltaY > 0) {
@@ -176,31 +179,39 @@ export default class OrbitControl {
             this.zoom(this.scale / this.zoomSpeed);
         }
         state = STATE.ZOOM;
+    }).bind(this);
+
+    attachControl() {
+        const el = this.element;
+        el.addEventListener("touchstart", this.handleTouchStart);
+        el.addEventListener("touchmove", this.handleMouseMove);
+        el.addEventListener("touchend", this.handleTouchEnd);
+        el.addEventListener("wheel", this.handleWheel);
+        el.addEventListener("mousedown", this.handleMouseDown);
+        el.addEventListener("mousemove", this.handleMouseMove);
+        el.addEventListener("mouseup", this.handleMouseUp);
+        el.addEventListener("mouseleave", this.handleMouseUp);
+        this.isEventsAttached = true;
+    }
+
+    removeControl() {
+        const el = this.element;
+        el.removeEventListener("touchstart", this.handleTouchStart);
+        el.removeEventListener("touchmove", this.handleMouseMove);
+        el.removeEventListener("touchend", this.handleTouchEnd);
+        el.removeEventListener("wheel", this.handleWheel);
+        el.removeEventListener("mousedown", this.handleMouseDown);
+        el.removeEventListener("mousemove", this.handleMouseMove);
+        el.removeEventListener("mouseup", this.handleMouseUp);
+        el.removeEventListener("mouseleave", this.handleMouseUp);
+        this.isEventsAttached = false;
     }
 
     set element(el) {
         this._element = el;
-        el.addEventListener("touchstart", (e) => {
-            this.handleTouchStart(e);
-        });
-        el.addEventListener("touchmove", (e) => {
-            this.handleTouchMove(e);
-        });
-        el.addEventListener("touchend", (e) => {
-            this.handleTouchEnd(e);
-        });
-        el.addEventListener("wheel", (e) => {
-            this.handleWheel(e);
-        });
-        el.addEventListener("mousedown", (e) => {
-            this.handleMouseDown(e);
-        });
-        el.addEventListener("mousemove", (e) => {
-            this.handleMouseMove(e);
-        });
-        el.addEventListener("mouseup", this.handleMouseUp);
-        el.addEventListener("mouseleave", this.handleMouseUp);
+        this.attachControl();
     }
+
     get element() {
         return this._element;
     }

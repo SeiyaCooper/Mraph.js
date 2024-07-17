@@ -70,7 +70,7 @@ export default class Layer {
     }
 
     /**
-     * Adds mobjects, lights to scene
+     * Adds mobjects or lights to scene
      * @param  {...Mobject | Light} els
      * @returns {this}
      */
@@ -108,10 +108,10 @@ export default class Layer {
      * @param  {...Mobject | Light} els
      */
     delete(...els) {
-        const scene = this.scene.children;
+        const scene = this.scene;
         const surroundings = this.surroundings;
         for (let el of els) {
-            if (typeof el.attributes === "object") scene.splice(scene.indexOf(el), 1);
+            if (typeof el.attributes === "object") scene.delete(el);
             else surroundings.splice(surroundings.indexOf(el), 1);
         }
     }

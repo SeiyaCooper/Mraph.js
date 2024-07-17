@@ -185,7 +185,10 @@ export default class Mobject2D extends Mobject {
         this.setAttribute("position", [], 3);
         this.setAttribute("previous", [], 3);
         this.setAttribute("reverse", [], 1);
-        this.setAttribute("color", [], 1);
+        this.setAttribute("color", [], 4);
+
+        this.fillZone.setAttribute("position", [], 3);
+        this.fillZone.setAttribute("color", [], 4);
     }
 
     finish() {
@@ -241,7 +244,7 @@ export default class Mobject2D extends Mobject {
                 },
                 ...configs,
             };
-            this.layer.timeline.addFollow(runTime, config);
+            this.timeline.addFollow(runTime, config);
         }).bind(this),
     };
 

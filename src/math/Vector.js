@@ -284,6 +284,20 @@ export default class Vector extends Array {
     }
 
     /**
+     * @type {number}
+     */
+    set w(val) {
+        this[3] = val;
+    }
+
+    /**
+     * @type {number}
+     */
+    get w() {
+        return this[3];
+    }
+
+    /**
      * @param {number} val
      */
     set norm(val) {

@@ -231,10 +231,10 @@ declare module "animation/Timeline" {
         addFollow(hold: number, configs: object): this;
         /**
          * Adds an event beginning at the earliest time and concluding at the latest time.
-         * @param {object} config
+         * @param {object} configs
          * @returns {this}
          */
-        addWhole(handler: any, config: object): this;
+        addWhole(configs: object): this;
         /**
          * Adds a global event, this event will be called whenever timeline is active。
          * If there is an infinity event attached to this timeline, it would behaved like infinity events, otherwise it would behaved like whole events.
@@ -554,6 +554,15 @@ declare module "math/Vector" {
         get z(): number;
         2: number;
         /**
+         * @type {number}
+         */
+        set w(val: number);
+        /**
+         * @type {number}
+         */
+        get w(): number;
+        3: number;
+        /**
          * @param {number} val
          */
         set norm(val: number);
@@ -597,9 +606,8 @@ declare module "math/Color" {
         get g(): number;
         set b(val: number);
         get b(): number;
-        set a(val: any);
-        get a(): any;
-        3: any;
+        set a(val: number);
+        get a(): number;
     }
     import Vector from "math/Vector";
 }
@@ -1397,6 +1405,7 @@ declare module "extra/OrbitControl" {
         enableMove: boolean;
         moveSpeed: number;
         moveEase: number;
+        isEventsAttached: boolean;
         camera: any;
         set element(el: Document);
         get element(): Document;
@@ -1404,13 +1413,15 @@ declare module "extra/OrbitControl" {
         rotate(deltaPhi: any, deltaTheta: any): void;
         zoom(scale: any): void;
         move(deltaX: any, deltaY: any): void;
-        handleTouchStart(e: any): void;
-        handleTouchMove(e: any): void;
-        handleTouchEnd(e: any): void;
-        handleMouseDown(e: any): void;
-        handleMouseMove(e: any): void;
+        handleTouchStart: any;
+        handleTouchMove: any;
+        handleTouchEnd: any;
+        handleMouseDown: any;
+        handleMouseMove: any;
         handleMouseUp(): void;
-        handleWheel(e: any): void;
+        handleWheel: any;
+        attachControl(): void;
+        removeControl(): void;
     }
     import Vector from "math/Vector";
 }
@@ -1511,7 +1522,7 @@ declare module "core/Layer" {
          */
         appendTo(el: HTMLElement): this;
         /**
-         * Adds mobjects, lights to scene
+         * Adds mobjects or lights to scene
          * @param  {...Mobject | Light} els
          * @returns {this}
          */
