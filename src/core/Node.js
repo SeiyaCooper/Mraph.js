@@ -143,7 +143,7 @@ export default class Node {
                 },
                 ...configs,
             };
-            this.layer.timeline.addFollow(runTime, config);
+            this.timeline.addFollow(runTime, config);
         }).bind(this),
 
         /**
@@ -164,7 +164,7 @@ export default class Node {
                 },
                 ...configs,
             };
-            this.layer.timeline.addFollow(runTime, config);
+            this.timeline.addFollow(runTime, config);
         }).bind(this),
 
         /**
@@ -185,7 +185,7 @@ export default class Node {
                 },
                 ...configs,
             };
-            this.layer.timeline.addFollow(runTime, config);
+            this.timeline.addFollow(runTime, config);
         }).bind(this),
 
         /**
@@ -205,7 +205,7 @@ export default class Node {
                 },
                 ...configs,
             };
-            this.layer.timeline.addFollow(runTime, config);
+            this.timeline.addFollow(runTime, config);
         }).bind(this),
 
         /**
@@ -225,7 +225,7 @@ export default class Node {
                 },
                 ...configs,
             };
-            this.layer.timeline.addFollow(runTime, config);
+            this.timeline.addFollow(runTime, config);
         }).bind(this),
 
         /**
@@ -245,7 +245,7 @@ export default class Node {
                 },
                 ...configs,
             };
-            this.layer.timeline.addFollow(runTime, config);
+            this.timeline.addFollow(runTime, config);
         }).bind(this),
     };
 }

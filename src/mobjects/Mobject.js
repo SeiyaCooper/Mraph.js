@@ -3,12 +3,18 @@ import * as MathFunc from "../math/math_func.js";
 import Geometry from "../geometry/Geometry.js";
 import BasicMaterial from "../material/BasicMaterial.js";
 import Complex from "../math/Complex.js";
+import Timeline from "../animation/Timeline.js";
 
 export default class Mobject extends Geometry {
     /**
      * Every mobject contains a default material.
      */
     material = new BasicMaterial();
+
+    /**
+     * Contains all events.
+     */
+    timeline = new Timeline();
 
     /**
      * @returns {Mobject}
@@ -136,6 +142,22 @@ export default class Mobject extends Geometry {
     }
 
     /**
+     * @type {Layer}
+     */
+    set layer(val) {
+        this._layer = val;
+        val.timeline.merge(this.timeline);
+        this.timeline = val.timeline;
+    }
+
+    /**
+     * @type {Layer}
+     */
+    get layer() {
+        return this._layer;
+    }
+
+    /**
      * A collection of animation methods
      */
     animate = {
@@ -162,7 +184,7 @@ export default class Mobject extends Geometry {
                 },
                 ...configs,
             };
-            this.layer.timeline.addFollow(runTime, config);
+            this.timeline.addFollow(runTime, config);
         }).bind(this),
 
         /**
@@ -196,7 +218,7 @@ export default class Mobject extends Geometry {
                 },
                 ...configs,
             };
-            this.layer.timeline.addFollow(runTime, config);
+            this.timeline.addFollow(runTime, config);
         }).bind(this),
 
         /**
@@ -237,7 +259,7 @@ export default class Mobject extends Geometry {
                 ...configs,
             };
 
-            this.layer.timeline.addFollow(runTime, config);
+            this.timeline.addFollow(runTime, config);
 
             // helper function
             function expandPoints(points, targetLength) {

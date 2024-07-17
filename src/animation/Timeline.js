@@ -116,7 +116,8 @@ export default class Timeline {
      * @return {this}
      */
     addFollow(hold, configs) {
-        return this.add(this.maxTime, this.maxTime + hold, configs);
+        const offset = configs.offset ?? 0;
+        return this.add(this.maxTime + offset, this.maxTime + hold + offset, configs);
     }
 
     /**
@@ -253,6 +254,16 @@ export default class Timeline {
      */
     pause() {
         if (this.clock) this.state = STATE.PAUSED;
+    }
+
+    /**
+     * Merges another timeline into this.
+     * @param {Timeline} timeline
+     */
+    merge(timeline) {
+        this.infinityEvents.push(...timeline.infinityEvents);
+        this.globalEvents.push(...timeline.globalEvents);
+        this.events.push(...timeline.events);
     }
 
     /**

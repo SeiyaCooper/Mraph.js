@@ -272,6 +272,11 @@ declare module "animation/Timeline" {
          */
         pause(): void;
         /**
+         * Merges another timeline into this.
+         * @param {Timeline} timeline
+         */
+        merge(timeline: Timeline): void;
+        /**
          * Disposes this timeline.
          */
         dispose(): void;
@@ -2199,6 +2204,10 @@ declare module "mobjects/Mobject" {
          */
         material: BasicMaterial;
         /**
+         * Contains all events.
+         */
+        timeline: Timeline;
+        /**
          * Merges an attribute data from another geometry.
          * @param {Geometry} source
          * @param {string} name
@@ -2242,12 +2251,22 @@ declare module "mobjects/Mobject" {
          */
         matrixTransform(matrix: Matrix, n?: number): void;
         /**
+         * @type {Layer}
+         */
+        set layer(val: Layer);
+        /**
+         * @type {Layer}
+         */
+        get layer(): Layer;
+        _layer: Layer;
+        /**
          * A collection of animation methods
          */
         animate: any;
     }
     import Geometry from "geometry/Geometry";
     import BasicMaterial from "material/BasicMaterial";
+    import Timeline from "animation/Timeline";
 }
 declare module "mobjects/3D/Mobject3D" {
     export default class Mobject3D extends Mobject {
@@ -2619,9 +2638,6 @@ declare module "mobjects/ImageMobject" {
         maintainAspectRatio: boolean;
         set image(image: any);
         get image(): any;
-        set layer(layer: any);
-        get layer(): any;
-        _layer: any;
     }
     import Mobject from "mobjects/Mobject";
 }
