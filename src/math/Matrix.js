@@ -1,3 +1,4 @@
+import MraphError from "../utils/MraphError.js";
 import { deepCopy } from "../utils/utils.js";
 import Vector from "./Vector.js";
 
@@ -110,6 +111,49 @@ export default class Matrix extends Array {
     }
 
     /**
+     * Swaps two rows.
+     * One of the elementary transformations.
+     * @param {number} i the first row.
+     * @param {number} j the second row.
+     */
+    swapRow(i, j) {
+        const ans = this.clone();
+        for (let k = 0; k < this.column; k++) {
+            ans[k][i] = this[k][j];
+            ans[k][j] = this[k][i];
+        }
+        return ans;
+    }
+
+    /**
+     * Scales a row.
+     * One of the elementary transformations.
+     * @param {number} i the row to scale with.
+     * @param {number} factor scale factor.
+     */
+    scaleRow(i, factor) {
+        const ans = this.clone();
+        for (let j = 0; j < this.column; j++) {
+            ans[j][i] *= factor;
+        }
+        return ans;
+    }
+
+    /**
+     * Scales a row and add it to another row.
+     * @param {number} i the target row.
+     * @param {number} j
+     * @param {number} factor
+     */
+    addScaledRow(i, j, factor) {
+        const ans = this.clone();
+        for (let k = 0; k < this.column; k++) {
+            ans[k][i] += this[k][j] * factor;
+        }
+        return ans;
+    }
+
+    /**
      * return a deep copy clone of this matrix
      * @returns {Matrix}
      */
@@ -149,6 +193,30 @@ export default class Matrix extends Array {
                 if (!this[i]) continue;
                 out[i][j] = this[i][j] ?? n;
             }
+        }
+
+        return out;
+    }
+
+    /**
+     *
+     * @param {number[]} start
+     * @param {number[]} end
+     */
+    sub(start = [0, 0], end = []) {
+        let [startRow, startCol] = start;
+        let [endRow, endCol] = end;
+
+        startCol = startCol < 0 ? startCol + this.column : startCol;
+        startCol = startCol < -this.column ? 0 : startCol;
+
+        endCol = endCol ?? this.column;
+        endCol = endCol < 0 ? endCol + this.column : endCol;
+        endCol = endCol < -this.column ? 0 : endCol;
+
+        const out = new Matrix();
+        for (let i = startCol; i < endCol; i++) {
+            out.push(this[i].slice(startRow, endRow));
         }
 
         return out;
@@ -359,6 +427,69 @@ export default class Matrix extends Array {
     }
 
     /**
+     * Gets row reduced echelon form of the given matrix.
+     * @param {Matrix} mat
+     */
+    static RREF(mat, { columnMax = Infinity } = {}) {
+        let ans = mat.clone();
+        let rowStart = 0;
+
+        const pivotPos = [];
+
+        // Gets echelon form
+        for (let i = 0; i < ans.column; i++) {
+            if (i >= columnMax) break;
+            if (rowStart > mat.row - 1) break;
+            if (isZeros(ans[i], rowStart)) continue;
+
+            pivotPos.push([i, rowStart]);
+
+            const vec = ans[i];
+            let maxIdx,
+                maxNum = 0;
+            for (let j = rowStart; j < vec.length; j++) {
+                if (Math.abs(vec[j]) > maxNum) {
+                    maxIdx = j;
+                    maxNum = Math.abs(vec[j]);
+                }
+            }
+
+            if (maxIdx !== 0) ans = ans.swapRow(rowStart, maxIdx);
+
+            for (let j = rowStart + 1; j < ans.row; j++) {
+                const factor = -ans[i][j] / ans[i][rowStart];
+                if (factor !== 0) ans = ans.addScaledRow(j, rowStart, factor);
+            }
+            rowStart++;
+        }
+
+        for (let i = 0; i < pivotPos.length; i++) {
+            const pivotCol = pivotPos[i][0];
+            const pivotRow = pivotPos[i][1];
+            const pivot = ans[pivotCol][pivotRow];
+
+            for (let j = 0; j < pivotRow; j++) {
+                const factor = -ans[pivotCol][j] / ans[pivotCol][pivotRow];
+                if (factor !== 0) ans = ans.addScaledRow(j, pivotRow, factor);
+            }
+
+            if (pivot !== 1) ans = ans.scaleRow(pivotRow, 1 / pivot);
+        }
+
+        return ans;
+
+        // Helper functions
+        function isZeros(vec, start) {
+            let ans = true;
+            for (let i = start; i < vec.length; i++) {
+                ans = !vec[i];
+                if (!ans) break;
+            }
+            return ans;
+        }
+    }
+
+    /**
      * @param {number} val
      */
     set norm(val) {
@@ -379,7 +510,7 @@ export default class Matrix extends Array {
     }
 
     /**
-     * return transpose of this matrix
+     * Transpose of this matrix
      * @returns {Matrix}
      */
     get T() {
@@ -392,6 +523,22 @@ export default class Matrix extends Array {
         }
 
         return ans;
+    }
+
+    /**
+     * The inverse matrix of this matrix
+     * @returns {Matrix}
+     */
+    get I() {
+        if (this.row !== this.column) MraphError.error("The matrix provided cannot be inversed.");
+
+        const n = this.row;
+        const identity = Matrix.identity(n);
+        let expaned = this.clone().concat(identity);
+
+        expaned = Matrix.RREF(expaned, { columnMax: n });
+
+        return expaned.sub([0, n]);
     }
 
     /**

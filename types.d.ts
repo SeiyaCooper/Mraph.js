@@ -721,6 +721,13 @@ declare module "math/Matrix" {
          */
         static translation(x: number, y: number, z: number): Matrix;
         /**
+         * Gets row reduced echelon form of the given matrix.
+         * @param {Matrix} mat
+         */
+        static RREF(mat: Matrix, { columnMax }?: {
+            columnMax?: number;
+        }): Matrix;
+        /**
          * @param {...number[]} source
          * @return {Matrix}
          */
@@ -760,6 +767,27 @@ declare module "math/Matrix" {
          */
         minus(mat: Matrix): Matrix;
         /**
+         * Swaps two rows.
+         * One of the elementary transformations.
+         * @param {number} i the first row.
+         * @param {number} j the second row.
+         */
+        swapRow(i: number, j: number): Matrix;
+        /**
+         * Scales a row.
+         * One of the elementary transformations.
+         * @param {number} i the row to scale with.
+         * @param {number} factor scale factor.
+         */
+        scaleRow(i: number, factor: number): Matrix;
+        /**
+         * Scales a row and add it to another row.
+         * @param {number} i the target row.
+         * @param {number} j
+         * @param {number} factor
+         */
+        addScaledRow(i: number, j: number, factor: number): Matrix;
+        /**
          * return a deep copy clone of this matrix
          * @returns {Matrix}
          */
@@ -776,6 +804,12 @@ declare module "math/Matrix" {
          * @param {number} [n=0]
          */
         resize(row: number, column: number, n?: number): Matrix;
+        /**
+         *
+         * @param {number[]} start
+         * @param {number[]} end
+         */
+        sub(start?: number[], end?: number[]): Matrix;
         /**
          * print this matrix on the console
          */
@@ -794,10 +828,15 @@ declare module "math/Matrix" {
          */
         get norm(): number;
         /**
-         * return transpose of this matrix
+         * Transpose of this matrix
          * @returns {Matrix}
          */
         get T(): Matrix;
+        /**
+         * The inverse matrix of this matrix
+         * @returns {Matrix}
+         */
+        get I(): Matrix;
         /**
          * @returns {number} the number of columns
          */

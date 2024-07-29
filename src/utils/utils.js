@@ -1,4 +1,5 @@
 import Vector from "../math/Vector.js";
+import Matrix from "../math/Matrix.js";
 import Color from "../math/Color.js";
 
 /**
@@ -21,6 +22,8 @@ export function deepCopy(obj) {
         out = new Color();
     } else if (Vector.isInstance(obj)) {
         out = new Vector();
+    } else if (Matrix.isInstance(obj)) {
+        out = new Matrix();
     } else if (Array.isArray(obj)) {
         out = [];
     } else {
