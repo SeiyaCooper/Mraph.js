@@ -36,7 +36,7 @@ export default class Timeline {
      * those events will keep this timeline active
      * @type {SpecialEvent[]}
      */
-    infinityEvents = [];
+    infiniteEvents = [];
 
     /**
      * Returns value of requsetAnimationFrame()
@@ -115,7 +115,7 @@ export default class Timeline {
      * @param {object} configs
      * @return {this}
      */
-    addFollow(hold, configs) {
+    addFollowing(hold, configs) {
         const offset = configs.offset ?? 0;
         return this.add(this.maxTime + offset, this.maxTime + hold + offset, configs);
     }
@@ -131,7 +131,7 @@ export default class Timeline {
 
     /**
      * Adds a global event, this event will be called whenever timeline is active。
-     * If there is an infinity event attached to this timeline, it would behaved like infinity events, otherwise it would behaved like whole events.
+     * If there is an infinite event attached to this timeline, it would behaved like infinite events, otherwise it would behaved like whole events.
      * @param {Function} handler
      * @returns {this}
      */
@@ -143,15 +143,35 @@ export default class Timeline {
     }
 
     /**
-     * Adds an infinity event
+     * Adds an infinite event
      * @param {Function} handler
      * @returns {this}
      */
-    addInfinity(handler) {
+    addInfinite(handler) {
         const event = new SpecialEvent(handler);
         event.id = eventId;
         eventId++;
-        this.infinityEvents.push(event);
+        this.infiniteEvents.push(event);
+    }
+
+    /**
+     * Attachs an animation.
+     * @param {Animation} animation
+     * @param {object} [configs={}]
+     * @param {number} [configs.biasSeconds=0] - Time bias in seconds to adjust the event timings.
+     */
+    attachAnimation(animation, { biasSeconds = 0, updateMax, updateMin } = {}) {
+        for (let event of animation.events) {
+            this.add(event.startTime + biasSeconds, event.stopTime + biasSeconds, {
+                update: event.update,
+                start: event.start,
+                stop: event.stop,
+                curve: event.curve,
+
+                updateMax,
+                updateMin,
+            });
+        }
     }
 
     /**
@@ -171,8 +191,8 @@ export default class Timeline {
         for (let index in this.events) {
             if (this.events[index].id === id) this.events.splice(index, 1);
         }
-        for (let index in this.infinityEvents) {
-            if (this.infinityEvents[index].id === id) this.infinityEvents.splice(index, 1);
+        for (let index in this.infiniteEvents) {
+            if (this.infiniteEvents[index].id === id) this.infiniteEvents.splice(index, 1);
         }
         for (let index in this.globalEvents) {
             if (this.globalEvents[index].id === id) this.globalEvents.splice(index, 1);
@@ -213,7 +233,7 @@ export default class Timeline {
                 now = (+new Date() - startTime) / 1000;
             }
 
-            if (now > self.maxTime && self.allStopped && self.infinityEvents.length === 0) {
+            if (now > self.maxTime && self.allStopped && self.infiniteEvents.length === 0) {
                 self.state = STATE.STOPPED;
                 return;
             }
@@ -233,11 +253,11 @@ export default class Timeline {
         const events = this.events;
         const now = this.current;
 
-        for (let handler of this.infinityEvents) {
+        for (let handler of this.infiniteEvents) {
             handler.execute();
         }
 
-        if (now > this.minTime || this.infinityEvents.length !== 0) {
+        if (now > this.minTime || this.infiniteEvents.length !== 0) {
             for (let handler of this.globalEvents) {
                 handler.execute();
             }
@@ -257,22 +277,12 @@ export default class Timeline {
     }
 
     /**
-     * Merges another timeline into this.
-     * @param {Timeline} timeline
-     */
-    merge(timeline) {
-        this.infinityEvents.push(...timeline.infinityEvents);
-        this.globalEvents.push(...timeline.globalEvents);
-        this.events.push(...timeline.events);
-    }
-
-    /**
      * Disposes this timeline.
      */
     dispose() {
         this.pause();
 
-        this.infinityEvents = [];
+        this.infiniteEvents = [];
         this.globalEvents = [];
         this.events = [];
 

@@ -1,5 +1,5 @@
 /**
- * infinity event or global event
+ * infinite event or global event
  */
 export default class SpecialEvent {
     /**

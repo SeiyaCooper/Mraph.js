@@ -90,6 +90,15 @@ export default class Layer {
         return this;
     }
 
+    attachAnimation(...animations) {
+        const maxTime = this.timeline.maxTime;
+        animations.forEach((animation) => {
+            this.timeline.attachAnimation(animation, {
+                biasSeconds: maxTime,
+            });
+        });
+    }
+
     /**
      * Creates a mobject or geometry and automatically add it to the layer
      * @template Mobject
@@ -184,7 +193,7 @@ export default class Layer {
         });
 
         let monitor = new Timeline();
-        monitor.addInfinity(() => {
+        monitor.addInfinite(() => {
             if (!until()) return;
 
             timeline.play();
@@ -198,10 +207,10 @@ export default class Layer {
 
     /**
      * pause for a while between animations
-     * @param {number} [time=1] in seconds
+     * @param {number} [seconds=1]
      */
-    wait(time = 1) {
-        this.timeline.maxTime += time;
+    delay(seconds = 1) {
+        this.timeline.maxTime += seconds;
         return this;
     }
 
@@ -211,7 +220,7 @@ export default class Layer {
      */
     enableOrbitControl() {
         const control = new OrbitControl(this.camera, { element: this.canvas });
-        this.timeline.addInfinity(() => {
+        this.timeline.addInfinite(() => {
             control.update();
         });
         return control;

@@ -53,9 +53,9 @@ layer.scene.children.forEach((point) => {
     layer.add(point);
 });
 
-// Sets an infinity event
+// Sets an infinite event
 // This event will remain perpetually active
-layer.timeline.addInfinity(() => {
+layer.timeline.addInfinite(() => {
     layer.scene.children.forEach((point, i, arr) => {
         point.a = point.center.mult((-1 * i) / arr.length);
     });

@@ -207,55 +207,6 @@ export default class Mobject2D extends Mobject {
         this.draw();
     }
 
-    animate = {
-        ...this.animate,
-
-        /**
-         * Applies a non-linear transform
-         * @param {Function} trans
-         * @param {Object} config
-         */
-        pointwiseTransform: ((trans, { runTime = 1, ...configs } = {}) => {
-            let fromPoints = [],
-                toPoints = [];
-            let fromPrevious = [],
-                toPrevious = [];
-            let fromFillPoints = [],
-                toFillPoints = [];
-
-            const strokes = this.strokes;
-            const config = {
-                start: () => {
-                    fromPoints = strokes.getPoints();
-                    for (let point of fromPoints) {
-                        toPoints.push(...trans(Vector.fromArray(point)));
-                    }
-                    fromPoints = fromPoints.flat(1);
-
-                    fromPrevious = strokes.attr2Array("previous");
-                    for (let point of fromPrevious) {
-                        toPrevious.push(...trans(Vector.fromArray(point)));
-                    }
-                    fromPrevious = fromPrevious.flat(1);
-
-                    fromFillPoints = this.attr2Array("position");
-                    for (let point of fromFillPoints) {
-                        toFillPoints.push(...trans(Vector.fromArray(point)));
-                    }
-                    fromFillPoints = fromFillPoints.flat(1);
-                },
-                update: (p) => {
-                    strokes.setAttribute("position", MathFunc.lerpArray(fromPoints, toPoints, p), 3);
-                    strokes.setAttribute("previous", MathFunc.lerpArray(fromPrevious, toPrevious, p), 3);
-
-                    this.setAttribute("position", MathFunc.lerpArray(fromFillPoints, toFillPoints, p), 3);
-                },
-                ...configs,
-            };
-            this.timeline.addFollow(runTime, config);
-        }).bind(this),
-    };
-
     static isInstance(obj) {
         return obj instanceof Mobject2D;
     }

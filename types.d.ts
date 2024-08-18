@@ -9,7 +9,7 @@ declare module "animation/Event" {
             start?: () => void;
             stop?: () => void;
             update?: () => void;
-            curve?: (t: any) => any;
+            curve?: (t: number) => number;
         });
         /**
          * @type {number}
@@ -59,7 +59,7 @@ declare module "animation/Event" {
 }
 declare module "animation/SpecialEvent" {
     /**
-     * infinity event or global event
+     * infinite event or global event
      */
     export default class SpecialEvent {
         /**
@@ -180,7 +180,7 @@ declare module "animation/Timeline" {
          * those events will keep this timeline active
          * @type {SpecialEvent[]}
          */
-        infinityEvents: SpecialEvent[];
+        infiniteEvents: SpecialEvent[];
         /**
          * Returns value of requsetAnimationFrame()
          * @type {number | null}
@@ -228,7 +228,7 @@ declare module "animation/Timeline" {
          * @param {object} configs
          * @return {this}
          */
-        addFollow(hold: number, configs: object): this;
+        addFollowing(hold: number, configs: object): this;
         /**
          * Adds an event beginning at the earliest time and concluding at the latest time.
          * @param {object} configs
@@ -237,17 +237,26 @@ declare module "animation/Timeline" {
         addWhole(configs: object): this;
         /**
          * Adds a global event, this event will be called whenever timeline is active。
-         * If there is an infinity event attached to this timeline, it would behaved like infinity events, otherwise it would behaved like whole events.
+         * If there is an infinite event attached to this timeline, it would behaved like infinite events, otherwise it would behaved like whole events.
          * @param {Function} handler
          * @returns {this}
          */
         addGlobal(handler: Function): this;
         /**
-         * Adds an infinity event
+         * Adds an infinite event
          * @param {Function} handler
          * @returns {this}
          */
-        addInfinity(handler: Function): this;
+        addInfinite(handler: Function): this;
+        /**
+         * Attachs an animation.
+         * @param {Animation} animation
+         * @param {object} [configs={}]
+         * @param {number} [configs.biasSeconds=0] - Time bias in seconds to adjust the event timings.
+         */
+        attachAnimation(animation: Animation, { biasSeconds, updateMax, updateMin }?: {
+            biasSeconds?: number;
+        }): void;
         /**
          * Deletes an event from this timeline
          * @param {object | number} target
@@ -271,11 +280,6 @@ declare module "animation/Timeline" {
          * Stops palying aniamtion
          */
         pause(): void;
-        /**
-         * Merges another timeline into this.
-         * @param {Timeline} timeline
-         */
-        merge(timeline: Timeline): void;
         /**
          * Disposes this timeline.
          */
@@ -1313,47 +1317,6 @@ declare module "core/Node" {
          * @returns {this}
          */
         updateMatrix(): this;
-        /**
-         * A collection of animation methods
-         */
-        animate: {
-            /**
-             * Shifts this node to a new place
-             * @param {Vector | number[]} pos
-             * @param {Object} config
-             */
-            moveTo: any;
-            /**
-             * Resets the scale factor of this node
-             * @param {Vector | number[]} factor
-             * @param {Object} config
-             */
-            scaleTo: any;
-            /**
-             * Scales this node by a factor
-             * @param {Vector | number[]} factor
-             * @param {Object} config
-             */
-            scaleBy: any;
-            /**
-             * Rotates this node around x axis
-             * @param {Vector | number[]} factor
-             * @param {Object} config
-             */
-            rotateX: any;
-            /**
-             * Rotates this node around y axis
-             * @param {Vector | number[]} factor
-             * @param {Object} config
-             */
-            rotateY: any;
-            /**
-             * Rotates this node around z axis
-             * @param {Vector | number[]} factor
-             * @param {Object} config
-             */
-            rotateZ: any;
-        };
     }
     import Matrix from "math/Matrix";
     import Vector from "math/Vector";
@@ -1575,6 +1538,7 @@ declare module "core/Layer" {
          * @returns {this}
          */
         add(...els: (Mobject | Light)[]): this;
+        attachAnimation(...animations: any[]): void;
         /**
          * Creates a mobject or geometry and automatically add it to the layer
          * @template Mobject
@@ -1622,9 +1586,9 @@ declare module "core/Layer" {
         play({ color, until }?: any): this;
         /**
          * pause for a while between animations
-         * @param {number} [time=1] in seconds
+         * @param {number} [seconds=1]
          */
-        wait(time?: number): this;
+        delay(seconds?: number): this;
         /**
          * Enables orbit control
          * @returns Control
@@ -1665,6 +1629,34 @@ declare module "core/Texture" {
         _image: any;
         texture: any;
     }
+}
+declare module "animation/Animation" {
+    /**
+     * An Animation is a group of events.
+     * Those events are not special events.
+     */
+    export default class Animation {
+        events: any[];
+        /**
+         * Adds some events to this animation
+         * @param {...Event} event
+         */
+        add(...event: Event[]): void;
+    }
+}
+declare module "animation/predefined/PointwiseTransform" {
+    /**
+     * Shifts this node to a new place
+     */
+    export default class PointwiseTransform extends Animation {
+        /**
+         * @param {Node} target
+         * @param {Function} transform
+         * @param {object} [configs={}] - your personal configurations of the evnet.
+         */
+        constructor(target: Node, transform: Function, { runTime, ...configs }?: object);
+    }
+    import Animation from "animation/Animation";
 }
 declare module "extra/Recorder" {
     export default class Recorder {
@@ -2258,10 +2250,6 @@ declare module "mobjects/Mobject" {
          */
         material: BasicMaterial;
         /**
-         * Contains all events.
-         */
-        timeline: Timeline;
-        /**
          * Merges an attribute data from another geometry.
          * @param {Geometry} source
          * @param {string} name
@@ -2313,14 +2301,9 @@ declare module "mobjects/Mobject" {
          */
         get layer(): Layer;
         _layer: Layer;
-        /**
-         * A collection of animation methods
-         */
-        animate: any;
     }
     import Geometry from "geometry/Geometry";
     import BasicMaterial from "material/BasicMaterial";
-    import Timeline from "animation/Timeline";
 }
 declare module "mobjects/2D/Mobject2D" {
     export default class Mobject2D extends Mobject {
@@ -2724,6 +2707,75 @@ declare module "extra/OBJLoader" {
     }): Promise<Geometry>;
     import Geometry from "geometry/Geometry";
 }
+declare module "animation/predefined/basic_animations" {
+    /**
+     * Shifts this node to a new place
+     */
+    export class MoveTo extends Animation {
+        /**
+         * @param {Node} target
+         * @param {Vector} pos
+         * @param {object} [configs={}] - your personal configurations of the evnet.
+         */
+        constructor(target: Node, pos: Vector, { runTime, ...configs }?: object);
+    }
+    /**
+     * Scales this node by a scale factor.
+     */
+    export class ScaleBy extends Animation {
+        /**
+         * @param {Node} target
+         * @param {number} factor
+         * @param {object} [configs={}] - your personal configurations of the evnet.
+         */
+        constructor(target: Node, factor: number, { runTime, ...configs }?: object);
+    }
+    /**
+     * Resets the scale factor of this node.
+     */
+    export class ScaleTo extends Animation {
+        /**
+         * @param {Node} target
+         * @param {number} factor
+         * @param {object} [configs={}] - your personal configurations of the evnet.
+         */
+        constructor(target: Node, factor: number, { runTime, ...configs }?: object);
+    }
+    /**
+     * Rotates this node around x axis
+     */
+    export class RotateX extends Animation {
+        /**
+         * @param {Node} target
+         * @param {number} angle
+         * @param {object} [configs={}] - your personal configurations of the evnet.
+         */
+        constructor(target: Node, angle: number, { runTime, ...configs }?: object);
+    }
+    /**
+     * Rotates this node around y axis
+     */
+    export class RotateY extends Animation {
+        /**
+         * @param {Node} target
+         * @param {number} angle
+         * @param {object} [configs={}] - your personal configurations of the evnet.
+         */
+        constructor(target: Node, angle: number, { runTime, ...configs }?: object);
+    }
+    /**
+     * Rotates this node around z axis
+     */
+    export class RotateZ extends Animation {
+        /**
+         * @param {Node} target
+         * @param {number} angle
+         * @param {object} [configs={}] - your personal configurations of the evnet.
+         */
+        constructor(target: Node, angle: number, { runTime, ...configs }?: object);
+    }
+    import Animation from "animation/Animation";
+}
 declare module "mraph" {
     export * as SlotParser from "material/SlotParser";
     export * as MathFunc from "math/math_func";
@@ -2778,7 +2830,10 @@ declare module "mraph" {
     import Mobject2DMaterial from "material/Mobject2DMaterial";
     import Event from "animation/Event";
     import Timeline from "animation/Timeline";
+    import Animation from "animation/Animation";
+    import PointwiseTransform from "animation/predefined/PointwiseTransform";
     import OrbitControl from "extra/OrbitControl";
     import Recorder from "extra/Recorder";
-    export { Color, Matrix, Vector, Quat, Complex, Geometry, Plane, Box, Segment, Sphere, Cylinder, DirectionalLight, PointLight, Mobject, ImageMobject, CanvasText, Mobject2D, Point, Tail, Line, Polygon, RegularPolygon, Square, Arc, Arrow, Axis, Axes2D, VectorField2D, FunctionGraph2D, Mobject3D, FunctionGraph3D, Point3D, Arrow3D, VectorField3D, Layer, Camera, Texture, WebGLRenderer, WebGLProgram, CustomMaterial, BasicMaterial, DepthMaterial, LambertMaterial, Mobject2DMaterial, Event, Timeline, OrbitControl, Recorder };
+    export { Color, Matrix, Vector, Quat, Complex, Geometry, Plane, Box, Segment, Sphere, Cylinder, DirectionalLight, PointLight, Mobject, ImageMobject, CanvasText, Mobject2D, Point, Tail, Line, Polygon, RegularPolygon, Square, Arc, Arrow, Axis, Axes2D, VectorField2D, FunctionGraph2D, Mobject3D, FunctionGraph3D, Point3D, Arrow3D, VectorField3D, Layer, Camera, Texture, WebGLRenderer, WebGLProgram, CustomMaterial, BasicMaterial, DepthMaterial, LambertMaterial, Mobject2DMaterial, Event, Timeline, Animation, PointwiseTransform, OrbitControl, Recorder };
+    export { MoveTo, ScaleBy, ScaleTo, RotateX, RotateY, RotateZ } from "./animation/predefined/basic_animations.js";
 }

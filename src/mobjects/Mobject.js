@@ -1,9 +1,6 @@
 import Vector from "../math/Vector.js";
-import * as MathFunc from "../math/math_func.js";
 import Geometry from "../geometry/Geometry.js";
 import BasicMaterial from "../material/BasicMaterial.js";
-import Complex from "../math/Complex.js";
-import Timeline from "../animation/Timeline.js";
 
 export default class Mobject extends Geometry {
     /**
@@ -12,18 +9,11 @@ export default class Mobject extends Geometry {
     material = new BasicMaterial();
 
     /**
-     * Contains all events.
-     */
-    timeline = new Timeline();
-
-    /**
      * @returns {Mobject}
      */
     constructor() {
         super();
         this.material.colorMode = "vertex";
-
-        this.setAttribute("position", [], 3);
     }
 
     /**
@@ -149,8 +139,6 @@ export default class Mobject extends Geometry {
      */
     set layer(val) {
         this._layer = val;
-        val.timeline.merge(this.timeline);
-        this.timeline = val.timeline;
     }
 
     /**
@@ -159,130 +147,6 @@ export default class Mobject extends Geometry {
     get layer() {
         return this._layer;
     }
-
-    /**
-     * A collection of animation methods
-     */
-    animate = {
-        ...this.animate,
-
-        /**
-         * Applies a non-linear transform
-         * @param {Function} trans
-         * @param {Object} config
-         */
-        pointwiseTransform: ((trans, { runTime = 1, ...configs } = {}) => {
-            let from = [],
-                to = [];
-            const config = {
-                start: () => {
-                    from = this.getPoints();
-                    for (let point of from) {
-                        to.push(...trans(Vector.fromArray(point)));
-                    }
-                    from = from.flat(1);
-                },
-                update: (p) => {
-                    this.setAttribute("position", MathFunc.lerpArray(from, to, p), 3);
-                },
-                ...configs,
-            };
-            this.timeline.addFollow(runTime, config);
-        }).bind(this),
-
-        /**
-         * Applies a complex function
-         * @param {Function} trans
-         * @param {Object} config
-         */
-        complexFuncTransform: ((trans, { runTime = 1, ...configs } = {}) => {
-            const handler = (pos) => {
-                return [...trans(Complex.fromArray(pos)), 0];
-            };
-            this.animate.pointwiseTransform(handler, { runTime, ...configs });
-        }).bind(this),
-
-        /**
-         * Transforms to a given points array.
-         * Each point in the array should be an array of [x, y, z] coordinates.
-         * @param {number[][]} points
-         * @param {Object} config
-         */
-        fromPoints: ((points, { runTime = 1, ...configs } = {}) => {
-            let start = [],
-                end = [];
-            const config = {
-                start: () => {
-                    start = this.getPoints().flat(1);
-                    end = points.flat(1);
-                },
-                update: (p) => {
-                    this.setAttribute("position", MathFunc.lerpArray(start, end, p), 3);
-                },
-                ...configs,
-            };
-            this.timeline.addFollow(runTime, config);
-        }).bind(this),
-
-        /**
-         * Tranforms to a given mobject.
-         * @param {mobject} Mobject
-         * @param {Object} config
-         */
-        transformTo: ((mobject, { runTime = 1, ...configs } = {}) => {
-            let from, to;
-            let fromArray, toArray;
-            const config = {
-                start: () => {
-                    if (mobject.needsUpdate) {
-                        mobject.update();
-                        mobject.needsUpdate = false;
-                    }
-
-                    to = mobject.getPoints();
-                    from = this.getPoints();
-
-                    if (to.length > from.length) {
-                        from = expandPoints(from, to.length);
-                    } else if (to.length < from.length) {
-                        to = expandPoints(to, from.length);
-                    }
-
-                    fromArray = from.flat(1);
-                    toArray = to.flat(1);
-                },
-                update: (p) => {
-                    const now = MathFunc.lerpArray(fromArray, toArray, p);
-                    this.setAttribute("position", now, 3);
-                    this.setIndex(now.length / 3);
-                },
-                stop: () => {
-                    this.fromPoints(mobject.getPoints());
-                },
-                ...configs,
-            };
-
-            this.timeline.addFollow(runTime, config);
-
-            // helper function
-            function expandPoints(points, targetLength) {
-                const originLength = points.length;
-                const repeatTimes = Math.floor(targetLength / originLength);
-                const out = [];
-
-                for (let i = 0; i < repeatTimes; i++) {
-                    out.push(...points);
-                }
-
-                const rest = targetLength - repeatTimes * originLength;
-                for (let i = 0; i < rest; i++) {
-                    out.push(points[i]);
-                }
-
-                return out;
-            }
-        }).bind(this),
-    };
 
     static fromGeometry(geometry) {
         const newMobject = new Mobject();
@@ -301,6 +165,7 @@ export default class Mobject extends Geometry {
             newMobject.add(Mobject.fromGeometry(child));
         }
 
+        newMobject.material.colorMode = "single";
         if (geometry.material) newMobject.material = geometry.material;
 
         return newMobject;

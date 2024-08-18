@@ -77,7 +77,7 @@ import Example from "../../layouts/Example.astro";
         const animator = new mp.Timeline();
         animator.fps = 60;
         layer.timeline.fps = 60;
-        animator.addInfinity(() => {
+        animator.addInfinite(() => {
             for (let charge of charges) {
                 charge.tail.update();
                 if (charge.center.norm > 1) continue;

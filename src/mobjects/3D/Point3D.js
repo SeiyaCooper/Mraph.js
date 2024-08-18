@@ -2,6 +2,7 @@ import Vector from "../../math/Vector.js";
 import Mobject3D from "./Mobject3D.js";
 import Sphere from "../../geometry/Sphere.js";
 import * as COLORS from "../../constants/colors.js";
+import MraphError from "../../utils/MraphError.js";
 
 export default class Point3D extends Mobject3D {
     radius = 0.06;
@@ -40,6 +41,11 @@ export default class Point3D extends Mobject3D {
     }
 
     set v(val) {
+        if (!this.layer) {
+            MraphError.error("Layer property is undefined. Ensure that 'layer' is properly setted before setting 'v'.");
+            return;
+        }
+
         this._v = val;
         let lastTime = 0;
         this.timeline.add(this.timeline.current, Infinity, {
@@ -67,8 +73,12 @@ export default class Point3D extends Mobject3D {
     }
 
     set a(val) {
-        this._a = val;
+        if (!this.layer) {
+            MraphError.error("Layer property is undefined. Ensure that 'layer' is properly setted before setting 'a'.");
+            return;
+        }
 
+        this._a = val;
         let lastTime = 0;
         this.timeline.add(this.timeline.current, Infinity, {
             update: (_, elapsedTime) => {

@@ -1,3 +1,5 @@
+import Timeline from "./Timeline.js";
+
 export default class Event {
     /**
      * @type {number}
@@ -44,7 +46,7 @@ export default class Event {
      * @param {number} t
      * @returns {number}
      */
-    curve = (t) => t;
+    curve = Timeline.easeInOutCubic;
 
     /**
      * @constructor
@@ -54,7 +56,7 @@ export default class Event {
     constructor(
         startTime = 0,
         stopTime = 1,
-        { start = () => {}, stop = () => {}, update = () => {}, curve = (t) => t } = {}
+        { start = () => {}, stop = () => {}, update = () => {}, curve = Timeline.easeInOutCubic } = {}
     ) {
         this.start = start;
         this.stop = stop;

@@ -4,6 +4,9 @@ import Texture from "./core/Texture.js";
 
 import Event from "./animation/Event.js";
 import Timeline from "./animation/Timeline.js";
+import Animation from "./animation/Animation.js";
+
+import PointwiseTransform from "./animation/predefined/PointwiseTransform.js";
 
 import OrbitControl from "./extra/OrbitControl.js";
 import Recorder from "./extra/Recorder.js";
@@ -66,6 +69,8 @@ export * as COLORS from "./constants/colors.js";
 export * as VECTORS from "./constants/vectors.js";
 export * as GLENUM from "./constants/glenum.js";
 export * as DrawModes from "./constants/draw_modes.js";
+
+export { MoveTo, ScaleBy, ScaleTo, RotateX, RotateY, RotateZ } from "./animation/predefined/basic_animations.js";
 
 export {
     // Math
@@ -131,6 +136,8 @@ export {
     // Animation
     Event,
     Timeline,
+    Animation,
+    PointwiseTransform,
 
     // Extra
     OrbitControl,

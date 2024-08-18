@@ -25,7 +25,7 @@ import Example from "../../layouts/Example.astro";
         moon.setColor(mp.COLORS.GRAY);
         moon.update();
 
-        layer.timeline.addInfinity(() => {
+        layer.timeline.addInfinite(() => {
             sun.rotation.y += 0.02;
             earth.rotation.y += 0.03;
             earth.rotation.z += 0.01;

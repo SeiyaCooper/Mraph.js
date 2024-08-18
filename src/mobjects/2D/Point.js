@@ -1,6 +1,7 @@
 import Vector from "../../math/Vector.js";
 import Color from "../../math/Color.js";
 import Arc from "./Arc.js";
+import MraphError from "../../utils/MraphError.js";
 
 export default class Point extends Arc {
     fillColor = new Color(1, 1, 1, 1);
@@ -36,9 +37,14 @@ export default class Point extends Arc {
     }
 
     set v(val) {
+        if (!this.layer) {
+            MraphError.error("Layer property is undefined. Ensure that 'layer' is properly setted before setting 'v'.");
+            return;
+        }
+
         this._v = val;
         let lastTime = 0;
-        this.timeline.add(this.timeline.current, Infinity, {
+        this.layer.timeline.add(this.layer.timeline.current, Infinity, {
             update: (_, elapsedTime) => {
                 this.center = this.center.add(this._v.mult(elapsedTime - lastTime));
                 this.updateMatrix();
@@ -63,10 +69,14 @@ export default class Point extends Arc {
     }
 
     set a(val) {
-        this._a = val;
+        if (!this.layer) {
+            MraphError.error("Layer property is undefined. Ensure that 'layer' is properly setted before setting 'a'.");
+            return;
+        }
 
+        this._a = val;
         let lastTime = 0;
-        this.timeline.add(this.timeline.current, Infinity, {
+        this.layer.timeline.add(this.layer.timeline.current, Infinity, {
             update: (_, elapsedTime) => {
                 this.v = this._v.add(this._a.mult(elapsedTime - lastTime));
                 lastTime = elapsedTime;
