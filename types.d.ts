@@ -298,6 +298,10 @@ declare module "utils/MraphError" {
 declare module "math/Complex" {
     export default class Complex extends Array<any> {
         /**
+         * The imaginary unit.
+         */
+        static I: Complex;
+        /**
          * @param {*} obj
          * @returns {boolean}
          */
@@ -2104,12 +2108,23 @@ declare module "geometry/Geometry" {
          */
         deleteAttribute(name: string): void;
         /**
-         * Get value of an attribute variable
+         * Get value of an attribute variable.
          * @param {string} name
          * @param {number[]} data
          * @param {number} n
          */
         getAttributeVal(name: string): any;
+        /**
+         * Clears all attribute variables.
+         * This method would not delete any attribute variable.
+         * Instead, it sets all of them to an empty array.
+         */
+        clearAttribute(): void;
+        /**
+         * Removes all attribute variables.
+         * This method will delete all attribute variables.
+         */
+        removeAllAttributes(): void;
         /**
          * Sets a uniform variable
          * @param {string} name
@@ -2307,16 +2322,6 @@ declare module "mobjects/Mobject" {
     import BasicMaterial from "material/BasicMaterial";
     import Timeline from "animation/Timeline";
 }
-declare module "mobjects/3D/Mobject3D" {
-    export default class Mobject3D extends Mobject {
-        /**
-         * Sets the color of this mobject
-         * @param {Color} color
-         */
-        setColor(color: Color): void;
-    }
-    import Mobject from "mobjects/Mobject";
-}
 declare module "mobjects/2D/Mobject2D" {
     export default class Mobject2D extends Mobject {
         static isInstance(obj: any): boolean;
@@ -2328,8 +2333,7 @@ declare module "mobjects/2D/Mobject2D" {
         closePath: boolean;
         normal: Vector;
         lineJoin: string;
-        material: Mobject2DMaterial;
-        fillZone: Mobject3D;
+        strokes: Mobject;
         /**
          * Moves your pen to another point.
          * This method is used to draw a path.
@@ -2373,8 +2377,6 @@ declare module "mobjects/2D/Mobject2D" {
     import Mobject from "mobjects/Mobject";
     import Color from "math/Color";
     import Vector from "math/Vector";
-    import Mobject2DMaterial from "material/Mobject2DMaterial";
-    import Mobject3D from "mobjects/3D/Mobject3D";
 }
 declare module "mobjects/2D/Arc" {
     export default class Arc extends Mobject2D {
@@ -2492,6 +2494,8 @@ declare module "mobjects/2D/Square" {
          * @param {Object} configs
          */
         constructor(configs: any);
+        strokeColor: import("mraph").Vector;
+        fillColor: any;
     }
     import RegularPolygon from "mobjects/2D/RegularPolygon";
 }
@@ -2590,6 +2594,16 @@ declare module "mobjects/2D/VectorField2D" {
     import Mobject2D from "mobjects/2D/Mobject2D";
     import Color from "math/Color";
     import Vector from "math/Vector";
+}
+declare module "mobjects/3D/Mobject3D" {
+    export default class Mobject3D extends Mobject {
+        /**
+         * Sets the color of this mobject
+         * @param {Color} color
+         */
+        setColor(color: Color): void;
+    }
+    import Mobject from "mobjects/Mobject";
 }
 declare module "mobjects/3D/FunctionGraph3D" {
     export default class FunctionGraph3D extends Mobject3D {

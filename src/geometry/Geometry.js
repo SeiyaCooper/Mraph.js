@@ -122,13 +122,32 @@ export default class Geometry extends Node {
     }
 
     /**
-     * Get value of an attribute variable
+     * Get value of an attribute variable.
      * @param {string} name
      * @param {number[]} data
      * @param {number} n
      */
     getAttributeVal(name) {
-        return this.attributes.get(name)?.data ?? [];
+        return this.attributes.get(name)?.data;
+    }
+
+    /**
+     * Clears all attribute variables.
+     * This method would not delete any attribute variable.
+     * Instead, it sets all of them to an empty array.
+     */
+    clearAttribute() {
+        for (let [name, val] of this.attributes) {
+            this.setAttribute(name, [], val.size);
+        }
+    }
+
+    /**
+     * Removes all attribute variables.
+     * This method will delete all attribute variables.
+     */
+    removeAllAttributes() {
+        this.attributes = new Map();
     }
 
     /**

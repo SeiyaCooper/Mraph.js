@@ -1,4 +1,3 @@
-import Mobject3D from "../3D/Mobject3D.js";
 import Mobject from "../Mobject.js";
 import Color from "../../math/Color.js";
 import * as Utils from "../../utils/utils.js";
@@ -19,14 +18,17 @@ export default class Mobject2D extends Mobject {
 
     lineJoin = "miter";
 
-    material = new Mobject2DMaterial();
-    fillZone = new Mobject3D();
+    strokes = new Mobject();
 
     constructor() {
         super();
-        this.add(this.fillZone);
+        this.add(this.strokes);
+
         this.material.colorMode = "vertex";
-        this.fillZone.material.colorMode = "vertex";
+        this.material.depthTest = false;
+
+        this.strokes.material = new Mobject2DMaterial();
+        this.strokes.material.colorMode = "vertex";
     }
 
     /**
@@ -74,9 +76,8 @@ export default class Mobject2D extends Mobject {
     fill() {
         if (this.points.length !== 0) this.finish();
 
-        const fillZone = this.fillZone;
-        const vertices = fillZone.getAttributeVal("position") ?? [];
-        const colors = fillZone.getAttributeVal("color") ?? [];
+        const vertices = this.getAttributeVal("position") ?? [];
+        const colors = this.getAttributeVal("color") ?? [];
 
         for (let polygon of this.polygons) {
             if (polygon.length < 3) continue;
@@ -92,10 +93,9 @@ export default class Mobject2D extends Mobject {
             }
         }
 
-        fillZone.setColor(this.fillColor);
-        fillZone.setAttribute("position", vertices, 3);
-        fillZone.setAttribute("color", colors, 4);
-        fillZone.setIndex(vertices.length / 3);
+        this.setAttribute("position", vertices, 3);
+        this.setAttribute("color", colors, 4);
+        this.setIndex(vertices.length / 3);
     }
 
     /**
@@ -104,10 +104,11 @@ export default class Mobject2D extends Mobject {
     stroke() {
         if (this.points.length !== 0) this.finish();
 
-        const reverse = this.getAttributeVal("reverse") ?? [];
-        const vertices = this.getAttributeVal("position") ?? [];
-        const previous = this.getAttributeVal("previous") ?? [];
-        const colors = this.getAttributeVal("color") ?? [];
+        const strokes = this.strokes;
+        const reverse = strokes.getAttributeVal("reverse") ?? [];
+        const vertices = strokes.getAttributeVal("position") ?? [];
+        const previous = strokes.getAttributeVal("previous") ?? [];
+        const colors = strokes.getAttributeVal("color") ?? [];
 
         for (let polygon of this.polygons) {
             for (let i = 1; i < polygon.length; i++) {
@@ -139,12 +140,12 @@ export default class Mobject2D extends Mobject {
             }
         }
 
-        this.setAttribute("position", vertices, 3);
-        this.setAttribute("previous", previous, 3);
-        this.setAttribute("reverse", reverse, 1);
-        this.setAttribute("color", colors, 4);
-        this.setUniform("thickness", this.strokeWidth);
-        this.setIndex(this.getAttributeVal("position").length / 3);
+        strokes.setAttribute("position", vertices, 3);
+        strokes.setAttribute("previous", previous, 3);
+        strokes.setAttribute("reverse", reverse, 1);
+        strokes.setAttribute("color", colors, 4);
+        strokes.setUniform("thickness", this.strokeWidth);
+        strokes.setIndex(strokes.getAttributeVal("position").length / 3);
     }
 
     draw() {}
@@ -182,13 +183,8 @@ export default class Mobject2D extends Mobject {
     }
 
     clearBuffer() {
-        this.setAttribute("position", [], 3);
-        this.setAttribute("previous", [], 3);
-        this.setAttribute("reverse", [], 1);
-        this.setAttribute("color", [], 4);
-
-        this.fillZone.setAttribute("position", [], 3);
-        this.fillZone.setAttribute("color", [], 4);
+        this.clearAttribute();
+        this.strokes.clearAttribute();
     }
 
     finish() {
@@ -224,23 +220,35 @@ export default class Mobject2D extends Mobject {
                 toPoints = [];
             let fromPrevious = [],
                 toPrevious = [];
+            let fromFillPoints = [],
+                toFillPoints = [];
+
+            const strokes = this.strokes;
             const config = {
                 start: () => {
-                    fromPoints = this.getPoints();
+                    fromPoints = strokes.getPoints();
                     for (let point of fromPoints) {
                         toPoints.push(...trans(Vector.fromArray(point)));
                     }
                     fromPoints = fromPoints.flat(1);
 
-                    fromPrevious = this.attr2Array("previous");
+                    fromPrevious = strokes.attr2Array("previous");
                     for (let point of fromPrevious) {
                         toPrevious.push(...trans(Vector.fromArray(point)));
                     }
                     fromPrevious = fromPrevious.flat(1);
+
+                    fromFillPoints = this.attr2Array("position");
+                    for (let point of fromFillPoints) {
+                        toFillPoints.push(...trans(Vector.fromArray(point)));
+                    }
+                    fromFillPoints = fromFillPoints.flat(1);
                 },
                 update: (p) => {
-                    this.setAttribute("position", MathFunc.lerpArray(fromPoints, toPoints, p), 3);
-                    this.setAttribute("previous", MathFunc.lerpArray(fromPrevious, toPrevious, p), 3);
+                    strokes.setAttribute("position", MathFunc.lerpArray(fromPoints, toPoints, p), 3);
+                    strokes.setAttribute("previous", MathFunc.lerpArray(fromPrevious, toPrevious, p), 3);
+
+                    this.setAttribute("position", MathFunc.lerpArray(fromFillPoints, toFillPoints, p), 3);
                 },
                 ...configs,
             };

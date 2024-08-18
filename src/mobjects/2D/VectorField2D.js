@@ -28,7 +28,7 @@ export default class VectorField2D extends Mobject2D {
     update() {
         this.clearGraph();
 
-        const fillZone = this.fillZone;
+        const strokes = this.strokes;
         const func = this.func;
         const xRange = this.xRange;
         const yRange = this.yRange;
@@ -40,14 +40,14 @@ export default class VectorField2D extends Mobject2D {
                 arrow.setColor(this.colorFunc(x, y, length));
                 arrow.update();
 
-                this.mergeAttributes(arrow, "position", "previous", "reverse", "color");
-                fillZone.mergeAttributes(arrow.fillZone, "position", "color");
+                this.mergeAttributes(arrow, "position", "color");
+                strokes.mergeAttributes(arrow.strokes, "position", "previous", "reverse", "color");
             }
         }
 
-        this.setUniform("thickness", this.strokeWidth);
         this.setIndex(this.getAttributeVal("position").length / 3);
-        fillZone.setIndex(fillZone.getAttributeVal("position").length / 3);
+        strokes.setUniform("thickness", this.strokeWidth);
+        strokes.setIndex(strokes.getAttributeVal("position").length / 3);
     }
 
     setColor(color) {

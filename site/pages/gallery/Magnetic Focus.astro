@@ -19,7 +19,7 @@ import Example from "../../layouts/Example.astro";
                 super(...args);
                 this.strength = strength;
                 this.strokeColor = mp.COLORS.GRAY_C;
-                this.fillColor = mp.COLORS.GRAY_D;
+                this.fillColor = mp.COLORS.GRAY_D.withRGBA({ a: 0.1 });
             }
 
             update() {
@@ -48,6 +48,10 @@ import Example from "../../layouts/Example.astro";
             }
         }
 
+        /// Init magnetic field
+        const field = new UniformMagneticField(new mp.Vector(0, 0, 1), 0, 0);
+        layer.add(field);
+
         /// Init charges
         const charges = [
             new Charge(1, -2, 0.8),
@@ -64,10 +68,6 @@ import Example from "../../layouts/Example.astro";
             layer.add(charge.tail);
             charge.v = new mp.Vector(1, 0, 0);
         }
-
-        /// Init magnetic field
-        const field = new UniformMagneticField(new mp.Vector(0, 0, 1), 0, 0);
-        layer.add(field);
 
         /// Animation part
         /*

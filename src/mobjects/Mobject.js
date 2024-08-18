@@ -22,6 +22,8 @@ export default class Mobject extends Geometry {
     constructor() {
         super();
         this.material.colorMode = "vertex";
+
+        this.setAttribute("position", [], 3);
     }
 
     /**
@@ -96,6 +98,7 @@ export default class Mobject extends Geometry {
      * @returns {number[][]}
      */
     attr2Array(name) {
+        console.log(name, this);
         const vertices = this.getAttributeVal(name);
         const size = this.attributes.get(name).size;
         const out = [];

@@ -34,7 +34,7 @@ export default class Box extends Geometry {
             normals.push(...normal);
         }
 
-        const vertices = this.getAttributeVal("position");
+        const vertices = this.getAttributeVal("position") ?? [];
         const normal = [];
         const w = this.width,
             h = this.height,

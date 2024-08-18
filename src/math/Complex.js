@@ -8,6 +8,11 @@ export default class Complex extends Array {
     }
 
     /**
+     * The imaginary unit.
+     */
+    static I = new Complex(0, 1);
+
+    /**
      * Adds a complex number
      * @param {Complex} comp
      * @returns {Complex}

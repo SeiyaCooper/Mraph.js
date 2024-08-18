@@ -21,5 +21,6 @@ export default class Polygon extends Mobject2D {
 
     draw() {
         this.stroke();
+        this.fill();
     }
 }

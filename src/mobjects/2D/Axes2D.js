@@ -9,7 +9,7 @@ import * as COLORS from "../../constants/colors.js";
 export default class Axes2D extends Mobject2D {
     _tickLength = 0.08;
 
-    strokeWidth = 0.03;
+    strokeWidth = 0.02;
 
     /**
      * Creates an axes2d mobject
@@ -24,7 +24,7 @@ export default class Axes2D extends Mobject2D {
     } = {}) {
         super();
 
-        this.setColor(COLORS.BLUE_E);
+        this.setColor(COLORS.BLUE);
         this.origin = origin;
         this.xRange = xRange;
         this.yRange = yRange;
