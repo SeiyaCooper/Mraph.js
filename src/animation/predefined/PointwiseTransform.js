@@ -15,18 +15,21 @@ export default class PointwiseTransform extends Animation {
     constructor(target, transform, { runTime = 1, ...configs } = {}) {
         super();
 
-        let from = [],
+        let from = target.toMorphable(),
             to = [];
         const config = {
             start: () => {
-                from = target.attr2Array("position");
-                for (let point of from) {
-                    to.push(...transform(Vector.fromArray(point)));
+                console.log(from);
+                for (let polygon of from) {
+                    const newPlygon = [];
+                    for (let point of polygon) {
+                        newPlygon.push(transform(Vector.fromArray(point)));
+                    }
+                    to.push(newPlygon);
                 }
-                from = from.flat(1);
             },
             update: (p) => {
-                target.setAttribute("position", MathFunc.lerpArray(from, to, p), 3);
+                target.fromMorphable(MathFunc.lerpArray(from, to, p));
             },
             ...configs,
         };

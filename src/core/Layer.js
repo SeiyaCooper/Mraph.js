@@ -90,11 +90,15 @@ export default class Layer {
         return this;
     }
 
-    attachAnimation(...animations) {
-        const maxTime = this.timeline.maxTime;
+    /**
+     * Adds some anmations.
+     * These animations will play following the current animation.
+     * @param  {...any} animations
+     */
+    animate(...animations) {
         animations.forEach((animation) => {
-            this.timeline.attachAnimation(animation, {
-                biasSeconds: maxTime,
+            this.timeline.addAnimation(animation, {
+                biasSeconds: this.timeline.maxTime,
             });
         });
     }

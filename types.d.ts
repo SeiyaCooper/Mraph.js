@@ -249,12 +249,12 @@ declare module "animation/Timeline" {
          */
         addInfinite(handler: Function): this;
         /**
-         * Attachs an animation.
+         * Adds an animation.
          * @param {Animation} animation
          * @param {object} [configs={}]
          * @param {number} [configs.biasSeconds=0] - Time bias in seconds to adjust the event timings.
          */
-        attachAnimation(animation: Animation, { biasSeconds, updateMax, updateMin }?: {
+        addAnimation(animation: Animation, { biasSeconds, updateMax, updateMin }?: {
             biasSeconds?: number;
         }): void;
         /**
@@ -418,9 +418,11 @@ declare module "math/math_func" {
      * @param {number} p percent
      * @returns {number[]}
      */
-    export function lerpArray(from: number[], to: number[], p: number): number[];
+    export function lerpArray(from: number[], to: number[], p: number, { recurse }?: {
+        recurse?: boolean;
+    }): number[];
     export function linear(x: number): number;
-    export function exp(x: number | Complex): number | Complex;
+    export function exp(x: number | Complex): any;
     import Complex from "math/Complex";
 }
 declare module "math/Vector" {
@@ -1538,7 +1540,12 @@ declare module "core/Layer" {
          * @returns {this}
          */
         add(...els: (Mobject | Light)[]): this;
-        attachAnimation(...animations: any[]): void;
+        /**
+         * Adds some anmations.
+         * These animations will play following the current animation.
+         * @param  {...any} animations
+         */
+        animate(...animations: any[]): void;
         /**
          * Creates a mobject or geometry and automatically add it to the layer
          * @template Mobject
@@ -2293,6 +2300,16 @@ declare module "mobjects/Mobject" {
          */
         matrixTransform(matrix: Matrix, n?: number): void;
         /**
+         * Transform into an array that is morphable, in order to perform morph animations.
+         * This method should be overridden when inherited.
+         */
+        toMorphable(): void;
+        /**
+         * Sets attribute variables from a given morphable array, in order to perform morph animations.
+         * This method should be overridden when inherited.
+         */
+        fromMorphable(): void;
+        /**
          * @type {Layer}
          */
         set layer(val: Layer);
@@ -2356,6 +2373,8 @@ declare module "mobjects/2D/Mobject2D" {
         finish(): void;
         setColor(color: any): void;
         pointwiseTransform(trans: any): void;
+        toMorphable(): any[];
+        fromMorphable(morphable: any): void;
     }
     import Mobject from "mobjects/Mobject";
     import Color from "math/Color";
@@ -2585,6 +2604,17 @@ declare module "mobjects/3D/Mobject3D" {
          * @param {Color} color
          */
         setColor(color: Color): void;
+        /**
+         * Transform into an array that is morphable, in order to perform morph animations.
+         * For Mobject3D, there's one polygon that contains all vertices.
+         * @returns {number[][][]}
+         */
+        toMorphable(): number[][][];
+        /**
+         * Sets attribute variables from a given morphable array, in order to perform morph animations.
+         * @param {number[][][]} morphable
+         */
+        fromMorphable(morphable: number[][][]): void;
     }
     import Mobject from "mobjects/Mobject";
 }

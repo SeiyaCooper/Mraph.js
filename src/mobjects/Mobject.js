@@ -135,6 +135,18 @@ export default class Mobject extends Geometry {
     }
 
     /**
+     * Transform into an array that is morphable, in order to perform morph animations.
+     * This method should be overridden when inherited.
+     */
+    toMorphable() {}
+
+    /**
+     * Sets attribute variables from a given morphable array, in order to perform morph animations.
+     * This method should be overridden when inherited.
+     */
+    fromMorphable() {}
+
+    /**
      * @type {Layer}
      */
     set layer(val) {

@@ -207,6 +207,16 @@ export default class Mobject2D extends Mobject {
         this.draw();
     }
 
+    toMorphable() {
+        return this.polygons;
+    }
+
+    fromMorphable(morphable) {
+        this.clearGraph();
+        this.polygons = morphable;
+        this.draw();
+    }
+
     static isInstance(obj) {
         return obj instanceof Mobject2D;
     }

@@ -1,5 +1,6 @@
 import MraphError from "../utils/MraphError.js";
 import Complex from "./Complex.js";
+import { deepCopy } from "../utils/utils.js";
 
 /**
  * sigmoid function
@@ -29,6 +30,14 @@ export const exp = (x) => {
         const re = x.re;
 
         return new Complex(Math.cos(im), Math.sin(im)).mult(Math.exp(re));
+    } else if (Array.isArray(x)) {
+        const ans = deepCopy(x);
+
+        ans.forEach((val, index) => {
+            ans[index] = exp(val);
+        });
+
+        return ans;
     } else {
         MraphError.error("Invalid value for the exp function");
         return;
@@ -66,10 +75,15 @@ export function lerp(from, to, p) {
  * @param {number} p percent
  * @returns {number[]}
  */
-export function lerpArray(from, to, p) {
+export function lerpArray(from, to, p, { recurse = true } = {}) {
     const ans = [];
-    for (let i = 0; i < from.length; i++) {
-        ans[i] = p * to[i] + (1 - p) * from[i];
-    }
+    from.forEach((el, index) => {
+        if (Array.isArray(el) && recurse) {
+            ans.push(lerpArray(el, to[index], p));
+            return;
+        }
+
+        ans.push(p * to[index] + (1 - p) * from[index]);
+    });
     return ans;
 }

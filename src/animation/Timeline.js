@@ -155,12 +155,12 @@ export default class Timeline {
     }
 
     /**
-     * Attachs an animation.
+     * Adds an animation.
      * @param {Animation} animation
      * @param {object} [configs={}]
      * @param {number} [configs.biasSeconds=0] - Time bias in seconds to adjust the event timings.
      */
-    attachAnimation(animation, { biasSeconds = 0, updateMax, updateMin } = {}) {
+    addAnimation(animation, { biasSeconds = 0, updateMax, updateMin } = {}) {
         for (let event of animation.events) {
             this.add(event.startTime + biasSeconds, event.stopTime + biasSeconds, {
                 update: event.update,
