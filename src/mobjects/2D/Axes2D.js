@@ -58,6 +58,7 @@ export default class Axes2D extends Mobject2D {
                 const at = new Vector(pos, 0, 0);
                 this.move(at.minus(tick));
                 this.line(at.add(tick));
+                this.stroke();
             }
 
             tick = new Vector(0, 1, 0)
@@ -70,18 +71,9 @@ export default class Axes2D extends Mobject2D {
                 const at = new Vector(0, pos, 0);
                 this.move(at.minus(tick));
                 this.line(at.add(tick));
+                this.stroke();
             }
-
-            this.stroke();
         }
-
-        this.draw();
-    }
-
-    draw() {
-        this.stroke();
-        this.xAxis.draw();
-        this.yAxis.draw();
     }
 
     /**

@@ -21,17 +21,14 @@ export default class Point extends Arc {
         } else {
             this.center = new Vector(...args);
         }
+        this.center[0] = this.center[0] ?? 0;
+        this.center[1] = this.center[1] ?? 0;
         this.center[2] = this.center[2] ?? 0;
     }
 
     update() {
         this.clearGraph();
         this.arc(this.radius, 0, Math.PI * 2, false);
-        this.draw();
-        return this;
-    }
-
-    draw() {
         this.fill();
         return this;
     }

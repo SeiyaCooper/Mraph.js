@@ -596,7 +596,13 @@ declare module "math/Color" {
     export default class Color extends Vector {
         static fromHex(hex: any): Color;
         static fromHexStr(str: any): Color;
-        static lerpRGBA(from: any, to: any, p: any): number[];
+        /**
+         * Interpolates between the given colors and returns the interpolated color.
+         * @param {Color[]} colors
+         * @param {number} alpha
+         * @returns
+         */
+        static interpolate(colors: Color[], alpha: number): number[];
         static isInstance(obj: any): boolean;
         /**
          * @param {number} [r=0]
@@ -605,11 +611,20 @@ declare module "math/Color" {
          * @param {number} [a=1]
          */
         constructor(r?: number, g?: number, b?: number, a?: number);
-        withRGBA({ r, g, b, a }: {
-            r: any;
-            g: any;
-            b: any;
-            a: any;
+        /**
+         * Creates a new Color object with the specified RGBA values.
+         * @param {object} [rgba={}] - An object that specifies the values for red (r), green (g), blue (b), and alpha (a) transparency.
+         * @param {number} [rgba.r=0] - The red component of the color, ranging from 0 to 255.
+         * @param {number} [rgba.g=0] - The green component of the color, ranging from 0 to 255.
+         * @param {number} [rgba.b=0] - The blue component of the color, ranging from 0 to 255.
+         * @param {number} [rgba.a=1] - The alpha (transparency) component of the color, ranging from 0 (fully transparent) to 1 (fully opaque).
+         * @returns {Color} A new Color object with the updated RGBA values.
+         */
+        withRGBA({ r, g, b, a }?: {
+            r?: number;
+            g?: number;
+            b?: number;
+            a?: number;
         }): Color;
         toArray(): this[number][];
         toIntRGBA(): Color;
@@ -1657,13 +1672,38 @@ declare module "animation/predefined/PointwiseTransform" {
      */
     export default class PointwiseTransform extends Animation {
         /**
-         * @param {Node} target
+         * @param {Mobject} target
          * @param {Function} transform
          * @param {object} [configs={}] - your personal configurations of the evnet.
          */
-        constructor(target: Node, transform: Function, { runTime, ...configs }?: object);
+        constructor(target: Mobject, transform: Function, { runTime, ...configs }?: object);
     }
     import Animation from "animation/Animation";
+}
+declare module "animation/predefined/ComplexFunctionTransform" {
+    /**
+     * Applies a complex function to each point in the target.
+     */
+    export default class ComplexFunctionTransform extends PointwiseTransform {
+        /**
+         * @param {Node} target
+         * @param {Function} complexFunction
+         * @param {object} [configs={}] - your personal configurations of the evnet.
+         */
+        constructor(target: Node, complexFunction: Function, configs?: object);
+    }
+    import PointwiseTransform from "animation/predefined/PointwiseTransform";
+}
+declare module "animation/predefined/MatrixTransform" {
+    export default class MatrixTransform extends PointwiseTransform {
+        /**
+         * @param {Node} target
+         * @param {Matrix} matrix - matrix to transform by，can be in 2*2 or 3*3
+         * @param {object} [configs={}] - your personal configurations of the evnet.
+         */
+        constructor(target: Node, matrix: Matrix, configs?: object);
+    }
+    import PointwiseTransform from "animation/predefined/PointwiseTransform";
 }
 declare module "extra/Recorder" {
     export default class Recorder {
@@ -2118,7 +2158,7 @@ declare module "geometry/Geometry" {
          * This method would not delete any attribute variable.
          * Instead, it sets all of them to an empty array.
          */
-        clearAttribute(): void;
+        clearAttributes(): void;
         /**
          * Removes all attribute variables.
          * This method will delete all attribute variables.
@@ -2327,6 +2367,7 @@ declare module "mobjects/2D/Mobject2D" {
         static isInstance(obj: any): boolean;
         points: any[];
         polygons: any[];
+        commands: any[];
         fillColor: Color;
         strokeColor: Color;
         strokeWidth: number;
@@ -2358,21 +2399,27 @@ declare module "mobjects/2D/Mobject2D" {
          */
         arc(radius: number, startAngle: number, endAngle: number, clockwise?: boolean, segments?: number): void;
         /**
-         * Fills the path you've drawn.
+         * Fills a polygon you've drawn.
+         * @param {number[][]} [polygon] - polygon you want to fill with, will be the last one when left null.
          */
-        fill(): void;
+        fill(polygon?: number[][], { updateCommand }?: {
+            updateCommand?: boolean;
+        }): void;
         /**
-         * Strokes the path you've drawn.
+         * Strokes a polygon you've drawn.
+         * @param {number[][]} [polygon] - polygon you want to fill with, will be the last one when left null.
          */
-        stroke(): void;
-        draw(): void;
+        stroke(polygon?: number[][], { updateCommand }?: {
+            updateCommand?: boolean;
+        }): void;
+        addPolygonCommand(polygon: any, command: any): void;
+        redraw(): void;
         prepare4NonlinearTransform(segmentsNum?: number): void;
         clearGraph(): void;
-        clearPath(): void;
-        clearBuffer(): void;
+        clearPaths(): void;
+        clearBuffers(): void;
         finish(): void;
         setColor(color: any): void;
-        pointwiseTransform(trans: any): void;
         toMorphable(): any[];
         fromMorphable(morphable: any): void;
     }
@@ -2388,7 +2435,6 @@ declare module "mobjects/2D/Arc" {
         radius: number;
         center: number[];
         update(): this;
-        draw(): this;
     }
     import Mobject2D from "mobjects/2D/Mobject2D";
 }
@@ -2402,7 +2448,6 @@ declare module "mobjects/2D/Point" {
         _a: Vector;
         center: any;
         update(): this;
-        draw(): this;
         set v(val: Vector);
         get v(): Vector;
         set a(val: Vector);
@@ -2429,25 +2474,22 @@ declare module "mobjects/2D/Tail" {
         maxLength: number;
         maxSteps: number;
         update(): this;
-        draw(): this;
     }
     import Mobject2D from "mobjects/2D/Mobject2D";
 }
 declare module "mobjects/2D/Line" {
     export default class Line extends Mobject2D {
         /**
-         * @param {Point} start
-         * @param {Point} end
+         * @param {Point} [start=[-1,0]]
+         * @param {Point} [end=[1,0]]
          */
         constructor(start?: Point, end?: Point);
         tips: any[];
         tipWidth: number;
         tipLength: number;
-        start: Point;
-        end: Point;
+        start: any;
+        end: any;
         update(): this;
-        drawTips(): this;
-        draw(): this;
         /**
          * return a position where corresponds a precent
          * @param {number} precent
@@ -2473,6 +2515,7 @@ declare module "mobjects/2D/Polygon" {
     export default class Polygon extends Mobject2D {
         constructor(...points: any[]);
         vertices: any[];
+        update(): this;
     }
     import Mobject2D from "mobjects/2D/Mobject2D";
 }
@@ -2486,6 +2529,7 @@ declare module "mobjects/2D/RegularPolygon" {
         vertexNum: number;
         sideLength: any;
         startAngle: any;
+        update(): void;
     }
     import Polygon from "mobjects/2D/Polygon";
 }
@@ -2524,7 +2568,6 @@ declare module "mobjects/2D/Axis" {
         tickLength: number;
         unit: number;
         update(): this;
-        draw(): this;
     }
     import Line from "mobjects/2D/Line";
     import Point from "mobjects/2D/Point";
@@ -2541,7 +2584,6 @@ declare module "mobjects/2D/FunctionGraph2D" {
         func: (x: any) => any;
         z: number;
         update(): this;
-        draw(): this;
     }
     import Mobject2D from "mobjects/2D/Mobject2D";
 }
@@ -2587,14 +2629,13 @@ declare module "mobjects/2D/VectorField2D" {
             yRange?: number[];
         });
         lengthFunc: (length: any) => number;
-        colorFunc: () => Color;
+        colorFunc: (x: any, y: any, length: any) => number[];
         _center: Vector;
         xRange: number[];
         yRange: number[];
         func: (x: any, y: any) => any[];
     }
     import Mobject2D from "mobjects/2D/Mobject2D";
-    import Color from "math/Color";
     import Vector from "math/Vector";
 }
 declare module "mobjects/3D/Mobject3D" {
@@ -2862,8 +2903,10 @@ declare module "mraph" {
     import Timeline from "animation/Timeline";
     import Animation from "animation/Animation";
     import PointwiseTransform from "animation/predefined/PointwiseTransform";
+    import ComplexFunctionTransform from "animation/predefined/ComplexFunctionTransform";
+    import MatrixTransform from "animation/predefined/MatrixTransform";
     import OrbitControl from "extra/OrbitControl";
     import Recorder from "extra/Recorder";
-    export { Color, Matrix, Vector, Quat, Complex, Geometry, Plane, Box, Segment, Sphere, Cylinder, DirectionalLight, PointLight, Mobject, ImageMobject, CanvasText, Mobject2D, Point, Tail, Line, Polygon, RegularPolygon, Square, Arc, Arrow, Axis, Axes2D, VectorField2D, FunctionGraph2D, Mobject3D, FunctionGraph3D, Point3D, Arrow3D, VectorField3D, Layer, Camera, Texture, WebGLRenderer, WebGLProgram, CustomMaterial, BasicMaterial, DepthMaterial, LambertMaterial, Mobject2DMaterial, Event, Timeline, Animation, PointwiseTransform, OrbitControl, Recorder };
+    export { Color, Matrix, Vector, Quat, Complex, Geometry, Plane, Box, Segment, Sphere, Cylinder, DirectionalLight, PointLight, Mobject, ImageMobject, CanvasText, Mobject2D, Point, Tail, Line, Polygon, RegularPolygon, Square, Arc, Arrow, Axis, Axes2D, VectorField2D, FunctionGraph2D, Mobject3D, FunctionGraph3D, Point3D, Arrow3D, VectorField3D, Layer, Camera, Texture, WebGLRenderer, WebGLProgram, CustomMaterial, BasicMaterial, DepthMaterial, LambertMaterial, Mobject2DMaterial, Event, Timeline, Animation, PointwiseTransform, ComplexFunctionTransform, MatrixTransform, OrbitControl, Recorder };
     export { MoveTo, ScaleBy, ScaleTo, RotateX, RotateY, RotateZ } from "./animation/predefined/basic_animations.js";
 }

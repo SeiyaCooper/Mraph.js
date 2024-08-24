@@ -12,7 +12,16 @@ export default class Color extends Vector {
         super(r, g, b, a);
     }
 
-    withRGBA({ r, g, b, a }) {
+    /**
+     * Creates a new Color object with the specified RGBA values.
+     * @param {object} [rgba={}] - An object that specifies the values for red (r), green (g), blue (b), and alpha (a) transparency.
+     * @param {number} [rgba.r=0] - The red component of the color, ranging from 0 to 255.
+     * @param {number} [rgba.g=0] - The green component of the color, ranging from 0 to 255.
+     * @param {number} [rgba.b=0] - The blue component of the color, ranging from 0 to 255.
+     * @param {number} [rgba.a=1] - The alpha (transparency) component of the color, ranging from 0 (fully transparent) to 1 (fully opaque).
+     * @returns {Color} A new Color object with the updated RGBA values.
+     */
+    withRGBA({ r, g, b, a } = {}) {
         return new Color(r ?? this.r, g ?? this.g, b ?? this.b, a ?? this.a);
     }
 
@@ -58,8 +67,21 @@ export default class Color extends Vector {
         return Color.fromHex(Number.parseInt(str.substring(1), 16));
     }
 
-    static lerpRGBA(from, to, p) {
-        return MathFunc.lerpArray(from, to, p);
+    /**
+     * Interpolates between the given colors and returns the interpolated color.
+     * @param {Color[]} colors
+     * @param {number} alpha
+     * @returns
+     */
+    static interpolate(colors, alpha) {
+        const colorsNum = colors.length - 1;
+
+        const colorIndex = Math.floor(colorsNum * alpha);
+
+        const fromIndex = Math.min(colorIndex, colors.length - 2);
+        const toIndex = fromIndex + 1;
+
+        return MathFunc.lerpArray(colors[fromIndex], colors[toIndex], colorsNum * alpha - fromIndex);
     }
 
     static isInstance(obj) {

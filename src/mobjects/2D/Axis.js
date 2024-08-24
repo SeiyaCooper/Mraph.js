@@ -25,15 +25,9 @@ export default class Axis extends Line {
             const at = this.at(pos / len);
             this.move(at.minus(tick));
             this.line(at.add(tick));
+            this.stroke();
         }
-        this.draw();
 
-        return this;
-    }
-
-    draw() {
-        super.draw();
-        this.stroke();
         return this;
     }
 

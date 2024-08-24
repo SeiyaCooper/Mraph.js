@@ -136,7 +136,7 @@ export default class Geometry extends Node {
      * This method would not delete any attribute variable.
      * Instead, it sets all of them to an empty array.
      */
-    clearAttribute() {
+    clearAttributes() {
         for (let [name, val] of this.attributes) {
             this.setAttribute(name, [], val.size);
         }

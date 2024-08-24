@@ -7,6 +7,8 @@ import Timeline from "./animation/Timeline.js";
 import Animation from "./animation/Animation.js";
 
 import PointwiseTransform from "./animation/predefined/PointwiseTransform.js";
+import ComplexFunctionTransform from "./animation/predefined/ComplexFunctionTransform.js";
+import MatrixTransform from "./animation/predefined/MatrixTransform.js";
 
 import OrbitControl from "./extra/OrbitControl.js";
 import Recorder from "./extra/Recorder.js";
@@ -138,6 +140,8 @@ export {
     Timeline,
     Animation,
     PointwiseTransform,
+    ComplexFunctionTransform,
+    MatrixTransform,
 
     // Extra
     OrbitControl,

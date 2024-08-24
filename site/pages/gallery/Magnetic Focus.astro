@@ -25,10 +25,6 @@ import Example from "../../layouts/Example.astro";
             update() {
                 this.clearGraph();
                 this.arc(this.radius, 0, Math.PI * 2, false, 50);
-                this.draw();
-            }
-
-            draw() {
                 this.stroke();
                 this.fill();
             }

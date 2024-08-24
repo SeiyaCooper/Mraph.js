@@ -19,11 +19,6 @@ export default class FunctionGraph2D extends Mobject2D {
         for (let i = from + step; i <= to; i += step) {
             this.line([i, func(i), this.z]);
         }
-        this.draw();
-        return this;
-    }
-
-    draw() {
         this.stroke();
         return this;
     }

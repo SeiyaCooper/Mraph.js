@@ -17,11 +17,6 @@ export default class Arc extends Mobject2D {
     update() {
         this.clearGraph();
         this.arc(this.radius, this.startAngle, this.endAngle, this.startAngle > this.endAngle);
-        this.draw();
-        return this;
-    }
-
-    draw() {
         this.stroke();
         return this;
     }

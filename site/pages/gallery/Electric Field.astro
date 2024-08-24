@@ -48,14 +48,18 @@ import Example from "../../layouts/Example.astro";
                 force.copy(force.add(radius));
             }
 
+            if (Number.isNaN(force.norm)) return new mp.Vector(0, 0, 0);
+
             return force;
+        };
+        electricField.colorFunc = (x, y, length) => {
+            return mp.Color.interpolate(
+                [mp.COLORS.GREEN_E, mp.COLORS.YELLOW, mp.COLORS.RED],
+                mp.MathFunc.sigmoid((length - 0.5) * 2)
+            );
         };
         electricField.lengthFunc = (length) => {
             return mp.MathFunc.sigmoid(length / 2);
-        };
-        electricField.colorFunc = (x, y, length) => {
-            const hue = (length - 0.1) * 4 - 1.35;
-            return mp.MathFunc.lerpArray(new mp.Color(0, 0.9, 1), new mp.Color(1, 0.1, 0.1), hue);
         };
         layer.add(electricField);
 

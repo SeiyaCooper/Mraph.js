@@ -9,6 +9,7 @@ import * as VECTORS from "../../constants/vectors.js";
 export default class Mobject2D extends Mobject {
     points = [];
     polygons = [];
+    commands = [];
 
     fillColor = new Color(1, 1, 1, 1);
     strokeColor = new Color(1, 1, 1, 1);
@@ -71,37 +72,40 @@ export default class Mobject2D extends Mobject {
     }
 
     /**
-     * Fills the path you've drawn.
+     * Fills a polygon you've drawn.
+     * @param {number[][]} [polygon] - polygon you want to fill with, will be the last one when left null.
      */
-    fill() {
+    fill(polygon, { updateCommand = true } = {}) {
         if (this.points.length !== 0) this.finish();
 
         const vertices = this.getAttributeVal("position") ?? [];
         const colors = this.getAttributeVal("color") ?? [];
 
-        for (let polygon of this.polygons) {
-            if (polygon.length < 3) continue;
+        polygon = polygon ?? this.polygons[this.polygons.length - 1];
+        if (polygon.length < 3) return;
 
-            const first = polygon[0];
-            for (let i = 1; i < polygon.length - 1; i++) {
-                vertices.push(...first);
-                vertices.push(...polygon[i]);
-                vertices.push(...polygon[i + 1]);
-                colors.push(...this.fillColor);
-                colors.push(...this.fillColor);
-                colors.push(...this.fillColor);
-            }
+        const first = polygon[0];
+        for (let i = 1; i < polygon.length - 1; i++) {
+            vertices.push(...first);
+            vertices.push(...polygon[i]);
+            vertices.push(...polygon[i + 1]);
+            colors.push(...this.fillColor);
+            colors.push(...this.fillColor);
+            colors.push(...this.fillColor);
         }
 
         this.setAttribute("position", vertices, 3);
         this.setAttribute("color", colors, 4);
         this.setIndex(vertices.length / 3);
+
+        if (updateCommand) this.addPolygonCommand(polygon, "fill");
     }
 
     /**
-     * Strokes the path you've drawn.
+     * Strokes a polygon you've drawn.
+     * @param {number[][]} [polygon] - polygon you want to fill with, will be the last one when left null.
      */
-    stroke() {
+    stroke(polygon, { updateCommand = true } = {}) {
         if (this.points.length !== 0) this.finish();
 
         const strokes = this.strokes;
@@ -110,34 +114,33 @@ export default class Mobject2D extends Mobject {
         const previous = strokes.getAttributeVal("previous") ?? [];
         const colors = strokes.getAttributeVal("color") ?? [];
 
-        for (let polygon of this.polygons) {
-            for (let i = 1; i < polygon.length; i++) {
-                const start = polygon[i];
-                const end = polygon[i - 1];
+        polygon = polygon ?? this.polygons[this.polygons.length - 1];
+        for (let i = 1; i < polygon.length; i++) {
+            const start = polygon[i];
+            const end = polygon[i - 1];
 
-                vertices.push(...start);
-                vertices.push(...start);
-                vertices.push(...end);
-                vertices.push(...start);
-                vertices.push(...end);
-                vertices.push(...end);
+            vertices.push(...start);
+            vertices.push(...start);
+            vertices.push(...end);
+            vertices.push(...start);
+            vertices.push(...end);
+            vertices.push(...end);
 
-                previous.push(...end);
-                previous.push(...end);
-                previous.push(...start);
-                previous.push(...end);
-                previous.push(...start);
-                previous.push(...start);
+            previous.push(...end);
+            previous.push(...end);
+            previous.push(...start);
+            previous.push(...end);
+            previous.push(...start);
+            previous.push(...start);
 
-                colors.push(...this.strokeColor);
-                colors.push(...this.strokeColor);
-                colors.push(...this.strokeColor);
-                colors.push(...this.strokeColor);
-                colors.push(...this.strokeColor);
-                colors.push(...this.strokeColor);
+            colors.push(...this.strokeColor);
+            colors.push(...this.strokeColor);
+            colors.push(...this.strokeColor);
+            colors.push(...this.strokeColor);
+            colors.push(...this.strokeColor);
+            colors.push(...this.strokeColor);
 
-                reverse.push(-1, 1, 1, 1, 1, -1);
-            }
+            reverse.push(-1, 1, 1, 1, 1, -1);
         }
 
         strokes.setAttribute("position", vertices, 3);
@@ -146,9 +149,26 @@ export default class Mobject2D extends Mobject {
         strokes.setAttribute("color", colors, 4);
         strokes.setUniform("thickness", this.strokeWidth);
         strokes.setIndex(strokes.getAttributeVal("position").length / 3);
+
+        if (updateCommand) this.addPolygonCommand(polygon, "stroke");
     }
 
-    draw() {}
+    addPolygonCommand(polygon, command) {
+        let index = this.commands.indexOf(polygon);
+        index = index > 0 ? index : this.commands.length;
+
+        const newCommands = this.commands[index] ?? [];
+        newCommands.push(command);
+        this.commands[index] = newCommands;
+    }
+
+    redraw() {
+        this.commands.forEach((polygonCommands, index) => {
+            for (let command of polygonCommands) {
+                this[command]?.(this.polygons[index], { updateCommand: false });
+            }
+        });
+    }
 
     prepare4NonlinearTransform(segmentsNum = 30) {
         const polygons = this.polygons;
@@ -168,23 +188,24 @@ export default class Mobject2D extends Mobject {
 
             polygons[i] = replace;
         }
-        this.clearBuffer();
-        this.draw();
+        this.clearBuffers();
+        this.redraw();
     }
 
     clearGraph() {
-        this.clearPath();
-        this.clearBuffer();
+        this.clearPaths();
+        this.clearBuffers();
     }
 
-    clearPath() {
+    clearPaths() {
         this.points = [];
         this.polygons = [];
+        this.commands = [];
     }
 
-    clearBuffer() {
-        this.clearAttribute();
-        this.strokes.clearAttribute();
+    clearBuffers() {
+        this.clearAttributes();
+        this.strokes.clearAttributes();
     }
 
     finish() {
@@ -197,24 +218,21 @@ export default class Mobject2D extends Mobject {
         this.fillColor = color;
     }
 
-    pointwiseTransform(trans) {
-        for (let polygon of this.polygons) {
-            for (let i = 0; i < polygon.length; i++) {
-                polygon[i] = trans(Vector.fromArray(polygon[i]));
-            }
-        }
-        this.clearBuffer();
-        this.draw();
-    }
-
     toMorphable() {
         return this.polygons;
     }
 
     fromMorphable(morphable) {
-        this.clearGraph();
+        const colors = this.getAttributeVal("color");
+        const strokeColors = this.strokes.getAttributeVal("color");
+
+        this.clearBuffers();
+
+        if (colors) this.setAttribute("color", colors, 4);
+        if (strokeColors) this.strokes.setAttribute("color", strokeColors, 4);
+
         this.polygons = morphable;
-        this.draw();
+        this.redraw();
     }
 
     static isInstance(obj) {

@@ -12,15 +12,15 @@ export default class Polygon extends Mobject2D {
 
     update() {
         this.clearGraph();
+
         for (let point of this.vertices) {
             this.line(point.center);
         }
         this.line(this.vertices[0].center);
-        this.draw();
-    }
 
-    draw() {
         this.stroke();
         this.fill();
+
+        return this;
     }
 }

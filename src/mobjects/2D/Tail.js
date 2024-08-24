@@ -28,11 +28,6 @@ export default class Tail extends Mobject2D {
         }
         this.line(this.target.center);
 
-        this.draw();
-        return this;
-    }
-
-    draw() {
         this.stroke();
         return this;
     }

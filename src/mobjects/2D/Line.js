@@ -7,18 +7,27 @@ export default class Line extends Mobject2D {
     strokeWidth = 0.05;
     strokeColor = new Color(1, 1, 1, 1);
     tips = [];
-    tipWidth = 0.06;
-    tipLength = 0.12;
+    tipWidth = 0.1;
+    tipLength = 0.2;
     lineJoin = "none";
 
     /**
-     * @param {Point} start
-     * @param {Point} end
+     * @param {Point} [start=[-1,0]]
+     * @param {Point} [end=[1,0]]
      */
-    constructor(start = new Point(-1, 0), end = new Point(1, 0)) {
+    constructor(start = [-1, 0], end = [1, 0]) {
         super();
-        this.start = start;
-        this.end = end;
+
+        function parseToPoint(obj) {
+            if (Array.isArray(obj)) {
+                return new Point(...obj);
+            }
+
+            return obj;
+        }
+
+        this.start = parseToPoint(start);
+        this.end = parseToPoint(end);
         this.setIndex([0, 1, 3, 2, 0, 3]);
     }
 
@@ -27,11 +36,8 @@ export default class Line extends Mobject2D {
         this.move(this.start.center);
         this.line(this.end.center);
 
-        this.draw();
-        return this;
-    }
+        this.stroke();
 
-    drawTips() {
         if (!this.tips.length) return this;
         const start = this.start.center;
         for (let [at, reverse] of this.tips) {
@@ -42,24 +48,20 @@ export default class Line extends Mobject2D {
             const h = this.vector;
             h.norm = this.tipLength;
 
-            const w = h.clone();
+            let w = h.clone();
             w.norm = this.tipWidth;
+            w = w.trans(Matrix.rotateZ(Math.PI / 2, 3));
 
             if (reverse) {
-                this.line(vec.add(h).add(w.trans(Matrix.rotateZ(Math.PI / 2, 3))));
-                this.line(vec.add(h).add(w.trans(Matrix.rotateZ(-Math.PI / 2, 3))));
+                this.line(vec.add(h).add(w));
+                this.line(vec.add(h).minus(w));
             } else {
-                this.line(vec.minus(h).add(w.trans(Matrix.rotateZ(Math.PI / 2, 3))));
-                this.line(vec.minus(h).add(w.trans(Matrix.rotateZ(-Math.PI / 2, 3))));
+                this.line(vec.minus(h).add(w));
+                this.line(vec.minus(h).minus(w));
             }
         }
         this.fill();
-        return this;
-    }
 
-    draw() {
-        this.stroke();
-        this.drawTips();
         return this;
     }
 
