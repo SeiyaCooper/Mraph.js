@@ -1,0 +1,48 @@
+---
+
+---
+
+<div class="input_form">
+    <input type="text" id="user-input" />
+    <button>Animate it!</button>
+</div>
+
+<style>
+    div {
+        position: fixed;
+        background-color: #191920;
+        backdrop-filter: blur(6px);
+        display: flex;
+        flex-direction: column;
+    }
+
+    input {
+        height: 50px;
+        border: none;
+        outline: none;
+        color: aliceblue;
+        padding-left: 10px;
+        border: 2px solid aliceblue;
+        border-radius: 5px;
+        background-color: transparent;
+        font-family: var(--font-family);
+        font-weight: bold;
+    }
+
+    input:focus {
+        background-color: transparent;
+    }
+
+    button {
+        padding: auto;
+        height: 50px;
+        font-family: var(--font-family);
+        font-weight: bold;
+        font-size: 1rem;
+        color: #fff;
+        background-color: transparent;
+        border: 2px solid aliceblue;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+</style>
