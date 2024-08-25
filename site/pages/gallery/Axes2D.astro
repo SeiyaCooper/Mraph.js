@@ -1,10 +1,10 @@
 ---
 import Example from "../../layouts/Example.astro";
-import InputForm from "../../components/InputForm.astro";
+import Input from "../../components/Input.astro";
 ---
 
 <Example title="Axes2D">
-    <InputForm />
+    <Input buttonText="Apply Transform" defaultValue="1 1 0 1" />
     <script>
         import * as mp from "../../../src/mraph.js";
 
@@ -42,11 +42,12 @@ import InputForm from "../../components/InputForm.astro";
                 new mp.MatrixTransform(axes, new mp.Matrix([numbers[0], numbers[1]], [numbers[2], numbers[3]])),
                 { biasSeconds: layer.timeline.current }
             );
+            layer.animate();
         });
 
         // Render
         layer.add(axes);
-        layer.enableOrbitControl();
+        layer.enableOrbitControl().enableRotate = false;
         layer.play({ until: () => logo.texture.isImageReady });
     </script>
 </Example>

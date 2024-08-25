@@ -1,19 +1,26 @@
 ---
+interface Props {
+    buttonText?: string;
+    defaultValue?: string;
+}
 
+const { buttonText = "BUTTON", defaultValue = "" } = Astro.props;
 ---
 
 <div class="input_form">
-    <input type="text" id="user-input" />
-    <button>Animate it!</button>
+    <input type="text" id="user-input" autocomplete="off" value={defaultValue} />
+    <button>{buttonText}</button>
 </div>
 
 <style>
     div {
+        width: 150px;
         position: fixed;
-        background-color: #191920;
+        background-color: rgba(15, 15, 25, 0.5);
         backdrop-filter: blur(6px);
         display: flex;
         flex-direction: column;
+        border: 1px solid aliceblue;
     }
 
     input {
@@ -22,14 +29,13 @@
         outline: none;
         color: aliceblue;
         padding-left: 10px;
-        border: 2px solid aliceblue;
-        border-radius: 5px;
+        border: none;
         background-color: transparent;
         font-family: var(--font-family);
         font-weight: bold;
     }
 
-    input:focus {
+    input:-webkit-autofill {
         background-color: transparent;
     }
 
@@ -39,10 +45,15 @@
         font-family: var(--font-family);
         font-weight: bold;
         font-size: 1rem;
-        color: #fff;
+        color: #fe63a1;
         background-color: transparent;
-        border: 2px solid aliceblue;
-        border-radius: 5px;
+        border: none;
+        border-bottom: 5px solid aliceblue;
         cursor: pointer;
+    }
+
+    button:active {
+        transform: translateY(3px);
+        border: none;
     }
 </style>

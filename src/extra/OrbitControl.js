@@ -184,7 +184,7 @@ export default class OrbitControl {
     attachControl() {
         const el = this.element;
         el.addEventListener("touchstart", this.handleTouchStart);
-        el.addEventListener("touchmove", this.handleMouseMove);
+        el.addEventListener("touchmove", this.handleTouchMove);
         el.addEventListener("touchend", this.handleTouchEnd);
         el.addEventListener("wheel", this.handleWheel);
         el.addEventListener("mousedown", this.handleMouseDown);
@@ -197,7 +197,7 @@ export default class OrbitControl {
     removeControl() {
         const el = this.element;
         el.removeEventListener("touchstart", this.handleTouchStart);
-        el.removeEventListener("touchmove", this.handleMouseMove);
+        el.removeEventListener("touchmove", this.handleTouchMove);
         el.removeEventListener("touchend", this.handleTouchEnd);
         el.removeEventListener("wheel", this.handleWheel);
         el.removeEventListener("mousedown", this.handleMouseDown);
