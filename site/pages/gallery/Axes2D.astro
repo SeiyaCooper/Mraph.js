@@ -32,7 +32,7 @@ import Input from "../../components/Input.astro";
         logo.center.z = -0.01;
         logo.center.y = -5;
         logo.center.x = 0.5;
-        layer.add(logo);
+        axes.add(logo);
 
         // User action
         document.querySelector(".input_form button")?.addEventListener("click", (e) => {
@@ -48,7 +48,7 @@ import Input from "../../components/Input.astro";
         // Render
         layer.add(axes);
         layer.enableOrbitControl().enableRotate = false;
-        layer.play({ until: () => logo.texture.isImageReady });
+        layer.play({ until: () => logo.texture?.isImageReady });
     </script>
 </Example>
 

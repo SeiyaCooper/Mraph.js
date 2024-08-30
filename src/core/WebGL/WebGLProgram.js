@@ -51,23 +51,22 @@ export default class Program {
     }
 
     /**
-     * Initiates a vertex array object
-     * @param {Geometry} mesh
+     * Links an attribute variable with it's buffer.
+     * @param {string} name
+     * @param {object} value
+     * @returns
      */
-    initVAO(mesh) {
+    linkAttribute(name, value) {
         const gl = this.gl;
+        const location = gl.getAttribLocation(this.program, name);
 
-        for (let [name, value] of mesh.attributes) {
-            const location = gl.getAttribLocation(this.program, name);
+        // Can not find this variable, then do nothing
+        if (location === -1) return;
 
-            // Can not find this variable, then do nothing
-            if (location === -1) continue;
-
-            const buffer = value.glBuffer;
-            gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-            gl.enableVertexAttribArray(location);
-            gl.vertexAttribPointer(location, value.size, gl.FLOAT, false, 0, 0);
-        }
+        const buffer = value.glBuffer;
+        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+        gl.enableVertexAttribArray(location);
+        gl.vertexAttribPointer(location, value.size, gl.FLOAT, false, 0, 0);
     }
 
     /**

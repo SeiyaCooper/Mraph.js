@@ -1,4 +1,3 @@
-import * as GLENUM from "../constants/glenum.js";
 import * as COLORS from "../constants/colors.js";
 import ImageMobject from "./ImageMobject.js";
 
@@ -65,9 +64,6 @@ export default class CanvasText extends ImageMobject {
     set text(text) {
         this._text = text;
         this.image = this.canvas;
-
-        this.texture.magFilter = GLENUM.NEAREST;
-        this.texture.minFilter = GLENUM.NEAREST;
     }
 
     get text() {

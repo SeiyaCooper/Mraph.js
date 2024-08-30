@@ -77,11 +77,13 @@ export default class Layer {
     add(...els) {
         for (let el of els) {
             if (typeof el.attributes === "object" /* if adding a drawable object*/) {
+                el.set("layer", this);
+                this.scene.add(el);
+
+                if (!el.needsUpdate) continue;
                 el.update?.();
                 el.updateMatrix?.();
                 el.needsUpdate = false;
-                el.set("layer", this);
-                this.scene.add(el);
             } else {
                 this.addSurrounding(el);
             }
@@ -164,11 +166,6 @@ export default class Layer {
      */
     render() {
         for (let el of this.scene.children) {
-            if (el.needsUpdate) {
-                el.update?.();
-                el.updateMatrix?.();
-                el.needsUpdate = false;
-            }
             this.renderer.render(el, this.camera, this.surroundings);
         }
         return this;

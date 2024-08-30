@@ -7,9 +7,14 @@ export default class ImageMobject extends Mobject {
 
     texture = undefined;
 
+    /**
+     * False by defalut, a image mobject should be updated only if the image is ready.
+     */
+    needsUpdate = false;
+
     constructor(image, { width = 1, height = 1, maintainAspectRatio = true } = {}) {
         super();
-        this._image = image;
+        this.image = image;
         this.material.colorMode = "texture";
 
         this.width = width;
@@ -34,33 +39,18 @@ export default class ImageMobject extends Mobject {
 
     set image(image) {
         if (typeof image === "string") {
-            const img = new Image();
-            const tex = new Texture();
-
-            img.src = image;
-            img.onload = () => {
-                tex.image = img;
-            };
-
-            this._image = img;
-            this.texture = tex;
+            Texture.loadFile(image, (texture) => {
+                this.image = texture.image;
+            });
         } else {
             this._image = image;
             this.texture = new Texture({ image });
+            this.material.diffuseTexture = this.texture;
+            this.needsUpdate = true;
         }
-        this.material.diffuseTexture = this.texture;
     }
 
     get image() {
         return this._image;
-    }
-
-    set layer(layer) {
-        this._layer = layer;
-        this.image = this._image;
-    }
-
-    get layer() {
-        return this._layer;
     }
 }

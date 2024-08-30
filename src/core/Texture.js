@@ -47,7 +47,6 @@ export default class Texture {
 
     set image(val) {
         this._image = val;
-        this.texture = null;
         this._needsUpload = true;
     }
     get image() {

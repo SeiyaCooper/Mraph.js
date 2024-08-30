@@ -71,6 +71,16 @@ export default class WebGLRenderer {
             return;
         }
 
+        if (mesh.needsUpdate) {
+            mesh.update?.();
+            mesh.needsUpdate = false;
+        }
+
+        if (mesh.needsUpdateMatrix) {
+            mesh.updateMatrix?.();
+            mesh.needsUpdateMatrix = false;
+        }
+
         const gl = this.gl;
         const scene = { mesh, camera, surroundings };
         const material = mesh.material;
@@ -82,33 +92,24 @@ export default class WebGLRenderer {
         const program = material.program;
         program.use();
 
-        const texture = material.diffuseTexture;
-        if (texture) {
-            if (!texture.texture) {
-                program.setUpTexture(texture);
-            }
-
-            program.bindTexture(texture);
-
-            if (texture?._dirty && texture.isImageReady) {
-                program.updateTextureParams(texture);
-                texture._dirty = false;
-            }
-            if (texture?._needsUpload && texture.isImageReady) {
-                program.uploadTexture(texture);
-                texture._needsUpload = false;
-            }
-        }
-
         material.passVariables(scene);
         program.setUniform("viewMat", camera.viewMat);
         program.setUniform("projectionMat", camera.projectionMat);
         program.setUniform("modelMat", mesh.matrix ?? Matrix.identity(4));
 
-        for (let value of mesh.attributes.values()) {
+        if (this.VAOs.has(mesh)) {
+            this._bindVAO(this.VAOs.get(mesh));
+        } else {
+            const VAO = this._createVAO();
+            this.VAOs.set(mesh, VAO);
+            this._bindVAO(VAO);
+        }
+
+        for (let [name, value] of mesh.attributes) {
             if (!value.glBuffer) {
                 value.glBuffer = gl.createBuffer();
                 value.needsUpdate = true;
+                program.linkAttribute(name, value);
             }
 
             if (!value.needsUpdate) continue;
@@ -119,15 +120,6 @@ export default class WebGLRenderer {
         }
         for (let [name, data] of mesh.uniforms) {
             program.setUniform(name, data.data, data.size);
-        }
-
-        if (this.VAOs.has(mesh)) {
-            this._bindVAO(this.VAOs.get(mesh));
-        } else {
-            const VAO = this._createVAO();
-            this.VAOs.set(mesh, VAO);
-            this._bindVAO(VAO);
-            program.initVAO(mesh);
         }
 
         const indices = mesh.indices;

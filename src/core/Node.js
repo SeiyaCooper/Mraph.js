@@ -27,6 +27,11 @@ export default class Node {
     matrix = Matrix.identity(4);
 
     /**
+     * @type {boolean}
+     */
+    needsUpdateMatrix = true;
+
+    /**
      * @type {Vector}
      */
     center = VECTORS.ORIGIN.clone();

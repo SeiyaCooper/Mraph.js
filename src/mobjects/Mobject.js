@@ -114,6 +114,23 @@ export default class Mobject extends Geometry {
     }
 
     /**
+     * Transform into an array that is morphable, in order to perform morph animations.
+     * For Mobjects except Mobject2D, It's one polygon that contains all vertices.
+     * @returns {number[][][]}
+     */
+    toMorphable() {
+        return [this.attr2Array("position")];
+    }
+
+    /**
+     * Sets attribute variables from a given morphable array, in order to perform morph animations.
+     * @param {number[][][]} morphable
+     */
+    fromMorphable(morphable) {
+        this.array2Attr("position", morphable[0]);
+    }
+
+    /**
      * Transforms this mobject by a matrix instantly.
      * @param {Matrix} matrix
      * @param {number} [n=3]
@@ -132,18 +149,6 @@ export default class Mobject extends Geometry {
 
         this.fromPoints(to);
     }
-
-    /**
-     * Transform into an array that is morphable, in order to perform morph animations.
-     * This method should be overridden when inherited.
-     */
-    toMorphable() {}
-
-    /**
-     * Sets attribute variables from a given morphable array, in order to perform morph animations.
-     * This method should be overridden when inherited.
-     */
-    fromMorphable() {}
 
     /**
      * @type {Layer}

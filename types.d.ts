@@ -1290,6 +1290,10 @@ declare module "core/Node" {
          */
         matrix: Matrix;
         /**
+         * @type {boolean}
+         */
+        needsUpdateMatrix: boolean;
+        /**
          * @type {Vector}
          */
         center: Vector;
@@ -1649,7 +1653,6 @@ declare module "core/Texture" {
         _minFilter: any;
         _magFilter: any;
         _image: any;
-        texture: any;
     }
 }
 declare module "animation/Animation" {
@@ -1780,10 +1783,12 @@ declare module "core/WebGL/WebGLProgram" {
          */
         setUniform(name: string, data: Matrix | Vector | number[], n?: number): void;
         /**
-         * Initiates a vertex array object
-         * @param {Geometry} mesh
+         * Links an attribute variable with it's buffer.
+         * @param {string} name
+         * @param {object} value
+         * @returns
          */
-        initVAO(mesh: Geometry): void;
+        linkAttribute(name: string, value: object): void;
         /**
          * Sets up a texture
          * @param {Texture} texture
@@ -2334,21 +2339,22 @@ declare module "mobjects/Mobject" {
          */
         array2Attr(name: string, source: number[][]): void;
         /**
+         * Transform into an array that is morphable, in order to perform morph animations.
+         * For Mobjects except Mobject2D, It's one polygon that contains all vertices.
+         * @returns {number[][][]}
+         */
+        toMorphable(): number[][][];
+        /**
+         * Sets attribute variables from a given morphable array, in order to perform morph animations.
+         * @param {number[][][]} morphable
+         */
+        fromMorphable(morphable: number[][][]): void;
+        /**
          * Transforms this mobject by a matrix instantly.
          * @param {Matrix} matrix
          * @param {number} [n=3]
          */
         matrixTransform(matrix: Matrix, n?: number): void;
-        /**
-         * Transform into an array that is morphable, in order to perform morph animations.
-         * This method should be overridden when inherited.
-         */
-        toMorphable(): void;
-        /**
-         * Sets attribute variables from a given morphable array, in order to perform morph animations.
-         * This method should be overridden when inherited.
-         */
-        fromMorphable(): void;
         /**
          * @type {Layer}
          */
@@ -2669,17 +2675,6 @@ declare module "mobjects/3D/Mobject3D" {
          * @param {Color} color
          */
         setColor(color: Color): void;
-        /**
-         * Transform into an array that is morphable, in order to perform morph animations.
-         * For Mobject3D, there's one polygon that contains all vertices.
-         * @returns {number[][][]}
-         */
-        toMorphable(): number[][][];
-        /**
-         * Sets attribute variables from a given morphable array, in order to perform morph animations.
-         * @param {number[][][]} morphable
-         */
-        fromMorphable(morphable: number[][][]): void;
     }
     import Mobject from "mobjects/Mobject";
 }
@@ -2764,11 +2759,11 @@ declare module "mobjects/ImageMobject" {
         });
         _image: any;
         texture: any;
+        set image(image: any);
+        get image(): any;
         width: number;
         height: number;
         maintainAspectRatio: boolean;
-        set image(image: any);
-        get image(): any;
     }
     import Mobject from "mobjects/Mobject";
 }

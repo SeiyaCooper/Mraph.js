@@ -55,12 +55,25 @@ export default class GetColorComponent {
         }
 
         if (target.colorMode === "texture") {
-            const map = target.diffuseTexture;
+            const texture = target.diffuseTexture;
+            const program = target.program;
 
-            if (!map) return;
-            target.program.bindTexture(map);
+            if (!texture) return;
 
-            return;
+            if (!texture.texture) {
+                program.setUpTexture(texture);
+            }
+
+            program.bindTexture(texture);
+
+            if (texture._dirty && texture.isImageReady) {
+                program.updateTextureParams(texture);
+                texture._dirty = false;
+            }
+            if (texture._needsUpload && texture.isImageReady) {
+                program.uploadTexture(texture);
+                texture._needsUpload = false;
+            }
         }
     }
 }
