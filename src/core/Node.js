@@ -74,6 +74,16 @@ export default class Node {
     }
 
     /**
+     * Traverses through all children and executes a callback function.
+     * Returns true if you want to stop traversing.
+     * @param {Function} callback
+     */
+    traverse(callback) {
+        if (callback(this)) return;
+        for (let child of this.children) child.traverse(callback);
+    }
+
+    /**
      * Set attributes for all children
      * @param {string} key
      * @param {any} value

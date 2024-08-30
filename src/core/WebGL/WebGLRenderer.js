@@ -2,6 +2,7 @@ import Matrix from "../../math/Matrix.js";
 import * as GLENUM from "../../constants/glenum.js";
 import ProgramManager from "./ProgramManager.js";
 import MraphError from "../../utils/MraphError.js";
+import Mobject2D from "../../mobjects/2D/Mobject2D.js";
 
 export default class WebGLRenderer {
     /**
@@ -55,6 +56,7 @@ export default class WebGLRenderer {
         this.resize(canvas.width, canvas.height);
         this.depthTest = true;
         this.depthMask = true;
+        this.alphaTest = false;
     }
 
     /**
@@ -64,23 +66,20 @@ export default class WebGLRenderer {
      * @param {Object} surroundings
      */
     render(mesh, camera, surroundings = {}) {
-        if (!mesh.visible) return;
+        const renderList = this.sort(mesh);
 
-        if (!mesh.material) {
-            MraphError.error("Each geometry should have a material.");
-            return;
+        for (let mesh of renderList) {
+            this.renderSingle(mesh, camera, surroundings);
         }
+    }
 
-        if (mesh.needsUpdate) {
-            mesh.update?.();
-            mesh.needsUpdate = false;
-        }
-
-        if (mesh.needsUpdateMatrix) {
-            mesh.updateMatrix?.();
-            mesh.needsUpdateMatrix = false;
-        }
-
+    /**
+     * Renders a single mesh.
+     * @param {Geometry} mesh
+     * @param {Camera} camera
+     * @param {Object} surroundings
+     */
+    renderSingle(mesh, camera, surroundings = {}) {
         const gl = this.gl;
         const scene = { mesh, camera, surroundings };
         const material = mesh.material;
@@ -142,10 +141,46 @@ export default class WebGLRenderer {
         } else {
             gl.drawArrays(mode, 0, indices.data);
         }
+    }
 
-        for (let child of mesh.children ?? []) {
-            this.render(child, camera, surroundings);
-        }
+    /**
+     * Returns a list of visible meshes.
+     * @param {Node} scene
+     */
+    sort(scene) {
+        const list2D = [];
+        const list3D = [];
+
+        scene.traverse((node) => {
+            if (!node.visible) return;
+
+            if (!node.material) {
+                MraphError.error("Each geometry should have a material.");
+                return;
+            }
+
+            if (node.needsUpdate) {
+                node.update?.();
+                node.needsUpdate = false;
+            }
+
+            if (node.needsUpdateMatrix) {
+                node.updateMatrix?.();
+                node.needsUpdateMatrix = false;
+            }
+
+            if (Mobject2D.isInstance(node)) {
+                list2D.push(node);
+            } else {
+                list3D.push(node);
+            }
+        });
+
+        list2D.sort((a, b) => {
+            return a.zIndex - b.zIndex;
+        });
+
+        return list3D.concat(list2D);
     }
 
     /**

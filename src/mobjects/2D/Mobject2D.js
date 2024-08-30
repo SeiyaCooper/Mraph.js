@@ -15,6 +15,7 @@ export default class Mobject2D extends Mobject {
     strokeColor = new Color(1, 1, 1, 1);
     strokeWidth = 0.05;
     closePath = false;
+    zIndex = 0;
     normal = VECTORS.OUT.clone();
 
     lineJoin = "miter";
@@ -26,7 +27,6 @@ export default class Mobject2D extends Mobject {
         this.add(this.strokes);
 
         this.material.colorMode = "vertex";
-        this.material.depthTest = false;
 
         this.strokes.material = new Mobject2DMaterial();
         this.strokes.material.colorMode = "vertex";

@@ -12,7 +12,7 @@ export default class Mobject2DMaterial extends Material {
         this.fragmentShader = fragmentShader;
         this.attachComponent(new GetColorComponent());
 
-        this.depthTest = false;
+        this.depthMask = false;
     }
 
     initProgram(gl) {

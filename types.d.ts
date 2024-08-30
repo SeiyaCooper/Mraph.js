@@ -1179,85 +1179,6 @@ declare module "core/WebGL/ProgramManager" {
         getProgramKey(material: any): any;
     }
 }
-declare module "core/WebGL/WebGLRenderer" {
-    export default class WebGLRenderer {
-        constructor(canvas: any, contextConfig?: {});
-        /**
-         * HTML canvas eLement
-         * @type {HTMLCanvasElement}
-         */
-        canvas: HTMLCanvasElement;
-        /**
-         * @type {ProgramManager}
-         */
-        programManager: ProgramManager;
-        /**
-         * rendering context
-         * @type {WebGLRenderingContext | WebGL2RenderingContext}
-         */
-        gl: WebGLRenderingContext | WebGL2RenderingContext;
-        /**
-         * A set of vaos
-         * @type {WebGLVertexArrayObject[]}
-         */
-        VAOs: WebGLVertexArrayObject[];
-        /**
-         * usage of this renderer, default to be gl.STATIC_DRAW
-         * @type {number}
-         */
-        usage: number;
-        /**
-         * whether to use depthTest, default to be true
-         */
-        _depthTest: boolean;
-        /**
-         * whether to use depthMask, default to be true
-         */
-        _depthMask: boolean;
-        EXT_VAO: WebGLVertexArrayObject;
-        set depthTest(bool: boolean);
-        get depthTest(): boolean;
-        set depthMask(bool: boolean);
-        get depthMask(): boolean;
-        /**
-         * Renders the scene
-         * @param {Geometry} mesh
-         * @param {Camera} camera
-         * @param {Object} surroundings
-         */
-        render(mesh: Geometry, camera: Camera, surroundings?: any): void;
-        /**
-         * Clears the canvas with a certain colour
-         * @param {number} r
-         * @param {number} g
-         * @param {number} b
-         * @param {number} a
-         */
-        clear(r: number, g: number, b: number, a: number): void;
-        /**
-         * Resize the canvas
-         * @param {number} width
-         * @param {number} height
-         */
-        resize(width: number, height: number): void;
-        /**
-         * Private method, creates a vertex array object
-         * @returns {WebGLVertexArrayObject}
-         */
-        _createVAO(): WebGLVertexArrayObject;
-        /**
-         * Private method, binds a vertex array object
-         * @returns {WebGLVertexArrayObject}
-         */
-        _bindVAO(VAO: any): WebGLVertexArrayObject;
-        /**
-         * Private method, gets a webgl extension
-         * @returns {WebGLVertexArrayObject}
-         */
-        _getExtension(name: any): WebGLVertexArrayObject;
-    }
-    import ProgramManager from "core/WebGL/ProgramManager";
-}
 declare module "constants/vectors" {
     export const ORIGIN: Vector;
     export const UP: Vector;
@@ -1318,6 +1239,12 @@ declare module "core/Node" {
          */
         clear(): void;
         /**
+         * Traverses through all children and executes a callback function.
+         * Returns true if you want to stop traversing.
+         * @param {Function} callback
+         */
+        traverse(callback: Function): void;
+        /**
          * Set attributes for all children
          * @param {string} key
          * @param {any} value
@@ -1341,6 +1268,565 @@ declare module "core/Node" {
     }
     import Matrix from "math/Matrix";
     import Vector from "math/Vector";
+}
+declare module "constants/draw_modes" {
+    export const POINTS: "POINTS";
+    export const LINES: "LINES";
+    export const LINE_LOOP: "LINE_LOOP";
+    export const LINE_STRIP: "LINE_STRIP";
+    export const TRIANGLES: "TRIANGLES";
+    export const TRIANGLE_STRIP: "TRIANGLE_STRI";
+    export const TRIANGLE_FAN: "TRIANGLE_FAN";
+}
+declare module "geometry/Geometry" {
+    export default class Geometry extends Node {
+        /**
+         * Name of this geometry, optional.
+         */
+        name: string;
+        /**
+         * A set of attribute variables
+         * @type {Object}
+         */
+        attributes: any;
+        /**
+         * Uniform variables
+         * @type {Object}
+         */
+        uniforms: any;
+        /**
+         * @type {number}
+         */
+        mode: number;
+        /**
+         * @type {Object}
+         */
+        indices: any;
+        /**
+         * @type {boolean}
+         */
+        visible: boolean;
+        /**
+         * @type {boolean}
+         */
+        needsUpdate: boolean;
+        /**
+         * Update variables.
+         * Every geometry should have this method,
+         * so that it can be updated when needed.
+         */
+        update(): void;
+        /**
+         * Merge all children into this geometry.
+         * This method assumes all children have and only have three variables, normal, position and color.
+         */
+        combineChildren(): this;
+        /**
+         * Set value of an attribute variable
+         * @param {string} name
+         * @param {number[]} data
+         * @param {number} [size]
+         */
+        setAttribute(name: string, data: number[], size?: number): void;
+        /**
+         * Delete an attribute
+         * @param {string} name
+         */
+        deleteAttribute(name: string): void;
+        /**
+         * Get value of an attribute variable.
+         * @param {string} name
+         * @param {number[]} data
+         * @param {number} n
+         */
+        getAttributeVal(name: string): any;
+        /**
+         * Clears all attribute variables.
+         * This method would not delete any attribute variable.
+         * Instead, it sets all of them to an empty array.
+         */
+        clearAttributes(): void;
+        /**
+         * Removes all attribute variables.
+         * This method will delete all attribute variables.
+         */
+        removeAllAttributes(): void;
+        /**
+         * Sets a uniform variable
+         * @param {string} name
+         * @param {number[] | number} data
+         * @param {number} [size]
+         */
+        setUniform(name: string, data: number[] | number, size?: number): void;
+        /**
+         * Deletes a uniform variable
+         * @param {string} name
+         */
+        deleteUniform(name: string): void;
+        /**
+         * Gets value of a uniform variable
+         * @param {string} name
+         * @returns {number[] | number}
+         */
+        getUniformVal(name: string): number[] | number;
+        /**
+         * Sets index
+         * @param {number | number[]} data
+         */
+        setIndex(data: number | number[]): void;
+        /**
+         * Gets index
+         * @param {number | number[]} data
+         */
+        getIndex(): any;
+    }
+    import Node from "core/Node";
+}
+declare module "core/WebGL/WebGLProgram" {
+    export default class Program {
+        constructor(gl: any, { vs, fs }?: {
+            vs?: string;
+            fs?: string;
+        });
+        /**
+         * A set of variable locations
+         * @type {Map}
+         */
+        locations: Map<any, any>;
+        gl: any;
+        vs: any;
+        fs: any;
+        program: any;
+        /**
+         * Uses this program for rendering
+         */
+        use(): void;
+        /**
+         * Sets a uniform variable
+         * @param {string} name
+         * @param {Matrix | Vector | number[]} data
+         * @param {number} [n]
+         */
+        setUniform(name: string, data: Matrix | Vector | number[], n?: number): void;
+        /**
+         * Links an attribute variable with it's buffer.
+         * @param {string} name
+         * @param {object} value
+         * @returns
+         */
+        linkAttribute(name: string, value: object): void;
+        /**
+         * Sets up a texture
+         * @param {Texture} texture
+         */
+        setUpTexture(texture: Texture): void;
+        /**
+         * Binds a texture
+         * @param {Texure} texture
+         */
+        bindTexture(texture: Texure): void;
+        /**
+         * Uploads a texture to GPU
+         * @param {Texture} texture
+         */
+        uploadTexture(texture: Texture): void;
+        /**
+         * Updates parameters of a texture
+         * @param {Texture} texture
+         */
+        updateTextureParams(texture: Texture): void;
+    }
+}
+declare module "constants/colors" {
+    export const WHITE: Color;
+    export const BLACK: Color;
+    export const RED_A: Color;
+    export const RED_B: Color;
+    export const RED_C: Color;
+    export const RED_D: Color;
+    export const RED_E: Color;
+    export const RED: Color;
+    export const BLUE_A: Color;
+    export const BLUE_B: Color;
+    export const BLUE_C: Color;
+    export const BLUE_D: Color;
+    export const BLUE_E: Color;
+    export const BLUE: Color;
+    export const YELLOW_A: Color;
+    export const YELLOW_B: Color;
+    export const YELLOW_C: Color;
+    export const YELLOW_D: Color;
+    export const YELLOW_E: Color;
+    export const YELLOW: Color;
+    export const GREEN_A: Color;
+    export const GREEN_B: Color;
+    export const GREEN_C: Color;
+    export const GREEN_D: Color;
+    export const GREEN_E: Color;
+    export const GREEN: Color;
+    export const GRAY_A: Color;
+    export const GRAY_B: Color;
+    export const GRAY_C: Color;
+    export const GRAY_D: Color;
+    export const GRAY_E: Color;
+    export const GRAY: Color;
+    export const COOPER_ORANGE: Color;
+    export const SEIYA_PINK: Color;
+    import Color from "math/Color";
+}
+declare module "material/Material" {
+    export default class Material {
+        /**
+         * Whether to use depth test, true by default.
+         * @type {boolean}
+         */
+        depthTest: boolean;
+        /**
+         * Whether to use depth mask, true by default.
+         * @type {boolean}
+         */
+        depthMask: boolean;
+        /**
+         * Determines the mode of color, avaible options are 'single', 'texture' and 'vertex'.
+         * @type {string}
+         */
+        colorMode: string;
+        /**
+         * Used when color mode is 'single'.
+         * @type {Color}
+         */
+        color: Color;
+        /**
+         * Used when color mode is 'texture'.
+         */
+        diffuseTexture: any;
+        /**
+         * The code of vertex shader.
+         * @type {string}
+         */
+        vertexShader: string;
+        /**
+         * The code of fragment shader.
+         * @type {string}
+         */
+        fragmentShader: string;
+        /**
+         * Components that attatched to this material.
+         * @type {Component}
+         */
+        components: Component;
+        /**
+         * Custom method to pass all variables, will be called before rendering.
+         */
+        passVariables(): void;
+        /**
+         * Attachs a component to this material.
+         * @param {Component} component
+         */
+        attachComponent(component: Component): void;
+        /**
+         * Compiles Shader code depends on all components attached.
+         * @returns {string}
+         */
+        compileComponents(): string;
+        /**
+         * Passes all components variables.
+         */
+        passComponentVariables(): void;
+    }
+}
+declare module "material/SlotParser" {
+    export function replace(origin: any, name: any, value: any): any;
+}
+declare module "material/components/GetColorComponent" {
+    export default class GetColorComponent {
+        compile(vs: any, fs: any, { colorMode }: {
+            colorMode: any;
+        }): {
+            vs: any;
+            fs: any;
+        };
+        passVariables(target: any): void;
+    }
+}
+declare module "material/BasicMaterial" {
+    export default class BasicMaterial extends Material {
+        vertexShader: any;
+        fragmentShader: any;
+        initProgram(gl: any): void;
+        program: WebGLProgram;
+    }
+    import Material from "material/Material";
+    import WebGLProgram from "core/WebGL/WebGLProgram";
+}
+declare module "mobjects/Mobject" {
+    export default class Mobject extends Geometry {
+        static fromGeometry(geometry: any): Mobject;
+        /**
+         * Every mobject contains a default material.
+         */
+        material: BasicMaterial;
+        /**
+         * Merges an attribute data from another geometry.
+         * @param {Geometry} source
+         * @param {string} name
+         * @returns {this}
+         */
+        mergeAttribute(source: Geometry, name: string): this;
+        /**
+         * Merges many attribute datas from another geometry.
+         * @param {Geometry} source
+         * @param  {...string} names
+         * @returns {this}
+         */
+        mergeAttributes(source: Geometry, ...names: string[]): this;
+        /**
+         * Returns an array of points where each point is represented as an array of its coordinates [x, y, z].
+         * @returns {number[][]}
+         */
+        getPoints(): number[][];
+        /**
+         * Replaces the geometry's vertex data with the provided points array.
+         * Each point in the array should be an array of [x, y, z] coordinates.
+         * @param {number[][]} points
+         */
+        fromPoints(points: number[][]): void;
+        /**
+         * Converts a specific attribute into a 2D array representation.
+         * Each inner array represents the attribute values for a single vertex.
+         * @returns {number[][]}
+         */
+        attr2Array(name: any): number[][];
+        /**
+         * Converts a 2d array to an attribute.
+         * @param {string} name
+         * @param {number[][]} source
+         */
+        array2Attr(name: string, source: number[][]): void;
+        /**
+         * Transform into an array that is morphable, in order to perform morph animations.
+         * For Mobjects except Mobject2D, It's one polygon that contains all vertices.
+         * @returns {number[][][]}
+         */
+        toMorphable(): number[][][];
+        /**
+         * Sets attribute variables from a given morphable array, in order to perform morph animations.
+         * @param {number[][][]} morphable
+         */
+        fromMorphable(morphable: number[][][]): void;
+        /**
+         * Transforms this mobject by a matrix instantly.
+         * @param {Matrix} matrix
+         * @param {number} [n=3]
+         */
+        matrixTransform(matrix: Matrix, n?: number): void;
+        /**
+         * @type {Layer}
+         */
+        set layer(val: Layer);
+        /**
+         * @type {Layer}
+         */
+        get layer(): Layer;
+        _layer: Layer;
+    }
+    import Geometry from "geometry/Geometry";
+    import BasicMaterial from "material/BasicMaterial";
+}
+declare module "material/Mobject2DMaterial" {
+    export default class Mobject2DMaterial extends Material {
+        vertexShader: any;
+        fragmentShader: any;
+        initProgram(gl: any): void;
+        program: WebGLProgram;
+        passVariables({ camera }: {
+            camera: any;
+        }): void;
+    }
+    import Material from "material/Material";
+    import WebGLProgram from "core/WebGL/WebGLProgram";
+}
+declare module "mobjects/2D/Mobject2D" {
+    export default class Mobject2D extends Mobject {
+        static isInstance(obj: any): boolean;
+        points: any[];
+        polygons: any[];
+        commands: any[];
+        fillColor: Color;
+        strokeColor: Color;
+        strokeWidth: number;
+        closePath: boolean;
+        zIndex: number;
+        normal: Vector;
+        lineJoin: string;
+        strokes: Mobject;
+        /**
+         * Moves your pen to another point.
+         * This method is used to draw a path.
+         * @param {Vector | number[]} point
+         */
+        move(point: Vector | number[]): void;
+        /**
+         * Drags your pen to another place and draws a line.
+         * This method is used to draw a path.
+         * @param {Vector | number[]} point
+         */
+        line(point: Vector | number[]): void;
+        /**
+         * Draws an arc.
+         * This method is used to draw a path.
+         * @param {number} radius
+         * @param {number} startAngle
+         * @param {number} endAngle
+         * @param {boolean} clockwise
+         * @param {number} segments
+         * @returns
+         */
+        arc(radius: number, startAngle: number, endAngle: number, clockwise?: boolean, segments?: number): void;
+        /**
+         * Fills a polygon you've drawn.
+         * @param {number[][]} [polygon] - polygon you want to fill with, will be the last one when left null.
+         * @param {Object} [configs={}]
+         * @param {boolean} [configs.updateCommand=true] - whether adds a "fill" command to commands list.
+         */
+        fill(polygon?: number[][], { updateCommand }?: {
+            updateCommand?: boolean;
+        }): void;
+        /**
+         * Strokes a polygon you've drawn.
+         * @param {number[][]} [polygon] - polygon you want to fill with, will be the last one when left null.
+         * @param {Object} [configs={}]
+         * @param {boolean} [configs.updateCommand=true] - whether adds a "stroke" command to commands list.
+         */
+        stroke(polygon?: number[][], { updateCommand }?: {
+            updateCommand?: boolean;
+        }): void;
+        /**
+         * Adds a command to a polygon in the list of commands.
+         * If the polygon does not exist in the commands list, it is added.
+         *
+         * @param {number[][]} polygon - A 2D array representing the vertices of the polygon.
+         * @param {string} command - The command to be associated with the polygon.
+         *
+         * This method first checks if the polygon is already present in the commands array.
+         * If it is, the command is added to the existing list of commands for that polygon.
+         * If not, a new entry is created in the commands array for the polygon with the command.
+         * The index of the polygon in the commands array is used to determine the correct location.
+         * For new commands, ensuring that commands for the same polygon are grouped together.
+         */
+        addPolygonCommand(polygon: number[][], command: string): void;
+        /**
+         * Redraws all the polygons according to their associated commands.
+         * This method is very useful when performing deformations.
+         */
+        redraw(): void;
+        /**
+         * @param {number} segmentsNum
+         */
+        prepare4NonlinearTransform(segmentsNum?: number): void;
+        clearGraph(): void;
+        clearPaths(): void;
+        clearBuffers(): void;
+        finish(): void;
+        setColor(color: any): void;
+        toMorphable(): any[];
+        fromMorphable(morphable: any): void;
+    }
+    import Mobject from "mobjects/Mobject";
+    import Color from "math/Color";
+    import Vector from "math/Vector";
+}
+declare module "core/WebGL/WebGLRenderer" {
+    export default class WebGLRenderer {
+        constructor(canvas: any, contextConfig?: {});
+        /**
+         * HTML canvas eLement
+         * @type {HTMLCanvasElement}
+         */
+        canvas: HTMLCanvasElement;
+        /**
+         * @type {ProgramManager}
+         */
+        programManager: ProgramManager;
+        /**
+         * rendering context
+         * @type {WebGLRenderingContext | WebGL2RenderingContext}
+         */
+        gl: WebGLRenderingContext | WebGL2RenderingContext;
+        /**
+         * A set of vaos
+         * @type {WebGLVertexArrayObject[]}
+         */
+        VAOs: WebGLVertexArrayObject[];
+        /**
+         * usage of this renderer, default to be gl.STATIC_DRAW
+         * @type {number}
+         */
+        usage: number;
+        /**
+         * whether to use depthTest, default to be true
+         */
+        _depthTest: boolean;
+        /**
+         * whether to use depthMask, default to be true
+         */
+        _depthMask: boolean;
+        EXT_VAO: WebGLVertexArrayObject;
+        set depthTest(bool: boolean);
+        get depthTest(): boolean;
+        set depthMask(bool: boolean);
+        get depthMask(): boolean;
+        alphaTest: boolean;
+        /**
+         * Renders the scene
+         * @param {Geometry} mesh
+         * @param {Camera} camera
+         * @param {Object} surroundings
+         */
+        render(mesh: Geometry, camera: Camera, surroundings?: any): void;
+        /**
+         * Renders a single mesh.
+         * @param {Geometry} mesh
+         * @param {Camera} camera
+         * @param {Object} surroundings
+         */
+        renderSingle(mesh: Geometry, camera: Camera, surroundings?: any): void;
+        /**
+         * Returns a list of visible meshes.
+         * @param {Node} scene
+         */
+        sort(scene: Node): any[];
+        /**
+         * Clears the canvas with a certain colour
+         * @param {number} r
+         * @param {number} g
+         * @param {number} b
+         * @param {number} a
+         */
+        clear(r: number, g: number, b: number, a: number): void;
+        /**
+         * Resize the canvas
+         * @param {number} width
+         * @param {number} height
+         */
+        resize(width: number, height: number): void;
+        /**
+         * Private method, creates a vertex array object
+         * @returns {WebGLVertexArrayObject}
+         */
+        _createVAO(): WebGLVertexArrayObject;
+        /**
+         * Private method, binds a vertex array object
+         * @returns {WebGLVertexArrayObject}
+         */
+        _bindVAO(VAO: any): WebGLVertexArrayObject;
+        /**
+         * Private method, gets a webgl extension
+         * @returns {WebGLVertexArrayObject}
+         */
+        _getExtension(name: any): WebGLVertexArrayObject;
+    }
+    import ProgramManager from "core/WebGL/ProgramManager";
 }
 declare module "core/Camera" {
     export default class Camera extends Node {
@@ -1456,43 +1942,6 @@ declare module "extra/OrbitControl" {
         removeControl(): void;
     }
     import Vector from "math/Vector";
-}
-declare module "constants/colors" {
-    export const WHITE: Color;
-    export const BLACK: Color;
-    export const RED_A: Color;
-    export const RED_B: Color;
-    export const RED_C: Color;
-    export const RED_D: Color;
-    export const RED_E: Color;
-    export const RED: Color;
-    export const BLUE_A: Color;
-    export const BLUE_B: Color;
-    export const BLUE_C: Color;
-    export const BLUE_D: Color;
-    export const BLUE_E: Color;
-    export const BLUE: Color;
-    export const YELLOW_A: Color;
-    export const YELLOW_B: Color;
-    export const YELLOW_C: Color;
-    export const YELLOW_D: Color;
-    export const YELLOW_E: Color;
-    export const YELLOW: Color;
-    export const GREEN_A: Color;
-    export const GREEN_B: Color;
-    export const GREEN_C: Color;
-    export const GREEN_D: Color;
-    export const GREEN_E: Color;
-    export const GREEN: Color;
-    export const GRAY_A: Color;
-    export const GRAY_B: Color;
-    export const GRAY_C: Color;
-    export const GRAY_D: Color;
-    export const GRAY_E: Color;
-    export const GRAY: Color;
-    export const COOPER_ORANGE: Color;
-    export const SEIYA_PINK: Color;
-    import Color from "math/Color";
 }
 declare module "light/PointLight" {
     export default class PointLight {
@@ -1756,152 +2205,12 @@ declare module "extra/Recorder" {
         download(name?: string): this;
     }
 }
-declare module "core/WebGL/WebGLProgram" {
-    export default class Program {
-        constructor(gl: any, { vs, fs }?: {
-            vs?: string;
-            fs?: string;
-        });
-        /**
-         * A set of variable locations
-         * @type {Map}
-         */
-        locations: Map<any, any>;
-        gl: any;
-        vs: any;
-        fs: any;
-        program: any;
-        /**
-         * Uses this program for rendering
-         */
-        use(): void;
-        /**
-         * Sets a uniform variable
-         * @param {string} name
-         * @param {Matrix | Vector | number[]} data
-         * @param {number} [n]
-         */
-        setUniform(name: string, data: Matrix | Vector | number[], n?: number): void;
-        /**
-         * Links an attribute variable with it's buffer.
-         * @param {string} name
-         * @param {object} value
-         * @returns
-         */
-        linkAttribute(name: string, value: object): void;
-        /**
-         * Sets up a texture
-         * @param {Texture} texture
-         */
-        setUpTexture(texture: Texture): void;
-        /**
-         * Binds a texture
-         * @param {Texure} texture
-         */
-        bindTexture(texture: Texure): void;
-        /**
-         * Uploads a texture to GPU
-         * @param {Texture} texture
-         */
-        uploadTexture(texture: Texture): void;
-        /**
-         * Updates parameters of a texture
-         * @param {Texture} texture
-         */
-        updateTextureParams(texture: Texture): void;
-    }
-}
-declare module "material/SlotParser" {
-    export function replace(origin: any, name: any, value: any): any;
-}
-declare module "material/Material" {
-    export default class Material {
-        /**
-         * Whether to use depth test, true by default.
-         * @type {boolean}
-         */
-        depthTest: boolean;
-        /**
-         * Whether to use depth mask, true by default.
-         * @type {boolean}
-         */
-        depthMask: boolean;
-        /**
-         * Determines the mode of color, avaible options are 'single', 'texture' and 'vertex'.
-         * @type {string}
-         */
-        colorMode: string;
-        /**
-         * Used when color mode is 'single'.
-         * @type {Color}
-         */
-        color: Color;
-        /**
-         * Used when color mode is 'texture'.
-         */
-        diffuseTexture: any;
-        /**
-         * The code of vertex shader.
-         * @type {string}
-         */
-        vertexShader: string;
-        /**
-         * The code of fragment shader.
-         * @type {string}
-         */
-        fragmentShader: string;
-        /**
-         * Components that attatched to this material.
-         * @type {Component}
-         */
-        components: Component;
-        /**
-         * Custom method to pass all variables, will be called before rendering.
-         */
-        passVariables(): void;
-        /**
-         * Attachs a component to this material.
-         * @param {Component} component
-         */
-        attachComponent(component: Component): void;
-        /**
-         * Compiles Shader code depends on all components attached.
-         * @returns {string}
-         */
-        compileComponents(): string;
-        /**
-         * Passes all components variables.
-         */
-        passComponentVariables(): void;
-    }
-}
 declare module "material/CustomMaterial" {
     export default class CustomMaterial extends Material {
         constructor({ vertexShader, fragmentShader }?: {
             vertexShader?: string;
             fragmentShader?: string;
         });
-        initProgram(gl: any): void;
-        program: WebGLProgram;
-    }
-    import Material from "material/Material";
-    import WebGLProgram from "core/WebGL/WebGLProgram";
-}
-declare module "material/components/GetColorComponent" {
-    export default class GetColorComponent {
-        compile(vs: any, fs: any, { colorMode }: {
-            colorMode: any;
-        }): {
-            vs: any;
-            fs: any;
-        };
-        passVariables(target: any): void;
-    }
-}
-declare module "material/BasicMaterial" {
-    export default class BasicMaterial extends Material {
-        vertexShader: any;
-        fragmentShader: any;
         initProgram(gl: any): void;
         program: WebGLProgram;
     }
@@ -1931,19 +2240,6 @@ declare module "material/LambertMaterial" {
         program: WebGLProgram;
         passVariables({ surroundings }: {
             surroundings: any;
-        }): void;
-    }
-    import Material from "material/Material";
-    import WebGLProgram from "core/WebGL/WebGLProgram";
-}
-declare module "material/Mobject2DMaterial" {
-    export default class Mobject2DMaterial extends Material {
-        vertexShader: any;
-        fragmentShader: any;
-        initProgram(gl: any): void;
-        program: WebGLProgram;
-        passVariables({ camera }: {
-            camera: any;
         }): void;
     }
     import Material from "material/Material";
@@ -2087,119 +2383,6 @@ declare module "math/Quat" {
     }
     import Vector from "math/Vector";
 }
-declare module "constants/draw_modes" {
-    export const POINTS: "POINTS";
-    export const LINES: "LINES";
-    export const LINE_LOOP: "LINE_LOOP";
-    export const LINE_STRIP: "LINE_STRIP";
-    export const TRIANGLES: "TRIANGLES";
-    export const TRIANGLE_STRIP: "TRIANGLE_STRI";
-    export const TRIANGLE_FAN: "TRIANGLE_FAN";
-}
-declare module "geometry/Geometry" {
-    export default class Geometry extends Node {
-        /**
-         * Name of this geometry, optional.
-         */
-        name: string;
-        /**
-         * A set of attribute variables
-         * @type {Object}
-         */
-        attributes: any;
-        /**
-         * Uniform variables
-         * @type {Object}
-         */
-        uniforms: any;
-        /**
-         * @type {number}
-         */
-        mode: number;
-        /**
-         * @type {Object}
-         */
-        indices: any;
-        /**
-         * @type {boolean}
-         */
-        visible: boolean;
-        /**
-         * @type {boolean}
-         */
-        needsUpdate: boolean;
-        /**
-         * Update variables.
-         * Every geometry should have this method,
-         * so that it can be updated when needed.
-         */
-        update(): void;
-        /**
-         * Merge all children into this geometry.
-         * This method assumes all children have and only have three variables, normal, position and color.
-         */
-        combineChildren(): this;
-        /**
-         * Set value of an attribute variable
-         * @param {string} name
-         * @param {number[]} data
-         * @param {number} [size]
-         */
-        setAttribute(name: string, data: number[], size?: number): void;
-        /**
-         * Delete an attribute
-         * @param {string} name
-         */
-        deleteAttribute(name: string): void;
-        /**
-         * Get value of an attribute variable.
-         * @param {string} name
-         * @param {number[]} data
-         * @param {number} n
-         */
-        getAttributeVal(name: string): any;
-        /**
-         * Clears all attribute variables.
-         * This method would not delete any attribute variable.
-         * Instead, it sets all of them to an empty array.
-         */
-        clearAttributes(): void;
-        /**
-         * Removes all attribute variables.
-         * This method will delete all attribute variables.
-         */
-        removeAllAttributes(): void;
-        /**
-         * Sets a uniform variable
-         * @param {string} name
-         * @param {number[] | number} data
-         * @param {number} [size]
-         */
-        setUniform(name: string, data: number[] | number, size?: number): void;
-        /**
-         * Deletes a uniform variable
-         * @param {string} name
-         */
-        deleteUniform(name: string): void;
-        /**
-         * Gets value of a uniform variable
-         * @param {string} name
-         * @returns {number[] | number}
-         */
-        getUniformVal(name: string): number[] | number;
-        /**
-         * Sets index
-         * @param {number | number[]} data
-         */
-        setIndex(data: number | number[]): void;
-        /**
-         * Gets index
-         * @param {number | number[]} data
-         */
-        getIndex(): any;
-    }
-    import Node from "core/Node";
-}
 declare module "geometry/Plane" {
     export default class Plane extends Geometry {
         constructor({ width, height }?: {
@@ -2293,169 +2476,6 @@ declare module "geometry/Cylinder" {
         phiSegments: any;
     }
     import Geometry from "geometry/Geometry";
-}
-declare module "mobjects/Mobject" {
-    export default class Mobject extends Geometry {
-        static fromGeometry(geometry: any): Mobject;
-        /**
-         * Every mobject contains a default material.
-         */
-        material: BasicMaterial;
-        /**
-         * Merges an attribute data from another geometry.
-         * @param {Geometry} source
-         * @param {string} name
-         * @returns {this}
-         */
-        mergeAttribute(source: Geometry, name: string): this;
-        /**
-         * Merges many attribute datas from another geometry.
-         * @param {Geometry} source
-         * @param  {...string} names
-         * @returns {this}
-         */
-        mergeAttributes(source: Geometry, ...names: string[]): this;
-        /**
-         * Returns an array of points where each point is represented as an array of its coordinates [x, y, z].
-         * @returns {number[][]}
-         */
-        getPoints(): number[][];
-        /**
-         * Replaces the geometry's vertex data with the provided points array.
-         * Each point in the array should be an array of [x, y, z] coordinates.
-         * @param {number[][]} points
-         */
-        fromPoints(points: number[][]): void;
-        /**
-         * Converts a specific attribute into a 2D array representation.
-         * Each inner array represents the attribute values for a single vertex.
-         * @returns {number[][]}
-         */
-        attr2Array(name: any): number[][];
-        /**
-         * Converts a 2d array to an attribute.
-         * @param {string} name
-         * @param {number[][]} source
-         */
-        array2Attr(name: string, source: number[][]): void;
-        /**
-         * Transform into an array that is morphable, in order to perform morph animations.
-         * For Mobjects except Mobject2D, It's one polygon that contains all vertices.
-         * @returns {number[][][]}
-         */
-        toMorphable(): number[][][];
-        /**
-         * Sets attribute variables from a given morphable array, in order to perform morph animations.
-         * @param {number[][][]} morphable
-         */
-        fromMorphable(morphable: number[][][]): void;
-        /**
-         * Transforms this mobject by a matrix instantly.
-         * @param {Matrix} matrix
-         * @param {number} [n=3]
-         */
-        matrixTransform(matrix: Matrix, n?: number): void;
-        /**
-         * @type {Layer}
-         */
-        set layer(val: Layer);
-        /**
-         * @type {Layer}
-         */
-        get layer(): Layer;
-        _layer: Layer;
-    }
-    import Geometry from "geometry/Geometry";
-    import BasicMaterial from "material/BasicMaterial";
-}
-declare module "mobjects/2D/Mobject2D" {
-    export default class Mobject2D extends Mobject {
-        static isInstance(obj: any): boolean;
-        points: any[];
-        polygons: any[];
-        commands: any[];
-        fillColor: Color;
-        strokeColor: Color;
-        strokeWidth: number;
-        closePath: boolean;
-        normal: Vector;
-        lineJoin: string;
-        strokes: Mobject;
-        /**
-         * Moves your pen to another point.
-         * This method is used to draw a path.
-         * @param {Vector | number[]} point
-         */
-        move(point: Vector | number[]): void;
-        /**
-         * Drags your pen to another place and draws a line.
-         * This method is used to draw a path.
-         * @param {Vector | number[]} point
-         */
-        line(point: Vector | number[]): void;
-        /**
-         * Draws an arc.
-         * This method is used to draw a path.
-         * @param {number} radius
-         * @param {number} startAngle
-         * @param {number} endAngle
-         * @param {boolean} clockwise
-         * @param {number} segments
-         * @returns
-         */
-        arc(radius: number, startAngle: number, endAngle: number, clockwise?: boolean, segments?: number): void;
-        /**
-         * Fills a polygon you've drawn.
-         * @param {number[][]} [polygon] - polygon you want to fill with, will be the last one when left null.
-         * @param {Object} [configs={}]
-         * @param {boolean} [configs.updateCommand=true] - whether adds a "fill" command to commands list.
-         */
-        fill(polygon?: number[][], { updateCommand }?: {
-            updateCommand?: boolean;
-        }): void;
-        /**
-         * Strokes a polygon you've drawn.
-         * @param {number[][]} [polygon] - polygon you want to fill with, will be the last one when left null.
-         * @param {Object} [configs={}]
-         * @param {boolean} [configs.updateCommand=true] - whether adds a "stroke" command to commands list.
-         */
-        stroke(polygon?: number[][], { updateCommand }?: {
-            updateCommand?: boolean;
-        }): void;
-        /**
-         * Adds a command to a polygon in the list of commands.
-         * If the polygon does not exist in the commands list, it is added.
-         *
-         * @param {number[][]} polygon - A 2D array representing the vertices of the polygon.
-         * @param {string} command - The command to be associated with the polygon.
-         *
-         * This method first checks if the polygon is already present in the commands array.
-         * If it is, the command is added to the existing list of commands for that polygon.
-         * If not, a new entry is created in the commands array for the polygon with the command.
-         * The index of the polygon in the commands array is used to determine the correct location.
-         * For new commands, ensuring that commands for the same polygon are grouped together.
-         */
-        addPolygonCommand(polygon: number[][], command: string): void;
-        /**
-         * Redraws all the polygons according to their associated commands.
-         * This method is very useful when performing deformations.
-         */
-        redraw(): void;
-        /**
-         * @param {number} segmentsNum
-         */
-        prepare4NonlinearTransform(segmentsNum?: number): void;
-        clearGraph(): void;
-        clearPaths(): void;
-        clearBuffers(): void;
-        finish(): void;
-        setColor(color: any): void;
-        toMorphable(): any[];
-        fromMorphable(morphable: any): void;
-    }
-    import Mobject from "mobjects/Mobject";
-    import Color from "math/Color";
-    import Vector from "math/Vector";
 }
 declare module "mobjects/2D/Arc" {
     export default class Arc extends Mobject2D {
