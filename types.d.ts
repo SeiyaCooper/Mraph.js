@@ -2401,6 +2401,8 @@ declare module "mobjects/2D/Mobject2D" {
         /**
          * Fills a polygon you've drawn.
          * @param {number[][]} [polygon] - polygon you want to fill with, will be the last one when left null.
+         * @param {Object} [configs={}]
+         * @param {boolean} [configs.updateCommand=true] - whether adds a "fill" command to commands list.
          */
         fill(polygon?: number[][], { updateCommand }?: {
             updateCommand?: boolean;
@@ -2408,12 +2410,34 @@ declare module "mobjects/2D/Mobject2D" {
         /**
          * Strokes a polygon you've drawn.
          * @param {number[][]} [polygon] - polygon you want to fill with, will be the last one when left null.
+         * @param {Object} [configs={}]
+         * @param {boolean} [configs.updateCommand=true] - whether adds a "stroke" command to commands list.
          */
         stroke(polygon?: number[][], { updateCommand }?: {
             updateCommand?: boolean;
         }): void;
-        addPolygonCommand(polygon: any, command: any): void;
+        /**
+         * Adds a command to a polygon in the list of commands.
+         * If the polygon does not exist in the commands list, it is added.
+         *
+         * @param {number[][]} polygon - A 2D array representing the vertices of the polygon.
+         * @param {string} command - The command to be associated with the polygon.
+         *
+         * This method first checks if the polygon is already present in the commands array.
+         * If it is, the command is added to the existing list of commands for that polygon.
+         * If not, a new entry is created in the commands array for the polygon with the command.
+         * The index of the polygon in the commands array is used to determine the correct location.
+         * For new commands, ensuring that commands for the same polygon are grouped together.
+         */
+        addPolygonCommand(polygon: number[][], command: string): void;
+        /**
+         * Redraws all the polygons according to their associated commands.
+         * This method is very useful when performing deformations.
+         */
         redraw(): void;
+        /**
+         * @param {number} segmentsNum
+         */
         prepare4NonlinearTransform(segmentsNum?: number): void;
         clearGraph(): void;
         clearPaths(): void;

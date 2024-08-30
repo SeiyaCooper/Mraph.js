@@ -74,6 +74,8 @@ export default class Mobject2D extends Mobject {
     /**
      * Fills a polygon you've drawn.
      * @param {number[][]} [polygon] - polygon you want to fill with, will be the last one when left null.
+     * @param {Object} [configs={}]
+     * @param {boolean} [configs.updateCommand=true] - whether adds a "fill" command to commands list.
      */
     fill(polygon, { updateCommand = true } = {}) {
         if (this.points.length !== 0) this.finish();
@@ -104,6 +106,8 @@ export default class Mobject2D extends Mobject {
     /**
      * Strokes a polygon you've drawn.
      * @param {number[][]} [polygon] - polygon you want to fill with, will be the last one when left null.
+     * @param {Object} [configs={}]
+     * @param {boolean} [configs.updateCommand=true] - whether adds a "stroke" command to commands list.
      */
     stroke(polygon, { updateCommand = true } = {}) {
         if (this.points.length !== 0) this.finish();
@@ -153,6 +157,19 @@ export default class Mobject2D extends Mobject {
         if (updateCommand) this.addPolygonCommand(polygon, "stroke");
     }
 
+    /**
+     * Adds a command to a polygon in the list of commands.
+     * If the polygon does not exist in the commands list, it is added.
+     *
+     * @param {number[][]} polygon - A 2D array representing the vertices of the polygon.
+     * @param {string} command - The command to be associated with the polygon.
+     *
+     * This method first checks if the polygon is already present in the commands array.
+     * If it is, the command is added to the existing list of commands for that polygon.
+     * If not, a new entry is created in the commands array for the polygon with the command.
+     * The index of the polygon in the commands array is used to determine the correct location.
+     * For new commands, ensuring that commands for the same polygon are grouped together.
+     */
     addPolygonCommand(polygon, command) {
         let index = this.commands.indexOf(polygon);
         index = index > 0 ? index : this.commands.length;
@@ -162,7 +179,12 @@ export default class Mobject2D extends Mobject {
         this.commands[index] = newCommands;
     }
 
+    /**
+     * Redraws all the polygons according to their associated commands.
+     * This method is very useful when performing deformations.
+     */
     redraw() {
+        this.clearBuffers();
         this.commands.forEach((polygonCommands, index) => {
             for (let command of polygonCommands) {
                 this[command]?.(this.polygons[index], { updateCommand: false });
@@ -170,6 +192,9 @@ export default class Mobject2D extends Mobject {
         });
     }
 
+    /**
+     * @param {number} segmentsNum
+     */
     prepare4NonlinearTransform(segmentsNum = 30) {
         const polygons = this.polygons;
         for (let i = 0; i < polygons.length; i++) {
@@ -240,6 +265,7 @@ export default class Mobject2D extends Mobject {
     }
 }
 
+// Helper function
 function generateArc(center, radius, startAngle, endAngle, clockwise, segments, target) {
     const xAxis = new Vector(0, 1, 0).cross(target.normal);
     const yAxis = target.normal.cross(xAxis);
