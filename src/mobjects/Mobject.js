@@ -9,6 +9,11 @@ export default class Mobject extends Geometry {
     material = new BasicMaterial();
 
     /**
+     * You can easily set the rendering order of Mobjects by using the zIndex, with objects having a lower zIndex being rendered first.
+     */
+    zIndex = 0;
+
+    /**
      * @returns {Mobject}
      */
     constructor() {
@@ -164,6 +169,12 @@ export default class Mobject extends Geometry {
         return this._layer;
     }
 
+    /**
+     * Returns a mobject constructed by the given geometry.
+     * This method will preserve existing materials and add 'BasicMaterial' for geometries that do not have a material.
+     * @param {Geometry} geometry
+     * @returns {Mobject}
+     */
     static fromGeometry(geometry) {
         const newMobject = new Mobject();
 

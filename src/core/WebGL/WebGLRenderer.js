@@ -176,11 +176,12 @@ export default class WebGLRenderer {
             }
         });
 
-        list2D.sort((a, b) => {
-            return a.zIndex - b.zIndex;
+        const renderList = list3D.concat(list2D);
+        renderList.sort((a, b) => {
+            return (a.zIndex ?? 0) - (b.zIndex ?? 0);
         });
 
-        return list3D.concat(list2D);
+        return renderList;
     }
 
     /**

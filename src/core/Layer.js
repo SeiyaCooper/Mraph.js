@@ -6,6 +6,7 @@ import * as COLORS from "../constants/colors.js";
 import PointLight from "../light/PointLight.js";
 import DirectionalLight from "../light/DirectionalLight.js";
 import Node from "./Node.js";
+import Geomtry from "../geometry/Geometry.js";
 
 export default class Layer {
     camera = new Camera();
@@ -71,21 +72,23 @@ export default class Layer {
 
     /**
      * Adds mobjects or lights to scene
-     * @param  {...Mobject | Light} els
+     * @param  {...Mobject | Light} objs
      * @returns {this}
      */
-    add(...els) {
-        for (let el of els) {
-            if (typeof el.attributes === "object" /* if adding a drawable object*/) {
-                el.set("layer", this);
-                this.scene.add(el);
+    add(...objs) {
+        for (const object of objs) {
+            if (object instanceof Geomtry) {
+                object.set("layer", this);
+                this.scene.add(object);
 
-                if (!el.needsUpdate) continue;
-                el.update?.();
-                el.updateMatrix?.();
-                el.needsUpdate = false;
+                object.traverse((node) => {
+                    if (node.needsUpdate) node.update?.();
+                    if (node.needsUpdateMatrix) node.updateMatrix?.();
+                    node.needsUpdate = false;
+                    node.needsUpdateMatrix = false;
+                });
             } else {
-                this.addSurrounding(el);
+                this.addSurrounding(object);
             }
         }
 
@@ -165,9 +168,7 @@ export default class Layer {
      * @returns {this}
      */
     render() {
-        for (let el of this.scene.children) {
-            this.renderer.render(el, this.camera, this.surroundings);
-        }
+        this.renderer.render(this.scene, this.camera, this.surroundings);
         return this;
     }
 

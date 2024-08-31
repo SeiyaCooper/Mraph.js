@@ -80,7 +80,7 @@ export default class Node {
      */
     traverse(callback) {
         if (callback(this)) return;
-        for (let child of this.children) child.traverse(callback);
+        for (const child of this.children) child.traverse(callback);
     }
 
     /**

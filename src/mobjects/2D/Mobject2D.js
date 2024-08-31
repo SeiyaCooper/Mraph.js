@@ -7,21 +7,66 @@ import Mobject2DMaterial from "../../material/Mobject2DMaterial.js";
 import * as VECTORS from "../../constants/vectors.js";
 
 export default class Mobject2D extends Mobject {
+    /**
+     * Array to store the points of the current polygon being drawn.
+     * @type {number[][]}
+     */
     points = [];
+
+    /**
+     * Array to store all the completed polygons.
+     * @type {number[][][]}
+     */
     polygons = [];
+
+    /**
+     * Array to store all drawing commands.
+     * Each command corresponds to a polygon by its index in the array.
+     * @type {string[][]}
+     */
     commands = [];
 
+    /**
+     * The color used for filling the polygons.
+     * @type {Color}
+     */
     fillColor = new Color(1, 1, 1, 1);
+
+    /**
+     * The color used for strokes of the polygons.
+     * @type {Color}
+     */
     strokeColor = new Color(1, 1, 1, 1);
+
+    /**
+     * The width of strokes you've drawn.
+     * @type {number}
+     */
     strokeWidth = 0.05;
-    closePath = false;
-    zIndex = 0;
+
+    /**
+     * You can easily set the rendering order of Mobjects by using the zIndex, with objects having a lower zIndex being rendered first.
+     * @type {number}
+     */
+    _zIndex = 0;
+
+    /**
+     * Normal vector, used to generate an arc.
+     */
     normal = VECTORS.OUT.clone();
 
-    lineJoin = "miter";
-
+    /**
+     * The strokes of the polygons.
+     * Strokes are rendered as a child Mobject of this Mobject,
+     * using a different material ('Mobject2DMaterial') for visual effects.
+     */
     strokes = new Mobject();
 
+    /**
+     * 2D Mobjects.
+     * (e.g. lines, polygons, arrows, etc.)
+     * @returns {Mobject2D}
+     */
     constructor() {
         super();
         this.add(this.strokes);
@@ -262,6 +307,15 @@ export default class Mobject2D extends Mobject {
 
     static isInstance(obj) {
         return obj instanceof Mobject2D;
+    }
+
+    set zIndex(index) {
+        this._zIndex = index;
+        this.strokes.zIndex = index;
+    }
+
+    get zIndex() {
+        return this._zIndex;
     }
 }
 

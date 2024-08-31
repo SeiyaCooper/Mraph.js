@@ -99,6 +99,7 @@ export default class Axes2D extends Mobject2D {
 
         const graph = new FunctionGraph2D({ func, xRange: range, z });
         graph.update();
+        graph.needsUpdate = false;
 
         this.add(graph);
         this.graphs.push(graph);

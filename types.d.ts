@@ -1561,11 +1561,21 @@ declare module "material/BasicMaterial" {
 }
 declare module "mobjects/Mobject" {
     export default class Mobject extends Geometry {
-        static fromGeometry(geometry: any): Mobject;
+        /**
+         * Returns a mobject constructed by the given geometry.
+         * This method will preserve existing materials and add 'BasicMaterial' for geometries that do not have a material.
+         * @param {Geometry} geometry
+         * @returns {Mobject}
+         */
+        static fromGeometry(geometry: Geometry): Mobject;
         /**
          * Every mobject contains a default material.
          */
         material: BasicMaterial;
+        /**
+         * You can easily set the rendering order of Mobjects by using the zIndex, with objects having a lower zIndex being rendered first.
+         */
+        zIndex: number;
         /**
          * Merges an attribute data from another geometry.
          * @param {Geometry} source
@@ -1649,16 +1659,51 @@ declare module "material/Mobject2DMaterial" {
 declare module "mobjects/2D/Mobject2D" {
     export default class Mobject2D extends Mobject {
         static isInstance(obj: any): boolean;
-        points: any[];
-        polygons: any[];
-        commands: any[];
+        /**
+         * Array to store the points of the current polygon being drawn.
+         * @type {number[][]}
+         */
+        points: number[][];
+        /**
+         * Array to store all the completed polygons.
+         * @type {number[][][]}
+         */
+        polygons: number[][][];
+        /**
+         * Array to store all drawing commands.
+         * Each command corresponds to a polygon by its index in the array.
+         * @type {string[][]}
+         */
+        commands: string[][];
+        /**
+         * The color used for filling the polygons.
+         * @type {Color}
+         */
         fillColor: Color;
+        /**
+         * The color used for strokes of the polygons.
+         * @type {Color}
+         */
         strokeColor: Color;
+        /**
+         * The width of strokes you've drawn.
+         * @type {number}
+         */
         strokeWidth: number;
-        closePath: boolean;
-        zIndex: number;
+        /**
+         * You can easily set the rendering order of Mobjects by using the zIndex, with objects having a lower zIndex being rendered first.
+         * @type {number}
+         */
+        _zIndex: number;
+        /**
+         * Normal vector, used to generate an arc.
+         */
         normal: Vector;
-        lineJoin: string;
+        /**
+         * The strokes of the polygons.
+         * Strokes are rendered as a child Mobject of this Mobject,
+         * using a different material ('Mobject2DMaterial') for visual effects.
+         */
         strokes: Mobject;
         /**
          * Moves your pen to another point.
@@ -1729,7 +1774,6 @@ declare module "mobjects/2D/Mobject2D" {
         clearBuffers(): void;
         finish(): void;
         setColor(color: any): void;
-        toMorphable(): any[];
         fromMorphable(morphable: any): void;
     }
     import Mobject from "mobjects/Mobject";
@@ -2004,10 +2048,10 @@ declare module "core/Layer" {
         appendTo(el: HTMLElement): this;
         /**
          * Adds mobjects or lights to scene
-         * @param  {...Mobject | Light} els
+         * @param  {...Mobject | Light} objs
          * @returns {this}
          */
-        add(...els: (Mobject | Light)[]): this;
+        add(...objs: (Mobject | Light)[]): this;
         /**
          * Adds some anmations.
          * These animations will play following the current animation.
@@ -2537,6 +2581,7 @@ declare module "mobjects/2D/Line" {
         tips: any[];
         tipWidth: number;
         tipLength: number;
+        lineJoin: string;
         start: any;
         end: any;
         update(): this;
@@ -2564,6 +2609,7 @@ declare module "mobjects/2D/Line" {
 declare module "mobjects/2D/Polygon" {
     export default class Polygon extends Mobject2D {
         constructor(...points: any[]);
+        closePath: boolean;
         vertices: any[];
         update(): this;
     }

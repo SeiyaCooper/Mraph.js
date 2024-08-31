@@ -4,8 +4,8 @@ import Example from "../../layouts/Example.astro";
 
 <Example title="Magnetic Focus">
     <script>
+        import { fade } from "astro:transitions";
         import * as mp from "../../../src/mraph.js";
-        //import * as mp from "https://unpkg.com/mraph@0.0.1-dev.9/dist/mraph.es.js";
 
         const layer = new mp.Layer().appendTo(document.body);
 
@@ -36,11 +36,14 @@ import Example from "../../layouts/Example.astro";
                 super([x, y, 0]);
                 this.charge = charge;
                 this.setColor(charge > 0 ? mp.COLORS.RED : mp.COLORS.BLUE);
+                this.material.depthTest = false;
+                this.zIndex = 1;
 
                 const tail = new mp.Tail(this);
                 tail.strokeWidth = 0.02;
                 tail.setColor(mp.COLORS.SEIYA_PINK);
                 this.tail = tail;
+                tail.zIndex = 1;
             }
         }
 
