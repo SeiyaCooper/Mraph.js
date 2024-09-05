@@ -228,10 +228,9 @@ export default class Mobject2D extends Mobject {
      */
     redraw() {
         this.clearBuffers();
-        this.colors.forEach((_, index) => {
-            if (!this.polygons[index]) return;
-            this.stroke({ polygon: this.polygons[index], updateColor: false });
-            this.fill({ polygon: this.polygons[index], updateColor: false });
+        this.polygons.forEach((polygon) => {
+            this.stroke({ polygon, updateColor: false });
+            this.fill({ polygon, updateColor: false });
         });
     }
 
@@ -283,6 +282,7 @@ export default class Mobject2D extends Mobject {
 
     fromMorphable(morphable) {
         this.polygons = morphable;
+        this.setIndex(this.getAttributeVal("position").length);
         this.redraw();
     }
 

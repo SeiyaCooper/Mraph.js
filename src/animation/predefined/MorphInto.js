@@ -6,8 +6,8 @@ import * as COLORS from "../../constants/colors.js";
 
 export default class MorphInto extends Animation {
     /**
-     * @param {Mobject} target
-     * @param {Function} transform
+     * @param {Mobject2D} fromMobject
+     * @param {Mobject2D} toMobject
      * @param {object} [configs={}] - your personal configurations of the evnet.
      */
     constructor(fromMobject, toMobject, { runTime = 1, ...configs } = {}) {

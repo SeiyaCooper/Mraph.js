@@ -2218,11 +2218,22 @@ declare module "animation/predefined/MatrixTransform" {
 declare module "animation/predefined/MorphInto" {
     export default class MorphInto extends Animation {
         /**
-         * @param {Mobject} target
-         * @param {Function} transform
+         * @param {Mobject2D} fromMobject
+         * @param {Mobject2D} toMobject
          * @param {object} [configs={}] - your personal configurations of the evnet.
          */
-        constructor(fromMobject: any, toMobject: any, { runTime, ...configs }?: object);
+        constructor(fromMobject: Mobject2D, toMobject: Mobject2D, { runTime, ...configs }?: object);
+    }
+    import Animation from "animation/Animation";
+    import Mobject2D from "mobjects/2D/Mobject2D";
+}
+declare module "animation/predefined/ShowCreation" {
+    export default class ShowCreation extends Animation {
+        /**
+         * @param {Mobject} target
+         * @param {object} [configs={}] - your personal configurations of the evnet.
+         */
+        constructor(target: Mobject, { runTime, ...configs }?: object);
     }
     import Animation from "animation/Animation";
 }
@@ -3035,8 +3046,9 @@ declare module "mraph" {
     import ComplexFunctionTransform from "animation/predefined/ComplexFunctionTransform";
     import MatrixTransform from "animation/predefined/MatrixTransform";
     import MorphInto from "animation/predefined/MorphInto";
+    import ShowCreation from "animation/predefined/ShowCreation";
     import OrbitControl from "extra/OrbitControl";
     import Recorder from "extra/Recorder";
-    export { Color, Matrix, Vector, Quat, Complex, Geometry, Plane, Box, Segment, Sphere, Cylinder, DirectionalLight, PointLight, Mobject, ImageMobject, CanvasText, Mobject2D, Point, Tail, Line, Polygon, RegularPolygon, Square, Arc, Circle, Arrow, Axis, Axes2D, VectorField2D, FunctionGraph2D, Mobject3D, FunctionGraph3D, Point3D, Arrow3D, VectorField3D, Layer, Camera, Texture, WebGLRenderer, WebGLProgram, CustomMaterial, BasicMaterial, DepthMaterial, LambertMaterial, Mobject2DMaterial, Event, Timeline, Animation, PointwiseTransform, ComplexFunctionTransform, MatrixTransform, MorphInto, OrbitControl, Recorder };
+    export { Color, Matrix, Vector, Quat, Complex, Geometry, Plane, Box, Segment, Sphere, Cylinder, DirectionalLight, PointLight, Mobject, ImageMobject, CanvasText, Mobject2D, Point, Tail, Line, Polygon, RegularPolygon, Square, Arc, Circle, Arrow, Axis, Axes2D, VectorField2D, FunctionGraph2D, Mobject3D, FunctionGraph3D, Point3D, Arrow3D, VectorField3D, Layer, Camera, Texture, WebGLRenderer, WebGLProgram, CustomMaterial, BasicMaterial, DepthMaterial, LambertMaterial, Mobject2DMaterial, Event, Timeline, Animation, PointwiseTransform, ComplexFunctionTransform, MatrixTransform, MorphInto, ShowCreation, OrbitControl, Recorder };
     export { MoveTo, ScaleBy, ScaleTo, RotateX, RotateY, RotateZ } from "./animation/predefined/basic_animations.js";
 }

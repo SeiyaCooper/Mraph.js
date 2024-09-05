@@ -10,6 +10,7 @@ import PointwiseTransform from "./animation/predefined/PointwiseTransform.js";
 import ComplexFunctionTransform from "./animation/predefined/ComplexFunctionTransform.js";
 import MatrixTransform from "./animation/predefined/MatrixTransform.js";
 import MorphInto from "./animation/predefined/MorphInto.js";
+import ShowCreation from "./animation/predefined/ShowCreation.js";
 
 import OrbitControl from "./extra/OrbitControl.js";
 import Recorder from "./extra/Recorder.js";
@@ -146,6 +147,7 @@ export {
     ComplexFunctionTransform,
     MatrixTransform,
     MorphInto,
+    ShowCreation,
 
     // Extra
     OrbitControl,
