@@ -9,6 +9,7 @@ import Animation from "./animation/Animation.js";
 import PointwiseTransform from "./animation/predefined/PointwiseTransform.js";
 import ComplexFunctionTransform from "./animation/predefined/ComplexFunctionTransform.js";
 import MatrixTransform from "./animation/predefined/MatrixTransform.js";
+import MorphInto from "./animation/predefined/MorphInto.js";
 
 import OrbitControl from "./extra/OrbitControl.js";
 import Recorder from "./extra/Recorder.js";
@@ -47,6 +48,7 @@ import Polygon from "./mobjects/2D/Polygon.js";
 import RegularPolygon from "./mobjects/2D/RegularPolygon.js";
 import Square from "./mobjects/2D/Square.js";
 import Arc from "./mobjects/2D/Arc.js";
+import Circle from "./mobjects/2D/Circle.js";
 import Arrow from "./mobjects/2D/Arrow.js";
 import Axis from "./mobjects/2D/Axis.js";
 import Axes2D from "./mobjects/2D/Axes2D.js";
@@ -108,6 +110,7 @@ export {
     RegularPolygon,
     Square,
     Arc,
+    Circle,
     Arrow,
     Axis,
     Axes2D,
@@ -142,6 +145,7 @@ export {
     PointwiseTransform,
     ComplexFunctionTransform,
     MatrixTransform,
+    MorphInto,
 
     // Extra
     OrbitControl,

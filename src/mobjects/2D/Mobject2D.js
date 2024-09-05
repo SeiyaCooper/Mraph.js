@@ -20,17 +20,17 @@ export default class Mobject2D extends Mobject {
     polygons = [];
 
     /**
-     * Array to store all drawing commands.
-     * Each command corresponds to a polygon by its index in the array.
-     * @type {string[][]}
+     * Array to store colors of each polygon.
+     * @typedef {{fillColor: Color, strokeColor: Color}} ColorPair
+     * @type {ColorPair[]}
      */
-    commands = [];
+    colors = [];
 
     /**
      * The color used for filling the polygons.
      * @type {Color}
      */
-    fillColor = new Color(1, 1, 1, 1);
+    fillColor = new Color(1, 1, 1, 0);
 
     /**
      * The color used for strokes of the polygons.
@@ -118,17 +118,19 @@ export default class Mobject2D extends Mobject {
 
     /**
      * Fills a polygon you've drawn.
-     * @param {number[][]} [polygon] - polygon you want to fill with, will be the last one when left null.
      * @param {Object} [configs={}]
-     * @param {boolean} [configs.updateCommand=true] - whether adds a "fill" command to commands list.
+     * @param {number[][]} [config.polygon] - polygon you want to fill with, will be the last one when left null.
+     * @param {boolean} [configs.updateColor=true] - whether updates the fill color of 'polygon'.
      */
-    fill(polygon, { updateCommand = true } = {}) {
-        if (this.points.length !== 0) this.finish();
-
+    fill({ polygon, updateColor = true } = {}) {
         const vertices = this.getAttributeVal("position") ?? [];
         const colors = this.getAttributeVal("color") ?? [];
 
+        if (!polygon && this.points.length !== 0) this.finish();
         polygon = polygon ?? this.polygons[this.polygons.length - 1];
+
+        const fillColor = updateColor ? this.fillColor : this.colors[this.polygons.indexOf(polygon)].fillColor;
+
         if (polygon.length < 3) return;
 
         const first = polygon[0];
@@ -136,34 +138,36 @@ export default class Mobject2D extends Mobject {
             vertices.push(...first);
             vertices.push(...polygon[i]);
             vertices.push(...polygon[i + 1]);
-            colors.push(...this.fillColor);
-            colors.push(...this.fillColor);
-            colors.push(...this.fillColor);
+            colors.push(...fillColor);
+            colors.push(...fillColor);
+            colors.push(...fillColor);
         }
 
         this.setAttribute("position", vertices, 3);
         this.setAttribute("color", colors, 4);
         this.setIndex(vertices.length / 3);
 
-        if (updateCommand) this.addPolygonCommand(polygon, "fill");
+        if (updateColor) this.setPolygonColor(polygon, { fillColor: this.fillColor });
     }
 
     /**
      * Strokes a polygon you've drawn.
-     * @param {number[][]} [polygon] - polygon you want to fill with, will be the last one when left null.
      * @param {Object} [configs={}]
-     * @param {boolean} [configs.updateCommand=true] - whether adds a "stroke" command to commands list.
+     * @param {number[][]} [polygon] - polygon you want to fill with, will be the last one when left null.
+     * @param {boolean} [configs.updateColor=true] - whether updates stroke color of 'polygon'.
      */
-    stroke(polygon, { updateCommand = true } = {}) {
-        if (this.points.length !== 0) this.finish();
-
+    stroke({ polygon, updateColor = true } = {}) {
         const strokes = this.strokes;
         const reverse = strokes.getAttributeVal("reverse") ?? [];
         const vertices = strokes.getAttributeVal("position") ?? [];
         const previous = strokes.getAttributeVal("previous") ?? [];
         const colors = strokes.getAttributeVal("color") ?? [];
 
+        if (!polygon && this.points.length !== 0) this.finish();
         polygon = polygon ?? this.polygons[this.polygons.length - 1];
+
+        const strokeColor = updateColor ? this.strokeColor : this.colors[this.polygons.indexOf(polygon)].strokeColor;
+
         for (let i = 1; i < polygon.length; i++) {
             const start = polygon[i];
             const end = polygon[i - 1];
@@ -182,12 +186,12 @@ export default class Mobject2D extends Mobject {
             previous.push(...start);
             previous.push(...start);
 
-            colors.push(...this.strokeColor);
-            colors.push(...this.strokeColor);
-            colors.push(...this.strokeColor);
-            colors.push(...this.strokeColor);
-            colors.push(...this.strokeColor);
-            colors.push(...this.strokeColor);
+            colors.push(...strokeColor);
+            colors.push(...strokeColor);
+            colors.push(...strokeColor);
+            colors.push(...strokeColor);
+            colors.push(...strokeColor);
+            colors.push(...strokeColor);
 
             reverse.push(-1, 1, 1, 1, 1, -1);
         }
@@ -199,65 +203,50 @@ export default class Mobject2D extends Mobject {
         strokes.setUniform("thickness", this.strokeWidth);
         strokes.setIndex(strokes.getAttributeVal("position").length / 3);
 
-        if (updateCommand) this.addPolygonCommand(polygon, "stroke");
+        if (updateColor) this.setPolygonColor(polygon, { strokeColor: this.strokeColor });
     }
 
     /**
-     * Adds a command to a polygon in the list of commands.
-     * If the polygon does not exist in the commands list, it is added.
-     *
-     * @param {number[][]} polygon - A 2D array representing the vertices of the polygon.
-     * @param {string} command - The command to be associated with the polygon.
-     *
-     * This method first checks if the polygon is already present in the commands array.
-     * If it is, the command is added to the existing list of commands for that polygon.
-     * If not, a new entry is created in the commands array for the polygon with the command.
-     * The index of the polygon in the commands array is used to determine the correct location.
-     * For new commands, ensuring that commands for the same polygon are grouped together.
+     * Sets the colors for a specified polygon.
+     * @param {number[][]} polygon - the polygon you want to set.
+     * @param {Object} [colorPair={}] - an object containing the fill and stroke colors.
+     * @param {Color} [colorPair.fillColor] - the fill color for the polygon.
+     * @param {Color} [colorPair.strokeColor] - the stroke color for the polygon.
      */
-    addPolygonCommand(polygon, command) {
-        let index = this.commands.indexOf(polygon);
-        index = index > 0 ? index : this.commands.length;
+    setPolygonColor(polygon, colorPair = {}) {
+        const index = this.polygons.indexOf(polygon);
+        const newColors = this.colors[index] ?? { fillColor: this.fillColor, strokeColor: this.strokeColor };
 
-        const newCommands = this.commands[index] ?? [];
-        newCommands.push(command);
-        this.commands[index] = newCommands;
+        newColors.fillColor = colorPair.fillColor ?? newColors.fillColor;
+        newColors.strokeColor = colorPair.strokeColor ?? newColors.strokeColor;
+        this.colors[index] = newColors;
     }
 
     /**
-     * Redraws all the polygons according to their associated commands.
+     * Redraws all the polygons according to their associated colors.
      * This method is very useful when performing deformations.
      */
     redraw() {
         this.clearBuffers();
-        this.commands.forEach((polygonCommands, index) => {
-            for (let command of polygonCommands) {
-                this[command]?.(this.polygons[index], { updateCommand: false });
-            }
+        this.colors.forEach((_, index) => {
+            if (!this.polygons[index]) return;
+            this.stroke({ polygon: this.polygons[index], updateColor: false });
+            this.fill({ polygon: this.polygons[index], updateColor: false });
         });
     }
 
     /**
-     * @param {number} segmentsNum
+     * Inserts points into polygons to reach the target number of vertices.
+     * Used for non-linear transformation.
+     * @param {number} targetPointsNum
      */
-    prepare4NonlinearTransform(segmentsNum = 30) {
+    insertPoints(targetPointsNum = 75) {
         const polygons = this.polygons;
+
         for (let i = 0; i < polygons.length; i++) {
-            const polygon = polygons[i];
-            const replace = [];
-            for (let j = 0; j < polygon.length - 1; j++) {
-                const point = polygon[j];
-                const nextPoint = polygon[j + 1];
-
-                replace.push(point);
-                for (let k = 1; k < segmentsNum; k++) {
-                    replace.push(MathFunc.lerpArray(point, nextPoint, k / segmentsNum));
-                }
-                replace.push(nextPoint);
-            }
-
-            polygons[i] = replace;
+            MathFunc.insertPointsAlongPath(polygons[i], targetPointsNum);
         }
+
         this.clearBuffers();
         this.redraw();
     }
@@ -270,7 +259,7 @@ export default class Mobject2D extends Mobject {
     clearPaths() {
         this.points = [];
         this.polygons = [];
-        this.commands = [];
+        this.colors = [];
     }
 
     clearBuffers() {
@@ -289,18 +278,10 @@ export default class Mobject2D extends Mobject {
     }
 
     toMorphable() {
-        return this.polygons;
+        return Utils.deepCopy(this.polygons);
     }
 
     fromMorphable(morphable) {
-        const colors = this.getAttributeVal("color");
-        const strokeColors = this.strokes.getAttributeVal("color");
-
-        this.clearBuffers();
-
-        if (colors) this.setAttribute("color", colors, 4);
-        if (strokeColors) this.strokes.setAttribute("color", strokeColors, 4);
-
         this.polygons = morphable;
         this.redraw();
     }

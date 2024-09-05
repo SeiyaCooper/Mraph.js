@@ -421,6 +421,20 @@ declare module "math/math_func" {
     export function lerpArray(from: number[], to: number[], p: number, { recurse }?: {
         recurse?: boolean;
     }): number[];
+    /**
+     * Inserts points into a path to reach the target number of points 'targetPointsNum'.
+     * @param {number[][]} path
+     * @param {number} targetPointsNum
+     * @return {void}
+     */
+    export function insertPointsAlongPath(path: number[][], targetPointsNum: number): void;
+    /**
+     * Gets the distance between two position.
+     * @param {number[]} pos0
+     * @param {number[]} pos1
+     * @returns {number}
+     */
+    export function getDistance(pos0: number[], pos1: number[]): number;
     export function linear(x: number): number;
     export function exp(x: number | Complex): any;
     import Complex from "math/Complex";
@@ -1440,6 +1454,7 @@ declare module "core/WebGL/WebGLProgram" {
 declare module "constants/colors" {
     export const WHITE: Color;
     export const BLACK: Color;
+    export const TRANSPARENT: Color;
     export const RED_A: Color;
     export const RED_B: Color;
     export const RED_C: Color;
@@ -1670,11 +1685,14 @@ declare module "mobjects/2D/Mobject2D" {
          */
         polygons: number[][][];
         /**
-         * Array to store all drawing commands.
-         * Each command corresponds to a polygon by its index in the array.
-         * @type {string[][]}
+         * Array to store colors of each polygon.
+         * @typedef {{fillColor: Color, strokeColor: Color}} ColorPair
+         * @type {ColorPair[]}
          */
-        commands: string[][];
+        colors: {
+            fillColor: Color;
+            strokeColor: Color;
+        }[];
         /**
          * The color used for filling the polygons.
          * @type {Color}
@@ -1730,50 +1748,46 @@ declare module "mobjects/2D/Mobject2D" {
         arc(radius: number, startAngle: number, endAngle: number, clockwise?: boolean, segments?: number): void;
         /**
          * Fills a polygon you've drawn.
-         * @param {number[][]} [polygon] - polygon you want to fill with, will be the last one when left null.
          * @param {Object} [configs={}]
-         * @param {boolean} [configs.updateCommand=true] - whether adds a "fill" command to commands list.
+         * @param {number[][]} [config.polygon] - polygon you want to fill with, will be the last one when left null.
+         * @param {boolean} [configs.updateColor=true] - whether updates the fill color of 'polygon'.
          */
-        fill(polygon?: number[][], { updateCommand }?: {
-            updateCommand?: boolean;
-        }): void;
+        fill({ polygon, updateColor }?: any): void;
         /**
          * Strokes a polygon you've drawn.
-         * @param {number[][]} [polygon] - polygon you want to fill with, will be the last one when left null.
          * @param {Object} [configs={}]
-         * @param {boolean} [configs.updateCommand=true] - whether adds a "stroke" command to commands list.
+         * @param {number[][]} [polygon] - polygon you want to fill with, will be the last one when left null.
+         * @param {boolean} [configs.updateColor=true] - whether updates stroke color of 'polygon'.
          */
-        stroke(polygon?: number[][], { updateCommand }?: {
-            updateCommand?: boolean;
+        stroke({ polygon, updateColor }?: any): void;
+        /**
+         * Sets the colors for a specified polygon.
+         * @param {number[][]} polygon - the polygon you want to set.
+         * @param {Object} [colorPair={}] - an object containing the fill and stroke colors.
+         * @param {Color} [colorPair.fillColor] - the fill color for the polygon.
+         * @param {Color} [colorPair.strokeColor] - the stroke color for the polygon.
+         */
+        setPolygonColor(polygon: number[][], colorPair?: {
+            fillColor?: Color;
+            strokeColor?: Color;
         }): void;
         /**
-         * Adds a command to a polygon in the list of commands.
-         * If the polygon does not exist in the commands list, it is added.
-         *
-         * @param {number[][]} polygon - A 2D array representing the vertices of the polygon.
-         * @param {string} command - The command to be associated with the polygon.
-         *
-         * This method first checks if the polygon is already present in the commands array.
-         * If it is, the command is added to the existing list of commands for that polygon.
-         * If not, a new entry is created in the commands array for the polygon with the command.
-         * The index of the polygon in the commands array is used to determine the correct location.
-         * For new commands, ensuring that commands for the same polygon are grouped together.
-         */
-        addPolygonCommand(polygon: number[][], command: string): void;
-        /**
-         * Redraws all the polygons according to their associated commands.
+         * Redraws all the polygons according to their associated colors.
          * This method is very useful when performing deformations.
          */
         redraw(): void;
         /**
-         * @param {number} segmentsNum
+         * Inserts points into polygons to reach the target number of vertices.
+         * Used for non-linear transformation.
+         * @param {number} targetPointsNum
          */
-        prepare4NonlinearTransform(segmentsNum?: number): void;
+        insertPoints(targetPointsNum?: number): void;
         clearGraph(): void;
         clearPaths(): void;
         clearBuffers(): void;
         finish(): void;
         setColor(color: any): void;
+        toMorphable(): any;
         fromMorphable(morphable: any): void;
     }
     import Mobject from "mobjects/Mobject";
@@ -2164,7 +2178,7 @@ declare module "animation/Animation" {
 }
 declare module "animation/predefined/PointwiseTransform" {
     /**
-     * Shifts this node to a new place
+     * Applies an non-linear transformation to the Mobject 'target'
      */
     export default class PointwiseTransform extends Animation {
         /**
@@ -2200,6 +2214,17 @@ declare module "animation/predefined/MatrixTransform" {
         constructor(target: Node, matrix: Matrix, configs?: object);
     }
     import PointwiseTransform from "animation/predefined/PointwiseTransform";
+}
+declare module "animation/predefined/MorphInto" {
+    export default class MorphInto extends Animation {
+        /**
+         * @param {Mobject} target
+         * @param {Function} transform
+         * @param {object} [configs={}] - your personal configurations of the evnet.
+         */
+        constructor(fromMobject: any, toMobject: any, { runTime, ...configs }?: object);
+    }
+    import Animation from "animation/Animation";
 }
 declare module "extra/Recorder" {
     export default class Recorder {
@@ -2641,6 +2666,23 @@ declare module "mobjects/2D/Square" {
     }
     import RegularPolygon from "mobjects/2D/RegularPolygon";
 }
+declare module "mobjects/2D/Circle" {
+    export default class Circle extends Arc {
+        /**
+         * @param {object} configs
+         * @param {Vector | number[]} [configs.center=[0,0,0]]
+         * @param {number} [configs.radius=1]
+         */
+        constructor({ center, radius }?: {
+            center?: Vector | number[];
+            radius?: number;
+        });
+        center: any;
+        strokeColor: import("mraph").Vector;
+        update(): this;
+    }
+    import Arc from "mobjects/2D/Arc";
+}
 declare module "mobjects/2D/Arrow" {
     export default class Arrow extends Line {
         constructor(...param: any[]);
@@ -2730,6 +2772,7 @@ declare module "mobjects/2D/VectorField2D" {
         xRange: number[];
         yRange: number[];
         func: (x: any, y: any) => any[];
+        commands: any;
     }
     import Mobject2D from "mobjects/2D/Mobject2D";
     import Vector from "math/Vector";
@@ -2964,6 +3007,7 @@ declare module "mraph" {
     import RegularPolygon from "mobjects/2D/RegularPolygon";
     import Square from "mobjects/2D/Square";
     import Arc from "mobjects/2D/Arc";
+    import Circle from "mobjects/2D/Circle";
     import Arrow from "mobjects/2D/Arrow";
     import Axis from "mobjects/2D/Axis";
     import Axes2D from "mobjects/2D/Axes2D";
@@ -2990,8 +3034,9 @@ declare module "mraph" {
     import PointwiseTransform from "animation/predefined/PointwiseTransform";
     import ComplexFunctionTransform from "animation/predefined/ComplexFunctionTransform";
     import MatrixTransform from "animation/predefined/MatrixTransform";
+    import MorphInto from "animation/predefined/MorphInto";
     import OrbitControl from "extra/OrbitControl";
     import Recorder from "extra/Recorder";
-    export { Color, Matrix, Vector, Quat, Complex, Geometry, Plane, Box, Segment, Sphere, Cylinder, DirectionalLight, PointLight, Mobject, ImageMobject, CanvasText, Mobject2D, Point, Tail, Line, Polygon, RegularPolygon, Square, Arc, Arrow, Axis, Axes2D, VectorField2D, FunctionGraph2D, Mobject3D, FunctionGraph3D, Point3D, Arrow3D, VectorField3D, Layer, Camera, Texture, WebGLRenderer, WebGLProgram, CustomMaterial, BasicMaterial, DepthMaterial, LambertMaterial, Mobject2DMaterial, Event, Timeline, Animation, PointwiseTransform, ComplexFunctionTransform, MatrixTransform, OrbitControl, Recorder };
+    export { Color, Matrix, Vector, Quat, Complex, Geometry, Plane, Box, Segment, Sphere, Cylinder, DirectionalLight, PointLight, Mobject, ImageMobject, CanvasText, Mobject2D, Point, Tail, Line, Polygon, RegularPolygon, Square, Arc, Circle, Arrow, Axis, Axes2D, VectorField2D, FunctionGraph2D, Mobject3D, FunctionGraph3D, Point3D, Arrow3D, VectorField3D, Layer, Camera, Texture, WebGLRenderer, WebGLProgram, CustomMaterial, BasicMaterial, DepthMaterial, LambertMaterial, Mobject2DMaterial, Event, Timeline, Animation, PointwiseTransform, ComplexFunctionTransform, MatrixTransform, MorphInto, OrbitControl, Recorder };
     export { MoveTo, ScaleBy, ScaleTo, RotateX, RotateY, RotateZ } from "./animation/predefined/basic_animations.js";
 }

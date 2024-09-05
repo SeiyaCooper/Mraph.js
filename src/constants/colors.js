@@ -2,6 +2,7 @@ import Color from "../math/Color.js";
 
 export const WHITE = Color.fromHex(0xffffff);
 export const BLACK = Color.fromHex(0x000000);
+export const TRANSPARENT = new Color(0, 0, 0, 0);
 
 export const RED_A = Color.fromHexStr("#e59c9c");
 export const RED_B = Color.fromHexStr("#ee7979");

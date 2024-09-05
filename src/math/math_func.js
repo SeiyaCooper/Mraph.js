@@ -87,3 +87,56 @@ export function lerpArray(from, to, p, { recurse = true } = {}) {
     });
     return ans;
 }
+
+/**
+ * Inserts points into a path to reach the target number of points 'targetPointsNum'.
+ * @param {number[][]} path
+ * @param {number} targetPointsNum
+ * @return {void}
+ */
+export function insertPointsAlongPath(path, targetPointsNum) {
+    const originNum = path.length;
+
+    if (originNum >= targetPointsNum) return;
+    if (originNum === 0) return;
+
+    const diffNum = targetPointsNum - originNum;
+
+    if (originNum === 1) {
+        for (let i = 0; i < diffNum; i++) {
+            path.push(deepCopy(path[0]));
+        }
+        return;
+    }
+
+    const norms = [];
+    for (let j = 0; j < path.length - 1; j++) {
+        norms.push(getDistance(path[j], path[j + 1]));
+    }
+
+    for (let i = 0; i < diffNum; i++) {
+        const maxIndex = norms.indexOf(Math.max(...norms));
+
+        path.splice(maxIndex + 1, 0, lerpArray(path[maxIndex], path[maxIndex + 1], 1 / 2));
+        norms.splice(
+            maxIndex,
+            1,
+            getDistance(path[maxIndex], path[maxIndex + 1]),
+            getDistance(path[maxIndex + 1], path[maxIndex + 2])
+        );
+    }
+}
+
+/**
+ * Gets the distance between two position.
+ * @param {number[]} pos0
+ * @param {number[]} pos1
+ * @returns {number}
+ */
+export function getDistance(pos0, pos1) {
+    let squared = 0;
+    for (let i = 0; i < pos0.length; i++) {
+        squared += (pos0[i] - pos1[i]) ** 2;
+    }
+    return Math.sqrt(squared);
+}

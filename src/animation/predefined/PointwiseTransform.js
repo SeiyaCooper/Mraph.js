@@ -4,7 +4,7 @@ import Vector from "../../math/Vector.js";
 import * as MathFunc from "../../math/math_func.js";
 
 /**
- * Shifts this node to a new place
+ * Applies an non-linear transformation to the Mobject 'target'
  */
 export default class PointwiseTransform extends Animation {
     /**
@@ -17,6 +17,7 @@ export default class PointwiseTransform extends Animation {
 
         let fromShape = { self: [], children: [] };
         let toShape = { self: [], children: [] };
+
         const config = {
             start: () => {
                 function transformSingle(target) {
