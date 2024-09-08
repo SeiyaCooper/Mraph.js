@@ -26,13 +26,13 @@ export default class WebGLRenderer {
      * A set of vaos
      * @type {WebGLVertexArrayObject[]}
      */
-    VAOs = new Map();
+    VAOs = new WeakMap();
 
     /**
      * usage of this renderer, default to be gl.STATIC_DRAW
      * @type {number}
      */
-    usage = GLENUM.STATIC_DRAW;
+    usage = GLENUM.DYNAMIC_DRAW;
 
     /**
      * whether to use depthTest, default to be true
@@ -96,11 +96,11 @@ export default class WebGLRenderer {
         program.setUniform("projectionMat", camera.projectionMat);
         program.setUniform("modelMat", mesh.matrix ?? Matrix.identity(4));
 
-        if (this.VAOs.has(mesh)) {
-            this._bindVAO(this.VAOs.get(mesh));
+        if (this.VAOs.has(mesh.attributes)) {
+            this._bindVAO(this.VAOs.get(mesh.attributes));
         } else {
             const VAO = this._createVAO();
-            this.VAOs.set(mesh, VAO);
+            this.VAOs.set(mesh.attributes, VAO);
             this._bindVAO(VAO);
         }
 

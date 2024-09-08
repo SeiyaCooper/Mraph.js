@@ -262,8 +262,8 @@ export default class Mobject2D extends Mobject {
     }
 
     clearBuffers() {
-        this.clearAttributes();
-        this.strokes.clearAttributes();
+        this.removeAllAttributes();
+        this.strokes.removeAllAttributes();
     }
 
     finish() {
@@ -282,7 +282,6 @@ export default class Mobject2D extends Mobject {
 
     fromMorphable(morphable) {
         this.polygons = morphable;
-        this.setIndex(this.getAttributeVal("position").length);
         this.redraw();
     }
 
