@@ -11,6 +11,7 @@ import ComplexFunctionTransform from "./animation/predefined/ComplexFunctionTran
 import MatrixTransform from "./animation/predefined/MatrixTransform.js";
 import MorphInto from "./animation/predefined/MorphInto.js";
 import ShowCreation from "./animation/predefined/ShowCreation.js";
+import ShowVanishing from "./animation/predefined/ShowVanishing.js";
 
 import OrbitControl from "./extra/OrbitControl.js";
 import Recorder from "./extra/Recorder.js";
@@ -148,6 +149,7 @@ export {
     MatrixTransform,
     MorphInto,
     ShowCreation,
+    ShowVanishing,
 
     // Extra
     OrbitControl,

@@ -4,7 +4,7 @@ export default class MatrixTransform extends PointwiseTransform {
     /**
      * @param {Node} target
      * @param {Matrix} matrix - matrix to transform by，can be in 2*2 or 3*3
-     * @param {object} [configs={}] - your personal configurations of the evnet.
+     * @param {object} [configs={}] - your personal configurations of the event.
      */
     constructor(target, matrix, configs) {
         super(

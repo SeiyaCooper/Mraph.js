@@ -273,7 +273,7 @@ export default class Mobject2D extends Mobject {
 
     setColor(color) {
         this.strokeColor = color;
-        this.fillColor = color;
+        this.fillColor = color.withRGBA({ a: 0.3 });
     }
 
     toMorphable() {

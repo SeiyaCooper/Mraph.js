@@ -1,5 +1,6 @@
 import Polygon from "./Polygon.js";
 import Point from "./Point.js";
+import * as COLORS from "../../constants/colors.js";
 
 export default class RegularPolygon extends Polygon {
     /**
@@ -11,6 +12,7 @@ export default class RegularPolygon extends Polygon {
         this.vertexNum = n;
         this.sideLength = sideLength;
         this.startAngle = startAngle;
+        this.setColor(COLORS.SEIYA_PINK.clone());
     }
 
     update() {

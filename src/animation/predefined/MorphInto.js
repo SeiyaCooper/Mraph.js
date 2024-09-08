@@ -3,12 +3,13 @@ import Event from "../Event.js";
 import Mobject2D from "../../mobjects/2D/Mobject2D.js";
 import * as MathFunc from "../../math/math_func.js";
 import * as COLORS from "../../constants/colors.js";
+import { deepCopy } from "../../utils/utils.js";
 
 export default class MorphInto extends Animation {
     /**
      * @param {Mobject2D} fromMobject
      * @param {Mobject2D} toMobject
-     * @param {object} [configs={}] - your personal configurations of the evnet.
+     * @param {object} [configs={}] - your personal configurations of the event.
      */
     constructor(fromMobject, toMobject, { runTime = 1, ...configs } = {}) {
         super();
@@ -29,8 +30,8 @@ export default class MorphInto extends Animation {
             start: () => {
                 fromShape.self = fromMobject.toMorphable();
                 toShape.self = toMobject.toMorphable();
-                fromColors.self = fromMobject.colors;
-                toColors.self = toMobject.colors;
+                fromColors.self = deepCopy(fromMobject.colors);
+                toColors.self = deepCopy(toMobject.colors);
                 alignMobject(fromShape.self, fromColors.self, toShape.self, toColors.self);
             },
             update: (p) => {

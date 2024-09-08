@@ -5,9 +5,9 @@ import * as MathFunc from "../../math/math_func.js";
 export default class ShowCreation extends Animation {
     /**
      * @param {Mobject} target
-     * @param {object} [configs={}] - your personal configurations of the evnet.
+     * @param {object} [configs={}] - your personal configurations of the event.
      */
-    constructor(target, { runTime = 1, ...configs } = {}) {
+    constructor(target, { runTime = 1.5, ...configs } = {}) {
         super();
 
         if (target.needsUpdate) {

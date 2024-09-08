@@ -2184,7 +2184,7 @@ declare module "animation/predefined/PointwiseTransform" {
         /**
          * @param {Mobject} target
          * @param {Function} transform
-         * @param {object} [configs={}] - your personal configurations of the evnet.
+         * @param {object} [configs={}] - your personal configurations of the event.
          */
         constructor(target: Mobject, transform: Function, { runTime, ...configs }?: object);
     }
@@ -2198,7 +2198,7 @@ declare module "animation/predefined/ComplexFunctionTransform" {
         /**
          * @param {Node} target
          * @param {Function} complexFunction
-         * @param {object} [configs={}] - your personal configurations of the evnet.
+         * @param {object} [configs={}] - your personal configurations of the event.
          */
         constructor(target: Node, complexFunction: Function, configs?: object);
     }
@@ -2209,7 +2209,7 @@ declare module "animation/predefined/MatrixTransform" {
         /**
          * @param {Node} target
          * @param {Matrix} matrix - matrix to transform by，can be in 2*2 or 3*3
-         * @param {object} [configs={}] - your personal configurations of the evnet.
+         * @param {object} [configs={}] - your personal configurations of the event.
          */
         constructor(target: Node, matrix: Matrix, configs?: object);
     }
@@ -2220,7 +2220,7 @@ declare module "animation/predefined/MorphInto" {
         /**
          * @param {Mobject2D} fromMobject
          * @param {Mobject2D} toMobject
-         * @param {object} [configs={}] - your personal configurations of the evnet.
+         * @param {object} [configs={}] - your personal configurations of the event.
          */
         constructor(fromMobject: Mobject2D, toMobject: Mobject2D, { runTime, ...configs }?: object);
     }
@@ -2231,7 +2231,17 @@ declare module "animation/predefined/ShowCreation" {
     export default class ShowCreation extends Animation {
         /**
          * @param {Mobject} target
-         * @param {object} [configs={}] - your personal configurations of the evnet.
+         * @param {object} [configs={}] - your personal configurations of the event.
+         */
+        constructor(target: Mobject, { runTime, ...configs }?: object);
+    }
+    import Animation from "animation/Animation";
+}
+declare module "animation/predefined/ShowVanishing" {
+    export default class ShowVanishing extends Animation {
+        /**
+         * @param {Mobject} target
+         * @param {object} [configs={}] - your personal configurations of the event.
          */
         constructor(target: Mobject, { runTime, ...configs }?: object);
     }
@@ -2672,8 +2682,6 @@ declare module "mobjects/2D/Square" {
          * @param {Object} configs
          */
         constructor(configs: any);
-        strokeColor: import("mraph").Vector;
-        fillColor: any;
     }
     import RegularPolygon from "mobjects/2D/RegularPolygon";
 }
@@ -2689,7 +2697,6 @@ declare module "mobjects/2D/Circle" {
             radius?: number;
         });
         center: any;
-        strokeColor: import("mraph").Vector;
         update(): this;
     }
     import Arc from "mobjects/2D/Arc";
@@ -2925,7 +2932,7 @@ declare module "animation/predefined/basic_animations" {
         /**
          * @param {Node} target
          * @param {Vector} pos
-         * @param {object} [configs={}] - your personal configurations of the evnet.
+         * @param {object} [configs={}] - your personal configurations of the event.
          */
         constructor(target: Node, pos: Vector, { runTime, ...configs }?: object);
     }
@@ -2936,7 +2943,7 @@ declare module "animation/predefined/basic_animations" {
         /**
          * @param {Node} target
          * @param {number} factor
-         * @param {object} [configs={}] - your personal configurations of the evnet.
+         * @param {object} [configs={}] - your personal configurations of the event.
          */
         constructor(target: Node, factor: number, { runTime, ...configs }?: object);
     }
@@ -2947,7 +2954,7 @@ declare module "animation/predefined/basic_animations" {
         /**
          * @param {Node} target
          * @param {number} factor
-         * @param {object} [configs={}] - your personal configurations of the evnet.
+         * @param {object} [configs={}] - your personal configurations of the event.
          */
         constructor(target: Node, factor: number, { runTime, ...configs }?: object);
     }
@@ -2958,7 +2965,7 @@ declare module "animation/predefined/basic_animations" {
         /**
          * @param {Node} target
          * @param {number} angle
-         * @param {object} [configs={}] - your personal configurations of the evnet.
+         * @param {object} [configs={}] - your personal configurations of the event.
          */
         constructor(target: Node, angle: number, { runTime, ...configs }?: object);
     }
@@ -2969,7 +2976,7 @@ declare module "animation/predefined/basic_animations" {
         /**
          * @param {Node} target
          * @param {number} angle
-         * @param {object} [configs={}] - your personal configurations of the evnet.
+         * @param {object} [configs={}] - your personal configurations of the event.
          */
         constructor(target: Node, angle: number, { runTime, ...configs }?: object);
     }
@@ -2980,7 +2987,7 @@ declare module "animation/predefined/basic_animations" {
         /**
          * @param {Node} target
          * @param {number} angle
-         * @param {object} [configs={}] - your personal configurations of the evnet.
+         * @param {object} [configs={}] - your personal configurations of the event.
          */
         constructor(target: Node, angle: number, { runTime, ...configs }?: object);
     }
@@ -3047,8 +3054,9 @@ declare module "mraph" {
     import MatrixTransform from "animation/predefined/MatrixTransform";
     import MorphInto from "animation/predefined/MorphInto";
     import ShowCreation from "animation/predefined/ShowCreation";
+    import ShowVanishing from "animation/predefined/ShowVanishing";
     import OrbitControl from "extra/OrbitControl";
     import Recorder from "extra/Recorder";
-    export { Color, Matrix, Vector, Quat, Complex, Geometry, Plane, Box, Segment, Sphere, Cylinder, DirectionalLight, PointLight, Mobject, ImageMobject, CanvasText, Mobject2D, Point, Tail, Line, Polygon, RegularPolygon, Square, Arc, Circle, Arrow, Axis, Axes2D, VectorField2D, FunctionGraph2D, Mobject3D, FunctionGraph3D, Point3D, Arrow3D, VectorField3D, Layer, Camera, Texture, WebGLRenderer, WebGLProgram, CustomMaterial, BasicMaterial, DepthMaterial, LambertMaterial, Mobject2DMaterial, Event, Timeline, Animation, PointwiseTransform, ComplexFunctionTransform, MatrixTransform, MorphInto, ShowCreation, OrbitControl, Recorder };
+    export { Color, Matrix, Vector, Quat, Complex, Geometry, Plane, Box, Segment, Sphere, Cylinder, DirectionalLight, PointLight, Mobject, ImageMobject, CanvasText, Mobject2D, Point, Tail, Line, Polygon, RegularPolygon, Square, Arc, Circle, Arrow, Axis, Axes2D, VectorField2D, FunctionGraph2D, Mobject3D, FunctionGraph3D, Point3D, Arrow3D, VectorField3D, Layer, Camera, Texture, WebGLRenderer, WebGLProgram, CustomMaterial, BasicMaterial, DepthMaterial, LambertMaterial, Mobject2DMaterial, Event, Timeline, Animation, PointwiseTransform, ComplexFunctionTransform, MatrixTransform, MorphInto, ShowCreation, ShowVanishing, OrbitControl, Recorder };
     export { MoveTo, ScaleBy, ScaleTo, RotateX, RotateY, RotateZ } from "./animation/predefined/basic_animations.js";
 }

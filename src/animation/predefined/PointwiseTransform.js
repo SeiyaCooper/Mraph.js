@@ -10,7 +10,7 @@ export default class PointwiseTransform extends Animation {
     /**
      * @param {Mobject} target
      * @param {Function} transform
-     * @param {object} [configs={}] - your personal configurations of the evnet.
+     * @param {object} [configs={}] - your personal configurations of the event.
      */
     constructor(target, transform, { runTime = 1, ...configs } = {}) {
         super();

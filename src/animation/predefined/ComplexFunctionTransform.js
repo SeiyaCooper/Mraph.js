@@ -8,7 +8,7 @@ export default class ComplexFunctionTransform extends PointwiseTransform {
     /**
      * @param {Node} target
      * @param {Function} complexFunction
-     * @param {object} [configs={}] - your personal configurations of the evnet.
+     * @param {object} [configs={}] - your personal configurations of the event.
      */
     constructor(target, complexFunction, configs) {
         super(

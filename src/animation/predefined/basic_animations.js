@@ -8,7 +8,7 @@ export class MoveTo extends Animation {
     /**
      * @param {Node} target
      * @param {Vector} pos
-     * @param {object} [configs={}] - your personal configurations of the evnet.
+     * @param {object} [configs={}] - your personal configurations of the event.
      */
     constructor(target, pos, { runTime = 1, ...configs } = {}) {
         super();
@@ -35,7 +35,7 @@ export class ScaleBy extends Animation {
     /**
      * @param {Node} target
      * @param {number} factor
-     * @param {object} [configs={}] - your personal configurations of the evnet.
+     * @param {object} [configs={}] - your personal configurations of the event.
      */
     constructor(target, factor, { runTime = 1, ...configs } = {}) {
         super();
@@ -63,7 +63,7 @@ export class ScaleTo extends Animation {
     /**
      * @param {Node} target
      * @param {number} factor
-     * @param {object} [configs={}] - your personal configurations of the evnet.
+     * @param {object} [configs={}] - your personal configurations of the event.
      */
     constructor(target, factor, { runTime = 1, ...configs } = {}) {
         super();
@@ -91,7 +91,7 @@ export class RotateX extends Animation {
     /**
      * @param {Node} target
      * @param {number} angle
-     * @param {object} [configs={}] - your personal configurations of the evnet.
+     * @param {object} [configs={}] - your personal configurations of the event.
      */
     constructor(target, angle, { runTime = 1, ...configs } = {}) {
         super();
@@ -118,7 +118,7 @@ export class RotateY extends Animation {
     /**
      * @param {Node} target
      * @param {number} angle
-     * @param {object} [configs={}] - your personal configurations of the evnet.
+     * @param {object} [configs={}] - your personal configurations of the event.
      */
     constructor(target, angle, { runTime = 1, ...configs } = {}) {
         super();
@@ -145,7 +145,7 @@ export class RotateZ extends Animation {
     /**
      * @param {Node} target
      * @param {number} angle
-     * @param {object} [configs={}] - your personal configurations of the evnet.
+     * @param {object} [configs={}] - your personal configurations of the event.
      */
     constructor(target, angle, { runTime = 1, ...configs } = {}) {
         super();
