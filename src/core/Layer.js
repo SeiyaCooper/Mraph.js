@@ -71,25 +71,21 @@ export default class Layer {
     }
 
     /**
-     * Adds mobjects or lights to scene
-     * @param  {...Mobject | Light} objs
+     * Adds a mobject or light to this scene
+     * @param  {Mobject | Light} object
      * @returns {this}
      */
-    add(...objs) {
-        for (const object of objs) {
-            if (object instanceof Geomtry) {
-                object.set("layer", this);
-                this.scene.add(object);
+    add(object, { initialUpdate = true } = {}) {
+        if (object instanceof Geomtry) {
+            object.set("layer", this);
+            this.scene.add(object);
 
-                object.traverse((node) => {
-                    if (node.needsUpdate) node.update?.();
-                    if (node.needsUpdateMatrix) node.updateMatrix?.();
-                    node.needsUpdate = false;
-                    node.needsUpdateMatrix = false;
-                });
-            } else {
-                this.addSurrounding(object);
-            }
+            if (!initialUpdate) return this;
+            object.traverse((node) => {
+                node.update?.();
+            });
+        } else {
+            this.addSurrounding(object);
         }
 
         return this;
@@ -101,9 +97,10 @@ export default class Layer {
      * @param  {...any} animations
      */
     animate(...animations) {
+        const maxTime = this.timeline.maxTime;
         animations.forEach((animation) => {
             this.timeline.addAnimation(animation, {
-                biasSeconds: this.timeline.maxTime,
+                biasSeconds: maxTime,
             });
         });
     }
@@ -168,6 +165,12 @@ export default class Layer {
      * @returns {this}
      */
     render() {
+        this.scene.traverse((node) => {
+            if (node.needsUpdateMatrix) {
+                node.updateMatrix?.();
+                node.needsUpdateMatrix = false;
+            }
+        });
         this.renderer.render(this.scene, this.camera, this.surroundings);
         return this;
     }

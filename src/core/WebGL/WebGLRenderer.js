@@ -159,16 +159,6 @@ export default class WebGLRenderer {
                 return;
             }
 
-            if (node.needsUpdate) {
-                node.update?.();
-                node.needsUpdate = false;
-            }
-
-            if (node.needsUpdateMatrix) {
-                node.updateMatrix?.();
-                node.needsUpdateMatrix = false;
-            }
-
             if (Mobject2D.isInstance(node)) {
                 list2D.push(node);
             } else {

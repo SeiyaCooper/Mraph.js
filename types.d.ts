@@ -1321,10 +1321,6 @@ declare module "geometry/Geometry" {
          */
         visible: boolean;
         /**
-         * @type {boolean}
-         */
-        needsUpdate: boolean;
-        /**
          * Update variables.
          * Every geometry should have this method,
          * so that it can be updated when needed.
@@ -1786,7 +1782,9 @@ declare module "mobjects/2D/Mobject2D" {
         clearPaths(): void;
         clearBuffers(): void;
         finish(): void;
-        setColor(color: any): void;
+        setColor(color: any, { fillOpacity }?: {
+            fillOpacity?: number;
+        }): void;
         toMorphable(): any;
         fromMorphable(morphable: any): void;
     }
@@ -2061,11 +2059,13 @@ declare module "core/Layer" {
          */
         appendTo(el: HTMLElement): this;
         /**
-         * Adds mobjects or lights to scene
-         * @param  {...Mobject | Light} objs
+         * Adds a mobject or light to this scene
+         * @param  {Mobject | Light} object
          * @returns {this}
          */
-        add(...objs: (Mobject | Light)[]): this;
+        add(object: Mobject | Light, { initialUpdate }?: {
+            initialUpdate?: boolean;
+        }): this;
         /**
          * Adds some anmations.
          * These animations will play following the current animation.
@@ -2624,6 +2624,8 @@ declare module "mobjects/2D/Line" {
          * @param {Point} [end=[1,0]]
          */
         constructor(start?: Point, end?: Point);
+        strokeColor: import("mraph").Vector;
+        fillColor: import("mraph").Vector;
         tips: any[];
         tipWidth: number;
         tipLength: number;
@@ -2640,9 +2642,14 @@ declare module "mobjects/2D/Line" {
         /**
          * add a tip to this line
          * @param {number} at
-         * @param {Boolean} reverse
+         * @param {object} configs
+         * @param {Boolean} configs.reverse
+         * @param {number} configs.bias
          */
-        addTip(at: number, reverse?: boolean): void;
+        addTip(at: number, { reverse, bias }: {
+            reverse: boolean;
+            bias: number;
+        }): void;
         set vector(vec: any);
         get vector(): any;
         set length(val: any);
@@ -2749,7 +2756,7 @@ declare module "mobjects/2D/Axes2D" {
          * Creates an axes2d mobject
          * @param {Object} configs
          */
-        constructor({ xRange, yRange, origin, drawGrid, }?: any);
+        constructor({ xRange, yRange, origin, drawGrid, drawSubGrid, subdivisionCount, }?: any);
         _tickLength: number;
         origin: any;
         xRange: any;
@@ -2758,11 +2765,15 @@ declare module "mobjects/2D/Axes2D" {
         graphs: any[];
         xAxis: Axis;
         yAxis: Axis;
+        drawSubGrid: any;
+        subdivisionCount: any;
+        subGrid: Mobject2D;
         /**
-         * Adda tip to x and y axes
+         * Adda tips to x and y axes
          * @param {number} [at=1]
+         * @param {object} configs
          */
-        addTip(at?: number): void;
+        addTip(at?: number, configs?: object): void;
         /**
          * Plots a function on this plane
          * @param {*} func
@@ -2791,6 +2802,7 @@ declare module "mobjects/2D/VectorField2D" {
         yRange: number[];
         func: (x: any, y: any) => any[];
         commands: any;
+        setColor(color: any): void;
     }
     import Mobject2D from "mobjects/2D/Mobject2D";
     import Vector from "math/Vector";
@@ -2900,7 +2912,10 @@ declare module "mobjects/CanvasText" {
          * Creates a canvas text.
          * @param {string} text
          */
-        constructor(text: string);
+        constructor(text: string, { textFont, textSize }?: {
+            textFont?: string;
+            textSize?: number;
+        });
         canvas: HTMLCanvasElement;
         canvasContext: CanvasRenderingContext2D;
         _text: string;
@@ -2914,7 +2929,7 @@ declare module "mobjects/CanvasText" {
          * Draws this text to inner canvas so it can be rendered to layer.
          * Will be called automatically.
          */
-        drawText2Canvas(): void;
+        drawTextOnCanvas(): void;
     }
     import ImageMobject from "mobjects/ImageMobject";
 }

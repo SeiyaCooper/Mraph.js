@@ -12,32 +12,22 @@ export default class CanvasText extends ImageMobject {
 
     strokeColor = COLORS.BLACK;
 
-    textFont = "helvetica";
-
-    textSize = 60;
-
     /**
      * Creates a canvas text.
      * @param {string} text
      */
-    constructor(text) {
+    constructor(text, { textFont = "helvetica", textSize = 60 } = {}) {
         super();
+        this.textFont = textFont;
+        this.textSize = textSize;
         this.text = text;
-    }
-
-    /**
-     * Updates this mobject. Will be called automatically.
-     */
-    update() {
-        this.drawText2Canvas();
-        super.update();
     }
 
     /**
      * Draws this text to inner canvas so it can be rendered to layer.
      * Will be called automatically.
      */
-    drawText2Canvas() {
+    drawTextOnCanvas() {
         const text = this.text;
         const canvas = this.canvas;
         const ctx = this.canvasContext;
@@ -47,6 +37,7 @@ export default class CanvasText extends ImageMobject {
         const width = textParams.width;
         const height = Math.abs(textParams.fontBoundingBoxAscent) + Math.abs(textParams.fontBoundingBoxDescent);
 
+        console.log(width, text.textSize);
         canvas.width = width;
         canvas.height = height;
         this.width = width / 150;
@@ -63,6 +54,7 @@ export default class CanvasText extends ImageMobject {
 
     set text(text) {
         this._text = text;
+        this.drawTextOnCanvas();
         this.image = this.canvas;
     }
 

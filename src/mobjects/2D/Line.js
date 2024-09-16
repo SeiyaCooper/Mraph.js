@@ -1,11 +1,12 @@
 import Mobject2D from "./Mobject2D.js";
 import Point from "./Point.js";
-import Color from "../../math/Color.js";
 import Matrix from "../../math/Matrix.js";
+import * as COLORS from "../../constants/colors.js";
 
 export default class Line extends Mobject2D {
     strokeWidth = 0.05;
-    strokeColor = new Color(1, 1, 1, 1);
+    strokeColor = COLORS.WHITE.clone();
+    fillColor = COLORS.WHITE.clone();
     tips = [];
     tipWidth = 0.1;
     tipLength = 0.2;
@@ -35,13 +36,12 @@ export default class Line extends Mobject2D {
         this.clearGraph();
         this.move(this.start.center);
         this.line(this.end.center);
-
         this.stroke();
 
         if (!this.tips.length) return this;
         const start = this.start.center;
-        for (let [at, reverse] of this.tips) {
-            const vec = start.add(this.vector.mult(at)).add(this.vector.normal().mult(0.05));
+        for (let [at, reverse, bias] of this.tips) {
+            const vec = start.add(this.vector.mult(at)).add(this.vector.normal().mult(bias));
 
             this.move(vec);
 
@@ -59,8 +59,8 @@ export default class Line extends Mobject2D {
                 this.line(vec.minus(h).add(w));
                 this.line(vec.minus(h).minus(w));
             }
+            this.fill();
         }
-        this.fill();
 
         return this;
     }
@@ -77,10 +77,12 @@ export default class Line extends Mobject2D {
     /**
      * add a tip to this line
      * @param {number} at
-     * @param {Boolean} reverse
+     * @param {object} configs
+     * @param {Boolean} configs.reverse
+     * @param {number} configs.bias
      */
-    addTip(at, reverse = false) {
-        this.tips.push([at, reverse]);
+    addTip(at, { reverse = false, bias = 0.05 }) {
+        this.tips.push([at, reverse, bias]);
     }
 
     set vector(vec) {

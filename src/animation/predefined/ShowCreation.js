@@ -10,11 +10,6 @@ export default class ShowCreation extends Animation {
     constructor(target, { runTime = 1.5, ...configs } = {}) {
         super();
 
-        if (target.needsUpdate) {
-            target.update();
-            target.needsUpdate = false;
-        }
-
         let completedShape = { self: [] };
 
         const config = {

@@ -15,6 +15,6 @@ export default class Arrow extends Line {
             super(...param);
         }
         this.addTip(1);
-        this.setColor(COLORS.RED);
+        this.setColor(COLORS.RED, { fillOpacity: 1.0 });
     }
 }

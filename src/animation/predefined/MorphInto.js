@@ -16,11 +16,6 @@ export default class MorphInto extends Animation {
 
         if (!Mobject2D.isInstance(fromMobject) || !Mobject2D.isInstance(toMobject)) return;
 
-        if (toMobject.needsUpdate) {
-            toMobject.update();
-            toMobject.needsUpdate = false;
-        }
-
         let fromShape = { self: [] };
         let toShape = { self: [] };
         let fromColors = { self: [] };

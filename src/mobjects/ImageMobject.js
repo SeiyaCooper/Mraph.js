@@ -7,11 +7,6 @@ export default class ImageMobject extends Mobject {
 
     texture = undefined;
 
-    /**
-     * False by defalut, a image mobject should be updated only if the image is ready.
-     */
-    needsUpdate = false;
-
     constructor(image, { width = 1, height = 1, maintainAspectRatio = true } = {}) {
         super();
         this.image = image;
@@ -23,8 +18,9 @@ export default class ImageMobject extends Mobject {
     }
 
     update() {
-        let plane;
+        if (!this.image) return;
 
+        let plane;
         if (this.maintainAspectRatio) {
             let ratio = this.image.height / this.image.width;
             plane = new Plane({ width: this.width, height: ratio * this.width });
@@ -38,7 +34,9 @@ export default class ImageMobject extends Mobject {
     }
 
     set image(image) {
-        if (typeof image === "string") {
+        if (!image) {
+            this._image = image;
+        } else if (typeof image === "string") {
             Texture.loadFile(image, (texture) => {
                 this.image = texture.image;
             });
@@ -46,7 +44,7 @@ export default class ImageMobject extends Mobject {
             this._image = image;
             this.texture = new Texture({ image });
             this.material.diffuseTexture = this.texture;
-            this.needsUpdate = true;
+            this.update();
         }
     }
 

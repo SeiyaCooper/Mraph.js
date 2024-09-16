@@ -132,6 +132,7 @@ export default class Mobject2D extends Mobject {
         const fillColor = updateColor ? this.fillColor : this.colors[this.polygons.indexOf(polygon)].fillColor;
 
         if (polygon.length < 3) return;
+        if (!fillColor) return;
 
         const first = polygon[0];
         for (let i = 1; i < polygon.length - 1; i++) {
@@ -167,6 +168,8 @@ export default class Mobject2D extends Mobject {
         polygon = polygon ?? this.polygons[this.polygons.length - 1];
 
         const strokeColor = updateColor ? this.strokeColor : this.colors[this.polygons.indexOf(polygon)].strokeColor;
+
+        if (!strokeColor) return;
 
         for (let i = 1; i < polygon.length; i++) {
             const start = polygon[i];
@@ -215,7 +218,7 @@ export default class Mobject2D extends Mobject {
      */
     setPolygonColor(polygon, colorPair = {}) {
         const index = this.polygons.indexOf(polygon);
-        const newColors = this.colors[index] ?? { fillColor: this.fillColor, strokeColor: this.strokeColor };
+        const newColors = this.colors[index] ?? {};
 
         newColors.fillColor = colorPair.fillColor ?? newColors.fillColor;
         newColors.strokeColor = colorPair.strokeColor ?? newColors.strokeColor;
@@ -267,13 +270,15 @@ export default class Mobject2D extends Mobject {
     }
 
     finish() {
+        if (this.points.length === 0) return;
+
         this.polygons.push(Utils.deepCopy(this.points));
         this.points = [];
     }
 
-    setColor(color) {
+    setColor(color, { fillOpacity = 0.3 } = {}) {
         this.strokeColor = color;
-        this.fillColor = color.withRGBA({ a: 0.3 });
+        this.fillColor = color.withRGBA({ a: fillOpacity });
     }
 
     toMorphable() {

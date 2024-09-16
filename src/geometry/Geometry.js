@@ -38,11 +38,6 @@ export default class Geometry extends Node {
     visible = true;
 
     /**
-     * @type {boolean}
-     */
-    needsUpdate = true;
-
-    /**
      * Update variables.
      * Every geometry should have this method,
      * so that it can be updated when needed.
