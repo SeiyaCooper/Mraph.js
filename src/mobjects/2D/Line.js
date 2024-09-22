@@ -81,7 +81,7 @@ export default class Line extends Mobject2D {
      * @param {Boolean} configs.reverse
      * @param {number} configs.bias
      */
-    addTip(at, { reverse = false, bias = 0.05 }) {
+    addTip(at, { reverse = false, bias = 0.05 } = {}) {
         this.tips.push([at, reverse, bias]);
     }
 

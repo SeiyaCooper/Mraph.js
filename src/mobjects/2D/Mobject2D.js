@@ -276,7 +276,7 @@ export default class Mobject2D extends Mobject {
         this.points = [];
     }
 
-    setColor(color, { fillOpacity = 0.3 } = {}) {
+    setColor(color, { fillOpacity = 1.0 } = {}) {
         this.strokeColor = color;
         this.fillColor = color.withRGBA({ a: fillOpacity });
     }

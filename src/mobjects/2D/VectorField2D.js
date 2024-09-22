@@ -42,7 +42,7 @@ export default class VectorField2D extends Mobject2D {
 
                 this.mergeAttributes(arrow, "position", "color");
                 this.polygons = this.polygons.concat(arrow.polygons);
-                this.commands = this.commands.concat(arrow.commands);
+                this.colors = this.colors.concat(arrow.colors);
                 strokes.mergeAttributes(arrow.strokes, "position", "previous", "reverse", "color");
             }
         }

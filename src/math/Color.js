@@ -48,6 +48,10 @@ export default class Color extends Vector {
         return `rgba(${this.toIntRGBA().join()})`;
     }
 
+    static fromArray(array) {
+        return new Color(...array);
+    }
+
     static fromHex(hex) {
         if (hex <= 16777215 /*0xffffff*/) {
             const r = ((hex >> 16) & 255) / 255;
@@ -81,7 +85,7 @@ export default class Color extends Vector {
         const fromIndex = Math.min(colorIndex, colors.length - 2);
         const toIndex = fromIndex + 1;
 
-        return MathFunc.lerpArray(colors[fromIndex], colors[toIndex], colorsNum * alpha - fromIndex);
+        return Color.fromArray(MathFunc.lerpArray(colors[fromIndex], colors[toIndex], colorsNum * alpha - fromIndex));
     }
 
     static isInstance(obj) {

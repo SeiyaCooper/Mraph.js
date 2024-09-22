@@ -608,6 +608,7 @@ declare module "math/Vector" {
 }
 declare module "math/Color" {
     export default class Color extends Vector {
+        static fromArray(array: any): Color;
         static fromHex(hex: any): Color;
         static fromHexStr(str: any): Color;
         /**
@@ -616,7 +617,7 @@ declare module "math/Color" {
          * @param {number} alpha
          * @returns
          */
-        static interpolate(colors: Color[], alpha: number): number[];
+        static interpolate(colors: Color[], alpha: number): Color;
         static isInstance(obj: any): boolean;
         /**
          * @param {number} [r=0]
@@ -2646,7 +2647,7 @@ declare module "mobjects/2D/Line" {
          * @param {Boolean} configs.reverse
          * @param {number} configs.bias
          */
-        addTip(at: number, { reverse, bias }: {
+        addTip(at: number, { reverse, bias }?: {
             reverse: boolean;
             bias: number;
         }): void;
@@ -2796,15 +2797,15 @@ declare module "mobjects/2D/VectorField2D" {
             yRange?: number[];
         });
         lengthFunc: (length: any) => number;
-        colorFunc: (x: any, y: any, length: any) => number[];
+        colorFunc: (x: any, y: any, length: any) => Color;
         _center: Vector;
         xRange: number[];
         yRange: number[];
         func: (x: any, y: any) => any[];
-        commands: any;
         setColor(color: any): void;
     }
     import Mobject2D from "mobjects/2D/Mobject2D";
+    import Color from "math/Color";
     import Vector from "math/Vector";
 }
 declare module "mobjects/3D/Mobject3D" {

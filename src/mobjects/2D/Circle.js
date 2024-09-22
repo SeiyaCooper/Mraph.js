@@ -13,7 +13,7 @@ export default class Circle extends Arc {
     constructor({ center = [0, 0, 0], radius = 1 } = {}) {
         super(0, 2 * Math.PI, radius);
         this.center = center;
-        this.setColor(COLORS.RED.clone());
+        this.setColor(COLORS.RED.clone(), { fillOpacity: 0.3 });
     }
 
     update() {

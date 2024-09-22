@@ -12,7 +12,7 @@ export default class RegularPolygon extends Polygon {
         this.vertexNum = n;
         this.sideLength = sideLength;
         this.startAngle = startAngle;
-        this.setColor(COLORS.SEIYA_PINK.clone());
+        this.setColor(COLORS.SEIYA_PINK.clone(), { fillOpacity: 0.3 });
     }
 
     update() {

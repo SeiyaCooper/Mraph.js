@@ -9,6 +9,6 @@ export default class Square extends RegularPolygon {
     constructor(configs) {
         configs = { startAngle: Math.PI / 4, ...configs };
         super(4, configs);
-        this.setColor(COLORS.BLUE.clone());
+        this.setColor(COLORS.BLUE.clone(), { fillOpacity: 0.3 });
     }
 }
