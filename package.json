@@ -1,7 +1,7 @@
 {
     "name": "mraph",
     "version": "0.0.2-dev.2",
-    "description": "",
+    "description": "A poor animation engine",
     "type": "module",
     "types": "types.d.ts",
     "main": "dist/mraph.umd.js",

@@ -22,5 +22,8 @@
     "keywords": [
         "mraph",
         "recorder"
-    ]
+    ],
+    "dependencies": {
+        "tar": "^7.4.3"
+    }
 }
