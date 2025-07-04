@@ -42,16 +42,10 @@ const angleUnit = (Math.PI * 2) / pointsNum;
 for (let j = 0; j < layersNum; j++) {
     for (let i = 1; i <= pointsNum; i++) {
         const point = new MRAPH.Point(Math.cos(angleUnit * i) * (3 + j * 2), Math.sin(angleUnit * i) * (3 + j * 2));
-        layer.add(point);
-
         point.setColor(new MRAPH.Color(Math.random(), Math.random(), Math.random()));
+        layer.add(point);
     }
 }
-
-// Adds those points to the layer
-layer.scene.children.forEach((point) => {
-    layer.add(point);
-});
 
 // Sets an infinite event
 // This event will remain perpetually active
