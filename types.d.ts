@@ -2248,54 +2248,6 @@ declare module "animation/predefined/ShowVanishing" {
     }
     import Animation from "animation/Animation";
 }
-declare module "extra/Recorder" {
-    export default class Recorder {
-        /**
-         * A simple recorder helps you to recorde videos
-         * @param {HTMLCanvasElement} target
-         * @param {object} options An object used to define following parameters, optional
-         * * mimeType {string} sets mime type of video recorded, optional.
-         * * fps {number} sets fps of video recorded, optional.
-         * * audioBitsPerSecond {number} The chosen bitrate for the audio component of the media, optional.
-         * * videoBitsPerSecond {number} The chosen bitrate for the video component of the media, optional.
-         * * bitsPerSecond {number} The chosen bitrate for the audio and video components of the media.
-         *                          This can be specified instead of the above two properties.
-         *                          If this is specified along with one or the other of the above properties, this will be used for the one that isn't specified.
-         */
-        constructor(target: HTMLCanvasElement, { mimeType, fps, audioBitsPerSecond, videoBitsPerSecond, bitsPerSecond }?: object);
-        /**
-         * Data of video recorded, undefined by default.
-         */
-        data: any;
-        /**
-         * Callback function, will be called if data is available.
-         */
-        onAvailable: () => void;
-        target: HTMLCanvasElement;
-        recorder: MediaRecorder;
-        /**
-         * Start recording
-         * @returns {this}
-         */
-        start(): this;
-        /**
-         * Pause recording
-         * @returns {this}
-         */
-        pause(): this;
-        /**
-         * Stop recording
-         * @returns {this}
-         */
-        stop(): this;
-        /**
-         * Download a video if data is available
-         * @param {string} name
-         * @returns {this}
-         */
-        download(name?: string): this;
-    }
-}
 declare module "material/CustomMaterial" {
     export default class CustomMaterial extends Material {
         constructor({ vertexShader, fragmentShader }?: {
@@ -3072,7 +3024,6 @@ declare module "mraph" {
     import ShowCreation from "animation/predefined/ShowCreation";
     import ShowVanishing from "animation/predefined/ShowVanishing";
     import OrbitControl from "extra/OrbitControl";
-    import Recorder from "extra/Recorder";
-    export { Color, Matrix, Vector, Quat, Complex, Geometry, Plane, Box, Segment, Sphere, Cylinder, DirectionalLight, PointLight, Mobject, ImageMobject, CanvasText, Mobject2D, Point, Tail, Line, Polygon, RegularPolygon, Square, Arc, Circle, Arrow, Axis, Axes2D, VectorField2D, FunctionGraph2D, Mobject3D, FunctionGraph3D, Point3D, Arrow3D, VectorField3D, Layer, Camera, Texture, WebGLRenderer, WebGLProgram, CustomMaterial, BasicMaterial, DepthMaterial, LambertMaterial, Mobject2DMaterial, Event, Timeline, Animation, PointwiseTransform, ComplexFunctionTransform, MatrixTransform, MorphInto, ShowCreation, ShowVanishing, OrbitControl, Recorder };
+    export { Color, Matrix, Vector, Quat, Complex, Geometry, Plane, Box, Segment, Sphere, Cylinder, DirectionalLight, PointLight, Mobject, ImageMobject, CanvasText, Mobject2D, Point, Tail, Line, Polygon, RegularPolygon, Square, Arc, Circle, Arrow, Axis, Axes2D, VectorField2D, FunctionGraph2D, Mobject3D, FunctionGraph3D, Point3D, Arrow3D, VectorField3D, Layer, Camera, Texture, WebGLRenderer, WebGLProgram, CustomMaterial, BasicMaterial, DepthMaterial, LambertMaterial, Mobject2DMaterial, Event, Timeline, Animation, PointwiseTransform, ComplexFunctionTransform, MatrixTransform, MorphInto, ShowCreation, ShowVanishing, OrbitControl };
     export { MoveTo, ScaleBy, ScaleTo, RotateX, RotateY, RotateZ } from "./animation/predefined/basic_animations.js";
 }

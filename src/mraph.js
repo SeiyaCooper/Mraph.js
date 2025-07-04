@@ -14,7 +14,6 @@ import ShowCreation from "./animation/predefined/ShowCreation.js";
 import ShowVanishing from "./animation/predefined/ShowVanishing.js";
 
 import OrbitControl from "./extra/OrbitControl.js";
-import Recorder from "./extra/Recorder.js";
 
 import WebGLRenderer from "./core/WebGL/WebGLRenderer.js";
 import WebGLProgram from "./core/WebGL/WebGLProgram.js";
@@ -153,5 +152,4 @@ export {
 
     // Extra
     OrbitControl,
-    Recorder,
 };

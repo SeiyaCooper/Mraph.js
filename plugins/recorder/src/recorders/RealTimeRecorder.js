@@ -1,18 +1,18 @@
 import MraphError from "../utils/MraphError.js";
 
-export default class Recorder {
+export default class RealTimeRecorder {
     /**
-     * Data of video recorded, undefined by default.
+     * The video recorded, undefined by default.
      */
-    data = undefined;
+    video = undefined;
 
     /**
-     * Callback function, will be called if data is available.
+     * Callback function, will be called if video is available.
      */
     onAvailable = () => {};
 
     /**
-     * A simple recorder helps you to recorde videos
+     * A simple recorder helps you to recorde real-time videos and download it.
      * @param {HTMLCanvasElement} target
      * @param {object} options An object used to define following parameters, optional
      * * mimeType {string} sets mime type of video recorded, optional.
@@ -32,8 +32,8 @@ export default class Recorder {
             bitsPerSecond,
         });
         this.recorder.ondataavailable = (e) => {
-            this.data = e.data;
-            this.onAvailable(this.data);
+            this.video = e.video;
+            this.onAvailable(this.video);
         };
     }
 
@@ -74,18 +74,18 @@ export default class Recorder {
     }
 
     /**
-     * Download a video if data is available
+     * Download video if it is available
      * @param {string} name
      * @returns {this}
      */
     download(name = "video") {
-        if (!this.data) {
-            MraphError.error("Data is still not available, try calling this function in Recorder.onAvailable()");
+        if (!this.video) {
+            MraphError.error("Data is still not available, try calling this function in Recorder.onAvailable");
             return this;
         }
 
         const a = document.createElement("a");
-        const url = URL.createObjectURL(this.data);
+        const url = URL.createObjectURL(this.video);
         a.href = url;
         a.download = name;
         a.click();

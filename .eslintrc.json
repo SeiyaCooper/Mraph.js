@@ -12,6 +12,7 @@
         "ecmaVersion": "latest",
         "sourceType": "module"
     },
+    "ignorePatterns": ["dist/**", "plugins/recorder/dist/**"],
     "rules": {
         "prettier/prettier": "error"
     }

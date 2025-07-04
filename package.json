@@ -8,11 +8,13 @@
     "scripts": {
         "prepare": "husky install && yarn build",
         "precommit": "yarn lint && yarn types && git add .",
-        "lint": "eslint src --fix",
+        "prepublishOnly": "yarn lint && yarn types && yarn build",
+        "lint": "eslint src plugins --fix",
         "types": "tsc",
         "site:dev": "astro dev",
         "site:build": "astro build",
-        "build": "vite build"
+        "build": "vite build",
+        "build:recorder": "cd plugins/recorder && vite build"
     },
     "repository": {
         "type": "git",
