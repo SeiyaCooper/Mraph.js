@@ -1,181 +1,208 @@
-import Event from "./Event.js";
-import SpecialEvent from "./SpecialEvent.js";
+import Action from "./Action.js";
 
-const STATE = {
+const STATES = {
     STOPPED: "STOPPED",
     PLAYING: "PLAYING",
     PAUSED: "PAUSED",
 };
 
-let eventId = 0;
-
-let startTime;
-let frame, lastFrame;
+let actionId = 0;
 
 export default class Timeline {
     /**
-     * A short string to describe state
+     * A short string to describe current state
      * @type {string}
      */
-    state = STATE.STOPPED;
+    state = STATES.STOPPED;
 
     /**
-     * list for events to be called
-     * @type {Event[]}
+     * list for normal actions
+     * @type {Action[]}
      */
-    events = [];
+    actions = [];
 
     /**
      * list for evnets which would be called whenever timeline is active
-     * @type {SpecialEvent[]}
+     * @type {Action[]}
      */
-    globalEvents = [];
+    globalActions = [];
 
     /**
-     * list for events that would always be called,
-     * those events will keep this timeline active
-     * @type {SpecialEvent[]}
+     * list of actions that would always be called, which will keep this timeline active
+     * @type {Action[]}
      */
-    infiniteEvents = [];
+    infiniteActions = [];
 
     /**
-     * Returns value of requsetAnimationFrame()
+     * list of actions that would be called only one time.
+     * @type {Action[]}
+     */
+    onceActions = [];
+
+    /**
+     * Returns the value of returned by calling requsetAnimationFrame()
+     * Default to be null
      * @type {number | null}
      */
     clock = null;
 
     /**
+     * The logical frames per second (FPS) of this timeline.
+     * When set to a positive value (>0), the animation will advance by a fixed step (1/fps seconds) each frame.
+     * When set to a non-positive value (<=0), the animation will advance by the actual time interval between frames.
+     * Default to be 0.
      * @type {number}
      */
-    _maxTime = 0;
+    logicalFps = 0;
 
     /**
+     * The minimum real duration (in seconds) between frames when fps is positive.
+     * Only have effect when both Timeline.fps and this are positive (>0).
+     * If rendering takes longer than this duration, it will have no effect.
      * @type {number}
      */
-    _minTime = Infinity;
+    durationSec = 0;
 
     /**
+     * Max time (in milliseconds)
+     * @type {number}
+     * @see maxTime
+     */
+    _maxMs = 0;
+
+    /**
+     * Min time (in milliseconds)
+     */
+    _minMs = Infinity;
+
+    /**
+     * Internal timestamp (in milliseconds) when the timeline was last started.
+     * @private
+     * @type {number}
+     */
+    startTime = 0;
+
+    /**
+     * Elapsed time (in milliseconds) when Timeline.forward() was last called.
+     * @private
      * @type {number}
      */
     current = 0;
 
     /**
+     * The index of current frame.
+     * @private
      * @type {number}
      */
-    fps = 0;
+    frame = 0;
 
     /**
-     * The duration between each frame when fps is setted.
-     * @type {number}
+     * Adds an action to this timeline.
+     * @param {Number} startAt start time in seconds
+     * @param {Number} duration duration time in seconds
+     * @param {object} configs Configuration object, optional
+     * @param {(progress: number, elapsedTimeSec: number) => void} configs.onUpdate Update callback, optional
+     * @param {() => void} configs.onStart Start callback, optional
+     * @param {() => void} configs.onStop Stop callback, optional
+     * @param {(progress: number) => number} configs.curve Animation curve function, optional
+     * @param {number} configs.priority
+     * @return {Action} The action instance created
      */
-    duration = 0;
-
-    /**
-     * Adds an event to this timeline.
-     * @param {Number} start
-     * @param {Number} stop
-     * @param {object} handle
-     * @param {object} config
-     * @return {Event}
-     */
-    add(
-        startTime,
-        stopTime,
-        { update, start, stop, updateMax = true, updateMin = true, curve = Timeline.easeInOutCubic } = {}
-    ) {
-        const event = new Event(startTime, stopTime, {
-            update,
-            start,
-            stop,
+    add(startAt, duration, { onUpdate, onStart, onStop, curve = Timeline.easeInOutCubic, priority = 0 } = {}) {
+        const action = new Action(startAt, duration, {
+            onUpdate,
+            onStart,
+            onStop,
             curve,
+            priority,
         });
-        event.id = eventId;
-        eventId++;
+        action.id = actionId;
+        actionId++;
 
-        this.events.push(event);
+        this.actions.push(action);
+        this.actions.sort((a, b) => b.priority - a.priority);
 
-        if (updateMax) this._maxTime = Math.max(stopTime * 1000, this._maxTime);
-        if (updateMin) this._minTime = Math.min(startTime * 1000, this._minTime);
+        this.maxMs = Math.max((startAt + duration) * 1000, this.maxMs);
+        this.minMs = Math.min(startAt * 1000, this.minMs);
 
-        return event;
+        return action;
     }
 
     /**
-     * Adds a one-time-only event.
+     * Adds a one-time-only action.
      * @param {number} at
      * @param {Function} handler
+     * @return {Action}
      */
-    once(at, handler) {
-        return this.add(at, at, { stop: handler });
+    addOnce(at, handler) {
+        const onceAction = new Action(at, 0, {
+            onActive: handler,
+        });
+
+        this.maxMs = Math.max(at * 1000, this.maxMs);
+        this.minMs = Math.min(at * 1000, this.minMs);
+
+        onceAction.id = actionId;
+        actionId++;
+        this.onceActions.push(onceAction);
+        this.onceActions.sort((a, b) => b.priority - a.priority);
+
+        return onceAction;
     }
 
     /**
-     * Adds an event to event list following last event.
-     * @param {Number} hold
-     * @param {object} configs
-     * @return {this}
+     * Adds an action to action list following last action.
+     * @param {Number} holdSec
+     * @param {object} configs Configuration object, optional
+     * @param {(progress: number, elapsedTimeSec: number) => void} configs.onUpdate Update callback, optional
+     * @param {() => void} configs.onStart Start callback, optional
+     * @param {() => void} configs.onStop Stop callback, optional
+     * @param {(progress: number) => number} configs.curve Animation curve function, optional
+     * @param {number} configs.priority
+     * @return {Action}
      */
-    addFollowing(hold, configs) {
+    addFollowing(holdSec, configs) {
         const offset = configs.offset ?? 0;
-        return this.add(this.maxTime + offset, this.maxTime + hold + offset, configs);
+        return this.add(this.maxSec, holdSec + offset, configs);
     }
 
     /**
-     * Adds an event beginning at the earliest time and concluding at the latest time.
-     * @param {object} configs
-     * @returns {this}
-     */
-    addWhole(configs) {
-        return this.add(this.minTime, this.maxTime, configs);
-    }
-
-    /**
-     * Adds a global event, this event will be called whenever timeline is active。
-     * If there is an infinite event attached to this timeline, it would behaved like infinite events, otherwise it would behaved like whole events.
+     * Adds a global action, this action will be called whenever timeline is active
+     * If there is any infinite action attached to this timeline, it would behaved like a infinite action, otherwise it would behaved like an action that spans from begining to ending
      * @param {Function} handler
-     * @returns {this}
+     * @returns {Action}
      */
-    addGlobal(handler) {
-        const event = new SpecialEvent(handler);
-        event.id = eventId;
-        eventId++;
-        this.globalEvents.push(event);
+    addGlobal(configs) {
+        const globalAction = new Action(this.minSec, this.maxSec - this.minSec, configs);
+
+        globalAction.id = actionId;
+        actionId++;
+        this.globalActions.push(globalAction);
+        this.globalActions.sort((a, b) => b.priority - a.priority);
+
+        return globalAction;
     }
 
     /**
-     * Adds an infinite event
+     * Adds an infinite action
      * @param {Function} handler
-     * @returns {this}
+     * @returns {Action}
      */
     addInfinite(handler) {
-        const event = new SpecialEvent(handler);
-        event.id = eventId;
-        eventId++;
-        this.infiniteEvents.push(event);
+        const action = new Action(0, Infinity, {
+            onActive: handler,
+        });
+
+        action.id = actionId;
+        actionId++;
+        this.infiniteActions.push(action);
+        this.infiniteActions.sort((a, b) => b.priority - a.priority);
+
+        return action;
     }
 
     /**
-     * Adds an animation.
-     * @param {Animation} animation
-     * @param {object} [configs={}]
-     * @param {number} [configs.biasSeconds=0] - Time bias in seconds to adjust the event timings.
-     */
-    addAnimation(animation, { biasSeconds = 0, updateMax, updateMin } = {}) {
-        for (let event of animation.events) {
-            this.add(event.startTime + biasSeconds, event.stopTime + biasSeconds, {
-                update: event.update,
-                start: event.start,
-                stop: event.stop,
-                curve: event.curve,
-
-                updateMax,
-                updateMin,
-            });
-        }
-    }
-
-    /**
-     * Deletes an event from this timeline
+     * Deletes an action from this timeline
      * @param {object | number} target
      */
     delete(target) {
@@ -184,96 +211,128 @@ export default class Timeline {
     }
 
     /**
-     * Deletes an event accroding to its id
+     * Deletes an action accroding to its id
      * @param {number} id
      */
     deleteById(id) {
-        for (let index in this.events) {
-            if (this.events[index].id === id) this.events.splice(index, 1);
+        for (let index in this.actions) {
+            if (this.actions[index].id === id) this.actions.splice(index, 1);
         }
-        for (let index in this.infiniteEvents) {
-            if (this.infiniteEvents[index].id === id) this.infiniteEvents.splice(index, 1);
+        for (let index in this.infiniteActions) {
+            if (this.infiniteActions[index].id === id) this.infiniteActions.splice(index, 1);
         }
-        for (let index in this.globalEvents) {
-            if (this.globalEvents[index].id === id) this.globalEvents.splice(index, 1);
+        for (let index in this.globalActions) {
+            if (this.globalActions[index].id === id) this.globalActions.splice(index, 1);
+        }
+        for (let index in this.onceActions) {
+            if (this.onceActions[index].id === id) this.onceActions.splice(index, 1);
+        }
+    }
+
+    forward() {
+        if (this.state === STATES.STOPPED) {
+            this.startTime = +new Date();
+            this.frame = -1;
+        }
+        if (this.state === STATES.PAUSED) {
+            this.startTime = +new Date() - this.current;
+        }
+        this.state = STATES.PLAYING;
+
+        let nowMs, nowFrame;
+        if (this.logicalFps > 0) {
+            if (this.durationSec > 0) {
+                nowFrame = Math.floor((+new Date() - this.startTime) / 1000 / this.durationSec);
+            } else {
+                nowFrame = this.frame + 1;
+            }
+            nowMs = (nowFrame / this.logicalFps) * 1000;
+        } else {
+            nowMs = +new Date() - this.startTime;
+        }
+
+        this.current = nowMs;
+
+        if (this.logicalFps <= 0) {
+            this.process();
+        } else if (nowFrame !== this.frame) {
+            this.process();
+            this.frame = nowFrame;
         }
     }
 
     /**
-     * Starts palying animation
      * @returns {void}
      */
     play() {
-        const self = this;
-
-        if (this.state === STATE.STOPPED) {
-            startTime = +new Date();
-            frame = 0;
-            lastFrame = -1;
+        if (this.state === STATES.PLAYING) return;
+        if (this.state === STATES.STOPPED) {
+            this.startTime = +new Date();
+            this.frame = -1;
         }
-        if (this.state === STATE.PAUSED) {
-            startTime = +new Date() - this.current * 1000;
+        if (this.state === STATES.PAUSED) {
+            this.startTime = +new Date() - this.current;
         }
-        if (this.state === STATE.PLAYING) return;
+        this.state = STATES.PLAYING;
 
-        this.state = STATE.PLAYING;
-
-        (function animate() {
-            if (self.state !== STATE.PLAYING) return;
-
-            let now;
-            if (self.fps) {
-                if (self.duration) {
-                    frame = Math.floor((+new Date() - startTime) / 1000 / self.duration);
-                } else {
-                    frame++;
-                }
-                now = frame / self.fps;
-            } else {
-                now = (+new Date() - startTime) / 1000;
-            }
-
-            if (now > self.maxTime && self.allStopped && self.infiniteEvents.length === 0) {
-                self.state = STATE.STOPPED;
-                return;
-            }
-
-            self.current = now;
-            if (frame !== lastFrame) self.process();
-            self.clock = requestAnimationFrame(animate);
-
-            if (self.fps && self.duration) lastFrame = frame;
-        })();
+        let animate = () => {
+            if (this.state !== STATES.PLAYING) return;
+            this.forward();
+            requestAnimationFrame(animate);
+        };
+        animate();
     }
 
     /**
-     * Triggers events by current time
+     * Triggers actions by current time
      */
     process() {
-        const events = this.events;
         const now = this.current;
+        const nowSec = now / 1000;
 
-        for (let handler of this.infiniteEvents) {
-            handler.execute();
+        for (let action of this.infiniteActions) {
+            action.onActive();
         }
 
-        if (now > this.minTime || this.infiniteEvents.length !== 0) {
-            for (let handler of this.globalEvents) {
-                handler.execute();
+        if (now >= this.minMs || this.infiniteActions.length !== 0) {
+            for (let action of this.globalActions) {
+                action.onActive();
             }
         }
 
-        if (now < this.minTime) return;
-        for (let event of events) {
-            event.execute(now);
+        if (now < this.minMs) return;
+        for (let action of this.actions) {
+            action.execute(nowSec);
         }
+        for (let action of this.onceActions) {
+            if (action.isStopped) continue;
+            if (nowSec >= action.startAt) {
+                action.isStarted = true;
+                action.isStopped = true;
+                action.onActive();
+            }
+        }
+        for (let action of this.globalActions) {
+            action.execute(nowSec);
+        }
+
+        if (now < this.maxMs || !this.allStopped || this.infiniteActions.length !== 0) return;
+
+        this.state = STATES.STOPPED;
+    }
+
+    /**
+     * Pauses palying aniamtion
+     */
+    pause() {
+        this.state = STATES.PAUSED;
     }
 
     /**
      * Stops palying aniamtion
      */
-    pause() {
-        if (this.clock) this.state = STATE.PAUSED;
+    halt() {
+        this.state = STATES.STOPPED;
     }
 
     /**
@@ -282,139 +341,85 @@ export default class Timeline {
     dispose() {
         this.pause();
 
-        this.infiniteEvents = [];
-        this.globalEvents = [];
-        this.events = [];
+        this.infiniteActions = [];
+        this.globalActions = [];
+        this.actions = [];
 
-        cancelAnimationFrame(this.clock);
-    }
-
-    /**
-     * Linear function
-     * @param {number} t - process, 0 to 1
-     * @returns {number}
-     */
-    static linear = (t) => t;
-
-    /**
-     * Quadratic ease in function
-     * @param {number} t - process, 0 to 1
-     * @returns {number}
-     */
-    static easeInQuad = (t) => t * t;
-
-    /**
-     * Quadratic ease out function
-     * @param {number} t - process, 0 to 1
-     * @returns {number}
-     */
-    static easeOutQuad = (t) => 1 - (1 - t) * (1 - t);
-
-    /**
-     * Quadratic ease in out function
-     * @param {number} t - process, 0 to 1
-     * @returns {number}
-     */
-    static easeInOutQuad = (t) => (t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2);
-
-    /**
-     * Cubic ease in function
-     * @param {number} t - process, 0 to 1
-     * @returns {number}
-     */
-    static easeInCubic = (t) => t * t * t;
-
-    /**
-     * Cubic ease out function
-     * @param {number} t - process, 0 to 1
-     * @returns {number}
-     */
-    static easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
-
-    /**
-     * Cubic ease in out function
-     * @param {number} t - process, 0 to 1
-     * @returns {number}
-     */
-    static easeInOutCubic = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
-
-    /**
-     * Sine ease in function
-     * @param {number} t - process, 0 to 1
-     * @returns {number}
-     */
-    static easeInSine = (t) => 1 - Math.cos((t * Math.PI) / 2);
-
-    /**
-     * Sine ease out function
-     * @param {number} t - process, 0 to 1
-     * @returns {number}
-     */
-    static easeOutSine = (t) => Math.sin((t * Math.PI) / 2);
-
-    /**
-     * Sine ease in out function
-     * @param {number} t - process, 0 to 1
-     * @returns {number}
-     */
-    static easeInOutSine = (t) => -(Math.cos(Math.PI * t) - 1) / 2;
-
-    /**
-     * Bounce ease in function
-     * @param {number} t - process, 0 to 1
-     * @returns {number}
-     */
-    static easeInBounce = (t) => 1 - Timeline.easeOutBounce(1 - t);
-
-    /**
-     * Bounce ease out function
-     * @param {number} t - process, 0 to 1
-     * @returns {number}
-     */
-    static easeOutBounce = (t) => {
-        const n1 = 7.5625;
-        const d1 = 2.75;
-
-        if (t < 1 / d1) {
-            return n1 * t * t;
-        } else if (t < 2 / d1) {
-            return n1 * (t -= 1.5 / d1) * t + 0.75;
-        } else if (t < 2.5 / d1) {
-            return n1 * (t -= 2.25 / d1) * t + 0.9375;
-        } else {
-            return n1 * (t -= 2.625 / d1) * t + 0.984375;
+        if (this.clock) {
+            cancelAnimationFrame(this.clock);
         }
-    };
+    }
+
+    set maxSec(val) {
+        this.maxMs = val * 1000;
+    }
+
+    get maxSec() {
+        return this.maxMs / 1000;
+    }
+
+    set minSec(val) {
+        this.minMs = val * 1000;
+    }
+
+    get minSec() {
+        return this.minMs / 1000;
+    }
 
     /**
-     * Bounce ease in out function
-     * @param {number} t - process, 0 to 1
-     * @returns {number}
+     * @param {number} val
      */
-    static easeInOutBounce = (t) =>
-        t < 0.5 ? (1 - Timeline.easeOutBounce(1 - 2 * t)) / 2 : (1 + Timeline.easeOutBounce(2 * t - 1)) / 2;
-
-    set maxTime(val) {
-        this._maxTime = val * 1000;
+    set maxMs(val) {
+        this._maxMs = val;
+        for (let action of this.globalActions) {
+            action.durationSec = val / 1000 - action.startAt;
+        }
     }
 
-    get maxTime() {
-        return this._maxTime / 1000;
+    /**
+     * @return {number}
+     */
+    get maxMs() {
+        return this._maxMs;
     }
 
-    set minTime(val) {
-        this._minTime = val * 1000;
+    /**
+     * @param {number} val
+     */
+    set minMs(val) {
+        this._minMs = val;
+        for (let action of this.globalActions) {
+            action.durationSec += action.startAt - val / 1000;
+            action.startAt = val / 1000;
+        }
     }
 
-    get minTime() {
-        return this._minTime / 1000;
+    /**
+     * @return {number}
+     */
+    get minMs() {
+        return this._minMs;
     }
 
     get allStopped() {
-        let isStopped = true;
-        for (const event of this.events) {
-            if (!event.isStopped) isStopped = false;
+        for (const action of this.actions) {
+            if (!action.isStopped) return false;
         }
-        return isStopped;
+        for (const action of this.onceActions) {
+            if (!action.isStopped) return false;
+        }
+        return true;
+    }
+
+    get isPlaying() {
+        return this.state === STATES.PLAYING;
+    }
+
+    get isStopped() {
+        return this.state === STATES.STOPPED;
+    }
+
+    get isPaused() {
+        return this.state === STATES.PAUSED;
     }
 }

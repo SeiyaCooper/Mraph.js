@@ -2,14 +2,12 @@ import Layer from "./core/Layer.js";
 import Camera from "./core/Camera.js";
 import Texture from "./core/Texture.js";
 
-import Event from "./animation/Event.js";
+import Action from "./animation/Action.js";
 import Timeline from "./animation/Timeline.js";
-import Animation from "./animation/Animation.js";
-
 import PointwiseTransform from "./animation/predefined/PointwiseTransform.js";
-import ComplexFunctionTransform from "./animation/predefined/ComplexFunctionTransform.js";
-import MatrixTransform from "./animation/predefined/MatrixTransform.js";
+import CompleFuncTransform from "./animation/predefined/ComplexFunctionTransform.js";
 import MorphInto from "./animation/predefined/MorphInto.js";
+import MatrixTransform from "./animation/predefined/MatrixTransform.js";
 import ShowCreation from "./animation/predefined/ShowCreation.js";
 import ShowVanishing from "./animation/predefined/ShowVanishing.js";
 
@@ -67,6 +65,7 @@ import ImageMobject from "./mobjects/ImageMobject.js";
 import CanvasText from "./mobjects/CanvasText.js";
 
 export * as MathFunc from "./math/math_func.js";
+export * as AnimFunc from "./animation/anim_func.js";
 
 export * as OBJLoader from "./extra/OBJLoader.js";
 
@@ -140,13 +139,12 @@ export {
     Mobject2DMaterial,
 
     // Animation
-    Event,
+    Action,
     Timeline,
-    Animation,
+    CompleFuncTransform,
     PointwiseTransform,
-    ComplexFunctionTransform,
-    MatrixTransform,
     MorphInto,
+    MatrixTransform,
     ShowCreation,
     ShowVanishing,
 

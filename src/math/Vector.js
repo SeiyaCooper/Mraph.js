@@ -87,7 +87,7 @@ export default class Vector extends Array {
     divide(num) {
         const ans = Vector.fromRow(this.row, 1);
         for (let i = 0; i < this.row; i++) {
-            ans[i] = num / this[i];
+            ans[i] = this[i] / num;
         }
         return ans;
     }

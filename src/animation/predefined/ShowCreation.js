@@ -1,28 +1,21 @@
-import Animation from "../Animation.js";
-import Event from "../Event.js";
 import * as MathFunc from "../../math/math_func.js";
 
-export default class ShowCreation extends Animation {
-    /**
-     * @param {Mobject} target
-     * @param {object} [configs={}] - your personal configurations of the event.
-     */
-    constructor(target, { runTime = 1.5, ...configs } = {}) {
-        super();
+/**
+ * @param {Mobject} target
+ * @param {object} [configs={}] - your personal configurations of the event.
+ */
+export default function ShowCreation(target, { ...configs } = {}) {
+    let completedShape = { self: [] };
 
-        let completedShape = { self: [] };
-
-        const config = {
-            start: () => {
-                completedShape.self = target.toMorphable();
-            },
-            update: (p) => {
-                target.fromMorphable(generatePartialShape(completedShape.self, p));
-            },
-            ...configs,
-        };
-        this.add(new Event(0, runTime, config));
-    }
+    return {
+        onStart: () => {
+            completedShape.self = target.toMorphable();
+        },
+        onUpdate: (p) => {
+            target.fromMorphable(generatePartialShape(completedShape.self, p));
+        },
+        ...configs,
+    };
 }
 
 function generatePartialShape(completed, alpha) {

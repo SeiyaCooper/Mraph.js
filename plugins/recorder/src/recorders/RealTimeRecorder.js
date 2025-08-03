@@ -1,4 +1,4 @@
-import MraphError from "../utils/MraphError.js";
+import MraphError from "../../../../src/utils/MraphError.js";
 
 export default class RealTimeRecorder {
     /**

@@ -1,166 +1,121 @@
-import Animation from "../Animation.js";
-import Event from "../Event.js";
-
 /**
  * Shifts this node to a new place
+ * @param {Node} target
+ * @param {Vector} pos
+ * @param {object} [configs={}] - your personal configurations of the action.
  */
-export class MoveTo extends Animation {
-    /**
-     * @param {Node} target
-     * @param {Vector} pos
-     * @param {object} [configs={}] - your personal configurations of the event.
-     */
-    constructor(target, pos, { runTime = 1, ...configs } = {}) {
-        super();
-
-        let start;
-        const config = {
-            start: () => {
-                start = target.center;
-            },
-            update: (p) => {
-                target.center = start.lerp(pos, p);
-                target.updateMatrix();
-            },
-            ...configs,
-        };
-        this.add(new Event(0, runTime, config));
-    }
+export function MoveTo(target, pos, { ...configs } = {}) {
+    let start;
+    return {
+        onStart: () => {
+            start = target.center;
+        },
+        onUpdate: (p) => {
+            target.center = start.lerp(pos, p);
+            target.updateMatrix();
+        },
+        ...configs,
+    };
 }
 
 /**
  * Scales this node by a scale factor.
+ * @param {Node} target
+ * @param {number} factor
+ * @param {object} [configs={}] - your personal configurations of the action.
  */
-export class ScaleBy extends Animation {
-    /**
-     * @param {Node} target
-     * @param {number} factor
-     * @param {object} [configs={}] - your personal configurations of the event.
-     */
-    constructor(target, factor, { runTime = 1, ...configs } = {}) {
-        super();
-
-        let start, to;
-        const config = {
-            start: () => {
-                start = target.scale;
-                to = this.scale.elMult(factor);
-            },
-            update: (p) => {
-                target.scale = start.lerp(to, p);
-                target.updateMatrix();
-            },
-            ...configs,
-        };
-        this.add(new Event(0, runTime, config));
-    }
+export function ScaleBy(target, factor, { ...configs } = {}) {
+    let start, to;
+    return {
+        onStart: () => {
+            start = target.scale;
+            to = start.elMult(factor);
+        },
+        onUpdate: (p) => {
+            target.scale = start.lerp(to, p);
+            target.updateMatrix();
+        },
+        ...configs,
+    };
 }
 
 /**
  * Resets the scale factor of this node.
+ * @param {Node} target
+ * @param {number} factor
+ * @param {object} [configs={}] - your personal configurations of the action.
  */
-export class ScaleTo extends Animation {
-    /**
-     * @param {Node} target
-     * @param {number} factor
-     * @param {object} [configs={}] - your personal configurations of the event.
-     */
-    constructor(target, factor, { runTime = 1, ...configs } = {}) {
-        super();
-
-        let start, to;
-        const config = {
-            start: () => {
-                start = target.scale;
-                to = factor;
-            },
-            update: (p) => {
-                target.scale = start.lerp(to, p);
-                target.updateMatrix();
-            },
-            ...configs,
-        };
-        this.add(new Event(0, runTime, config));
-    }
+export function ScaleTo(target, factor, { ...configs } = {}) {
+    let start, to;
+    return {
+        onStart: () => {
+            start = target.scale;
+            to = factor;
+        },
+        onUpdate: (p) => {
+            target.scale = start.lerp(to, p);
+            target.updateMatrix();
+        },
+        ...configs,
+    };
 }
 
 /**
  * Rotates this node around x axis
+ * @param {Node} target
+ * @param {number} angle
+ * @param {object} [configs={}] - your personal configurations of the action.
  */
-export class RotateX extends Animation {
-    /**
-     * @param {Node} target
-     * @param {number} angle
-     * @param {object} [configs={}] - your personal configurations of the event.
-     */
-    constructor(target, angle, { runTime = 1, ...configs } = {}) {
-        super();
-
-        let start;
-        const config = {
-            start: () => {
-                start = target.rotation.x;
-            },
-            update: (p) => {
-                target.rotation.x = start + p * angle;
-                target.updateMatrix();
-            },
-            ...configs,
-        };
-        this.add(new Event(0, runTime, config));
-    }
+export function RotateX(target, angle, { ...configs } = {}) {
+    let start;
+    return {
+        onStart: () => {
+            start = target.rotation.x;
+        },
+        onUpdate: (p) => {
+            target.rotation.x = start + p * angle;
+            target.updateMatrix();
+        },
+        ...configs,
+    };
 }
 
 /**
  * Rotates this node around y axis
+ * @param {Node} target
+ * @param {number} angle
+ * @param {object} [configs={}] - your personal configurations of the action.
  */
-export class RotateY extends Animation {
-    /**
-     * @param {Node} target
-     * @param {number} angle
-     * @param {object} [configs={}] - your personal configurations of the event.
-     */
-    constructor(target, angle, { runTime = 1, ...configs } = {}) {
-        super();
-
-        let start;
-        const config = {
-            start: () => {
-                start = target.rotation.y;
-            },
-            update: (p) => {
-                target.rotation.y = start + p * angle;
-                target.updateMatrix();
-            },
-            ...configs,
-        };
-        this.add(new Event(0, runTime, config));
-    }
+export function RotateY(target, angle, { ...configs } = {}) {
+    let start;
+    return {
+        onStart: () => {
+            start = target.rotation.y;
+        },
+        onUpdate: (p) => {
+            target.rotation.y = start + p * angle;
+            target.updateMatrix();
+        },
+        ...configs,
+    };
 }
 
 /**
  * Rotates this node around z axis
+ * @param {Node} target
+ * @param {number} angle
+ * @param {object} [configs={}] - your personal configurations of the action.
  */
-export class RotateZ extends Animation {
-    /**
-     * @param {Node} target
-     * @param {number} angle
-     * @param {object} [configs={}] - your personal configurations of the event.
-     */
-    constructor(target, angle, { runTime = 1, ...configs } = {}) {
-        super();
-
-        let start;
-        const config = {
-            start: () => {
-                start = target.rotation.z;
-            },
-            update: (p) => {
-                target.rotation.z = start + p * angle;
-                target.updateMatrix();
-            },
-            ...configs,
-        };
-        this.add(new Event(0, runTime, config));
-    }
+export function RotateZ(target, angle, { ...configs } = {}) {
+    let start;
+    return {
+        onStart: () => {
+            start = target.rotation.z;
+        },
+        onUpdate: (p) => {
+            target.rotation.z = start + p * angle;
+            target.updateMatrix();
+        },
+        ...configs,
+    };
 }

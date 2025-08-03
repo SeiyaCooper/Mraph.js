@@ -1,298 +1,3 @@
-declare module "animation/Event" {
-    export default class Event {
-        /**
-         * @constructor
-         * @param {object} config
-         * @return {Action}
-         */
-        constructor(startTime?: number, stopTime?: number, { start, stop, update, curve }?: {
-            start?: () => void;
-            stop?: () => void;
-            update?: () => void;
-            curve?: (t: number) => number;
-        });
-        /**
-         * @type {number}
-         */
-        startTime: number;
-        /**
-         * @type {number}
-         */
-        stopTime: number;
-        /**
-         * @type {Function}
-         */
-        start: Function;
-        /**
-         * @type {Function}
-         */
-        update: Function;
-        /**
-         * @type {Function}
-         */
-        stop: Function;
-        /**
-         * @type {boolean}
-         */
-        isStarted: boolean;
-        /**
-         * @type {boolean}
-         */
-        isStopped: boolean;
-        /**
-         * @type {number}
-         */
-        id: number;
-        /**
-         * Animation curve
-         * @param {number} t
-         * @returns {number}
-         */
-        curve: (t: number) => number;
-        /**
-         * trigger this event by current time
-         * @param {number} now - the current time
-         * @return {void}
-         */
-        execute(now: number): void;
-    }
-}
-declare module "animation/SpecialEvent" {
-    /**
-     * infinite event or global event
-     */
-    export default class SpecialEvent {
-        /**
-         * @param {Function} updater
-         */
-        constructor(updater: Function);
-        /**
-         * @type {Function}
-         */
-        update: Function;
-        /**
-         * @type {number}
-         */
-        id: number;
-        /**
-         * trigger this event
-         */
-        execute(): void;
-    }
-}
-declare module "animation/Timeline" {
-    export default class Timeline {
-        /**
-         * Linear function
-         * @param {number} t - process, 0 to 1
-         * @returns {number}
-         */
-        static linear: (t: number) => number;
-        /**
-         * Quadratic ease in function
-         * @param {number} t - process, 0 to 1
-         * @returns {number}
-         */
-        static easeInQuad: (t: number) => number;
-        /**
-         * Quadratic ease out function
-         * @param {number} t - process, 0 to 1
-         * @returns {number}
-         */
-        static easeOutQuad: (t: number) => number;
-        /**
-         * Quadratic ease in out function
-         * @param {number} t - process, 0 to 1
-         * @returns {number}
-         */
-        static easeInOutQuad: (t: number) => number;
-        /**
-         * Cubic ease in function
-         * @param {number} t - process, 0 to 1
-         * @returns {number}
-         */
-        static easeInCubic: (t: number) => number;
-        /**
-         * Cubic ease out function
-         * @param {number} t - process, 0 to 1
-         * @returns {number}
-         */
-        static easeOutCubic: (t: number) => number;
-        /**
-         * Cubic ease in out function
-         * @param {number} t - process, 0 to 1
-         * @returns {number}
-         */
-        static easeInOutCubic: (t: number) => number;
-        /**
-         * Sine ease in function
-         * @param {number} t - process, 0 to 1
-         * @returns {number}
-         */
-        static easeInSine: (t: number) => number;
-        /**
-         * Sine ease out function
-         * @param {number} t - process, 0 to 1
-         * @returns {number}
-         */
-        static easeOutSine: (t: number) => number;
-        /**
-         * Sine ease in out function
-         * @param {number} t - process, 0 to 1
-         * @returns {number}
-         */
-        static easeInOutSine: (t: number) => number;
-        /**
-         * Bounce ease in function
-         * @param {number} t - process, 0 to 1
-         * @returns {number}
-         */
-        static easeInBounce: (t: number) => number;
-        /**
-         * Bounce ease out function
-         * @param {number} t - process, 0 to 1
-         * @returns {number}
-         */
-        static easeOutBounce: (t: number) => number;
-        /**
-         * Bounce ease in out function
-         * @param {number} t - process, 0 to 1
-         * @returns {number}
-         */
-        static easeInOutBounce: (t: number) => number;
-        /**
-         * A short string to describe state
-         * @type {string}
-         */
-        state: string;
-        /**
-         * list for events to be called
-         * @type {Event[]}
-         */
-        events: Event[];
-        /**
-         * list for evnets which would be called whenever timeline is active
-         * @type {SpecialEvent[]}
-         */
-        globalEvents: SpecialEvent[];
-        /**
-         * list for events that would always be called,
-         * those events will keep this timeline active
-         * @type {SpecialEvent[]}
-         */
-        infiniteEvents: SpecialEvent[];
-        /**
-         * Returns value of requsetAnimationFrame()
-         * @type {number | null}
-         */
-        clock: number | null;
-        /**
-         * @type {number}
-         */
-        _maxTime: number;
-        /**
-         * @type {number}
-         */
-        _minTime: number;
-        /**
-         * @type {number}
-         */
-        current: number;
-        /**
-         * @type {number}
-         */
-        fps: number;
-        /**
-         * The duration between each frame when fps is setted.
-         * @type {number}
-         */
-        duration: number;
-        /**
-         * Adds an event to this timeline.
-         * @param {Number} start
-         * @param {Number} stop
-         * @param {object} handle
-         * @param {object} config
-         * @return {Event}
-         */
-        add(startTime: any, stopTime: any, { update, start, stop, updateMax, updateMin, curve }?: object): Event;
-        /**
-         * Adds a one-time-only event.
-         * @param {number} at
-         * @param {Function} handler
-         */
-        once(at: number, handler: Function): Event;
-        /**
-         * Adds an event to event list following last event.
-         * @param {Number} hold
-         * @param {object} configs
-         * @return {this}
-         */
-        addFollowing(hold: number, configs: object): this;
-        /**
-         * Adds an event beginning at the earliest time and concluding at the latest time.
-         * @param {object} configs
-         * @returns {this}
-         */
-        addWhole(configs: object): this;
-        /**
-         * Adds a global event, this event will be called whenever timeline is active。
-         * If there is an infinite event attached to this timeline, it would behaved like infinite events, otherwise it would behaved like whole events.
-         * @param {Function} handler
-         * @returns {this}
-         */
-        addGlobal(handler: Function): this;
-        /**
-         * Adds an infinite event
-         * @param {Function} handler
-         * @returns {this}
-         */
-        addInfinite(handler: Function): this;
-        /**
-         * Adds an animation.
-         * @param {Animation} animation
-         * @param {object} [configs={}]
-         * @param {number} [configs.biasSeconds=0] - Time bias in seconds to adjust the event timings.
-         */
-        addAnimation(animation: Animation, { biasSeconds, updateMax, updateMin }?: {
-            biasSeconds?: number;
-        }): void;
-        /**
-         * Deletes an event from this timeline
-         * @param {object | number} target
-         */
-        delete(target: object | number): void;
-        /**
-         * Deletes an event accroding to its id
-         * @param {number} id
-         */
-        deleteById(id: number): void;
-        /**
-         * Starts palying animation
-         * @returns {void}
-         */
-        play(): void;
-        /**
-         * Triggers events by current time
-         */
-        process(): void;
-        /**
-         * Stops palying aniamtion
-         */
-        pause(): void;
-        /**
-         * Disposes this timeline.
-         */
-        dispose(): void;
-        set maxTime(val: number);
-        get maxTime(): number;
-        set minTime(val: number);
-        get minTime(): number;
-        get allStopped(): boolean;
-    }
-    import Event from "animation/Event";
-    import SpecialEvent from "animation/SpecialEvent";
-}
 declare module "utils/MraphError" {
     export default class MraphError {
         static error(msg: any): void;
@@ -1958,6 +1663,477 @@ declare module "core/Camera" {
     import Vector from "math/Vector";
     import Matrix from "math/Matrix";
 }
+declare module "light/PointLight" {
+    export default class PointLight {
+        static isInstance(obj: any): boolean;
+        constructor({ center, color, intensity }?: {
+            center?: import("mraph").Vector;
+            color?: import("mraph").Color;
+            intensity?: number;
+        });
+        center: import("mraph").Vector;
+        color: import("mraph").Color;
+        intensity: number;
+    }
+}
+declare module "light/DirectionalLight" {
+    export default class DirectionalLight {
+        static isInstance(obj: any): boolean;
+        constructor({ direction, color, intensity }?: {
+            direction?: import("mraph").Vector;
+            color?: import("mraph").Color;
+            intensity?: number;
+        });
+        direction: import("mraph").Vector;
+        color: import("mraph").Color;
+        intensity: number;
+    }
+}
+declare module "core/Layer" {
+    export default class Layer {
+        constructor({ fullScreen, appendTo, rendererClass, contextConfig }?: {
+            fullScreen?: boolean;
+            appendTo?: any;
+            rendererClass?: typeof WebGLRenderer;
+            contextConfig?: {};
+        });
+        camera: Camera;
+        surroundings: {
+            pointLights: any[];
+            directionalLights: any[];
+        };
+        scene: Node;
+        clearColor: import("mraph").Color;
+        canvas: HTMLCanvasElement;
+        renderer: WebGLRenderer;
+        /**
+         * Adjust the canvas to the new width and height
+         * @param {number} width
+         * @param {number} height
+         */
+        resize(width: number, height: number): void;
+        /**
+         * Adjust the canvas to full screen
+         */
+        fillScreen(): void;
+        /**
+         * append this.canvas to a HTMLElement
+         * @param {HTMLElement} el
+         * @returns {this}
+         */
+        appendTo(el: HTMLElement): this;
+        /**
+         * Adds a mobject or light to this scene
+         * @param  {Mobject | Light} object
+         * @returns {this}
+         */
+        add(object: Mobject | Light, { initialUpdate }?: {
+            initialUpdate?: boolean;
+        }): this;
+        /**
+         * Creates a mobject or geometry and automatically add it to the layer
+         * @template Mobject
+         * @param {Function} Mobject constructor of the mobject you want to create
+         * @param  {...any} params
+         * @returns {Mobject}
+         */
+        create<Mobject>(Mobject: Function, ...params: any[]): Mobject;
+        /**
+         * Deletes mobjects or lgihts
+         * @param  {...Mobject | Light} els
+         */
+        delete(...els: (Mobject | Light)[]): void;
+        /**
+         * Clears all mobjects and lights
+         */
+        clear(): void;
+        /**
+         * Adds something to surroundings, e.g. Lights
+         * @param {Light} obj
+         */
+        addSurrounding(obj: Light): void;
+        /**
+         * Renders scene
+         * @returns {this}
+         */
+        render(): this;
+        /**
+         * Clears canvas use this.clearColor
+         * @returns {this}
+         */
+        clearCanvas(): this;
+        /**
+         * Re-renders this layer
+         */
+        redraw(): void;
+    }
+    import Camera from "core/Camera";
+    import Node from "core/Node";
+    import WebGLRenderer from "core/WebGL/WebGLRenderer";
+}
+declare module "core/Texture" {
+    export default class Texture {
+        static loadFile(src: any, callback?: () => void): Texture;
+        constructor({ image, target, flipY, minFilter, magFilter, unit, }?: {
+            image: any;
+            target?: number;
+            flipY?: boolean;
+            minFilter?: number;
+            magFilter?: number;
+            unit?: number;
+        });
+        _dirty: boolean;
+        _needsUpload: boolean;
+        set image(val: any);
+        get image(): any;
+        target: number;
+        flipY: boolean;
+        unit: number;
+        set minFilter(val: any);
+        get minFilter(): any;
+        set magFilter(val: any);
+        get magFilter(): any;
+        get isImageReady(): boolean;
+        _minFilter: any;
+        _magFilter: any;
+        _image: any;
+    }
+}
+declare module "animation/anim_func" {
+    export function linear(t: number): number;
+    export function easeInQuad(t: number): number;
+    export function easeOutQuad(t: number): number;
+    export function easeInOutQuad(t: number): number;
+    export function easeInCubic(t: number): number;
+    export function easeOutCubic(t: number): number;
+    export function easeInOutCubic(t: number): number;
+    export function easeInSine(t: number): number;
+    export function easeOutSine(t: number): number;
+    export function easeInOutSine(t: number): number;
+    export function easeInBounce(t: number): number;
+    export function easeOutBounce(t: number): number;
+    export function easeInOutBounce(t: number): number;
+}
+declare module "animation/Action" {
+    export default class Event {
+        /**
+         * @param {number} startAt onStart time in seconds, default to be 0
+         * @param {number} durationSec duration time in seconds, default to be 1
+         * @param {object} config
+         * @param {() => void} config.onStart start callback
+         * @param {(progress: number, elapsedTimeSec: number) => void} config.onUpdate update callback
+         * @param {() => void} config.onStop stop callback
+         * @param {() => void} config.onActive another version of onUpdate with no parameter, used in infinite actions, global actions, etc.
+         * @param {number} config.priority
+         * @return {Action}
+         */
+        constructor(startAt?: number, durationSec?: number, { onStart, onStop, onUpdate, onActive, curve, priority, }?: {
+            onStart: () => void;
+            onUpdate: (progress: number, elapsedTimeSec: number) => void;
+            onStop: () => void;
+            onActive: () => void;
+            priority: number;
+        });
+        /**
+         * Start time in seconds
+         * @type {number}
+         */
+        startAt: number;
+        /**
+         * Duration time in seconds
+         * @type {number}
+         */
+        durationSec: number;
+        /**
+         * @type {Function}
+         */
+        onStart: Function;
+        /**
+         * @type {Function}
+         */
+        onUpdate: Function;
+        /**
+         * @type {Function}
+         */
+        onStop: Function;
+        /**
+         * @type {Function}
+         */
+        onActive: Function;
+        /**
+         * @type {boolean}
+         */
+        isStarted: boolean;
+        /**
+         * @type {boolean}
+         */
+        isStopped: boolean;
+        /**
+         * An unique id of this action
+         * This is generated automatically, you should not change this
+         * @readonly
+         * @type {number}
+         */
+        readonly id: number;
+        /**
+         * A single number used to sort actions from important(larger) to less-important(smaller)
+         * @type {number}
+         */
+        priority: number;
+        /**
+         * Animation curve
+         * @param {number} t
+         * @returns {number}
+         */
+        curve: (t: number) => number;
+        /**
+         * Triggers this event by current time
+         * @param {number} now - the current time in seconds
+         * @return {void}
+         */
+        execute(now: number): void;
+    }
+}
+declare module "animation/Timeline" {
+    export default class Timeline {
+        /**
+         * A short string to describe current state
+         * @type {string}
+         */
+        state: string;
+        /**
+         * list for normal actions
+         * @type {Action[]}
+         */
+        actions: Action[];
+        /**
+         * list for evnets which would be called whenever timeline is active
+         * @type {Action[]}
+         */
+        globalActions: Action[];
+        /**
+         * list of actions that would always be called, which will keep this timeline active
+         * @type {Action[]}
+         */
+        infiniteActions: Action[];
+        /**
+         * list of actions that would be called only one time.
+         * @type {Action[]}
+         */
+        onceActions: Action[];
+        /**
+         * Returns the value of returned by calling requsetAnimationFrame()
+         * Default to be null
+         * @type {number | null}
+         */
+        clock: number | null;
+        /**
+         * The logical frames per second (FPS) of this timeline.
+         * When set to a positive value (>0), the animation will advance by a fixed step (1/fps seconds) each frame.
+         * When set to a non-positive value (<=0), the animation will advance by the actual time interval between frames.
+         * Default to be 0.
+         * @type {number}
+         */
+        logicalFps: number;
+        /**
+         * The minimum real duration (in seconds) between frames when fps is positive.
+         * Only have effect when both Timeline.fps and this are positive (>0).
+         * If rendering takes longer than this duration, it will have no effect.
+         * @type {number}
+         */
+        durationSec: number;
+        /**
+         * Max time (in milliseconds)
+         * @type {number}
+         * @see maxTime
+         */
+        _maxMs: number;
+        /**
+         * Min time (in milliseconds)
+         */
+        _minMs: number;
+        /**
+         * Internal timestamp (in milliseconds) when the timeline was last started.
+         * @private
+         * @type {number}
+         */
+        private startTime;
+        /**
+         * Elapsed time (in milliseconds) when Timeline.forward() was last called.
+         * @private
+         * @type {number}
+         */
+        private current;
+        /**
+         * The index of current frame.
+         * @private
+         * @type {number}
+         */
+        private frame;
+        /**
+         * Adds an action to this timeline.
+         * @param {Number} startAt start time in seconds
+         * @param {Number} duration duration time in seconds
+         * @param {object} configs Configuration object, optional
+         * @param {(progress: number, elapsedTimeSec: number) => void} configs.onUpdate Update callback, optional
+         * @param {() => void} configs.onStart Start callback, optional
+         * @param {() => void} configs.onStop Stop callback, optional
+         * @param {(progress: number) => number} configs.curve Animation curve function, optional
+         * @param {number} configs.priority
+         * @return {Action} The action instance created
+         */
+        add(startAt: number, duration: number, { onUpdate, onStart, onStop, curve, priority }?: {
+            onUpdate: (progress: number, elapsedTimeSec: number) => void;
+            onStart: () => void;
+            onStop: () => void;
+            curve: (progress: number) => number;
+            priority: number;
+        }): Action;
+        /**
+         * @param {number} val
+         */
+        set maxMs(val: number);
+        /**
+         * @return {number}
+         */
+        get maxMs(): number;
+        /**
+         * @param {number} val
+         */
+        set minMs(val: number);
+        /**
+         * @return {number}
+         */
+        get minMs(): number;
+        /**
+         * Adds a one-time-only action.
+         * @param {number} at
+         * @param {Function} handler
+         * @return {Action}
+         */
+        addOnce(at: number, handler: Function): Action;
+        /**
+         * Adds an action to action list following last action.
+         * @param {Number} holdSec
+         * @param {object} configs Configuration object, optional
+         * @param {(progress: number, elapsedTimeSec: number) => void} configs.onUpdate Update callback, optional
+         * @param {() => void} configs.onStart Start callback, optional
+         * @param {() => void} configs.onStop Stop callback, optional
+         * @param {(progress: number) => number} configs.curve Animation curve function, optional
+         * @param {number} configs.priority
+         * @return {Action}
+         */
+        addFollowing(holdSec: number, configs: {
+            onUpdate: (progress: number, elapsedTimeSec: number) => void;
+            onStart: () => void;
+            onStop: () => void;
+            curve: (progress: number) => number;
+            priority: number;
+        }): Action;
+        /**
+         * Adds a global action, this action will be called whenever timeline is active
+         * If there is any infinite action attached to this timeline, it would behaved like a infinite action, otherwise it would behaved like an action that spans from begining to ending
+         * @param {Function} handler
+         * @returns {Action}
+         */
+        addGlobal(configs: any): Action;
+        /**
+         * Adds an infinite action
+         * @param {Function} handler
+         * @returns {Action}
+         */
+        addInfinite(handler: Function): Action;
+        /**
+         * Deletes an action from this timeline
+         * @param {object | number} target
+         */
+        delete(target: object | number): void;
+        /**
+         * Deletes an action accroding to its id
+         * @param {number} id
+         */
+        deleteById(id: number): void;
+        forward(): void;
+        /**
+         * @returns {void}
+         */
+        play(): void;
+        /**
+         * Triggers actions by current time
+         */
+        process(): void;
+        /**
+         * Pauses palying aniamtion
+         */
+        pause(): void;
+        /**
+         * Stops palying aniamtion
+         */
+        halt(): void;
+        /**
+         * Disposes this timeline.
+         */
+        dispose(): void;
+        set maxSec(val: number);
+        get maxSec(): number;
+        set minSec(val: number);
+        get minSec(): number;
+        get allStopped(): boolean;
+        get isPlaying(): boolean;
+        get isStopped(): boolean;
+        get isPaused(): boolean;
+    }
+    import Action from "animation/Action";
+}
+declare module "animation/predefined/PointwiseTransform" {
+    /**
+     * Applies an non-linear transformation to the Mobject 'target'
+     * @param {Mobject} target
+     * @param {Function} transform
+     * @param {object} [configs={}] - your personal configurations of the event.
+     */
+    export default function PointwiseTransform(target: Mobject, transform: Function, { ...configs }?: object): any;
+}
+declare module "animation/predefined/ComplexFunctionTransform" {
+    /**
+     * Applies a complex function to each point in the target.
+     * @param {Node} target
+     * @param {Function} complexFunction
+     * @param {object} [configs={}] - your personal configurations of the event.
+     */
+    export default function ComplexFunctionTransform(target: Node, complexFunction: Function, configs?: object): any;
+}
+declare module "animation/predefined/MorphInto" {
+    /**
+     * @param {Mobject2D} fromMobject
+     * @param {Mobject2D} toMobject
+     * @param {object} [configs={}] - your personal configurations of the event.
+     */
+    export default function MorphInto(fromMobject: Mobject2D, toMobject: Mobject2D, { ...configs }?: object): any;
+    import Mobject2D from "mobjects/2D/Mobject2D";
+}
+declare module "animation/predefined/MatrixTransform" {
+    /**
+     * @param {Node} target
+     * @param {Matrix} matrix - matrix to transform by，can be in 2*2 or 3*3
+     * @param {object} [configs={}] - your personal configurations of the event.
+     */
+    export default function MatrixTransform(target: Node, matrix: Matrix, configs?: object): any;
+}
+declare module "animation/predefined/ShowCreation" {
+    /**
+     * @param {Mobject} target
+     * @param {object} [configs={}] - your personal configurations of the event.
+     */
+    export default function ShowCreation(target: Mobject, { ...configs }?: object): any;
+}
+declare module "animation/predefined/ShowVanishing" {
+    /**
+     * @param {Mobject} target
+     * @param {object} [configs={}] - your personal configurations of the event.
+     */
+    export default function ShowVanishing(target: Mobject, { runTime, ...configs }?: object): any;
+}
 declare module "extra/OrbitControl" {
     export default class OrbitControl {
         constructor(camera: any, { element }?: {
@@ -1999,254 +2175,6 @@ declare module "extra/OrbitControl" {
         removeControl(): void;
     }
     import Vector from "math/Vector";
-}
-declare module "light/PointLight" {
-    export default class PointLight {
-        static isInstance(obj: any): boolean;
-        constructor({ center, color, intensity }?: {
-            center?: import("mraph").Vector;
-            color?: import("mraph").Color;
-            intensity?: number;
-        });
-        center: import("mraph").Vector;
-        color: import("mraph").Color;
-        intensity: number;
-    }
-}
-declare module "light/DirectionalLight" {
-    export default class DirectionalLight {
-        static isInstance(obj: any): boolean;
-        constructor({ direction, color, intensity }?: {
-            direction?: import("mraph").Vector;
-            color?: import("mraph").Color;
-            intensity?: number;
-        });
-        direction: import("mraph").Vector;
-        color: import("mraph").Color;
-        intensity: number;
-    }
-}
-declare module "core/Layer" {
-    export default class Layer {
-        constructor({ fullScreen, appendTo, rendererClass, contextConfig }?: {
-            fullScreen?: boolean;
-            appendTo?: any;
-            rendererClass?: typeof WebGLRenderer;
-            contextConfig?: {};
-        });
-        camera: Camera;
-        timeline: Timeline;
-        surroundings: {
-            pointLights: any[];
-            directionalLights: any[];
-        };
-        scene: Node;
-        canvas: HTMLCanvasElement;
-        renderer: WebGLRenderer;
-        /**
-         * Adjust the canvas to the new width and height
-         * @param {number} width
-         * @param {number} height
-         */
-        resize(width: number, height: number): void;
-        /**
-         * Adjust the canvas to full screen
-         */
-        fillScreen(): void;
-        /**
-         * append this.canvas to a HTMLElement
-         * @param {HTMLElement} el
-         * @returns {this}
-         */
-        appendTo(el: HTMLElement): this;
-        /**
-         * Adds a mobject or light to this scene
-         * @param  {Mobject | Light} object
-         * @returns {this}
-         */
-        add(object: Mobject | Light, { initialUpdate }?: {
-            initialUpdate?: boolean;
-        }): this;
-        /**
-         * Adds some anmations.
-         * These animations will play following the current animation.
-         * @param  {...any} animations
-         */
-        animate(...animations: any[]): void;
-        /**
-         * Creates a mobject or geometry and automatically add it to the layer
-         * @template Mobject
-         * @param {Function} Mobject constructor of the mobject you want to create
-         * @param  {...any} params
-         * @returns {Mobject}
-         */
-        create<Mobject>(Mobject: Function, ...params: any[]): Mobject;
-        /**
-         * Deletes mobjects or lgihts
-         * @param  {...Mobject | Light} els
-         */
-        delete(...els: (Mobject | Light)[]): void;
-        /**
-         * Clears all mobjects and lights
-         */
-        clear(): void;
-        /**
-         * Sets attributes for all nodes
-         * @param {string} key
-         * @param {any} value
-         */
-        set(key: string, value: any): void;
-        /**
-         * Adds something to surroundings, e.g. Lights
-         * @param {Light} obj
-         */
-        addSurrounding(obj: Light): void;
-        /**
-         * Renders scene
-         * @returns {this}
-         */
-        render(): this;
-        /**
-         * Clears canvas by a color
-         * @param {number[] | Color} [color = COLORS.GRAY_E]
-         * @returns {this}
-         */
-        clearCanvas([r, g, b, a]?: number[] | Color): this;
-        /**
-         * Plays animation.
-         * @param {Object} config
-         * @returns {this}
-         */
-        play({ color, until }?: any): this;
-        /**
-         * pause for a while between animations
-         * @param {number} [seconds=1]
-         */
-        delay(seconds?: number): this;
-        /**
-         * Enables orbit control
-         * @returns Control
-         */
-        enableOrbitControl(): OrbitControl;
-    }
-    import Camera from "core/Camera";
-    import Timeline from "animation/Timeline";
-    import Node from "core/Node";
-    import WebGLRenderer from "core/WebGL/WebGLRenderer";
-    import OrbitControl from "extra/OrbitControl";
-}
-declare module "core/Texture" {
-    export default class Texture {
-        static loadFile(src: any, callback?: () => void): Texture;
-        constructor({ image, target, flipY, minFilter, magFilter, unit, }?: {
-            image: any;
-            target?: number;
-            flipY?: boolean;
-            minFilter?: number;
-            magFilter?: number;
-            unit?: number;
-        });
-        _dirty: boolean;
-        _needsUpload: boolean;
-        set image(val: any);
-        get image(): any;
-        target: number;
-        flipY: boolean;
-        unit: number;
-        set minFilter(val: any);
-        get minFilter(): any;
-        set magFilter(val: any);
-        get magFilter(): any;
-        get isImageReady(): boolean;
-        _minFilter: any;
-        _magFilter: any;
-        _image: any;
-    }
-}
-declare module "animation/Animation" {
-    /**
-     * An Animation is a group of events.
-     * Those events are not special events.
-     */
-    export default class Animation {
-        events: any[];
-        /**
-         * Adds some events to this animation
-         * @param {...Event} event
-         */
-        add(...event: Event[]): void;
-    }
-}
-declare module "animation/predefined/PointwiseTransform" {
-    /**
-     * Applies an non-linear transformation to the Mobject 'target'
-     */
-    export default class PointwiseTransform extends Animation {
-        /**
-         * @param {Mobject} target
-         * @param {Function} transform
-         * @param {object} [configs={}] - your personal configurations of the event.
-         */
-        constructor(target: Mobject, transform: Function, { runTime, ...configs }?: object);
-    }
-    import Animation from "animation/Animation";
-}
-declare module "animation/predefined/ComplexFunctionTransform" {
-    /**
-     * Applies a complex function to each point in the target.
-     */
-    export default class ComplexFunctionTransform extends PointwiseTransform {
-        /**
-         * @param {Node} target
-         * @param {Function} complexFunction
-         * @param {object} [configs={}] - your personal configurations of the event.
-         */
-        constructor(target: Node, complexFunction: Function, configs?: object);
-    }
-    import PointwiseTransform from "animation/predefined/PointwiseTransform";
-}
-declare module "animation/predefined/MatrixTransform" {
-    export default class MatrixTransform extends PointwiseTransform {
-        /**
-         * @param {Node} target
-         * @param {Matrix} matrix - matrix to transform by，can be in 2*2 or 3*3
-         * @param {object} [configs={}] - your personal configurations of the event.
-         */
-        constructor(target: Node, matrix: Matrix, configs?: object);
-    }
-    import PointwiseTransform from "animation/predefined/PointwiseTransform";
-}
-declare module "animation/predefined/MorphInto" {
-    export default class MorphInto extends Animation {
-        /**
-         * @param {Mobject2D} fromMobject
-         * @param {Mobject2D} toMobject
-         * @param {object} [configs={}] - your personal configurations of the event.
-         */
-        constructor(fromMobject: Mobject2D, toMobject: Mobject2D, { runTime, ...configs }?: object);
-    }
-    import Animation from "animation/Animation";
-    import Mobject2D from "mobjects/2D/Mobject2D";
-}
-declare module "animation/predefined/ShowCreation" {
-    export default class ShowCreation extends Animation {
-        /**
-         * @param {Mobject} target
-         * @param {object} [configs={}] - your personal configurations of the event.
-         */
-        constructor(target: Mobject, { runTime, ...configs }?: object);
-    }
-    import Animation from "animation/Animation";
-}
-declare module "animation/predefined/ShowVanishing" {
-    export default class ShowVanishing extends Animation {
-        /**
-         * @param {Mobject} target
-         * @param {object} [configs={}] - your personal configurations of the event.
-         */
-        constructor(target: Mobject, { runTime, ...configs }?: object);
-    }
-    import Animation from "animation/Animation";
 }
 declare module "material/CustomMaterial" {
     export default class CustomMaterial extends Material {
@@ -2895,75 +2823,51 @@ declare module "extra/OBJLoader" {
 declare module "animation/predefined/basic_animations" {
     /**
      * Shifts this node to a new place
+     * @param {Node} target
+     * @param {Vector} pos
+     * @param {object} [configs={}] - your personal configurations of the action.
      */
-    export class MoveTo extends Animation {
-        /**
-         * @param {Node} target
-         * @param {Vector} pos
-         * @param {object} [configs={}] - your personal configurations of the event.
-         */
-        constructor(target: Node, pos: Vector, { runTime, ...configs }?: object);
-    }
+    export function MoveTo(target: Node, pos: Vector, { ...configs }?: object): any;
     /**
      * Scales this node by a scale factor.
+     * @param {Node} target
+     * @param {number} factor
+     * @param {object} [configs={}] - your personal configurations of the action.
      */
-    export class ScaleBy extends Animation {
-        /**
-         * @param {Node} target
-         * @param {number} factor
-         * @param {object} [configs={}] - your personal configurations of the event.
-         */
-        constructor(target: Node, factor: number, { runTime, ...configs }?: object);
-    }
+    export function ScaleBy(target: Node, factor: number, { ...configs }?: object): any;
     /**
      * Resets the scale factor of this node.
+     * @param {Node} target
+     * @param {number} factor
+     * @param {object} [configs={}] - your personal configurations of the action.
      */
-    export class ScaleTo extends Animation {
-        /**
-         * @param {Node} target
-         * @param {number} factor
-         * @param {object} [configs={}] - your personal configurations of the event.
-         */
-        constructor(target: Node, factor: number, { runTime, ...configs }?: object);
-    }
+    export function ScaleTo(target: Node, factor: number, { ...configs }?: object): any;
     /**
      * Rotates this node around x axis
+     * @param {Node} target
+     * @param {number} angle
+     * @param {object} [configs={}] - your personal configurations of the action.
      */
-    export class RotateX extends Animation {
-        /**
-         * @param {Node} target
-         * @param {number} angle
-         * @param {object} [configs={}] - your personal configurations of the event.
-         */
-        constructor(target: Node, angle: number, { runTime, ...configs }?: object);
-    }
+    export function RotateX(target: Node, angle: number, { ...configs }?: object): any;
     /**
      * Rotates this node around y axis
+     * @param {Node} target
+     * @param {number} angle
+     * @param {object} [configs={}] - your personal configurations of the action.
      */
-    export class RotateY extends Animation {
-        /**
-         * @param {Node} target
-         * @param {number} angle
-         * @param {object} [configs={}] - your personal configurations of the event.
-         */
-        constructor(target: Node, angle: number, { runTime, ...configs }?: object);
-    }
+    export function RotateY(target: Node, angle: number, { ...configs }?: object): any;
     /**
      * Rotates this node around z axis
+     * @param {Node} target
+     * @param {number} angle
+     * @param {object} [configs={}] - your personal configurations of the action.
      */
-    export class RotateZ extends Animation {
-        /**
-         * @param {Node} target
-         * @param {number} angle
-         * @param {object} [configs={}] - your personal configurations of the event.
-         */
-        constructor(target: Node, angle: number, { runTime, ...configs }?: object);
-    }
-    import Animation from "animation/Animation";
+    export function RotateZ(target: Node, angle: number, { ...configs }?: object): any;
 }
 declare module "mraph" {
     export * as SlotParser from "material/SlotParser";
     export * as MathFunc from "math/math_func";
+    export * as AnimFunc from "animation/anim_func";
     export * as OBJLoader from "extra/OBJLoader";
     export * as COLORS from "constants/colors";
     export * as VECTORS from "constants/vectors";
@@ -3014,16 +2918,15 @@ declare module "mraph" {
     import DepthMaterial from "material/DepthMaterial";
     import LambertMaterial from "material/LambertMaterial";
     import Mobject2DMaterial from "material/Mobject2DMaterial";
-    import Event from "animation/Event";
+    import Action from "animation/Action";
     import Timeline from "animation/Timeline";
-    import Animation from "animation/Animation";
+    import CompleFuncTransform from "animation/predefined/ComplexFunctionTransform";
     import PointwiseTransform from "animation/predefined/PointwiseTransform";
-    import ComplexFunctionTransform from "animation/predefined/ComplexFunctionTransform";
-    import MatrixTransform from "animation/predefined/MatrixTransform";
     import MorphInto from "animation/predefined/MorphInto";
+    import MatrixTransform from "animation/predefined/MatrixTransform";
     import ShowCreation from "animation/predefined/ShowCreation";
     import ShowVanishing from "animation/predefined/ShowVanishing";
     import OrbitControl from "extra/OrbitControl";
-    export { Color, Matrix, Vector, Quat, Complex, Geometry, Plane, Box, Segment, Sphere, Cylinder, DirectionalLight, PointLight, Mobject, ImageMobject, CanvasText, Mobject2D, Point, Tail, Line, Polygon, RegularPolygon, Square, Arc, Circle, Arrow, Axis, Axes2D, VectorField2D, FunctionGraph2D, Mobject3D, FunctionGraph3D, Point3D, Arrow3D, VectorField3D, Layer, Camera, Texture, WebGLRenderer, WebGLProgram, CustomMaterial, BasicMaterial, DepthMaterial, LambertMaterial, Mobject2DMaterial, Event, Timeline, Animation, PointwiseTransform, ComplexFunctionTransform, MatrixTransform, MorphInto, ShowCreation, ShowVanishing, OrbitControl };
+    export { Color, Matrix, Vector, Quat, Complex, Geometry, Plane, Box, Segment, Sphere, Cylinder, DirectionalLight, PointLight, Mobject, ImageMobject, CanvasText, Mobject2D, Point, Tail, Line, Polygon, RegularPolygon, Square, Arc, Circle, Arrow, Axis, Axes2D, VectorField2D, FunctionGraph2D, Mobject3D, FunctionGraph3D, Point3D, Arrow3D, VectorField3D, Layer, Camera, Texture, WebGLRenderer, WebGLProgram, CustomMaterial, BasicMaterial, DepthMaterial, LambertMaterial, Mobject2DMaterial, Action, Timeline, CompleFuncTransform, PointwiseTransform, MorphInto, MatrixTransform, ShowCreation, ShowVanishing, OrbitControl };
     export { MoveTo, ScaleBy, ScaleTo, RotateX, RotateY, RotateZ } from "./animation/predefined/basic_animations.js";
 }
