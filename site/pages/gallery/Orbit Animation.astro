@@ -7,6 +7,7 @@ import Example from "../../layouts/Example.astro";
         import * as mp from "../../../src/mraph.js";
 
         const layer = new mp.Layer().appendTo(document.body);
+        const timeline = new mp.Timeline();
 
         const sun = new mp.Point3D(0, 0);
         sun.radius = 1;
@@ -25,14 +26,14 @@ import Example from "../../layouts/Example.astro";
         moon.setColor(mp.COLORS.GRAY);
         moon.update();
 
-        layer.timeline.addInfinite(() => {
+        timeline.addInfinite(() => {
             sun.rotation.y += 0.02;
             earth.rotation.y += 0.03;
             earth.rotation.z += 0.01;
             sun.updateMatrix();
         });
 
-        layer.enableOrbitControl();
-        layer.play();
+        mp.OrbitControl.attachToLayer(layer, timeline);
+        timeline.play();
     </script>
 </Example>

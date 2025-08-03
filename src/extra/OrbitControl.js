@@ -215,6 +215,15 @@ export default class OrbitControl {
     get element() {
         return this._element;
     }
+
+    static attachToLayer(layer, timeline, { autoRedraw = true } = {}) {
+        const controlller = new OrbitControl(layer.camera, { element: layer.canvas });
+        timeline.addInfinite(() => {
+            controlller.update();
+            if (autoRedraw) layer.redraw();
+        });
+        return controlller;
+    }
 }
 
 function getPos(obj) {

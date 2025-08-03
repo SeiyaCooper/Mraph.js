@@ -7,6 +7,7 @@ import Example from "../../layouts/Example.astro";
         import * as mp from "../../../src/mraph.js";
 
         const layer = new mp.Layer().appendTo(document.body);
+        const timeline = new mp.Timeline();
 
         // Custom Mobject
         class Charge extends mp.Point {
@@ -65,7 +66,7 @@ import Example from "../../layouts/Example.astro";
 
         // Use orbit control and start animation
         layer.camera.center[2] = 15;
-        layer.enableOrbitControl().enableRotate = false;
-        layer.play();
+        mp.OrbitControl.attachToLayer(layer, timeline).enableRotate = false;
+        timeline.play();
     </script>
 </Example>

@@ -2136,6 +2136,9 @@ declare module "animation/predefined/ShowVanishing" {
 }
 declare module "extra/OrbitControl" {
     export default class OrbitControl {
+        static attachToLayer(layer: any, timeline: any, { autoRedraw }?: {
+            autoRedraw?: boolean;
+        }): OrbitControl;
         constructor(camera: any, { element }?: {
             element?: Document;
         });

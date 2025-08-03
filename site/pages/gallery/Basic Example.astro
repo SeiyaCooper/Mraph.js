@@ -7,13 +7,14 @@ import Example from "../../layouts/Example.astro";
         import * as mp from "../../../src/mraph.js";
 
         const layer = new mp.Layer().appendTo(document.body);
+        const timeline = new mp.Timeline();
 
         const box = new mp.Box();
         box.material = new mp.BasicMaterial();
         box.material.color = mp.COLORS.COOPER_ORANGE;
         layer.add(box);
 
-        layer.enableOrbitControl();
-        layer.play();
+        mp.OrbitControl.attachToLayer(layer, timeline);
+        timeline.play();
     </script>
 </Example>
