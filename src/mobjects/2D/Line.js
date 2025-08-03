@@ -1,7 +1,8 @@
 import Mobject2D from "./Mobject2D.js";
-import Point from "./Point.js";
+import Point2D from "./Point2D.js";
 import Matrix from "../../math/Matrix.js";
 import * as COLORS from "../../constants/colors.js";
+import { tryIntoPoint2D } from "../../utils/utils.js";
 
 export default class Line extends Mobject2D {
     strokeWidth = 0.05;
@@ -13,22 +14,15 @@ export default class Line extends Mobject2D {
     lineJoin = "none";
 
     /**
-     * @param {Point} [start=[-1,0]]
-     * @param {Point} [end=[1,0]]
+     * @param {Point3D | Point2D | number[] | Vector} [start = [-1, 0]]
+     * @param {Point3D | Point2D | number[] | Vector} [end = [1, 0]]
+     * @returns {Line}
      */
     constructor(start = [-1, 0], end = [1, 0]) {
         super();
 
-        function parseToPoint(obj) {
-            if (Array.isArray(obj)) {
-                return new Point(...obj);
-            }
-
-            return obj;
-        }
-
-        this.start = parseToPoint(start);
-        this.end = parseToPoint(end);
+        this.start = tryIntoPoint2D(start);
+        this.end = tryIntoPoint2D(end);
         this.setIndex([0, 1, 3, 2, 0, 3]);
     }
 
@@ -86,7 +80,7 @@ export default class Line extends Mobject2D {
     }
 
     set vector(vec) {
-        this.end = new Point(this.start.center.add(vec));
+        this.end = new Point2D(this.start.center.add(vec));
     }
 
     get vector() {

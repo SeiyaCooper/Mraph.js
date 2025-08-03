@@ -9,13 +9,20 @@ export default class Point extends Arc {
     _a = new Vector(0, 0, 0);
 
     /**
-     * @param  {Vector | number[] | ...number} position
+     * @overload
+     * @param  {...number} args
+     *
+     * @overload
+     * @param {number[]} position
+     *
+     * @overload
+     * @param {Vector} position
      */
     constructor(...args) {
         super(0, 2 * Math.PI, 0.06);
 
         if (Vector.isInstance(args[0])) {
-            this.center = args[0];
+            this.center = new Vector(args[0][0] ?? 0, args[0][1] ?? 0);
         } else if (Array.isArray(args[0])) {
             this.center = new Vector(...args[0]);
         } else {

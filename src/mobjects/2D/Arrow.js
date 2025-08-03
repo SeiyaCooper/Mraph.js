@@ -1,19 +1,14 @@
-import Vector from "../../math/Vector.js";
-import Point from "./Point.js";
 import Line from "./Line.js";
 import * as COLORS from "../../constants/colors.js";
 
 export default class Arrow extends Line {
-    constructor(...param) {
-        if (Vector.isInstance(param[1])) {
-            if (Array.isArray(param[0])) {
-                super(param[0], new Point(param[0].add(param[1])));
-            } else {
-                super(param[0], new Point(param[0].center.add(param[1])));
-            }
-        } else {
-            super(...param);
-        }
+    /**
+     * @param {Point3D | Point2D | number[] | Vector} [start = [-1, 0]]
+     * @param {Point3D | Point2D | number[] | Vector} [end = [1, 0]]
+     * @returns {Arrow}
+     */
+    constructor(start = [-1, 0], end = [1, 0]) {
+        super(start, end);
         this.addTip(1);
         this.setColor(COLORS.RED, { fillOpacity: 1.0 });
     }

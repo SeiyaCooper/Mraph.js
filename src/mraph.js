@@ -40,7 +40,7 @@ import DirectionalLight from "./light/DirectionalLight.js";
 import PointLight from "./light/PointLight.js";
 
 import Mobject2D from "./mobjects/2D/Mobject2D.js";
-import Point from "./mobjects/2D/Point.js";
+import Point2D from "./mobjects/2D/Point2D.js";
 import Tail from "./mobjects/2D/Tail.js";
 import Line from "./mobjects/2D/Line.js";
 import Polygon from "./mobjects/2D/Polygon.js";
@@ -103,7 +103,7 @@ export {
 
     // Mobjects - 2D
     Mobject2D,
-    Point,
+    Point2D,
     Tail,
     Line,
     Polygon,

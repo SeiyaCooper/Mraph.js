@@ -1,5 +1,5 @@
 import Line from "./Line.js";
-import Point from "./Point.js";
+import Point2D from "./Point2D.js";
 import Vector from "../../math/Vector.js";
 import Matrix from "../../math/Matrix.js";
 
@@ -43,8 +43,8 @@ export default class Axis extends Line {
         dir = dir.normal();
 
         const pos = Vector.isInstance(base) ? base : base.center;
-        const start = new Point(pos.add(dir.mult(range[0])));
-        const end = new Point(pos.add(dir.mult(range[1])));
+        const start = new Point2D(pos.add(dir.mult(range[0])));
+        const end = new Point2D(pos.add(dir.mult(range[1])));
 
         const axis = new Axis(start, end);
         axis.unit = range[2];

@@ -2,19 +2,24 @@ import Mobject3D from "./Mobject3D.js";
 import Point3D from "./Point3D.js";
 import Cylinder from "../../geometry/Cylinder.js";
 import Matrix from "../../math/Matrix.js";
-import Vector from "../../math/Vector.js";
 import * as VECTORS from "../../constants/vectors.js";
 import * as COLORS from "../../constants/colors.js";
+import { tryIntoPoint3D } from "../../utils/utils.js";
 
 export default class Arrow3D extends Mobject3D {
     tipWidth = 0.06;
     tipLength = 0.12;
     strokeWidth = 0.05;
 
-    constructor(start = new Point3D(-1, 0), end = new Point3D(1, 0)) {
+    /**
+     * @param {Point3D | Point2D | number[] | Vector} [start = [-1, 0]]
+     * @param {Point3D | Point2D | number[] | Vector} [end = [1, 0]]
+     * @returns {Arrow3D}
+     */
+    constructor(start = [-1, 0], end = [1, 0]) {
         super();
-        this.start = start;
-        this.end = Vector.isInstance(end) ? new Point3D(start.center.add(end)) : end;
+        this.start = tryIntoPoint3D(start);
+        this.end = tryIntoPoint3D(end);
         this.material.colorMode = "single";
         this.setColor(COLORS.SEIYA_PINK);
     }

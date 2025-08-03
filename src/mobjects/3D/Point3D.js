@@ -10,7 +10,14 @@ export default class Point3D extends Mobject3D {
     _a = new Vector(0, 0, 0);
 
     /**
-     * @param  {Vector | number[] | ...number} position
+     * @overload
+     * @param  {...number} args
+     *
+     * @overload
+     * @param {number[]} position
+     *
+     * @overload
+     * @param {Vector} position
      */
     constructor(...args) {
         super();

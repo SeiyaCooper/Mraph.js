@@ -1,5 +1,5 @@
 import Polygon from "./Polygon.js";
-import Point from "./Point.js";
+import Point2D from "./Point2D.js";
 import * as COLORS from "../../constants/colors.js";
 
 export default class RegularPolygon extends Polygon {
@@ -22,7 +22,7 @@ export default class RegularPolygon extends Polygon {
         this.vertices = [];
         for (let i = 0; i < this.vertexNum; i++) {
             const angle = this.startAngle + i * angleUnit;
-            this.vertices.push(new Point(Math.cos(angle) * len, Math.sin(angle) * len));
+            this.vertices.push(new Point2D(Math.cos(angle) * len, Math.sin(angle) * len));
         }
 
         super.update();

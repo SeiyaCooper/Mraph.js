@@ -2,7 +2,7 @@ import Mobject2D from "./Mobject2D.js";
 import Vector from "../../math/Vector.js";
 import Matrix from "../../math/Matrix.js";
 import Axis from "./Axis.js";
-import Point from "./Point.js";
+import Point2D from "./Point2D.js";
 import FunctionGraph2D from "./FunctionGraph2D.js";
 import * as COLORS from "../../constants/colors.js";
 
@@ -18,7 +18,7 @@ export default class Axes2D extends Mobject2D {
     constructor({
         xRange = [-8, 8, 1],
         yRange = [-5, 5, 1],
-        origin = new Point(0, 0),
+        origin = new Point2D(0, 0),
 
         drawGrid = true,
         drawSubGrid = true,
