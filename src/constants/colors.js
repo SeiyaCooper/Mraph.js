@@ -39,5 +39,5 @@ export const GRAY_D = Color.fromHexStr("#474747");
 export const GRAY_E = Color.fromHexStr("#262628");
 export const GRAY = GRAY_C;
 
-export const COOPER_ORANGE = Color.fromHex(0xff574b);
-export const SEIYA_PINK = Color.fromHex(0xfe63a1);
+export const COOPER_ORANGE = Color.fromHexStr("#ff936d");
+export const SEIYA_PINK = Color.fromHexStr("#f18eb6");
